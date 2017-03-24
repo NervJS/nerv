@@ -7,7 +7,7 @@ class Widget extends Events {
     let initializing = false;
     const base = this;
     function beget (obj) {
-      var F = function () {};
+      let F = function () {};
       F.prototype = obj;
       return new F();
     }
@@ -46,8 +46,8 @@ class Widget extends Events {
         for (let p in props) {
           this[p] = props[p];
         }
-        props = null;
         this.construct.apply(this, arguments);
+        this._init();
       }
     }
     T.prototype = subPrototype;
@@ -65,10 +65,9 @@ class Widget extends Events {
     this._state = {};
     this._eventNames = [];
     this._actions = [];
-    this.init();
   }
 
-  init () {
+  _init () {
     if (type(this.fetch) === 'function') {
       this.fetch.call(this, state => {
         this._compile(state);
@@ -96,6 +95,8 @@ class Widget extends Events {
       this._state = mergeObject(this._state, state);
     }
     // 编译模板
+    this.html = this.template;
+    this._link();
   }
 
   _link () {
@@ -114,6 +115,7 @@ class Widget extends Events {
       return;
     }
     this._undelegateEvents();
+    const events = this.events;
     for (let key in events) {
       let method = events[key];
       if (type(method) !== 'function') {
@@ -146,6 +148,6 @@ class Widget extends Events {
 }
 
 Widget.delegateEventSplitter = /^(\S+)\s*(.*)$/;
-Widget.fnTest = /xyz/.test(function() {var xyz;}) ? /\bsuper\b/ : /.*/;
+Widget.fnTest = /xyz/.test(function() {let xyz;}) ? /\bsuper\b/ : /.*/;
 
 export default Widget;
