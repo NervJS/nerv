@@ -1,5 +1,4 @@
 class Events {
-  static eventSplitter = /\s+/;
   constructor (opts) {
     if (typeof opts !== 'undefined' && opts.callbacks) {
       this.callbacks = opts.callbacks;
@@ -75,3 +74,7 @@ class Events {
     return this;
   }
 }
+
+Events.eventSplitter = /\s+/;
+
+export default Events;
