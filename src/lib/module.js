@@ -129,7 +129,7 @@ const Script = {
     if (opts.src in this._paths) {
       return;
     }
-    this._paths[src] = true;
+    this._paths[opts.src] = true;
     forEach(this._rules, rule => rule.call(null, opts));
     const head = document.getElementsByTagName('head')[0];
     let node = document.createElement('script');

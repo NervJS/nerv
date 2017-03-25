@@ -1,8 +1,8 @@
 import Events from './events';
 import { forEach, type, mergeObject } from './util';
+import template from './template'
 
 class Widget extends Events {
-
   static extend (properties) {
     let initializing = false;
     const base = this;
@@ -47,34 +47,21 @@ class Widget extends Events {
           this[p] = props[p];
         }
         this.construct.apply(this, arguments);
-        this._init();
       }
     }
     T.prototype = subPrototype;
-
     T.prototype.constructor = T;
-
     T.extend = Widget.extend;
     return T;
   }
 
   constructor () {
     super();
-    this.$el = null;
+    this._$el = null;
     this.template = '';
     this._state = {};
     this._eventNames = [];
     this._actions = [];
-  }
-
-  _init () {
-    if (type(this.fetch) === 'function') {
-      this.fetch.call(this, state => {
-        this._compile(state);
-      });
-    } else {
-      this._compile();
-    }
   }
 
   setState (state) {
@@ -89,21 +76,35 @@ class Widget extends Events {
       this.update.call(this, action, payload);
     }
   }
+  
+  _init (callback) {
+    return new Promise((resolve, reject) => {
+      if (type(this.fetch) === 'function') {
+        this.fetch.call(this, state => {
+          this._compile(state);
+          resolve();
+        }, () => reject());
+      } else {
+        this._compile();
+        resolve();
+      }
+    });
+  }
 
   _compile (state) {
     if (state) {
       this._state = mergeObject(this._state, state);
     }
     // 编译模板
-    this.html = this.template;
-    this._link();
+    const compile = template.compile(this.template);
+    this.html = compile(this._state);
   }
 
   _link () {
     if (type(this.beforeMount) === 'function') {
       this.beforeMount.call(this);
     }
-    this.$el.append(this.html);
+    this._$el.append(this.html);
     this._delegateEvents();
     if (type(this.afterMount) === 'function') {
       this.afterMount.call(this);
@@ -133,16 +134,16 @@ class Widget extends Events {
       const selector = match[2];
       this._eventNames.push(eventName);
       if (selector === '') {
-        this.$el.bind(eventName, method);
+        this._$el.bind(eventName, method);
       } else {
-        this.$el.on(eventName, selector, method);
+        this._$el.on(eventName, selector, method);
       }
     }
   }
 
   _undelegateEvents () {
     forEach(this._eventNames, event => {
-      this.$el.off(event);
+      this._$el.off(event);
     });
   }
 }
