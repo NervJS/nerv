@@ -210,7 +210,7 @@ function config ({ baseUrl }) {
   }
 }
 
-export default {
+module.exports = {
   _Module: Module,
   define,
   require,

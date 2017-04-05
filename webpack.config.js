@@ -19,7 +19,19 @@ module.exports = {
               'es2015',
               'stage-0'
             ],
-            plugins: ['transform-runtime']
+            plugins: [
+              'transform-runtime',
+              ['babel-plugin-root-import', [{
+                'rootPathPrefix': '@',
+                'rootPathSuffix': 'src'
+              }, {
+                'rootPathPrefix': '@util',
+                'rootPathSuffix': 'src/lib/util'
+              }, {
+                'rootPathPrefix': '@virtual-dom',
+                'rootPathSuffix': 'src/lib/virtual-dom'
+              }]]
+            ]
           }
         }
       }

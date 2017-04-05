@@ -77,4 +77,4 @@ class Events {
 
 Events.eventSplitter = /\s+/;
 
-export default Events;
+module.exports = Events;

@@ -1,5 +1,5 @@
 import Events from './events';
-import { forEach, type, mergeObject } from './util';
+import { forEach, type, extend, clone } from './util';
 import template from './template'
 
 class Widget extends Events {
@@ -55,20 +55,31 @@ class Widget extends Events {
     return T;
   }
 
-  constructor () {
+  constructor (props, context) {
     super();
     this._$el = null;
     this.template = '';
-    this._state = {};
     this._eventNames = [];
     this._actions = [];
+    this._dirty = false;
+    if (!this.state) {
+      this.state = {};
+    }
+    this.props = props;
+    this.context = context;
   }
 
-  setState (state) {
-    if (type(state) !== 'object') {
-      throw new Error('setState must recieve object param!');
+  setState (state, callback) {
+    if (!this._prevState) {
+      this._prevState = clone(this.state);
     }
-    this._state = mergeObject(this._state, state);
+    if (type(state) === 'function') {
+      state = state(this.state, this.props);
+    }
+    extend(this.state, state);
+    if (callback) {
+      (this._renderCallbacks = (this._renderCallbacks || [])).push(callback);
+    }
   }
 
   dispatch (action, payload) {
@@ -76,6 +87,8 @@ class Widget extends Events {
       this.update.call(this, action, payload);
     }
   }
+
+  render () {}
   
   _init (callback) {
     return new Promise((resolve, reject) => {
@@ -93,11 +106,11 @@ class Widget extends Events {
 
   _compile (state) {
     if (state) {
-      this._state = mergeObject(this._state, state);
+      this.state = mergeObject(this.state, state);
     }
     // 编译模板
     const compile = template.compile(this.template);
-    this.html = compile(this._state);
+    this.html = compile(this.state);
   }
 
   _link () {
@@ -150,5 +163,6 @@ class Widget extends Events {
 
 Widget.delegateEventSplitter = /^(\S+)\s*(.*)$/;
 Widget.fnTest = /xyz/.test(function() {let xyz;}) ? /\bsuper\b/ : /.*/;
+Widget.prototype.type = 'Widget';
 
-export default Widget;
+module.exports = Widget;

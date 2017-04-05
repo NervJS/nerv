@@ -1,0 +1,19 @@
+{
+  "presets": [
+    "es2015",
+    "stage-0"
+  ],
+  "plugins": [
+    ["babel-plugin-root-import", [{
+      "rootPathPrefix": "@",
+      "rootPathSuffix": "src"
+    }, {
+      "rootPathPrefix": "~",
+      "rootPathSuffix": "src/lib/util"
+    }, {
+      "rootPathPrefix": "#",
+      "rootPathSuffix": "src/lib/vdom"
+    }]]
+  ],
+  "comments": false
+}

@@ -43,4 +43,4 @@ class WidgetDom {
   }
 }
 
-export default WidgetDom;
+module.exports = WidgetDom;
