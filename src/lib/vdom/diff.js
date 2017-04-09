@@ -1,5 +1,6 @@
 import VPatch from './vpatch';
-import { isVNode, isVText } from './vnode/types';
+import { isVNode, isVText, isWidget } from './vnode/types';
+import { handleWidget } from './/handle-widget';
 import { type, forEach, map, filter, getPrototype } from '~';
 
 function diff (a, b) {
@@ -13,15 +14,30 @@ function walk (a, b, patches, index) {
     return;
   }
   let apply = patches[index];
-  if (!b) {
+  let applyClear = false;
+  if (isWidget(a) || isWidget(b)) {
+    doWidgets(a, b, patches, index);
+  } else if (!b) {
+    clearState(a, patches, index);
+    apply = patches[index];
     apply = appendPatch(apply, new VPatch(VPatch.REMOVE, a, null));
   } else if (isVText(b)) {
-    if (!isVText(a) || a.text !== b.text) {
+    if (!isVText(a)) {
+      applyClear = true;
+      apply = appendPatch(apply, new VPatch(VPatch.VTEXT, a, b));
+    } else if (a.text !== b.text) {
       apply = appendPatch(apply, new VPatch(VPatch.VTEXT, a, b));
     }
   } else if (isVNode(b)) {
     if (!isVNode(a)) {
+      b.children = map(b.children, child => {
+        if (isWidget(child)) {
+          return handleWidget(null, child).b;
+        }
+        return child;
+      });
       apply = appendPatch(apply, new VPatch(VPatch.VNODE, a, b));
+      applyClear = true;
     } else {
       if (a.tagName === b.tagName && a.key === b.key) {
         const propsPatch = diffProps(a.properties, b.properties);
@@ -30,12 +46,22 @@ function walk (a, b, patches, index) {
         }
         apply = diffChildren(a, b, apply, patches, index);
       } else {
+        b.children = map(b.children, child => {
+          if (isWidget(child)) {
+            return handleWidget(null, child).b;
+          }
+          return child;
+        });
         apply = appendPatch(apply, new VPatch(VPatch.VNODE, a, b));
+        applyClear = true;
       }
     }
   }
   if (apply) {
     patches[index] = apply;
+  }
+  if (applyClear) {
+    clearState(a, patches, index);
   }
 }
 
@@ -73,6 +99,23 @@ function diffProps (propsA, propsB) {
     }
   }
   return diff;
+}
+
+function doWidgets (a, b, patch, index) {
+  const nodes = handleWidget(a, b);
+  const widgetPatch = diff(nodes.a, nodes.b);
+  if (hasPatches(widgetPatch)) {
+    patch[index] = new VPatch(VPatch.WIDGET, a, widgetPatch);
+  }
+}
+
+function hasPatches (patch) {
+  for (let index in patch) {
+    if (index !== 'old') {
+      return true;
+    }
+  }
+  return false;
 }
 
 function diffChildren (a, b, apply, patches, index) {
@@ -174,6 +217,10 @@ function diffList (oldList, newList, key) {
     list: listChange,
     moves
   };
+}
+
+function clearState (vNode, patch, index) {
+
 }
 
 function mapListKeyIndex (list, key) {

@@ -1,30 +1,29 @@
 import Widget from './widget';
 import { type } from './util';
+import VText from '#/vnode/vtext';
+import createElement from '#/create-element';
+import { buildVTree } from '#/handle-widget';
+import diff from '#/diff';
+import patch from '#/patch';
+import { isVText, isVNode, isWidget } from '#/vnode/types';
 
 class WidgetDom {
-  static render (widget, container, callback) {
-    if (!(widget instanceof Widget)) {
+  /**
+   * 渲染组件到指定容器
+   * @param {*} widget 
+   * @param {*} container 
+   * @param {*} callback 
+   * @example
+   * Widget.render(<div>hello</div>, document.getElementById('root'))
+   */
+  static render (node, container, callback) {
+    if (!node) {
       return;
     }
-    let p = null;
-    if (!widget._loaded) {
-      p = widget._init();
-    }
-    if (p) {
-      p.then(() => {
-        widget._$el = $(container);
-        widget._link();
-        if (type(callback) === 'function') {
-          callback.call(widget, widget);
-        }
-      });
-    } else {
-      widget._$el = $(container);
-      widget._link();
-      if (type(callback) === 'function') {
-        callback.call(widget, widget);
-      }
-    }
+    const patches = diff(null, node);
+    const dom = patch(null, patches);
+    container.appendChild(dom);
+    type(callback) === 'function' && callback();
   }
 
   static renderToString (widget, callback) {

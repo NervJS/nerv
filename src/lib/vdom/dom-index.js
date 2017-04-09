@@ -55,3 +55,5 @@ function indexInRange (indices, left, right) {
   }
   return false;
 }
+
+module.exports = domIndex;

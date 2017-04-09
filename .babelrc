@@ -13,7 +13,10 @@
     }, {
       "rootPathPrefix": "#",
       "rootPathSuffix": "src/lib/vdom"
-    }]]
+    }]],
+    ["transform-react-jsx", {
+      "pragma": "h" // default pragma is React.createElement
+    }]
   ],
   "comments": false
 }

@@ -36,6 +36,7 @@
     "babel-core": "^6.24.0",
     "babel-loader": "^6.4.1",
     "babel-plugin-root-import": "^5.1.0",
+    "babel-plugin-transform-react-jsx": "^6.23.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.2.2",

@@ -9,6 +9,7 @@ class VPatch {
 VPatch.NODE = 'NODE';
 VPatch.VTEXT = 'VTEXT';
 VPatch.VNODE = 'VNODE';
+VPatch.WIDGET = 'WIDGET';
 VPatch.PROPS = 'PROPS';
 VPatch.ORDER = 'ORDER';
 VPatch.INSERT = 'INSERT';

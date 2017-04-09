@@ -1,6 +1,6 @@
 import Events from './events';
 import { forEach, type, extend, clone } from './util';
-import template from './template'
+import { renderWidget } from '#/handle-widget';
 
 class Widget extends Events {
   static extend (properties) {
@@ -61,17 +61,17 @@ class Widget extends Events {
     this.template = '';
     this._eventNames = [];
     this._actions = [];
-    this._dirty = false;
+    this._dirty = true;
     if (!this.state) {
       this.state = {};
     }
-    this.props = props;
-    this.context = context;
+    this.props = props || {};
+    this.context = context || {};
   }
 
   setState (state, callback) {
-    if (!this._prevState) {
-      this._prevState = clone(this.state);
+    if (!this.prevState) {
+      this.prevState = clone(this.state);
     }
     if (type(state) === 'function') {
       state = state(this.state, this.props);
@@ -80,6 +80,7 @@ class Widget extends Events {
     if (callback) {
       (this._renderCallbacks = (this._renderCallbacks || [])).push(callback);
     }
+    renderWidget(this);
   }
 
   dispatch (action, payload) {
@@ -88,7 +89,7 @@ class Widget extends Events {
     }
   }
 
-  render () {}
+  render () {} // 获取virtual dom
   
   _init (callback) {
     return new Promise((resolve, reject) => {

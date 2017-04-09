@@ -49,14 +49,14 @@ export function forEach (arg, fn) {
   if (arg.forEach) {
     return arg.forEach.call(arg, fn);
   }
-  const type = Util.type(arg);
-  if (type === 'array') {
+  const itype = type(arg);
+  if (itype === 'array') {
     for (let i = 0; i < arg.length; i++) {
       if (fn.call(arg[i], arg[i], i) === false) {
         return;
       }
     }
-  } else if (type === 'object') {
+  } else if (itype === 'object') {
     for (let j in arg) {
       if (arg.hasOwnProperty(j)) {
         if (fn.call(arg[j], arg[j], j) === false) {

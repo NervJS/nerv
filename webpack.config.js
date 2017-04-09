@@ -25,11 +25,11 @@ module.exports = {
                 'rootPathPrefix': '@',
                 'rootPathSuffix': 'src'
               }, {
-                'rootPathPrefix': '@util',
+                'rootPathPrefix': '~',
                 'rootPathSuffix': 'src/lib/util'
               }, {
-                'rootPathPrefix': '@virtual-dom',
-                'rootPathSuffix': 'src/lib/virtual-dom'
+                'rootPathPrefix': '#',
+                'rootPathSuffix': 'src/lib/vdom'
               }]]
             ]
           }
@@ -38,8 +38,8 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      mangle: {except : ['require', 'exports', 'module']}
-    })
+    // new webpack.optimize.UglifyJsPlugin({
+    //   mangle: {except : ['require', 'exports', 'module']}
+    // })
   ]
 };
