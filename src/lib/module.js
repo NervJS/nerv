@@ -171,7 +171,6 @@ function define (name, fn) {
 }
 
 function use (names, fn) {
-  debugger;
   if (type(names) === 'string') {
     names = [names];
   }

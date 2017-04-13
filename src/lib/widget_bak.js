@@ -1,6 +1,6 @@
 import Events from './events';
 import { forEach, type, extend, clone } from './util';
-import { renderWidget } from '#/handle-widget';
+import { rerenderWidget } from '#/handle-widget';
 
 class Widget extends Events {
   static extend (properties) {
@@ -80,7 +80,7 @@ class Widget extends Events {
     if (callback) {
       (this._renderCallbacks = (this._renderCallbacks || [])).push(callback);
     }
-    renderWidget(this);
+    rerenderWidget(this);
   }
 
   dispatch (action, payload) {

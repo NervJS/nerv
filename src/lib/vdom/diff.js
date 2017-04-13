@@ -1,6 +1,6 @@
 import VPatch from './vpatch';
-import { isVNode, isVText, isWidget } from './vnode/types';
-import { handleWidget } from './/handle-widget';
+import { isVNode, isVText, isWidget, isThunk, isHook } from './vnode/types';
+import { handleThunk } from './vnode/handle-thunk';
 import { type, forEach, map, filter, getPrototype } from '~';
 
 function diff (a, b) {
@@ -15,11 +15,13 @@ function walk (a, b, patches, index) {
   }
   let apply = patches[index];
   let applyClear = false;
-  if (isWidget(a) || isWidget(b)) {
-    doWidgets(a, b, patches, index);
+  if (isThunk(a) || isThunk(b)) {
+    thunks(a, b, patches, index);
   } else if (!b) {
-    clearState(a, patches, index);
-    apply = patches[index];
+    if (!isWidget(a)) {
+      clearState(a, patches, index);
+      apply = patches[index];
+    }
     apply = appendPatch(apply, new VPatch(VPatch.REMOVE, a, null));
   } else if (isVText(b)) {
     if (!isVText(a)) {
@@ -30,12 +32,6 @@ function walk (a, b, patches, index) {
     }
   } else if (isVNode(b)) {
     if (!isVNode(a)) {
-      b.children = map(b.children, child => {
-        if (isWidget(child)) {
-          return handleWidget(null, child).b;
-        }
-        return child;
-      });
       apply = appendPatch(apply, new VPatch(VPatch.VNODE, a, b));
       applyClear = true;
     } else {
@@ -46,16 +42,15 @@ function walk (a, b, patches, index) {
         }
         apply = diffChildren(a, b, apply, patches, index);
       } else {
-        b.children = map(b.children, child => {
-          if (isWidget(child)) {
-            return handleWidget(null, child).b;
-          }
-          return child;
-        });
         apply = appendPatch(apply, new VPatch(VPatch.VNODE, a, b));
         applyClear = true;
       }
     }
+  } else if (isWidget(b)) {
+    if (!isWidget(a)) {
+      applyClear = true;
+    }
+    apply = appendPatch(apply, new VPatch(VPatch.WIDGET, a, b));
   }
   if (apply) {
     patches[index] = apply;
@@ -80,6 +75,9 @@ function diffProps (propsA, propsB) {
       if (getPrototype(aValue) !== getPrototype(bValue)) {
         diff = diff || {};
         diff[key] = bValue;
+      } else if (isHook(bValue)) {
+        diff = diff || {};
+        diff[key] = bValue;
       } else {
         let objDiff = diffProps(aValue, bValue);
         if (objDiff) {
@@ -101,11 +99,11 @@ function diffProps (propsA, propsB) {
   return diff;
 }
 
-function doWidgets (a, b, patch, index) {
-  const nodes = handleWidget(a, b);
-  const widgetPatch = diff(nodes.a, nodes.b);
-  if (hasPatches(widgetPatch)) {
-    patch[index] = new VPatch(VPatch.WIDGET, a, widgetPatch);
+function thunks (a, b, patch, index) {
+  const nodes = handleThunk(a, b);
+  const thunkPatch = diff(nodes.a, nodes.b);
+  if (hasPatches(thunkPatch)) {
+    patch[index] = new VPatch(VPatch.THUNK, b, thunkPatch);
   }
 }
 
@@ -122,19 +120,25 @@ function diffChildren (a, b, apply, patches, index) {
   const aChildren = a.children;
   const diffSet = diffList(aChildren, b.children, 'key');
   let bChildren = diffSet.list;
+  let len = Math.max(aChildren.length, bChildren.length);
+  for (let i = 0; i < len; i++) {
+    let leftNode = aChildren[i];
+    let rightNode = bChildren[i];
+    index += 1;
+    if (!leftNode) {
+      if (rightNode) {
+        apply = appendPatch(apply, new VPatch(VPatch.INSERT, null, rightNode));
+      }
+    } else {
+      walk(leftNode, rightNode, patches, index);
+    }
+    if (isVNode(leftNode) && leftNode.count) {
+      index += leftNode.count;
+    }
+  }
   if (diffSet.moves.length) {
     apply = appendPatch(apply, new VPatch(VPatch.ORDER, a, diffSet.moves));
   }
-  let leftNode = null;
-  forEach(aChildren, (child, i) => {
-    let newChild = bChildren[i];
-    if (leftNode && isVNode(leftNode)) {
-      index += leftNode.count;
-    }
-    index += 1;
-    walk(child, newChild, patches, index);
-    leftNode = child;
-  });
   return apply;
 }
 
@@ -219,8 +223,59 @@ function diffList (oldList, newList, key) {
   };
 }
 
-function clearState (vNode, patch, index) {
+function clearState (vnode, patch, index) {
+  unhook(vnode, patch, index);
+  destroyWidgets(vnode, patch, index);
+}
 
+function unhook(vnode, patch, index) {
+  if (isVNode(vnode)) {
+    if (vnode.hooks) {
+      patch[index] = appendPatch(
+        patch[index],
+        new VPatch(
+          VPatch.PROPS,
+          vnode,
+          undefinedKeys(vnode.hooks)
+        )
+      );
+    }
+
+  if (vnode.descendantHooks || vnode.hasThunks) {
+      let children = vnode.children;
+      let len = children.length;
+      for (let i = 0; i < len; i++) {
+        let child = children[i];
+        index += 1;
+
+        unhook(child, patch, index);
+
+        if (isVNode(child) && child.count) {
+          index += child.count;
+        }
+      }
+    }
+  } else if (isThunk(vnode)) {
+    thunks(vnode, null, patch, index);
+  }
+}
+
+function destroyWidgets (vnode, patch, index) {
+  if (isWidget(vnode)) {
+    if (type(vnode.destroy) === 'function') {
+      patch[index] = appendPatch(patch[index], new VPatch(VPatch.REMOVE, vnode, null));
+    }
+  } else if (isVNode(vnode) && (vnode.hasWidgets || vnode.hasThunks)) {
+    forEach(vnode.children, child => {
+      index += 1;
+      destroyWidgets(child, patch, index);
+      if (isVNode(child) && child.count) {
+        index += child.count;
+      }
+    });
+  } else if (isThunk(vnode)) {
+    thunks(vnode, null, patch, index);
+  }
 }
 
 function mapListKeyIndex (list, key) {
@@ -237,6 +292,17 @@ function mapListKeyIndex (list, key) {
     keyMap,
     free
   };
+}
+
+
+function undefinedKeys (obj) {
+  let result = {};
+
+  for (let key in obj) {
+    result[key] = undefined;
+  }
+
+  return result;
 }
 
 function appendPatch (apply, patch) {

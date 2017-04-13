@@ -1,15 +1,20 @@
-import { isVNode, isVText } from './vnode/types';
+import { isVNode, isVText, isWidget, isHook } from './vnode/types';
+import handleThunk from './vnode/handle-thunk';
 import { type, forEach } from '~';
 
-function createElement (node) {
+function createElement (vnode) {
   const doc = document;
-  if (isVText(node)) {
-    return doc.createTextNode(node.text);
+  vnode = handleThunk(vnode).a;
+  if (isWidget(vnode)) {
+    return vnode.init();
   }
-  if (isVNode(node)) {
-    const domNode = doc.createElement(node.tagName);
-    setProps(domNode, node.properties);
-    const children = node.children;
+  if (isVText(vnode)) {
+    return doc.createTextNode(vnode.text);
+  }
+  if (isVNode(vnode)) {
+    const domNode = doc.createElement(vnode.tagName);
+    setProps(domNode, vnode.properties);
+    const children = vnode.children;
     if (children.length) {
       forEach(children, child => domNode.appendChild(createElement(child)));
     }
@@ -21,12 +26,16 @@ function createElement (node) {
 function setProps (domNode, props) {
   for (let p in props) {
     let propValue = props[p];
-    if (type(propValue) === 'object') {
+    if (isHook(propValue)) {
+      if (propValue.hook) {
+        propValue.hook(domNode, p);
+      }
+    } else if (type(propValue) === 'object') {
       if (p === 'attributes') {
         for (let k in propValue) {
           let attrValue = propValue[k];
           if (attrValue) {
-            domNode.setAttribute(attrValue);
+            domNode.setAttribute(k, attrValue);
           }
         }
       } else if (p === 'style') {

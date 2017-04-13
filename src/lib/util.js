@@ -45,6 +45,12 @@ export function getPrototype (obj) {
   }
 }
 
+export function proxy (fn, context) {
+  return function () {
+    fn.apply(context || this, arguments);
+  }
+}
+
 export function forEach (arg, fn) {
   if (arg.forEach) {
     return arg.forEach.call(arg, fn);

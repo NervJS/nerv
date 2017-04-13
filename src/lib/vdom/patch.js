@@ -1,6 +1,7 @@
 import VPatch from './vpatch';
 import { type, forEach, getPrototype } from '~';
 import domIndex from './dom-index';
+import { isWidget, isHook } from './vnode/types';
 import createElement from './create-element';
 
 function patch (rootNode, patches) {
@@ -61,14 +62,18 @@ function patchSingle (domNode, vpatch) {
       return patchVText(domNode, patchObj);
     case VPatch.VNODE:
       return patchVNode(domNode, patchObj);
+    case VPatch.INSERT:
+      return patchInsert(domNode, patchObj);
+    case VPatch.THUNK:
+      return replaceRoot(domNode, patch(domNode, patchObj));
     case VPatch.WIDGET:
-      return replaceRoot(domNode, patch(domNode, patchObj), oldVNode);
+     return patchWidget(domNode, oldVNode, patchObj);
     case VPatch.PROPS:
       return patchProperties(domNode, patchObj, oldVNode.properties);
     case VPatch.ORDER:
       return patchOrder(domNode, patchObj);
     case VPatch.REMOVE:
-      return patchRemove(domNode, patchObj);
+      return patchRemove(domNode, oldVNode);
     default:
       return domNode;
   }
@@ -114,23 +119,62 @@ function replaceRoot (oldRoot, newRoot) {
   return newRoot;
 }
 
+function patchInsert (parentNode, vnode) {
+  let newNode = createElement(vnode);
+  if (parentNode && newNode) {
+    parentNode.appendChild(newNode);
+  }
+  return newNode;
+}
+
+function patchWidget (domNode, vnode, patch) {
+  const isUpdate = isUpdateWidget(vnode, patch);
+  let newNode;
+  if (isUpdate) {
+    newNode = patch.update(vnode, domNode) || domNode;
+  } else {
+    newNode = createElement(patch);
+  }
+  let parentNode = domNode.parentNode;
+  if (parentNode && domNode !== newNode) {
+    parentNode.replaceChild(newNode, domNode);
+  }
+  if (!isUpdate) {
+    destroyWidget(domNode, vnode);
+  }
+  return newNode;
+}
+
+function destroyWidget (domNode, widget) {
+  if (type(widget.destroy) === 'function' && isWidget(widget)) {
+    widget.destroy(domNode);
+  }
+}
+
 function patchProperties (domNode, patch, previousProps) {
   for (let propName in patch) {
     let propValue = patch[propName];
     let previousValue = previousProps[propName];
-    if (propValue === undefined) {
-      if (propName === 'attributes') {
-        for (let attrName in previousValue) {
-          domNode.removeAttribute(attrName);
-        }
-      } else if (propName === 'style') {
-        for (let styleName in previousValue) {
-          domNode.style[styleName] = '';
-        }
-      } else if (type(previousValue) === 'string') {
-        domNode[propName] = '';
+    if (propValue === undefined || isHook(propValue)) {
+      if (isHook(previousValue) && previousValue.unhook) {
+        previousValue.unhook(domNode, propName);
       } else {
-        domNode[propName] = null;
+        if (propName === 'attributes') {
+          for (let attrName in previousValue) {
+            domNode.removeAttribute(attrName);
+          }
+        } else if (propName === 'style') {
+          for (let styleName in previousValue) {
+            domNode.style[styleName] = '';
+          }
+        } else if (type(previousValue) === 'string') {
+          domNode[propName] = '';
+        } else {
+          domNode[propName] = null;
+        }
+      }
+      if (propValue && propValue.hook) {
+        propValue.hook(domNode, propName, previousValue);
       }
     } else {
       if (propName === 'attributes') {
@@ -198,12 +242,25 @@ function patchOrder (domNode, patch) {
   return domNode;
 }
 
-function patchRemove (domNode) {
+function patchRemove (domNode, vnode) {
   let parentNode = domNode.parentNode;
   if (parentNode) {
     parentNode.removeChild(domNode);
   }
+  if (isWidget(vnode)) {
+    destroyWidget(domNode, vnode);
+  }
   return null;
+}
+
+function isUpdateWidget (a, b) {
+  if (isWidget(a) && isWidget(b)) {
+    if ('name' in a && 'name' in b) {
+      return a.name === b.name;
+    }
+    return a.init === b.init;
+  }
+  return false;
 }
 
 function getPatchIndices (patches) {

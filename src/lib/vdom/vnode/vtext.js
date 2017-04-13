@@ -4,6 +4,6 @@ class VText {
   }
 }
 
-VText.prototype.type = 'vtext';
+VText.prototype.type = 'VirtualText';
 
 module.exports = VText;
