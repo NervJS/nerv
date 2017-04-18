@@ -1,7 +1,7 @@
 import VPatch from './vpatch';
 import { isVNode, isVText, isWidget, isThunk, isHook } from './vnode/types';
 import { handleThunk } from './vnode/handle-thunk';
-import { type, forEach, map, filter, getPrototype } from '~';
+import { isFunction, isArray, isObject, forEach, map, filter, getPrototype } from '~';
 
 function diff (a, b) {
   let patches = {old: a};
@@ -71,7 +71,7 @@ function diffProps (propsA, propsB) {
     let bValue = propsB[key];
     if (aValue === bValue) {
       continue;
-    } else if (type(aValue) === 'object' && type(bValue) === 'object') {
+    } else if (isObject(aValue)&& isObject(bValue)) {
       if (getPrototype(aValue) !== getPrototype(bValue)) {
         diff = diff || {};
         diff[key] = bValue;
@@ -262,7 +262,7 @@ function unhook(vnode, patch, index) {
 
 function destroyWidgets (vnode, patch, index) {
   if (isWidget(vnode)) {
-    if (type(vnode.destroy) === 'function') {
+    if (isFunction(vnode.destroy)) {
       patch[index] = appendPatch(patch[index], new VPatch(VPatch.REMOVE, vnode, null));
     }
   } else if (isVNode(vnode) && (vnode.hasWidgets || vnode.hasThunks)) {
@@ -307,7 +307,7 @@ function undefinedKeys (obj) {
 
 function appendPatch (apply, patch) {
   if (apply) {
-    if (type(apply) === 'array') {
+    if (isArray(apply)) {
       apply.push(patch);
     } else {
       apply = [apply, patch];

@@ -1,4 +1,4 @@
-import { forEach, type } from '~';
+import { forEach, isString, isFunction } from '~';
 import { isWidget, isVNode, isVText, isThunk, isHook } from './types';
 
 class VNode {
@@ -7,7 +7,7 @@ class VNode {
     this.properties = properties || {};
     this.children = children || [];
     this.key = key || null;
-    this.namespace = (type(namespace) === 'string') ? namespace : null;
+    this.namespace = (isString(namespace)) ? namespace : null;
     let count = this.children.length || 0;
     let descendants = 0;
     let hasWidgets = false;
@@ -39,7 +39,7 @@ class VNode {
             descendantHooks = true;
           }
         } else if (!hasWidgets && isWidget(child)) {
-          if (type(child.destroy) === 'function') {
+          if (isFunction(child.destroy)) {
             hasWidgets = true;
           }
         } else if (!hasThunks && isThunk(child)) {

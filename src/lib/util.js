@@ -16,6 +16,42 @@ export function type (arg) {
     typeof arg;
 }
 
+export function isBoolean (arg) {
+  return type(arg) === 'boolean';
+}
+
+export function isNumber (arg) {
+  return type(arg) === 'number';
+}
+
+export function isString (arg) {
+  return type(arg) === 'string';
+}
+
+export function isFunction (arg) {
+  return type(arg) === 'function';
+}
+
+export function isArray (arg) {
+  return type(arg) === 'array';
+}
+
+export function isDate (arg) {
+  return type(arg) === 'date';
+}
+
+export function isRegExp (arg) {
+  return type(arg) === 'regexp';
+}
+
+export function isObject (arg) {
+  return type(arg) === 'object';
+}
+
+export function isError (arg) {
+  return type(arg) === 'error';
+}
+
 export function extend (source, from) {
   for (let key in from) {
     if (!source[key]) {

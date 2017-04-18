@@ -1,7 +1,7 @@
 import VNode from './vnode/vnode';
 import VText from './vnode/VText';
 import { isVNode, isVText, isWidget, isThunk } from './vnode/types';
-import { type, forEach } from '~';
+import { isString, isArray, isNumber, forEach } from '~';
 
 function h (tagName, properties, children) {
   let key, namespace, childNodes = [];
@@ -25,12 +25,12 @@ function h (tagName, properties, children) {
 }
 
 function addChildren (childNodes, children, tagName) {
-  if (type(children) === 'string' || type(children) === 'number') {
+  if (isString(children) || isNumber(children)) {
     children = String(children);
     childNodes.push(new VText(children));
   } else if (isChild(children)) {
     childNodes.push(children);
-  } else if (type(children) === 'array') {
+  } else if (isArray(children)) {
     forEach(children, child => addChildren(childNodes, child, tagName));
   } else if (children === null || children === undefined) {
     return;
@@ -44,7 +44,7 @@ function isChild (node) {
 }
 
 function isChildren(x) {
-  return type(x) === 'string' || type(x) === 'array' || isChild(x);
+  return isString(x) || isArray(x) || isChild(x);
 }
 
 module.exports = h;

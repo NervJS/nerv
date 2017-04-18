@@ -1,4 +1,4 @@
-import { forEach, type } from './util';
+import { forEach, isFunction, isString } from './util';
 
 class Module {
   constructor (name, path) {
@@ -145,7 +145,7 @@ const Script = {
           head.removeChild(node);
         }
         node = null;
-        if (type(opts.loaded) === 'function') {
+        if (isFunction(opts.loaded)) {
           opts.loaded();
         }
       }
@@ -171,7 +171,7 @@ function define (name, fn) {
 }
 
 function use (names, fn) {
-  if (type(names) === 'string') {
+  if (isFunction(names)) {
     names = [names];
   }
   let args = [];
@@ -204,7 +204,7 @@ function addPathRule (rule) {
 }
 
 function config ({ baseUrl }) {
-  if (type(baseUrl) === 'string') {
+  if (isString(baseUrl)) {
     Module.config.baseUrl = baseUrl;
   }
 }

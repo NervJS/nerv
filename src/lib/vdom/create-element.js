@@ -1,6 +1,6 @@
 import { isVNode, isVText, isWidget, isHook } from './vnode/types';
 import handleThunk from './vnode/handle-thunk';
-import { type, forEach } from '~';
+import { isObject, forEach } from '~';
 
 function createElement (vnode) {
   const doc = document;
@@ -30,7 +30,7 @@ function setProps (domNode, props) {
       if (propValue.hook) {
         propValue.hook(domNode, p);
       }
-    } else if (type(propValue) === 'object') {
+    } else if (isObject(propValue)) {
       if (p === 'attributes') {
         for (let k in propValue) {
           let attrValue = propValue[k];

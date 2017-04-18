@@ -1,5 +1,5 @@
 import Events from './events';
-import { forEach, type, extend, clone } from './util';
+import { forEach, isFunction, extend, clone } from './util';
 import createElement from '#/create-element';
 import diff from '#/diff';
 import patch from '#/patch';
@@ -27,8 +27,8 @@ class Component extends Events {
           this[staticProp] = staticObj[staticProp];
         }
       } else {
-        if (type(_super[prop]) === 'function' &&
-          type(properties[prop]) === 'function' &&
+        if (isFunction(_super[prop]) &&
+          isFunction(properties[prop]) &&
           this.fnTest.test(properties[prop])) {
           subPrototype[prop] = ((superObj, prop, fn) => {
             return function () {
@@ -36,7 +36,7 @@ class Component extends Events {
               return fn.apply(this, arguments);
             };
           })(_super, prop, properties[prop]);
-        } else if (type(properties[prop]) !== 'function') {
+        } else if (!isFunction(properties[prop])) {
           props[prop] = properties[prop];
         } else {
           subPrototype[prop] = properties[prop];
@@ -45,7 +45,7 @@ class Component extends Events {
     }
 
     function T () {
-      if (!initializing && type(this.construct) === 'function') {
+      if (!initializing && isFunction(this.construct)) {
         base.call(this);
         for (let p in props) {
           this[p] = props[p];
@@ -74,7 +74,7 @@ class Component extends Events {
     if (!this.prevState) {
       this.prevState = clone(this.state);
     }
-    if (type(state) === 'function') {
+    if (isFunction(state)) {
       state = state(this.state, this.props);
     }
     extend(this.state, state);
@@ -102,14 +102,14 @@ class Component extends Events {
       this.props = prevProps;
       this.state = prevState;
       this.context = prevContext;
-      if (!isForce && type(this.shouldComponentUpdate) === 'funtion' 
+      if (!isForce && isFunction(this.shouldComponentUpdate) 
         && this.shouldComponentUpdate(props, state, context)) {
         skip = true;
-      } else if (type(this.componentWillUpdate) === 'funtion') {
+      } else if (isFunction(this.componentWillUpdate)) {
         this.componentWillUpdate(props, state, context);
       }
 
-      if (type(this.componentWillReceiveProps) === 'function') {
+      if (isFunction(this.componentWillReceiveProps)) {
         this.componentWillReceiveProps(props, context);
       }
       this.props = props;
@@ -119,11 +119,12 @@ class Component extends Events {
     this.prevProps = this.prevState = this.prevContext = this.nextBase = null;
 	  this._dirty = false;
     if (!skip) {
-      if (type(this.getChildContext) === 'function') {
+      if (isFunction(this.getChildContext)) {
         context = extend(extend({}, context), this.getChildContext());
       }
       this.prevVNode = this.vnode;
       this.vnode = this.render();
+      this.vnode.rootNode = this.rootNode;
       if (isWidget(this.vnode)) {
         this._component = this.vnode;
         this.vnode._parentComponent = this;
@@ -141,7 +142,7 @@ class Component extends Events {
         this.dom = renderToDom(this);
       }
       if (isUpdate && !isForce) {
-        if (type(this.componentDidUpdate) === 'function') {
+        if (isFunction(this.componentDidUpdate)) {
           this.componentDidUpdate();
         }
         this.trigger('updated', this);
@@ -152,19 +153,19 @@ class Component extends Events {
 
   mount (parentNode, server) {
     this.refs = {};
+    if (parentNode) {
+      this.rootNode = parentNode;
+    }
     if (this.constructor.inited && this.constructor.initialHtml) {
       this.update(true);
-      if (parentNode) {
-        parentNode.insertAdjacentHTML('beforeend', this.constructor.initialHtml);
+      if (this.rootNode) {
+        this.rootNode.insertAdjacentHTML('beforeend', this.constructor.initialHtml);
         delete this.constructor.inited;
         delete this.constructor.initialHtml;
       }
     } else {
-      if (type(this.componentWillMount) === 'function') {
+      if (isFunction(this.componentWillMount)) {
         this.componentWillMount();
-      }
-      if (parentNode) {
-        this.rootDom = parentNode;
       }
       this.update(true);
       if (parentNode && parentNode.appendChild && this.dom) {
@@ -178,14 +179,14 @@ class Component extends Events {
     }
     this.trigger('mounted', this);
     if (this.dom) {
-      if (type(this.componentDidMount) === 'function') {
+      if (isFunction(this.componentDidMount)) {
         this.componentDidMount();
       }
     }
   }
 
   unmout () {
-    if (type(this.componentWillUnmount) === 'function') {
+    if (isFunction(this.componentWillUnmount)) {
       this.componentWillUnmount();
     }
     let parentNode = this.dom && this.dom.parentNode;

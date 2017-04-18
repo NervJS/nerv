@@ -1,5 +1,5 @@
 import VPatch from './vpatch';
-import { type, forEach, getPrototype } from '~';
+import { isArray, isFunction, isString, isObject, forEach, getPrototype } from '~';
 import domIndex from './dom-index';
 import { isWidget, isHook } from './vnode/types';
 import createElement from './create-element';
@@ -24,7 +24,7 @@ function patchInit (patchIndices, patches) {
   const fragment = document.createDocumentFragment();
   forEach(patchIndices, index => {
     let patch = patches[index];
-    if (type(patch) !== 'array') {
+    if (!isArray(patch)) {
       patch = [patch];
     }
     forEach(patch, patchItem => {
@@ -40,7 +40,7 @@ function applyPatch (rootNode, domNode, patch) {
     return rootNode;
   }
   let newNode;
-  if (type(patch) !== 'array') {
+  if (!isArray(patch)) {
     patch = [patch];
   }
   forEach(patch, patchItem => {
@@ -146,7 +146,7 @@ function patchWidget (domNode, vnode, patch) {
 }
 
 function destroyWidget (domNode, widget) {
-  if (type(widget.destroy) === 'function' && isWidget(widget)) {
+  if (isFunction(widget.destroy) && isWidget(widget)) {
     widget.destroy(domNode);
   }
 }
@@ -167,7 +167,7 @@ function patchProperties (domNode, patch, previousProps) {
           for (let styleName in previousValue) {
             domNode.style[styleName] = '';
           }
-        } else if (type(previousValue) === 'string') {
+        } else if (isString(previousValue)) {
           domNode[propName] = '';
         } else {
           domNode[propName] = null;
@@ -193,8 +193,8 @@ function patchProperties (domNode, patch, previousProps) {
             domNode[propName][styleName] = styleValue;
           }
         }
-      } else if (type(propValue) === 'object') {
-        if(previousValue && type(previousValue) === 'object' &&
+      } else if (isObject(propValue)) {
+        if(previousValue && isObject(previousValue) &&
           getPrototype(previousValue) !== getPrototype(propValue)) {
           domNode[propName] = propValue;
         }

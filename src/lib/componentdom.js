@@ -1,4 +1,4 @@
-import { type, proxy } from './util';
+import { proxy } from './util';
 import createElement from '#/create-element';
 import { isWidget } from '#/vnode/types';
 import diff from '#/diff';

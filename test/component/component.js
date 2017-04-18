@@ -1,11 +1,10 @@
 import test from 'ava';
 import h from '#/h';
-import { Widget } from '@/index.js';
-import { WidgetDom } from '@/index.js';
+import { Component, ComponentDom } from '@/index.js';
 
 global.document = require('global/document');
 
-class List extends Widget {
+class List extends Component {
   onItemClick (x) {
     alert('itemclick' + x);
   }
@@ -19,7 +18,7 @@ class List extends Widget {
   }
 }
 
-class ListItem extends Widget {
+class ListItem extends Component {
   _onclick () {
     this.props.onItemClick(this.props.itemValue);
   }

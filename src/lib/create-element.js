@@ -1,5 +1,5 @@
 import h from '#/h';
-import { type } from '~';
+import { isFunction, isString, isBoolean, isObject } from '~';
 import ComponentWrapper from './componentwapper';
 
 function transformProps (props) {
@@ -19,7 +19,7 @@ function transformProps (props) {
       newProps.value = props.value || props.defaultValue;
       continue;
     }
-    if (type(propValue) === 'boolean') {
+    if (isBoolean(propValue)) {
       if (propValue) {
         newProps.attributes = newProps.attributes || {};
         newProps.attributes[propName] = propValue;
@@ -28,9 +28,9 @@ function transformProps (props) {
       continue;
     }
     if (propName === 'style') {
-      if (type(propValue) === 'string') {
+      if (isString(propValue)) {
         newProps[propName] = propValue;
-      } else if (type(propValue) === 'object') {
+      } else if (isObject(propValue)) {
         for (let styleName in propValue) {
           let styleValue = propValue[styleName];
           styleValue = typeof styleValue === 'number' && IS_NON_DIMENSIONAL.test(styleName) === false ? (styleValue + 'px') : styleValue;
@@ -51,9 +51,9 @@ function createElement (tagName, properties) {
     children.push(arguments[i]);
   }
   let props = transformProps(properties);
-  if (type(tagName) === 'string') {
+  if (isString(tagName)) {
     return h(tagName, props, children);
-  } else if (type(tagName) === 'function') {
+  } else if (isFunction(tagName)) {
     props.children = children;
     return new ComponentWrapper(tagName, props);
   }
