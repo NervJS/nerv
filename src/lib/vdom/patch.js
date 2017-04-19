@@ -10,29 +10,11 @@ function patch (rootNode, patches) {
     return rootNode;
   }
   let oldTree = patches.old;
-  if (!oldTree && !rootNode) {
-    return patchInit(patchIndices, patches);
-  }
   let nodes = domIndex(rootNode, oldTree, patchIndices);
   forEach(patchIndices, index => {
     rootNode = applyPatch(rootNode, nodes[index], patches[index]);
   });
   return rootNode;
-}
-
-function patchInit (patchIndices, patches) {
-  const fragment = document.createDocumentFragment();
-  forEach(patchIndices, index => {
-    let patch = patches[index];
-    if (!isArray(patch)) {
-      patch = [patch];
-    }
-    forEach(patch, patchItem => {
-      let newNode = patchSingle(null, patchItem);
-      fragment.appendChild(newNode);
-    });
-  });
-  return fragment;
 }
 
 function applyPatch (rootNode, domNode, patch) {
@@ -45,10 +27,10 @@ function applyPatch (rootNode, domNode, patch) {
   }
   forEach(patch, patchItem => {
     newNode = patchSingle(domNode, patchItem);
+    if (domNode === rootNode) {
+      rootNode = newNode;
+    }
   });
-  if (domNode === rootNode) {
-    rootNode = newNode;
-  }
   return rootNode;
 }
 
@@ -124,7 +106,7 @@ function patchInsert (parentNode, vnode) {
   if (parentNode && newNode) {
     parentNode.appendChild(newNode);
   }
-  return newNode;
+  return parentNode;
 }
 
 function patchWidget (domNode, vnode, patch) {

@@ -1,3 +1,5 @@
+import { extend } from './util';
+
 class ComponentWrapper {
   constructor (ComponentClass, props, context) {
     this.component = new ComponentClass(props, context);
@@ -10,19 +12,19 @@ class ComponentWrapper {
     if (!domNode) {
       return null;
     }
-    domNode.component = this.component;
-    domNode.componentConstructor = this.component.constructor;
+    domNode._component = this.component;
+    domNode._componentConstructor = this.component.constructor;
     return domNode;
   }
 
   update (previous, domNode) {
     let component = this.component;
-    component.prevComponent = domNode.component || previous.component;
-    component.vnode = component.prevComponent.vnode;
+    component._prevComponent = domNode._component || previous.component;
+    component.vnode = component._prevComponent.vnode;
     component.update();
     if (component.dom) {
-      component.dom.component = component;
-      domNode.componentConstructor = component.constructor;
+      component.dom._component = component;
+      component.dom._componentConstructor = component.constructor;
     }
     return component.dom;
   }

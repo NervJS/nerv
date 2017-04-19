@@ -1,8 +1,8 @@
 import Events from './events';
 import { forEach, isFunction, extend, clone } from './util';
-import createElement from '#/create-element';
 import diff from '#/diff';
 import patch from '#/patch';
+import createElement from '#/create-element';
 import { isWidget } from '#/vnode/types';
 import { enqueueRender } from './render-queue';
 
@@ -68,6 +68,7 @@ class Component extends Events {
     this.props = props || {};
     this.props = extend(this.props, this.constructor.defaultProps);
     this.context = context || {};
+    this.constructor.displayName = this.constructor.name;
   }
 
   setState (state, callback) {
@@ -108,35 +109,24 @@ class Component extends Events {
       } else if (isFunction(this.componentWillUpdate)) {
         this.componentWillUpdate(props, state, context);
       }
-
-      if (isFunction(this.componentWillReceiveProps)) {
-        this.componentWillReceiveProps(props, context);
-      }
       this.props = props;
       this.state = state;
       this.context = context;
     }
-    this.prevProps = this.prevState = this.prevContext = this.nextBase = null;
+    this.prevProps = this.prevState = this.prevContext = null;
 	  this._dirty = false;
     if (!skip) {
       if (isFunction(this.getChildContext)) {
         context = extend(extend({}, context), this.getChildContext());
       }
+      if (isUpdate && isFunction(this.componentWillReceiveProps)) {
+        this.componentWillReceiveProps(props, context);
+      }
       this.prevVNode = this.vnode;
       this.vnode = this.render();
-      this.vnode.rootNode = this.rootNode;
-      if (isWidget(this.vnode)) {
-        this._component = this.vnode;
-        this.vnode._parentComponent = this;
-        if (context && context !== this.vnode.context) {
-          if (!this.vnode.prevContext) {
-            this.vnode.prevContext = this.vnode.context;
-          }
-          this.vnode.context = context;
-        }
-      }
+      this.setupContext(this.vnode, context);
       if (dom) {
-        dom.component = null;
+        dom._component = null;
       }
       if (!this.isServer) {
         this.dom = renderToDom(this);
@@ -147,14 +137,23 @@ class Component extends Events {
         }
         this.trigger('updated', this);
       }
-      this.prevComponent = null;
+      this._prevComponent = null;
     }
   }
 
-  mount (parentNode, server) {
+  setupContext (vnode, context) {
+    if (isWidget(vnode)) {
+      vnode.component.context = context;
+    } else {
+      let children = vnode.children || [];
+      forEach(children, child => this.setupContext(child, context));
+    }
+  }
+
+  mount (parentNode) {
     this.refs = {};
     if (parentNode) {
-      this.rootNode = parentNode;
+      this._parentNode = parentNode;
     }
     if (this.constructor.inited && this.constructor.initialHtml) {
       this.update(true);
@@ -202,28 +201,26 @@ class Component extends Events {
 
 function renderToDom (component) {
   let domNode = component.dom ||
-    component.prevComponent && component.prevComponent.dom;
+    (component._prevComponent && component._prevComponent.dom);
   let lastDomNode = domNode;
 
   if (!domNode) {
     domNode = createElement(component.vnode);
   } else {
     let patches = diff(component.prevVNode, component.vnode);
-    domNode.component = component;
+    domNode._component = component;
     domNode = patch(domNode, patches);
   }
   if (domNode) {
-    domNode.component = component;
+    domNode._component = component;
   }
   if (lastDomNode && lastDomNode !== domNode) {
-    if (lastDomNode.component && lastDomNode.component.dom === lastDomNode) {
-      lastDomNode.component.dom = null;
+    if (lastDomNode._component && lastDomNode._component.dom === lastDomNode) {
+      lastDomNode._component.dom = null;
     }
-    lastDomNode.component = null;
+    lastDomNode._component = null;
   }
   return domNode;
 }
-
-const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i;
 
 module.exports = Component;
