@@ -1,6 +1,8 @@
 import h from '#/h';
 import { isFunction, isString, isBoolean, isObject } from '~';
 import ComponentWrapper from './componentwapper';
+import RefHook from './hooks/ref-hook';
+import HtmlHook from './hooks/html-hook';
 
 const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i;
 
@@ -10,6 +12,14 @@ function transformPropsForRealTag (props) {
     let propValue = props[propName];
     if (propName === 'id' || propName === 'className') {
       newProps[propName] = propValue;
+      continue;
+    }
+    if (propName === 'ref') {
+      newProps[propName] = new RefHook(propValue);
+      continue;
+    }
+    if (propName === 'dangerouslySetInnerHTML') {
+      newProps[propName] = new HtmlHook(propValue);
       continue;
     }
     // 收集事件

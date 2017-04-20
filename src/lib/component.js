@@ -137,6 +137,9 @@ class Component extends Events {
         }
         this.trigger('updated', this);
       }
+      if (isFunction(this.__ref)) {
+        this.__ref(this);
+      }
       this._prevComponent = null;
     }
   }
@@ -151,7 +154,6 @@ class Component extends Events {
   }
 
   mount (parentNode) {
-    this.refs = {};
     if (parentNode) {
       this._parentNode = parentNode;
     }
@@ -176,7 +178,6 @@ class Component extends Events {
         this._renderCallbacks.pop().call(this);
       }
     }
-    this.trigger('mounted', this);
     if (this.dom) {
       if (isFunction(this.componentDidMount)) {
         this.componentDidMount();
@@ -184,14 +185,21 @@ class Component extends Events {
     }
   }
 
-  unmout () {
+  unmount () {
     if (isFunction(this.componentWillUnmount)) {
       this.componentWillUnmount();
     }
+    this.prevVNode = this.vnode;
+    this.vnode = null;
+    this.dom = renderToDom(this);
+    this.prevVNode = null;
     let parentNode = this.dom && this.dom.parentNode;
     if (parentNode) {
       parentNode.removeChild(this.dom);
-    }    
+    }
+    if (isFunction(this.__ref)) {
+      this.__ref(null);
+    }
     if (this.dom) {
       this.dom.component = null;
       this.dom = null;

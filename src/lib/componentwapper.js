@@ -7,6 +7,8 @@ class ComponentWrapper {
   }
 
   init () {
+    this.component.__ref = this.component.props.ref;
+    delete this.component.props.ref;
     this.component.mount();
     let domNode = this.component.dom;
     if (!domNode) {
@@ -31,6 +33,7 @@ class ComponentWrapper {
 
   destroy (domNode) {
     this.component.unmount();
+    delete domNode.component;
   }
 }
 
