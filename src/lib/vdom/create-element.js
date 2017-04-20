@@ -1,55 +1,55 @@
-import { isVNode, isVText, isWidget, isHook } from './vnode/types';
-import handleThunk from './vnode/handle-thunk';
-import { isObject, forEach } from '~';
+import { isVNode, isVText, isWidget, isHook } from './vnode/types'
+import handleThunk from './vnode/handle-thunk'
+import { isObject, forEach } from '~'
 
 function createElement (vnode) {
-  const doc = document;
-  vnode = handleThunk(vnode).a;
+  const doc = document
+  vnode = handleThunk(vnode).a
   if (isWidget(vnode)) {
-    return vnode.init();
+    return vnode.init()
   }
   if (isVText(vnode)) {
-    return doc.createTextNode(vnode.text);
+    return doc.createTextNode(vnode.text)
   }
   if (isVNode(vnode)) {
-    const domNode = doc.createElement(vnode.tagName);
-    setProps(domNode, vnode.properties);
-    const children = vnode.children;
+    const domNode = doc.createElement(vnode.tagName)
+    setProps(domNode, vnode.properties)
+    const children = vnode.children
     if (children.length) {
-      forEach(children, child => domNode.appendChild(createElement(child)));
+      forEach(children, child => domNode.appendChild(createElement(child)))
     }
-    return domNode;
+    return domNode
   }
-  return null;
+  return null
 }
 
 function setProps (domNode, props) {
   for (let p in props) {
-    let propValue = props[p];
+    let propValue = props[p]
     if (isHook(propValue)) {
       if (propValue.hook) {
-        propValue.hook(domNode, p);
+        propValue.hook(domNode, p)
       }
     } else if (isObject(propValue)) {
       if (p === 'attributes') {
         for (let k in propValue) {
-          let attrValue = propValue[k];
+          let attrValue = propValue[k]
           if (attrValue) {
-            domNode.setAttribute(k, attrValue);
+            domNode.setAttribute(k, attrValue)
           }
         }
       } else if (p === 'style') {
-        for (var s in propValue) {
-          let styleValue = propValue[s];
+        for (let s in propValue) {
+          let styleValue = propValue[s]
           if (styleValue) {
-            domNode[p][s] = styleValue;
+            domNode[p][s] = styleValue
           }
         }
       }
     } else {
-      domNode[p] = propValue;
+      domNode[p] = propValue
     }
   }
 }
 
-module.exports = createElement;
+module.exports = createElement

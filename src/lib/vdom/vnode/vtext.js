@@ -1,9 +1,9 @@
 class VText {
   constructor (text) {
-    this.text = text || '';
+    this.text = text || ''
   }
 }
 
-VText.prototype.type = 'VirtualText';
+VText.prototype.type = 'VirtualText'
 
-module.exports = VText;
+module.exports = VText

@@ -1,11 +1,11 @@
 class HtmlHook {
   constructor (value) {
-    this.value = value;
+    this.value = value
   }
 
   hook (node) {
-    node.innerHTML = this.value.__html || '';
+    node.innerHTML = this.value.__html || ''
   }
 }
 
-module.exports = HtmlHook;
+module.exports = HtmlHook
