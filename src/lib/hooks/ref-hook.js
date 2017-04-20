@@ -10,4 +10,4 @@ class RefHook {
   }
 }
 
-module.exports = RefHook
+export default RefHook

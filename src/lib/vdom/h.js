@@ -47,4 +47,4 @@ function isChildren(x) {
   return isString(x) || isArray(x) || isChild(x)
 }
 
-module.exports = h
+export default h

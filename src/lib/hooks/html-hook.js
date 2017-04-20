@@ -8,4 +8,4 @@ class HtmlHook {
   }
 }
 
-module.exports = HtmlHook
+export default HtmlHook

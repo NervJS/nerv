@@ -84,4 +84,4 @@ function createElement (tagName, properties) {
   return tagName
 }
 
-module.exports = createElement
+export default createElement

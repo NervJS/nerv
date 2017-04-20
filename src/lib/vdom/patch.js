@@ -253,4 +253,4 @@ function getPatchIndices (patches) {
   return indices
 }
 
-module.exports = patch
+export default patch

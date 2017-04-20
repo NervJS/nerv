@@ -1,6 +1,9 @@
 {
   "presets": [
-    "es2015",
+    ["es2015", {
+      "modules": false,
+      "loose": true
+    }],
     "stage-0"
   ],
   "plugins": [
@@ -16,7 +19,8 @@
     }]],
     ["transform-react-jsx", {
       "pragma": "h" // default pragma is React.createElement
-    }]
+    }],
+    "external-helpers"
   ],
   "comments": false
 }

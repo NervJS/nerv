@@ -52,4 +52,4 @@ function setProps (domNode, props) {
   }
 }
 
-module.exports = createElement
+export default createElement

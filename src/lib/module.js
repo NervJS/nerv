@@ -195,7 +195,7 @@ function config ({ baseUrl }) {
   }
 }
 
-module.exports = {
+export default {
   _Module: Module,
   define,
   require,

@@ -1,6 +1,6 @@
 import VPatch from './vpatch'
 import { isVNode, isVText, isWidget, isThunk, isHook } from './vnode/types'
-import { handleThunk } from './vnode/handle-thunk'
+import handleThunk from './vnode/handle-thunk'
 import { isFunction, isArray, isObject, forEach, map, filter, getPrototype } from '~'
 
 function diff (a, b) {
@@ -309,4 +309,4 @@ function appendPatch (apply, patch) {
   return [patch]
 }
 
-module.exports = diff
+export default diff

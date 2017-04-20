@@ -57,4 +57,4 @@ class VNode {
 
 VNode.prototype.type = 'VirtualNode'
 
-module.exports = VNode
+export default VNode

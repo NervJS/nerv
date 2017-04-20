@@ -6,4 +6,4 @@ class VText {
 
 VText.prototype.type = 'VirtualText'
 
-module.exports = VText
+export default VText

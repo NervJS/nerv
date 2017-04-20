@@ -37,4 +37,4 @@ class ComponentWrapper {
 
 ComponentWrapper.prototype.type = 'Widget'
 
-module.exports = ComponentWrapper
+export default ComponentWrapper

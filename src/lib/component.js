@@ -229,4 +229,4 @@ function renderToDom (component) {
   return domNode
 }
 
-module.exports = Component
+export default Component

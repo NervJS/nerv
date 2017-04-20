@@ -18,4 +18,4 @@ VPatch.REMOVE = 'THUNK'
 
 VPatch.prototype.type = 'VirtualPatch'
 
-module.exports = VPatch
+export default VPatch

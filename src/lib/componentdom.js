@@ -65,4 +65,4 @@ class ComponentDom {
   // }
 }
 
-module.exports = ComponentDom
+export default ComponentDom

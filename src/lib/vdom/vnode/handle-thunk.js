@@ -33,4 +33,4 @@ function renderThunk(thunk, previous) {
   return renderedThunk
 }
 
-module.exports = handleThunk
+export default handleThunk
