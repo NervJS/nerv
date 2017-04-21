@@ -1,8 +1,10 @@
+import nextTick from './util/next-tick'
+
 let items = []
 
 export function enqueueRender (component) {
   if (!component._dirty && (component._dirty = true) && items.push(component) === 1) {
-    setTimeout(rerender)
+    nextTick(rerender)
   }
 }
 

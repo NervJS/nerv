@@ -1,5 +1,6 @@
 import Events from './events'
 import { forEach, isFunction, extend, clone } from './util'
+import nextTick from './util/next-tick'
 import diff from '#/diff'
 import patch from '#/patch'
 import createElement from '#/create-element'
@@ -152,9 +153,6 @@ class Component extends Events {
   }
 
   mount (parentNode) {
-    if (parentNode) {
-      this._parentNode = parentNode
-    }
     if (this.constructor.inited && this.constructor.initialHtml) {
       this.update(true)
       if (this.rootNode) {
@@ -176,10 +174,15 @@ class Component extends Events {
         this._renderCallbacks.pop().call(this)
       }
     }
-    if (this.dom) {
+    let flushMount = () => {
       if (isFunction(this.componentDidMount)) {
         this.componentDidMount()
       }
+    }
+    if (parentNode) {
+      flushMount()
+    } else {
+      nextTick(flushMount)
     }
   }
 

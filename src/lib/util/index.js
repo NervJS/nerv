@@ -52,6 +52,10 @@ export function isError (arg) {
   return type(arg) === 'error'
 }
 
+export function isNative (Ctor) {
+  return isFunction(Ctor) && /native code/.test(Ctor.toString())
+}
+
 export function extend (source, from) {
   for (let key in from) {
     if (!source[key]) {
