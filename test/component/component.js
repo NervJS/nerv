@@ -1,3 +1,4 @@
+import test from 'ava'
 import h from '#/h'
 import { Component, ComponentDom } from '@/index.js'
 

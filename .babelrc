@@ -7,7 +7,7 @@
     "stage-0"
   ],
   "plugins": [
-    ["babel-plugin-root-import", [{
+    ["root-import", [{
       "rootPathPrefix": "@",
       "rootPathSuffix": "src"
     }, {

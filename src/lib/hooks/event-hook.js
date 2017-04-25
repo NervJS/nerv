@@ -1,4 +1,5 @@
 import { isFunction } from '~'
+import { addEvent, removeEvent } from '~/dom-events'
 import SimpleMap from '~/simple-map'
 
 let delegatedEvents = new SimpleMap()
@@ -28,7 +29,7 @@ class EventHook {
     if (delegatedRoots && delegatedRoots.items) {
       let items = delegatedRoots.items
       if (items.delete(node) && items.size() === 0) {
-        document.removeEventListener(parseEventName(this.eventName), delegatedRoots.event);
+        removeEvent(document, parseEventName(this.eventName), delegatedRoots.event);
         delegatedEvents.delete(this.eventName)
       }
     }
@@ -70,7 +71,7 @@ function attachEventToDocument (eventName, delegatedRoots) {
       dispatchEvent(event, event.target, delegatedRoots.items, count)
     }
   }
-  document.addEventListener(parseEventName(eventName), docEvent)
+  addEvent(document, parseEventName(eventName), docEvent)
   return docEvent
 }
 
