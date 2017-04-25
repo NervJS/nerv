@@ -3,6 +3,7 @@ import { isFunction, isString, isBoolean, isObject } from '~'
 import ComponentWrapper from './componentwapper'
 import RefHook from './hooks/ref-hook'
 import HtmlHook from './hooks/html-hook'
+import EventHook from './hooks/event-hook'
 
 const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i
 
@@ -24,8 +25,7 @@ function transformPropsForRealTag (props) {
     }
     // 收集事件
     if (propName.charAt(0) === 'o' && propName.charAt(1) === 'n') {
-      propName = propName.toLowerCase()
-      newProps[propName] = propValue
+      newProps[propName] = new EventHook(propName, propValue)
       continue
     }
     if (propName === 'defaultValue') {

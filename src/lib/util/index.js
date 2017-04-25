@@ -73,6 +73,28 @@ export function clone (obj) {
   return extend({}, obj)
 }
 
+export function inArray (value, arr, fromIndex) {
+  if (!isArray(arr)) {
+    throw new Error('inArray must recieve array')
+  }
+  if (arr.indexOf) {
+    return arr.indexOf(value)
+  }
+  const len = arr.length >>> 0
+  fromIndex = fromIndex | 0
+  if (fromIndex >= len) {
+    return -1
+  }
+  let k = Math.max(fromIndex >= 0 ? fromIndex : len - Math.abs(fromIndex), 0)
+  while (k < len) {
+    if (k in arr && arr[k] === value) {
+      return k;
+    }
+    k++;
+  }
+  return -1;
+}
+
 export function getPrototype (obj) {
   if (Object.getPrototypeOf) {
     return Object.getPrototypeOf(obj)
@@ -86,6 +108,18 @@ export function proxy (fn, context) {
   return function () {
     fn.apply(context || this, arguments)
   }
+}
+
+export function isEmptyObject (obj) {
+  if (!obj) {
+    return true
+  }
+  for (let prop in obj) {
+    if (obj.hasOwnProperty(prop)) {
+      return false
+    }
+  }
+  return true
 }
 
 export function forEach (arg, fn) {

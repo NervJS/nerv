@@ -80,4 +80,4 @@ function nextTick (cb, ctx) {
   }
 }
 
-export default nextTick;
+export default nextTick
