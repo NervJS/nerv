@@ -32,6 +32,20 @@ class SimpleMap {
     return
   }
 
+  has (k) {
+    const len = this.cache.length
+    if (!len) {
+      return
+    }
+    for (let i = 0; i < len; i++) {
+      let item = this.cache[i]
+      if (item.k === k) {
+        return true
+      }
+    }
+    return false
+  }
+
   delete (k) {
     const len = this.cache.length
     for (let i = 0; i < len; i++) {
@@ -43,8 +57,12 @@ class SimpleMap {
     }
     return false
   }
+
   clear () {
     let len = this.cache.length
+    if (!len) {
+      return
+    }
     while (len) {
       this.cache.pop()
       len--
