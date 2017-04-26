@@ -23,7 +23,6 @@ export default {
         'stage-0'
       ],
       plugins: babelConfig.plugins,
-      externalHelpers: true,
       exclude: 'node_modules/**'
     })
   ],
