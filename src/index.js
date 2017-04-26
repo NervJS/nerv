@@ -1,7 +1,7 @@
 import Events from './lib/events'
 import Module from './lib/module'
 import Component from './lib/component'
-import ComponentDom from './lib/componentdom'
+import { render, renderComponentToString } from './lib/render'
 import createElement from './lib/create-element'
 
 const isBrowser = new Function('try {return this===window}catch(e){ return false}')
@@ -12,15 +12,16 @@ if (isBrowser()) {
     Events,
     Module,
     Component,
-    createElement
+    createElement,
+    render
   }
-  window.BaseDom = ComponentDom
 } else if (isNode()) {
   module.exports = {
     Events,
     Module,
     Component,
-    ComponentDom,
-    createElement
+    createElement,
+    render,
+    renderComponentToString
   }
 }
