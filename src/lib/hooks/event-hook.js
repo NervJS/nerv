@@ -49,6 +49,7 @@ function dispatchEvent (event, target, items, count) {
   const eventsToTrigger = items.get(target)
   if (eventsToTrigger) {
     count--
+    event.nowTarget = target //暂时性替代方案。。。
     eventsToTrigger(event)
     if (event.cancelBubble) {
       return
