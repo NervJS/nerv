@@ -1,9 +1,6 @@
 {
   "presets": [
-    ["es2015", {
-      "modules": false,
-      "loose": true
-    }],
+    "es2015",
     "stage-0"
   ],
   "plugins": [
@@ -18,9 +15,8 @@
       "rootPathSuffix": "src/lib/vdom"
     }]],
     ["transform-react-jsx", {
-      "pragma": "h" // default pragma is React.createElement
-    }],
-    "external-helpers"
+      "pragma": "h"
+    }]
   ],
   "comments": false
 }

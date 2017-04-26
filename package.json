@@ -7,7 +7,7 @@
     "clear": "rm -rf dist",
     "eslint": "eslint src test",
     "test": "npm-run-all eslint test:ava",
-    "test:ava": "ava",
+    "test:ava": "ava --tap | tap-diff",
     "build": "npm-run-all clear transpile:main",
     "transpile:main": "rollup -c build/rollup.config.js"
   },
@@ -19,24 +19,26 @@
       "test/**/*.js"
     ],
     "source": [
-      "**/*.{js,jsx}",
+      "**/*.js",
       "!dist/**/*"
     ],
     "concurrency": 5,
     "failFast": true,
     "failWithoutAssertions": false,
     "tap": true,
-    "powerAssert": false,
+    "powerAssert": true,
     "require": [
       "babel-register",
       "babel-polyfill"
     ],
-    "babel": "inherit"
+    "babel": {
+      "babelrc": "inherit"
+    }
   },
   "author": "luckyadam",
   "license": "MIT",
   "devDependencies": {
-    "ava": "^0.18.2",
+    "ava": "^0.19.1",
     "babel-core": "^6.24.0",
     "babel-eslint": "^7.2.2",
     "babel-plugin-external-helpers": "^6.22.0",
@@ -56,6 +58,7 @@
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-memory": "^2.0.0",
-    "rollup-plugin-node-resolve": "^3.0.0"
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "tap-diff": "^0.1.1"
   }
 }
