@@ -42,7 +42,7 @@ function parseEventName (name) {
 
 function stopPropagation () {
   this.cancelBubble = true
-  this.stopImmediatePropagation()
+  this.stopImmediatePropagation && this.stopImmediatePropagation()
 }
 
 function dispatchEvent (event, target, items, count) {

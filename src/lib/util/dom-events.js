@@ -45,7 +45,7 @@ export const addEvent = (function addEvent () {
         event = event || window.event
         event.preventDefault = event.preventDefault || function () { event.returnValue = false }
         event.stopPropagation = event.stopPropagation || function () { event.cancelBubble = true }
-        event.timeStamp = event.timeStamp || (new Date()).getTime()
+        event.timeStamp || (event.timeStamp = (new Date()).getTime())
         handler.call(element, event)
       }))
     }
