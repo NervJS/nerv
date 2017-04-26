@@ -41,7 +41,7 @@ export const addEvent = (function addEvent () {
     if (element.length) {
       forEach(element, item => addEvent(item, type, handler))
     } else {
-      element.attachEvent('on' + type, setEventHandler(element, handler, (event) => {
+      element.attachEvent(`on${type}`, setEventHandler(element, handler, (event) => {
         event = event || window.event
         event.preventDefault = event.preventDefault || function () { event.returnValue = false }
         event.stopPropagation = event.stopPropagation || function () { event.cancelBubble = true }
@@ -68,7 +68,7 @@ export const removeEvent = (function removeEvent () {
     } else {
       let handlerInCache = getEventHandler(element, handler)
       if (handlerInCache) {
-        element.detachEvent('on' + type, handlerInCache)
+        element.detachEvent(`on${type}`, handlerInCache)
       }
     }
   }

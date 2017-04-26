@@ -121,7 +121,7 @@ function patchWidget (domNode, vnode, patch) {
   if (parentNode && domNode !== newNode) {
     parentNode.replaceChild(newNode, domNode)
   }
-  if (!isUpdate) {
+  if (!isUpdate && vnode) {
     destroyWidget(domNode, vnode)
   }
   return newNode

@@ -47,6 +47,7 @@ function transformPropsForRealTag (props) {
         for (let styleName in propValue) {
           let styleValue = propValue[styleName]
           styleValue = typeof styleValue === 'number' && IS_NON_DIMENSIONAL.test(styleName) === false ? (styleValue + 'px') : styleValue
+          newProps[propName] = newProps[propName] || {}
           newProps[propName][styleName] = styleValue
         }
       }

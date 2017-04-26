@@ -122,6 +122,70 @@ export function isEmptyObject (obj) {
   return true
 }
 
+export function debounce (func, wait, immediate) {
+  let timeout
+  let args
+  let context
+  let timestamp
+  let result
+
+  const later = function later() {
+    const last = +(new Date()) - timestamp
+
+    if (last < wait && last >= 0) {
+      timeout = setTimeout(later, wait - last)
+    } else {
+      timeout = null
+      if (!immediate) {
+        result = func.apply(context, args)
+        if (!timeout) {
+          context = null
+          args = null
+        }
+      }
+    }
+  };
+
+  return function debounced() {
+    context = this
+    args = arguments
+    timestamp = +(new Date())
+
+    const callNow = immediate && !timeout
+    if (!timeout) {
+      timeout = setTimeout(later, wait)
+    }
+
+    if (callNow) {
+      result = func.apply(context, args)
+      context = null
+      args = null
+    }
+
+    return result
+  }
+}
+
+export function throttle (fn, threshhold, scope) {
+  threshhold || (threshhold = 250)
+  let last, deferTimer
+  return function () {
+    let context = scope || this
+
+    let now = +new Date, args = arguments
+    if (last && now < last + threshhold) {
+      clearTimeout(deferTimer)
+      deferTimer = setTimeout(() => {
+        last = now
+        fn.apply(context, args)
+      }, threshhold)
+    } else {
+      last = now;
+      fn.apply(context, args)
+    }
+  }
+}
+
 export function forEach (arg, fn) {
   if (arg.forEach) {
     return arg.forEach.call(arg, fn)

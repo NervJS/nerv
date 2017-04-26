@@ -18,8 +18,8 @@ function canUsePromise () {
 
 function canUseMutationObserver () {
   return isFunction(MutationObserver)
-    && isNative(MutationObserver)
-    && MutationObserver.toString() === '[object MutationObserverConstructor]'
+    && (isNative(MutationObserver)
+    || MutationObserver.toString() === '[object MutationObserverConstructor]')
 }
 
 function installPromise () {
@@ -43,7 +43,7 @@ function installMutationObserver () {
 
 function installSetTimeout () {
   runNextTick = () => {
-    let timer = setImmediate || setTimeout
+    let timer = setTimeout
     timer(nextHandler, 0)
   }
 }

@@ -49,6 +49,12 @@ function walk (a, b, patches, index) {
       applyClear = true
     }
     apply = appendPatch(apply, new VPatch(VPatch.WIDGET, a, b))
+  } else if (isArray(b)) {
+    applyClear = true
+    forEach(b, item => {
+      walk(null, item, patches, index)
+      index++
+    })
   }
   if (apply) {
     patches[index] = apply
