@@ -1,3 +1,5 @@
+import CSSStyleDeclaration from './css-style-declaration'
+
 export function type (arg) {
   const class2type = {}
   const toString = class2type.toString
@@ -128,10 +130,8 @@ export function debounce (func, wait, immediate) {
   let context
   let timestamp
   let result
-
   const later = function later() {
     const last = +(new Date()) - timestamp
-
     if (last < wait && last >= 0) {
       timeout = setTimeout(later, wait - last)
     } else {
@@ -144,8 +144,7 @@ export function debounce (func, wait, immediate) {
         }
       }
     }
-  };
-
+  }
   return function debounced() {
     context = this
     args = arguments
@@ -180,11 +179,22 @@ export function throttle (fn, threshhold, scope) {
         fn.apply(context, args)
       }, threshhold)
     } else {
-      last = now;
+      last = now
       fn.apply(context, args)
     }
   }
 }
+
+export const getStyle = (function () {
+  if (isFunction(getComputedStyle)) {
+    return function (node) {
+      return getComputedStyle(node)
+    }
+  }
+  return function (node) {
+    return new CSSStyleDeclaration(node)
+  }
+})()
 
 export function forEach (arg, fn) {
   if (arg.forEach) {
