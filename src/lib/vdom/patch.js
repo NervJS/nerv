@@ -1,5 +1,5 @@
 import VPatch from './vpatch'
-import { isArray, isFunction, isString, isObject, forEach, getPrototype } from '~'
+import { isArray, isFunction, isString, isObject, getPrototype } from '~'
 import domIndex from './dom-index'
 import { isWidget, isHook } from './vnode/types'
 import createElement from './create-element'
@@ -11,7 +11,7 @@ function patch (rootNode, patches) {
   }
   let oldTree = patches.old
   let nodes = domIndex(rootNode, oldTree, patchIndices)
-  forEach(patchIndices, index => {
+  patchIndices.forEach(index => {
     rootNode = applyPatch(rootNode, nodes[index], patches[index])
   })
   return rootNode
@@ -25,7 +25,7 @@ function applyPatch (rootNode, domNode, patch) {
   if (!isArray(patch)) {
     patch = [patch]
   }
-  forEach(patch, patchItem => {
+  patch.forEach(patchItem => {
     newNode = patchSingle(domNode, patchItem)
     if (domNode === rootNode) {
       rootNode = newNode
@@ -189,7 +189,7 @@ function patchOrder (domNode, patch) {
   let childNodes = domNode.childNodes
   let childNodesList = [].slice.call(childNodes, 0)
   let cache = {}
-  forEach(childNodesList, child => {
+  childNodesList.forEach(child => {
     if (child.nodeType === 1) {
       let key = child.getAttribute('key')
       if (key) {
@@ -198,7 +198,7 @@ function patchOrder (domNode, patch) {
     }
   })
 
-  forEach(moves, move => {
+  moves.forEach(move => {
     let index = move.index
     if (move.type === 'remove') {
       if (childNodesList[index] === childNodes[index]) {

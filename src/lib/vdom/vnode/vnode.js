@@ -1,4 +1,4 @@
-import { forEach, isString, isFunction } from '~'
+import { isString, isFunction } from '~'
 import { isWidget, isVNode, isThunk, isHook } from './types'
 
 class VNode {
@@ -26,7 +26,7 @@ class VNode {
       }
     }
     if (count) {
-      forEach(this.children, (child) => {
+      this.children.forEach((child) => {
         if (isVNode(child)) {
           descendants += child.count || 0
           if (!hasWidgets && child.hasWidgets) {

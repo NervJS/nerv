@@ -1,5 +1,3 @@
-import CSSStyleDeclaration from './css-style-declaration'
-
 export function type (arg) {
   const class2type = {}
   const toString = class2type.toString
@@ -73,28 +71,6 @@ export function extend (source, from) {
 
 export function clone (obj) {
   return extend({}, obj)
-}
-
-export function inArray (value, arr, fromIndex) {
-  if (!isArray(arr)) {
-    throw new Error('inArray must recieve array')
-  }
-  if (arr.indexOf) {
-    return arr.indexOf(value)
-  }
-  const len = arr.length >>> 0
-  fromIndex = fromIndex | 0
-  if (fromIndex >= len) {
-    return -1
-  }
-  let k = Math.max(fromIndex >= 0 ? fromIndex : len - Math.abs(fromIndex), 0)
-  while (k < len) {
-    if (k in arr && arr[k] === value) {
-      return k;
-    }
-    k++;
-  }
-  return -1;
 }
 
 export function getPrototype (obj) {
@@ -183,95 +159,4 @@ export function throttle (fn, threshhold, scope) {
       fn.apply(context, args)
     }
   }
-}
-
-export const getStyle = (function () {
-  if (isFunction(getComputedStyle)) {
-    return function (node) {
-      return getComputedStyle(node)
-    }
-  }
-  return function (node) {
-    return new CSSStyleDeclaration(node)
-  }
-})()
-
-export function forEach (arg, fn) {
-  if (arg.forEach) {
-    return arg.forEach.call(arg, fn)
-  }
-  const itype = type(arg)
-  if (itype === 'array') {
-    for (let i = 0; i < arg.length; i++) {
-      if (fn.call(arg[i], arg[i], i) === false) {
-        return
-      }
-    }
-  } else if (itype === 'object') {
-    for (let j in arg) {
-      if (arg.hasOwnProperty(j)) {
-        if (fn.call(arg[j], arg[j], j) === false) {
-          return
-        }
-      }
-    }
-  }
-}
-
-export function map (arg, fn) {
-  if (arg.map) {
-    return arg.map.call(arg, fn)
-  }
-  let T, A, k
-  if (!arg) {
-    throw new TypeError('arg is null or not defined')
-  }
-  let O = Object(arg)
-  let len = O.length >>> 0
-  if (typeof fn !== 'function') {
-    throw new TypeError(fn + ' is not a function')
-  }
-  if (arguments.length > 1) {
-    T = arguments[1]
-  }
-  A = new Array(len)
-  k = 0
-  while (k < len) {
-    let kValue, mappedValue
-    if (k in O) {
-      kValue = O[k]
-      mappedValue = fn.call(T, kValue, k, O)
-      A[k] = mappedValue
-    }
-    k++
-  }
-  return A
-}
-
-export function filter (arg, fn) {
-  if (arg.filter) {
-    return arg.filter.call(arg, fn)
-  }
-  if (!arg) {
-    throw new TypeError('arg is null or not defined')
-  }
-
-  let t = Object(arg)
-  let len = t.length >>> 0
-  if (typeof fn !== 'function') {
-    throw new TypeError(fn + ' is not a function')
-  }
-
-  let res = []
-  let thisArg = arguments.length >= 2 ? arguments[1] : void 0
-  for (let i = 0; i < len; i++) {
-    if (i in t) {
-      let val = t[i]
-      if (fn.call(thisArg, val, i, t)) {
-        res.push(val)
-      }
-    }
-  }
-
-  return res
 }

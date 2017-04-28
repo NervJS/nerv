@@ -1,4 +1,4 @@
-import { forEach, isFunction, isString } from './util'
+import { isFunction, isString } from './util'
 
 class Module {
   constructor (name, path) {
@@ -49,7 +49,7 @@ class Module {
   triggerStack () {
     if (this._readyStack.length > 0) {
       this.init()
-      forEach(this._readyStack, func => {
+      this._readyStack.forEach(func => {
         if (!func.excuting) {
           func.excuting = true
           func()
@@ -116,7 +116,7 @@ const Script = {
       return
     }
     this._paths[opts.src] = true
-    forEach(this._rules, rule => rule.call(null, opts))
+    this._rules.forEach(rule => rule.call(null, opts))
     const head = document.getElementsByTagName('head')[0]
     let node = document.createElement('script')
     node.type = opts.type || 'text/javascript'
@@ -162,14 +162,14 @@ function use (names, fn) {
   }
   let args = []
   let flags = []
-  forEach(names, (name, i) => flags[i] = false)
-  forEach(names, (name, i) => {
+  names.forEach((name, i) => flags[i] = false)
+  names.forEach((name, i) => {
     const mod = getModule(name)
     mod.ready(() => {
       args[i] = mod.exports
       flags[i] = true
       let done = true
-      forEach(flags, flag => {
+      flags.forEach(flag => {
         if (flag === false) {
           done = false
           return done

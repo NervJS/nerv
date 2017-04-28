@@ -1,7 +1,7 @@
 import VPatch from './vpatch'
 import { isVNode, isVText, isWidget, isThunk, isHook } from './vnode/types'
 import handleThunk from './vnode/handle-thunk'
-import { isFunction, isArray, isObject, forEach, map, filter, getPrototype } from '~'
+import { isFunction, isArray, isObject, getPrototype } from '~'
 
 function diff (a, b) {
   let patches = {old: a}
@@ -51,7 +51,7 @@ function walk (a, b, patches, index) {
     apply = appendPatch(apply, new VPatch(VPatch.WIDGET, a, b))
   } else if (isArray(b)) {
     applyClear = true
-    forEach(b, item => {
+    b.forEach(item => {
       walk(null, item, patches, index)
       index++
     })
@@ -168,7 +168,7 @@ function diffList (oldList, newList, key) {
   }
   let listChange = []
   let freeIndex = 0
-  listChange = map(oldList, (item) => {
+  listChange = oldList.map((item) => {
     const itemKey = item[key]
     if (itemKey) {
       if (newListkeyMap.hasOwnProperty(itemKey)) {
@@ -184,14 +184,14 @@ function diffList (oldList, newList, key) {
     return freeItem
   })
   let simulate = listChange.slice(0)
-  simulate = filter(simulate, (item, i) => {
+  simulate = simulate.filter((item, i) => {
     if (!item) {
       moves.push({ index: i, item, type: 'remove' })
     }
     return item
   })
   let simulateIndex = 0
-  forEach(newList, (item, i) => {
+  newList.forEach((item, i) => {
     let itemkey = item[key]
     let simulateItem = simulate[simulateIndex]
     if (simulateItem) {
@@ -264,7 +264,7 @@ function destroyWidgets (vnode, patch, index) {
       patch[index] = appendPatch(patch[index], new VPatch(VPatch.REMOVE, vnode, null))
     }
   } else if (isVNode(vnode) && (vnode.hasWidgets || vnode.hasThunks)) {
-    forEach(vnode.children, child => {
+    vnode.children.forEach(child => {
       index += 1
       destroyWidgets(child, patch, index)
       if (isVNode(child) && child.count) {
@@ -279,7 +279,7 @@ function destroyWidgets (vnode, patch, index) {
 function mapListKeyIndex (list, key) {
   let keyMap = {}
   let free = []
-  forEach(list, (item, i) => {
+  list.forEach((item, i) => {
     if (item[key]) {
       keyMap[item[key]] = i
     } else {

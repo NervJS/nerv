@@ -1,5 +1,4 @@
 import { isFunction } from '~'
-import { addEvent, removeEvent } from '~/dom-events'
 import SimpleMap from '~/simple-map'
 
 let delegatedEvents = new SimpleMap()
@@ -29,7 +28,7 @@ class EventHook {
     if (delegatedRoots && delegatedRoots.items) {
       let items = delegatedRoots.items
       if (items.delete(node) && items.size() === 0) {
-        removeEvent(document, parseEventName(this.eventName), delegatedRoots.event);
+        document.removeEventListener(parseEventName(this.eventName), delegatedRoots.event, false);
         delegatedEvents.delete(this.eventName)
       }
     }
@@ -42,7 +41,7 @@ function parseEventName (name) {
 
 function stopPropagation () {
   this.cancelBubble = true
-  this.stopImmediatePropagation && this.stopImmediatePropagation()
+  this.stopImmediatePropagation()
 }
 
 function dispatchEvent (event, target, items, count) {
@@ -72,7 +71,7 @@ function attachEventToDocument (eventName, delegatedRoots) {
       dispatchEvent(event, event.target, delegatedRoots.items, count)
     }
   }
-  addEvent(document, parseEventName(eventName), docEvent)
+  document.addEventListener(parseEventName(eventName), docEvent, true)
   return docEvent
 }
 

@@ -1,4 +1,4 @@
-import { forEach, isFunction, isNative } from './index';
+import { isFunction, isNative } from './index';
 
 let callbacks = []
 let pending = false
@@ -8,7 +8,7 @@ function nextHandler () {
   pending = false
   let copies = callbacks.slice(0)
   callbacks = []
-  forEach(copies, task => task())
+  copies.forEach(task => task())
 }
 
 function canUsePromise () {

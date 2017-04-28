@@ -1,6 +1,6 @@
 import { isVNode, isVText, isWidget, isHook } from './vnode/types'
 import handleThunk from './vnode/handle-thunk'
-import { isObject, forEach } from '~'
+import { isObject } from '~'
 
 function createElement (vnode) {
   const doc = document
@@ -16,7 +16,7 @@ function createElement (vnode) {
     setProps(domNode, vnode.properties)
     const children = vnode.children
     if (children.length) {
-      forEach(children, child => domNode.appendChild(createElement(child)))
+      children.forEach(child => domNode.appendChild(createElement(child)))
     }
     return domNode
   }

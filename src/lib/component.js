@@ -1,5 +1,5 @@
 import Events from './events'
-import { forEach, isFunction, extend, clone } from './util'
+import { isFunction, extend, clone } from './util'
 import nextTick from './util/next-tick'
 import diff from '#/diff'
 import patch from '#/patch'
@@ -148,7 +148,7 @@ class Component extends Events {
       vnode.component.context = context
     } else {
       let children = vnode.children || []
-      forEach(children, child => this.setupContext(child, context))
+      children.forEach(child => this.setupContext(child, context))
     }
   }
 

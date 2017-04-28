@@ -1,5 +1,3 @@
-import { forEach } from '~'
-
 function domIndex (rootNode, tree, patchIndices, nodes) {
   if (!patchIndices || patchIndices.length === 0) {
     return {}
@@ -17,7 +15,7 @@ function recurse (rootNode, tree, patchIndices, nodes, index) {
     let vChildren = tree.children
     if (vChildren) {
       let childNodes = rootNode.childNodes
-      forEach(vChildren, (vChild, i) => {
+      vChildren.forEach((vChild, i) => {
         index++
         vChild = vChild || {}
         let nextIndex = index + (vChild.count || 0)

@@ -1,7 +1,7 @@
 import VNode from './vnode/vnode'
 import VText from './vnode/VText'
 import { isVNode, isVText, isWidget, isThunk } from './vnode/types'
-import { isString, isArray, isNumber, forEach } from '~'
+import { isString, isArray, isNumber } from '~'
 
 function h (tagName, properties, children) {
   let key, namespace, childNodes = []
@@ -31,7 +31,7 @@ function addChildren (childNodes, children, tagName) {
   } else if (isChild(children)) {
     childNodes.push(children)
   } else if (isArray(children)) {
-    forEach(children, child => addChildren(childNodes, child, tagName))
+    children.forEach(child => addChildren(childNodes, child, tagName))
   } else if (children === null || children === undefined) {
     return
   } else {
