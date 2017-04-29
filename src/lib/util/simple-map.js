@@ -46,7 +46,7 @@ class SimpleMap {
     return false
   }
 
-  delete (k) {
+  remove (k) {
     const len = this.cache.length
     for (let i = 0; i < len; i++) {
       let item = this.cache[i]

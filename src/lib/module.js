@@ -124,12 +124,10 @@ const Script = {
       node.charset = opts.charset
     }
     node.src = opts.src
-    node.onload = node.onerror = node.onreadystatechange = () => {
+    node.onload = node.onerror = node.onreadystatechange = function () {
       if (!this.readyState || this.readyState === 'load' || this.readyState === 'complete') {
         node.onload = node.onerror = node.onreadystatechange = null
-        if (node.parentNode) {
-          head.removeChild(node)
-        }
+        head.removeChild(node)
         node = null
         if (isFunction(opts.loaded)) {
           opts.loaded()

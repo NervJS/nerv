@@ -12,12 +12,14 @@ function nextHandler () {
 }
 
 function canUsePromise () {
-  return isFunction(Promise)
+  return 'Promise' in window
+    && isFunction(Promise)
     && isNative(Promise)
 }
 
 function canUseMutationObserver () {
-  return isFunction(MutationObserver)
+  return 'MutationObserver' in window
+    && isFunction(MutationObserver)
     && (isNative(MutationObserver)
     || MutationObserver.toString() === '[object MutationObserverConstructor]')
 }
@@ -25,7 +27,9 @@ function canUseMutationObserver () {
 function installPromise () {
   let p = Promise.resolve()
   let logErr = err => console.error(err)
-  runNextTick = () => p.then(nextHandler).catch(logErr)
+  runNextTick = function () {
+    p.then(nextHandler).catch(logErr)
+  }
 }
 
 function installMutationObserver () {
@@ -35,14 +39,14 @@ function installMutationObserver () {
   observer.observe(textNode, {
     characterData: true
   })
-  runNextTick = () => {
+  runNextTick = function () {
     observeNum = (observeNum + 1) % 2
     textNode.data = observeNum
   }
 }
 
 function installSetTimeout () {
-  runNextTick = () => {
+  runNextTick = function () {
     let timer = setTimeout
     timer(nextHandler, 0)
   }

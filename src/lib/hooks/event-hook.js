@@ -27,9 +27,9 @@ class EventHook {
     let delegatedRoots = delegatedEvents.get(this.eventName)
     if (delegatedRoots && delegatedRoots.items) {
       let items = delegatedRoots.items
-      if (items.delete(node) && items.size() === 0) {
+      if (items.remove(node) && items.size() === 0) {
         document.removeEventListener(parseEventName(this.eventName), delegatedRoots.event, false);
-        delegatedEvents.delete(this.eventName)
+        delegatedEvents.remove(this.eventName)
       }
     }
   }
