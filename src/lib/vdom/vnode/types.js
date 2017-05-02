@@ -16,7 +16,7 @@ export function isThunk (node) {
 
 export function isHook (arg) {
   if (arg && (typeof arg.hook === 'function' && !arg.hasOwnProperty('hook'))
-    || (typeof arg.unhook === 'function' && !arg.hasOwnProperty('unhook'))) {
+    || arg && (typeof arg.unhook === 'function' && !arg.hasOwnProperty('unhook'))) {
     return true
   }
   return false

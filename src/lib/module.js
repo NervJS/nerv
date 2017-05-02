@@ -156,29 +156,36 @@ function define (name, fn) {
 
 function use (names, fn) {
   if (isFunction(names)) {
+    fn = names
+    names = []
+  } else if (isString(names)) {
     names = [names]
   }
-  let args = []
-  let flags = []
-  names.forEach((name, i) => flags[i] = false)
-  names.forEach((name, i) => {
-    const mod = getModule(name)
-    mod.ready(() => {
-      args[i] = mod.exports
-      flags[i] = true
-      let done = true
-      flags.forEach(flag => {
-        if (flag === false) {
-          done = false
-          return done
+  if (names.length) {
+    let args = []
+    let flags = []
+    names.forEach((name, i) => flags[i] = false)
+    names.forEach((name, i) => {
+      const mod = getModule(name)
+      mod.ready(() => {
+        args[i] = mod.exports
+        flags[i] = true
+        let done = true
+        flags.forEach(flag => {
+          if (flag === false) {
+            done = false
+            return done
+          }
+        })
+        if (fn && done) {
+          fn.apply(null, args)
         }
       })
-      if (fn && done) {
-        fn.apply(null, args)
-      }
+      mod.lazyload()
     })
-    mod.lazyload()
-  })
+  } else {
+    fn && fn()
+  }
 }
 
 require.async = use
