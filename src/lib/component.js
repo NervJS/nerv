@@ -65,7 +65,7 @@ class Component extends Events {
       this.state = {}
     }
     this.props = props || {}
-    this.props = extend(this.props, this.constructor.defaultProps)
+    this.props = extend(this.constructor.defaultProps || {}, this.props)
     this.context = context || {}
     this.constructor.displayName = this.constructor.name
   }
