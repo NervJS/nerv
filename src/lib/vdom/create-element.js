@@ -34,14 +34,14 @@ function setProps (domNode, props) {
       if (p === 'attributes') {
         for (let k in propValue) {
           let attrValue = propValue[k]
-          if (attrValue) {
+          if (attrValue !== undefined) {
             domNode.setAttribute(k, attrValue)
           }
         }
       } else if (p === 'style') {
         for (let s in propValue) {
           let styleValue = propValue[s]
-          if (styleValue) {
+          if (styleValue !== undefined) {
             domNode[p][s] = styleValue
           }
         }

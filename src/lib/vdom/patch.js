@@ -168,7 +168,7 @@ function patchProperties (domNode, patch, previousProps) {
     } else if (propName === 'style') {
       for (let styleName in propValue) {
         let styleValue = propValue[styleName]
-        if (styleValue) {
+        if (styleValue !== undefined) {
           domNode[propName][styleName] = styleValue
         }
       }
