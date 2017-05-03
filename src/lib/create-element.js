@@ -68,11 +68,7 @@ function transformPropsForComponent (props) {
   return newProps
 }
 
-function createElement (tagName, properties) {
-  let children = []
-  for (let i = 2, len = arguments.length; i < len; i++) {
-    children.push(arguments[i])
-  }
+function createElement (tagName, properties, ...children) {
   let props
   if (isString(tagName)) {
     props = transformPropsForRealTag(properties)
