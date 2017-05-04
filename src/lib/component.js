@@ -65,7 +65,7 @@ class Component extends Events {
       this.state = {}
     }
     this.props = props || {}
-    this.props = extend(this.constructor.defaultProps || {}, this.props)
+    this.props = extend(clone(this.constructor.defaultProps || {}), this.props)
     this.context = context || {}
     this.constructor.displayName = this.constructor.name
   }
@@ -141,6 +141,11 @@ class Component extends Events {
       }
       this._prevComponent = null
     }
+    if (this._renderCallbacks) {
+      while (this._renderCallbacks.length) {
+        this._renderCallbacks.pop().call(this)
+      }
+    }
   }
 
   setupContext (vnode, context) {
@@ -167,11 +172,6 @@ class Component extends Events {
       this.update(true)
       if (parentNode && parentNode.appendChild && this.dom) {
         parentNode.appendChild(this.dom)
-      }
-    }
-    if (this._renderCallbacks) {
-      while (this._renderCallbacks.length) {
-        this._renderCallbacks.pop().call(this)
       }
     }
     let flushMount = () => {
