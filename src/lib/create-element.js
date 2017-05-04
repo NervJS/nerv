@@ -1,5 +1,5 @@
 import h from '#/h'
-import { isFunction, isString, isBoolean, isObject } from '~'
+import { isFunction, isString, isNumber, isBoolean, isObject } from '~'
 import ComponentWrapper from './componentwapper'
 import RefHook from './hooks/ref-hook'
 import HtmlHook from './hooks/html-hook'
@@ -46,9 +46,11 @@ function transformPropsForRealTag (props) {
       } else if (isObject(propValue)) {
         for (let styleName in propValue) {
           let styleValue = propValue[styleName]
-          styleValue = typeof styleValue === 'number' && IS_NON_DIMENSIONAL.test(styleName) === false ? (styleValue + 'px') : styleValue
-          newProps[propName] = newProps[propName] || {}
-          newProps[propName][styleName] = styleValue
+          if (styleValue !== undefined && (isString(styleValue) || !isNaN(styleValue))) {
+            styleValue = isNumber(styleValue) && IS_NON_DIMENSIONAL.test(styleName) === false ? (styleValue + 'px') : styleValue
+            newProps[propName] = newProps[propName] || {}
+            newProps[propName][styleName] = styleValue
+          }
         }
       }
       continue

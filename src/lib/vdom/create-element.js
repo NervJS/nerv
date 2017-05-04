@@ -42,7 +42,9 @@ function setProps (domNode, props) {
         for (let s in propValue) {
           let styleValue = propValue[s]
           if (styleValue !== undefined) {
-            domNode[p][s] = styleValue
+            try {
+              domNode[p][s] = styleValue
+            } catch (err) {}
           }
         }
       }

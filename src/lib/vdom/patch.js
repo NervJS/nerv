@@ -169,7 +169,9 @@ function patchProperties (domNode, patch, previousProps) {
       for (let styleName in propValue) {
         let styleValue = propValue[styleName]
         if (styleValue !== undefined) {
-          domNode[propName][styleName] = styleValue
+          try {
+            domNode[propName][styleName] = styleValue
+          } catch (err) {}
         }
       }
     } else if (isObject(propValue)) {
