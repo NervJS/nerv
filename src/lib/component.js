@@ -103,7 +103,7 @@ class Component extends Events {
       this.state = prevState
       this.context = prevContext
       if (!isForce && isFunction(this.shouldComponentUpdate)
-        && this.shouldComponentUpdate(props, state, context)) {
+        && this.shouldComponentUpdate(props, state, context) === false) {
         skip = true
       } else if (isFunction(this.componentWillUpdate)) {
         this.componentWillUpdate(props, state, context)
@@ -120,6 +120,15 @@ class Component extends Events {
       }
       if (isUpdate && isFunction(this.componentWillReceiveProps)) {
         this.componentWillReceiveProps(props, context)
+      }
+      if (!this.prevProps) {
+        this.prevProps = this.props
+      }
+      if (!this.prevState) {
+        this.prevState = this.state
+      }
+      if (!this.prevContext) {
+        this.prevContext = this.context
       }
       this.prevVNode = this.vnode
       this.vnode = this.render()
