@@ -11,7 +11,7 @@ function transformPropsForRealTag (props) {
   let newProps = {}
   for (let propName in props) {
     let propValue = props[propName]
-    if (propName === 'id' || propName === 'className') {
+    if ((propName === 'id' || propName === 'className') && propValue !== undefined) {
       newProps[propName] = propValue
       continue
     }
