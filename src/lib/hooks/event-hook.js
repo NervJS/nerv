@@ -44,11 +44,11 @@ function stopPropagation () {
   this.stopImmediatePropagation()
 }
 
-function dispatchEvent (event, target, items, count) {
+function dispatchEvent (event, target, items, count, eventData) {
   const eventsToTrigger = items.get(target)
   if (eventsToTrigger) {
     count--
-    event.nowTarget = target //暂时性替代方案。。。
+    eventData.currentTarget = target
     eventsToTrigger(event)
     if (event.cancelBubble) {
       return
@@ -59,7 +59,7 @@ function dispatchEvent (event, target, items, count) {
     if (parentDom === null || (event.type === 'click' && parentDom.nodeType === 1 && parentDom.disabled)) {
       return
     }
-    dispatchEvent(event, parentDom, items, count)
+    dispatchEvent(event, parentDom, items, count, eventData)
   }
 }
 
@@ -67,8 +67,21 @@ function attachEventToDocument (eventName, delegatedRoots) {
   const docEvent = (event) => {
     const count = delegatedRoots.items.size()
     if (count > 0) {
-      event.stopPropagation = stopPropagation
-      dispatchEvent(event, event.target, delegatedRoots.items, count)
+      const eventData = {
+        currentTarget: event.target
+      }
+      Object.defineProperties(event, {
+        currentTarget: {
+          configurable: true,
+          get () {
+            return eventData.currentTarget
+          }
+        },
+        stopPropagation: {
+          value: stopPropagation
+        }
+      })
+      dispatchEvent(event, event.target, delegatedRoots.items, count, eventData)
     }
   }
   document.addEventListener(parseEventName(eventName), docEvent, true)
