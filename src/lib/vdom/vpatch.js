@@ -14,7 +14,7 @@ VPatch.PROPS = 'PROPS'
 VPatch.ORDER = 'ORDER'
 VPatch.INSERT = 'INSERT'
 VPatch.REMOVE = 'REMOVE'
-VPatch.REMOVE = 'THUNK'
+VPatch.THUNK = 'THUNK'
 
 VPatch.prototype.type = 'VirtualPatch'
 

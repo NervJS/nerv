@@ -6,6 +6,7 @@ import patch from '#/patch'
 import createElement from '#/create-element'
 import { isWidget } from '#/vnode/types'
 import { enqueueRender } from './render-queue'
+import { FORCE_UPDATE, UPDATE_SELF } from './constants'
 
 class Component extends Events {
   static extend (properties) {
@@ -85,10 +86,10 @@ class Component extends Events {
   }
 
   forceUpdate () {
-    this.update(true)
+    this.update(FORCE_UPDATE)
   }
 
-  update (isForce) {
+  update (updateType) {
     let dom = this.dom
     let props = this.props
     let state = this.state
@@ -102,7 +103,7 @@ class Component extends Events {
       this.props = prevProps
       this.state = prevState
       this.context = prevContext
-      if (!isForce && isFunction(this.shouldComponentUpdate)
+      if (updateType !== FORCE_UPDATE && isFunction(this.shouldComponentUpdate)
         && this.shouldComponentUpdate(props, state, context) === false) {
         skip = true
       } else if (isFunction(this.componentWillUpdate)) {
@@ -118,7 +119,7 @@ class Component extends Events {
       if (isFunction(this.getChildContext)) {
         context = extend(extend({}, context), this.getChildContext())
       }
-      if (isUpdate && isFunction(this.componentWillReceiveProps)) {
+      if (isUpdate && updateType === UPDATE_SELF && isFunction(this.componentWillReceiveProps)) {
         this.componentWillReceiveProps(props, context)
       }
       if (!this.prevProps) {
@@ -139,7 +140,7 @@ class Component extends Events {
       if (!this.isServer) {
         this.dom = renderToDom(this)
       }
-      if (isUpdate && !isForce) {
+      if (isUpdate && updateType !== FORCE_UPDATE) {
         if (isFunction(this.componentDidUpdate)) {
           this.componentDidUpdate()
         }
@@ -226,7 +227,6 @@ function renderToDom (component) {
     domNode = createElement(component.vnode)
   } else {
     let patches = diff(component.prevVNode, component.vnode)
-    domNode._component = component
     domNode = patch(domNode, patches)
   }
   if (domNode) {

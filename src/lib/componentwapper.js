@@ -1,3 +1,6 @@
+import { extend } from './util'
+import { UPDATE_SELF } from './constants'
+
 class ComponentWrapper {
   constructor (ComponentClass, props, context) {
     this.component = new ComponentClass(props, context)
@@ -20,8 +23,10 @@ class ComponentWrapper {
   update (previous, domNode) {
     let component = this.component
     component._prevComponent = domNode._component || previous.component
+    component.dom = domNode
     component.vnode = component._prevComponent.vnode
-    component.update()
+    component.state = extend(component.state, previous.component.state)
+    component.update(UPDATE_SELF)
     if (component.dom) {
       component.dom._component = component
       component.dom._componentConstructor = component.constructor

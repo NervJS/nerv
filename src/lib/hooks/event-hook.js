@@ -84,7 +84,7 @@ function attachEventToDocument (eventName, delegatedRoots) {
       dispatchEvent(event, event.target, delegatedRoots.items, count, eventData)
     }
   }
-  document.addEventListener(parseEventName(eventName), docEvent, true)
+  document.addEventListener(parseEventName(eventName), docEvent, false)
   return docEvent
 }
 
