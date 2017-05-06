@@ -20,18 +20,16 @@ class ComponentWrapper {
     return domNode
   }
 
-  update (previous, domNode) {
-    let component = this.component
-    component._prevComponent = domNode._component || previous.component
-    component.dom = domNode
-    component.vnode = component._prevComponent.vnode
-    component.state = extend(component.state, previous.component.state)
-    component.update(UPDATE_SELF)
-    if (component.dom) {
-      component.dom._component = component
-      component.dom._componentConstructor = component.constructor
+  update (previous) {
+    const props = this.component.props
+    this.component = previous.component
+    this.component.props = extend(this.component.props, props)
+    this.component.update(UPDATE_SELF)
+    if (this.component.dom) {
+      this.component.dom._component = this.component
+      this.component.dom._componentConstructor = this.component.constructor
     }
-    return component.dom
+    return this.component.dom
   }
 
   destroy (domNode) {

@@ -113,7 +113,6 @@ class Component extends Events {
       this.state = state
       this.context = context
     }
-    this.prevProps = this.prevState = this.prevContext = null
     this._dirty = false
     if (!skip) {
       if (isFunction(this.getChildContext)) {
@@ -121,15 +120,6 @@ class Component extends Events {
       }
       if (isUpdate && updateType === UPDATE_SELF && isFunction(this.componentWillReceiveProps)) {
         this.componentWillReceiveProps(props, context)
-      }
-      if (!this.prevProps) {
-        this.prevProps = this.props
-      }
-      if (!this.prevState) {
-        this.prevState = this.state
-      }
-      if (!this.prevContext) {
-        this.prevContext = this.context
       }
       this.prevVNode = this.vnode
       this.vnode = this.render()
@@ -151,6 +141,9 @@ class Component extends Events {
       }
       this._prevComponent = null
     }
+    this.prevProps = clone(this.props)
+    this.prevState = clone(this.state)
+    this.prevContext = clone(this.context)
     if (this._renderCallbacks) {
       while (this._renderCallbacks.length) {
         this._renderCallbacks.pop().call(this)

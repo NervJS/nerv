@@ -34,8 +34,6 @@ function addChildren (childNodes, children, tagName) {
     children.forEach(child => addChildren(childNodes, child, tagName))
   } else if (children === null || children === undefined) {
     return
-  } else {
-    throw new Error('unexpected type')
   }
 }
 
