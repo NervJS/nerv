@@ -26,5 +26,5 @@ export default {
       exclude: 'node_modules/**'
     })
   ],
-  dest: 'dist/o2_base.js'
+  dest: 'dist/nerv.js'
 };

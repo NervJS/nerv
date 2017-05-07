@@ -1,7 +1,7 @@
 {
-  "name": "o2_base",
+  "name": "nervjs",
   "version": "0.0.1",
-  "description": "o2_base",
+  "description": "A react-like framework based on virtual-dom",
   "main": "index.js",
   "scripts": {
     "clear": "rm -rf dist",
