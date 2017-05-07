@@ -193,20 +193,9 @@ class Component extends Events {
     if (isFunction(this.componentWillUnmount)) {
       this.componentWillUnmount()
     }
-    this.prevVNode = this.vnode
-    this.vnode = null
-    this.dom = renderToDom(this)
-    this.prevVNode = null
-    let parentNode = this.dom && this.dom.parentNode
-    if (parentNode) {
-      parentNode.removeChild(this.dom)
-    }
+    this.dom = this.prevVNode = this.vnode = null
     if (isFunction(this.__ref)) {
       this.__ref(null)
-    }
-    if (this.dom) {
-      this.dom.component = null
-      this.dom = null
     }
   }
 }

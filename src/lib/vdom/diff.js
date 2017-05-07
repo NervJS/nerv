@@ -140,7 +140,7 @@ function diffChildren (a, b, apply, patches, index) {
       index += leftNode.count
     }
   }
-  if (diffSet.moves.length) {
+  if (diffSet.moves) {
     apply = appendPatch(apply, new VPatch(VPatch.ORDER, a, diffSet.moves))
   }
   return apply
@@ -150,11 +150,10 @@ function diffList (oldList, newList, key) {
   const newListKeyIndex = mapListKeyIndex(newList, key)
   const newListkeyMap = newListKeyIndex.keyMap
   const newListFree = newListKeyIndex.free
-  let moves = []
   if (newListFree.length === newList.length) {
     return {
       list: newList,
-      moves
+      moves: null
     }
   }
   const oldListKeyIndex = mapListKeyIndex(oldList, key)
@@ -163,61 +162,110 @@ function diffList (oldList, newList, key) {
   if (oldListFree.length === oldList.length) {
     return {
       list: newList,
-      moves
+      moves: null
     }
   }
   let listChange = []
   let freeIndex = 0
+  let deletedItems = 0
   listChange = oldList.map((item) => {
     const itemKey = item[key]
     if (itemKey) {
       if (newListkeyMap.hasOwnProperty(itemKey)) {
         return newList[newListkeyMap[itemKey]]
       }
+      deletedItems++
       return null
     }
     let itemIndex = newListFree[freeIndex++]
     let freeItem = newList[itemIndex]
     if (!freeItem) {
+      deletedItems++
       return null
     }
     return freeItem
   })
-  let simulate = listChange.slice(0)
-  simulate = simulate.filter((item, i) => {
-    if (!item) {
-      moves.push({ index: i, item, type: 'remove' })
-    }
-    return item
-  })
-  let simulateIndex = 0
-  newList.forEach((item, i) => {
-    let itemkey = item[key]
-    let simulateItem = simulate[simulateIndex]
-    if (simulateItem) {
-      let simulateItemKey = simulateItem[key]
-      if (simulateItemKey === itemkey) {
-        simulateIndex++
-      } else if (!oldListkeyMap.hasOwnProperty(itemkey)) {
-        moves.push({ index: i, item, type: 'insert' })
-      } else {
-        let nextSimulateItemKey = simulate[simulateIndex + 1][key]
-        if (nextSimulateItemKey === itemkey) {
-          moves.push({ index: i, item, type: 'remove' })
-          simulate.splice(simulateIndex, 1)
-          simulateIndex++
-        } else {
-          moves.push({ index: i, item, type: 'insert' })
-        }
+  let lastFreeIndex = freeIndex >= newListFree.length ? newList.length : newListFree[freeIndex]
+  newList.forEach((newItem, index) => {
+    const itemKey = newItem[key]
+    if (itemKey) {
+      if (!oldListkeyMap.hasOwnProperty(itemKey)) {
+        listChange.push(newItem)
       }
-    } else {
-      moves.push({ index: i, item, type: 'insert' })
+    } else if (index >= lastFreeIndex) {
+      listChange.push(newItem)
     }
   })
 
+  let simulate = listChange.slice(0)
+  let simulateIndex = 0
+  let removes = []
+  let inserts = []
+  let simulateItem
+  for (let k = 0; k < newList.length;) {
+    simulateItem = simulate[simulateIndex]
+    while (simulateItem === null && simulate.length) {
+      removes.push(remove(simulate, simulateIndex, null))
+      simulateItem = simulate[simulateIndex]
+    }
+    let newItem = newList[k]
+    let newItemKey = newItem[key]
+    let simulateItemKey = simulateItem[key]
+    if (!simulateItem || simulateItemKey !== newItemKey) {
+      if (newItem[key]) {
+        if (simulateItem && simulateItemKey) {
+          if (newListkeyMap[simulateItemKey] !== k + 1) {
+            removes.push(remove(simulate, simulateIndex, simulateItemKey))
+            simulateItem = simulate[simulateIndex]
+            if (!simulateItem || simulateItemKey !== newItemKey) {
+              inserts.push({key: newItemKey, to: k})
+            }
+            else {
+              simulateIndex++
+            }
+          }
+          else {
+            inserts.push({key: newItemKey, to: k})
+          }
+        }
+        else {
+          inserts.push({key: newItemKey, to: k})
+        }
+        k++
+      } else if (simulateItem && simulateItemKey) {
+        removes.push(remove(simulate, simulateIndex, simulateItemKey))
+      }
+    } else {
+      simulateIndex++
+      k++
+    }
+  }
+  while (simulateIndex < simulate.length) {
+    simulateItem = simulate[simulateIndex]
+    removes.push(remove(simulate, simulateIndex, simulateItem && simulateItem.key))
+  }
+  if (removes.length === deletedItems && !inserts.length) {
+    return {
+      list: listChange,
+      moves: null
+    }
+  }
+
   return {
     list: listChange,
-    moves
+    moves: {
+      removes,
+      inserts
+    }
+  }
+}
+
+function remove(arr, index, key) {
+  arr.splice(index, 1)
+
+  return {
+    from: index,
+    key
   }
 }
 

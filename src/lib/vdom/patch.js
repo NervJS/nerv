@@ -187,38 +187,28 @@ function patchProperties (domNode, patch, previousProps) {
 }
 
 function patchOrder (domNode, patch) {
-  let moves = patch.moves
+  let removes = patch.removes
+  let inserts = patch.inserts
   let childNodes = domNode.childNodes
-  let childNodesList = [].slice.call(childNodes, 0)
-  let cache = {}
-  childNodesList.forEach(child => {
-    if (child.nodeType === 1) {
-      let key = child.getAttribute('key')
-      if (key) {
-        cache[key] = child
-      }
+  let keyMap = {}
+  let node
+  let remove
+  let insert
+  for (let i = 0; i < removes.length; i++) {
+    remove = removes[i]
+    node = childNodes[remove.from]
+    if (remove.key) {
+      keyMap[remove.key] = node
     }
-  })
+    domNode.removeChild(node)
+  }
 
-  moves.forEach(move => {
-    let index = move.index
-    if (move.type === 'remove') {
-      if (childNodesList[index] === childNodes[index]) {
-        domNode.removeChild(childNodesList[index])
-      }
-      childNodesList.splice(index, 1)
-    } else {
-      let insertNode
-      let key = move.item.key
-      if (key && cache[key]) {
-        insertNode = cache[key]
-      } else {
-        insertNode = createElement(move.item)
-      }
-      childNodesList.splice(index, 0, insertNode)
-      domNode.insertBefore(insertNode, domNode.childNodes[index] || null)
-    }
-  })
+  let length = childNodes.length
+  for (let j = 0; j < inserts.length; j++) {
+    insert = inserts[j]
+    node = keyMap[insert.key]
+    domNode.insertBefore(node, insert.to >= length++ ? null : childNodes[insert.to])
+  }
   return domNode
 }
 
