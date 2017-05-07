@@ -14,6 +14,10 @@
   "keywords": [
     "base"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/o2team/nerv.git"
+  },
   "ava": {
     "files": [
       "test/**/*.js"
@@ -62,5 +66,9 @@
     "rollup-plugin-memory": "^2.0.0",
     "rollup-plugin-node-resolve": "^3.0.0",
     "tap-diff": "^0.1.1"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/o2team/nerv.git/issues"
+  },
+  "homepage": "https://github.com/o2team/nerv.git#readme"
 }
