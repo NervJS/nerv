@@ -34,7 +34,9 @@ class ComponentWrapper {
 
   destroy (domNode) {
     this.component.unmount()
-    delete domNode.component
+    if (domNode.component) {
+      delete domNode.component
+    }
   }
 }
 
