@@ -4,7 +4,9 @@ import { UPDATE_SELF } from './constants'
 class ComponentWrapper {
   constructor (ComponentClass, props, context) {
     this.component = new ComponentClass(props, context)
-    this.name = this.component.constructor.name
+    let constructor =  this.component.constructor
+    this.name = constructor.name || constructor.toString().match(/^function\s*([^\s(]+)/)[1]
+    constructor.displayName = this.name
   }
 
   init () {

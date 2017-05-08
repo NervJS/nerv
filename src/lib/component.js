@@ -9,7 +9,7 @@ import { enqueueRender } from './render-queue'
 import { FORCE_UPDATE, UPDATE_SELF } from './constants'
 
 class Component extends Events {
-  static extend (properties) {
+  static createClass (properties) {
     let initializing = false
     const base = this
     function beget (obj) {
@@ -68,7 +68,6 @@ class Component extends Events {
     this.props = props || {}
     this.props = extend(clone(this.constructor.defaultProps || {}), this.props)
     this.context = context || {}
-    this.constructor.displayName = this.constructor.name
   }
 
   setState (state, callback) {
