@@ -9,6 +9,7 @@ class Module {
     this.exports = {}
     this._loaded = false
     this._readyStack = []
+    this._requiredStack = []
     Module.cache[this.name] = this
   }
 
@@ -28,13 +29,20 @@ class Module {
     }
   }
 
-  ready (fn) {
-    const stack = this._readyStack
-    if (this._loaded) {
-      this.init()
-      fn()
+  ready (fn, isRequired) {
+    let stack = isRequired ? this._requiredStack : this._readyStack
+    if (fn) {
+      if (this._loaded) {
+        this.init()
+        fn()
+      } else {
+        stack.push(fn)
+      }
     } else {
-      stack.push(fn)
+      this._loaded = true
+      Module.loadedPaths[this.path] = true
+      delete Module.loadingPaths[this.path]
+      this.triggerStack()
     }
   }
 
@@ -55,15 +63,43 @@ class Module {
           func()
         }
       })
+      this._readyStack = []
     }
-    this._readyStack = []
+    
+    if (this._requiredStack.length > 0) {
+      this._requiredStack.forEach(func => {
+        if (!func.excuting) {
+          func.excuting = true
+          func()
+        }
+      })
+      this._requiredStack = []
+    }
   }
 
   define () {
     this._loaded = true
-    Module.loadedPaths[this.name] = true
-    delete Module.loadingPaths[this.name]
-    this.triggerStack()
+    let deps = this.deps
+    let depPaths = []
+    deps = removeCyclicDeps(this.path, this.deps)
+    if (deps.length) {
+      Module.loadingPaths[this.path] = true
+      depPaths = deps.map((dep) => {
+        const mod = getModule(dep)
+        return mod.path
+      })
+      deps.forEach((dep) => {
+        const mod = getModule(dep)
+        mod.ready(() => {
+          if (isPathsLoaded(depPaths)) {
+            this.ready()
+          }
+        }, true)
+        mod.lazyload()
+      })
+    } else {
+      this.ready()
+    }
   }
 
   lazyload () {
@@ -144,9 +180,49 @@ const Script = {
   }
 }
 
-function define (name, fn) {
+function isPathsLoaded (paths) {
+  let r = true
+  paths.forEach((path) => {
+    if (!(path in Module.loadedPaths)) {
+      return r = false
+    }
+  });
+  return r
+}
+
+function removeCyclicDeps (uri, deps) {
+  return deps.filter((dep) => !Module.loadingPaths[dep] || !isCyclicWaiting(Module.cache[dep], uri, []))
+}
+
+function isCyclicWaiting (mod, uri, track) {
+  if (!mod || mod._loaded) {
+    return false
+  }
+  track.push(mod.name)
+  let deps = mod.deps
+  if (deps.length) {
+    if (deps.indexOf(uri) > -1) {
+      return true
+    }
+    for (let i = 0; i < deps.length; i++) {
+      if (track.indexOf(deps[i]) < 0 && isCyclicWaiting(Module.cache[deps[i]], uri, track)) {
+        return true
+      }
+    }
+    return false
+  }
+  return false
+}
+
+function define (name, deps, fn) {
   const mod = getModule(name)
-  mod.fn = fn
+  if (isFunction(deps)) {
+    mod.fn = deps
+    mod.deps = []
+  } else {
+    mod.deps = deps || []
+    mod.fn = fn
+  }
   if (Module.requiredPaths[name]) {
     mod.define()
   } else {
