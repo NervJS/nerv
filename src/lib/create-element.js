@@ -87,7 +87,9 @@ function createElement (tagName, properties) {
   } else if (isFunction(tagName)) {
     props = transformPropsForComponent(properties)
     props.children = children
-    return new ComponentWrapper(tagName, props)
+    return (tagName.prototype && isFunction(tagName.prototype.render))
+      ? new ComponentWrapper(tagName, props)
+      : tagName(props)
   }
   return tagName
 }
