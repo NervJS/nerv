@@ -1,6 +1,7 @@
 import h from '#/h'
+import svg from '#/svg'
 import { isFunction, isString, isNumber, isBoolean, isObject } from '~'
-import ComponentWrapper from './componentwapper'
+import ComponentWrapper from './component-wapper'
 import RefHook from './hooks/ref-hook'
 import HtmlHook from './hooks/html-hook'
 import EventHook from './hooks/event-hook'
@@ -11,7 +12,8 @@ function transformPropsForRealTag (props) {
   let newProps = {}
   for (let propName in props) {
     let propValue = props[propName]
-    if ((propName === 'id' || propName === 'className') && propValue !== undefined) {
+    if ((propName === 'id' || propName === 'className' || propName === 'namespace')
+      && propValue !== undefined) {
       newProps[propName] = propValue
       continue
     }
@@ -83,7 +85,7 @@ function createElement (tagName, properties) {
   let props
   if (isString(tagName)) {
     props = transformPropsForRealTag(properties)
-    return h(tagName, props, children)
+    return (props.isSvg ? svg : h)(tagName, props, children)
   } else if (isFunction(tagName)) {
     props = transformPropsForComponent(properties)
     props.children = children

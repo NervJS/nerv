@@ -154,7 +154,7 @@ class Component extends Events {
     if (isWidget(vnode)) {
       vnode.component.context = context
     } else {
-      let children = vnode.children || []
+      let children = vnode ? vnode.children || [] : []
       children.forEach(child => this.setupContext(child, context))
     }
   }

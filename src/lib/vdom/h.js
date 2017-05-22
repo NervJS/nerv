@@ -41,7 +41,7 @@ function isChild (node) {
   return isVNode(node) || isVText(node) || isWidget(node) || isThunk(node)
 }
 
-function isChildren(x) {
+function isChildren (x) {
   return isString(x) || isArray(x) || isChild(x)
 }
 

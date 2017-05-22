@@ -12,7 +12,8 @@ function createElement (vnode) {
     return doc.createTextNode(vnode.text)
   }
   if (isVNode(vnode)) {
-    const domNode = doc.createElement(vnode.tagName)
+    const domNode = (vnode.namespace === null) ? doc.createElement(vnode.tagName)
+      : doc.createElementNS(vnode.namespace, vnode.tagName)
     setProps(domNode, vnode.properties)
     const children = vnode.children
     if (children.length) {
