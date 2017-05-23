@@ -2,7 +2,9 @@ import { isVNode, isVText, isWidget, isHook } from './vnode/types'
 import handleThunk from './vnode/handle-thunk'
 import { isObject } from '~'
 
-function createElement (vnode) {
+const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
+
+function createElement (vnode, isSvg) {
   const doc = document
   vnode = handleThunk(vnode).a
   if (isWidget(vnode)) {
@@ -12,12 +14,16 @@ function createElement (vnode) {
     return doc.createTextNode(vnode.text)
   }
   if (isVNode(vnode)) {
+    isSvg = vnode.tagName === 'svg' ? true : vnode.tagName === 'foreignObject' ? false : isSvg
+    if (isSvg) {
+      vnode.namespace = SVG_NAMESPACE
+    }
     const domNode = (vnode.namespace === null) ? doc.createElement(vnode.tagName)
       : doc.createElementNS(vnode.namespace, vnode.tagName)
     setProps(domNode, vnode.properties)
     const children = vnode.children
     if (children.length) {
-      children.forEach(child => domNode.appendChild(createElement(child)))
+      children.forEach(child => domNode.appendChild(createElement(child, isSvg)))
     }
     return domNode
   }

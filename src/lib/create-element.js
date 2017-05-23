@@ -1,17 +1,28 @@
 import h from '#/h'
-import svg from '#/svg'
+import SVGPropertyConfig from '#/svg-property-config'
 import { isFunction, isString, isNumber, isBoolean, isObject } from '~'
 import ComponentWrapper from './component-wapper'
 import RefHook from './hooks/ref-hook'
 import HtmlHook from './hooks/html-hook'
 import EventHook from './hooks/event-hook'
+import AttributeHook from './hooks/attribute-hook'
 
 const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i
 
 function transformPropsForRealTag (props) {
   let newProps = {}
+  const DOMAttributeNamespaces = SVGPropertyConfig.DOMAttributeNamespaces
   for (let propName in props) {
-    let propValue = props[propName]
+    const propValue = props[propName]
+    const originalPropName = propName
+    const domAttributeName = SVGPropertyConfig.DOMAttributeNames[propName]
+    propName = domAttributeName ? domAttributeName : propName
+    if (DOMAttributeNamespaces.hasOwnProperty(originalPropName)
+      && (isString(propValue) || isNumber(propValue) || isBoolean(propValue))) {
+      const namespace = DOMAttributeNamespaces[originalPropName]
+      newProps[propName] = new AttributeHook(namespace, propValue)
+      continue
+    }
     if ((propName === 'id' || propName === 'className' || propName === 'namespace')
       && propValue !== undefined) {
       newProps[propName] = propValue
@@ -85,7 +96,7 @@ function createElement (tagName, properties) {
   let props
   if (isString(tagName)) {
     props = transformPropsForRealTag(properties)
-    return (props.isSvg ? svg : h)(tagName, props, children)
+    return h(tagName, props, children)
   } else if (isFunction(tagName)) {
     props = transformPropsForComponent(properties)
     props.children = children
