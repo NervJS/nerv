@@ -20,7 +20,7 @@ function transformPropsForRealTag (props) {
     if (DOMAttributeNamespaces.hasOwnProperty(originalPropName)
       && (isString(propValue) || isNumber(propValue) || isBoolean(propValue))) {
       const namespace = DOMAttributeNamespaces[originalPropName]
-      newProps[propName] = new AttributeHook(namespace, propValue)
+      newProps[propName] = !(propValue instanceof AttributeHook) ? new AttributeHook(namespace, propValue) : propValue
       continue
     }
     if ((propName === 'id' || propName === 'className' || propName === 'namespace')
@@ -29,16 +29,16 @@ function transformPropsForRealTag (props) {
       continue
     }
     if (propName === 'ref') {
-      newProps[propName] = new RefHook(propValue)
+      newProps[propName] = !(propValue instanceof RefHook) ? new RefHook(propValue) : propValue
       continue
     }
     if (propName === 'dangerouslySetInnerHTML') {
-      newProps[propName] = new HtmlHook(propValue)
+      newProps[propName] = !(propValue instanceof HtmlHook) ? new HtmlHook(propValue) : propValue
       continue
     }
     // 收集事件
     if (propName.charAt(0) === 'o' && propName.charAt(1) === 'n') {
-      newProps[propName] = new EventHook(propName, propValue)
+      newProps[propName] = !(propValue instanceof EventHook) ? new EventHook(propName, propValue) : propValue
       continue
     }
     if (propName === 'defaultValue') {
