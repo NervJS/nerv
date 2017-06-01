@@ -17,8 +17,6 @@ class ComponentWrapper {
     if (!domNode) {
       return null
     }
-    domNode._component = this.component
-    domNode._componentConstructor = this.component.constructor
     return domNode
   }
 
@@ -27,10 +25,6 @@ class ComponentWrapper {
     this.component = previous.component
     this.component.props = extend(this.component.props, props)
     this.component.update(UPDATE_SELF)
-    if (this.component.dom) {
-      this.component.dom._component = this.component
-      this.component.dom._componentConstructor = this.component.constructor
-    }
     return this.component.dom
   }
 

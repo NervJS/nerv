@@ -123,9 +123,6 @@ class Component extends Events {
       this.prevVNode = this.vnode
       this.vnode = this.render()
       this.setupContext(this.vnode, context)
-      if (dom) {
-        dom._component = null
-      }
       if (!this.isServer) {
         this.dom = renderToDom(this)
       }
@@ -200,24 +197,12 @@ class Component extends Events {
 }
 
 function renderToDom (component) {
-  let domNode = component.dom ||
-    (component._prevComponent && component._prevComponent.dom)
-  let lastDomNode = domNode
-
+  let domNode = component.dom
   if (!domNode) {
     domNode = createElement(component.vnode)
   } else {
     let patches = diff(component.prevVNode, component.vnode)
     domNode = patch(domNode, patches)
-  }
-  if (domNode) {
-    domNode._component = component
-  }
-  if (lastDomNode && lastDomNode !== domNode) {
-    if (lastDomNode._component && lastDomNode._component.dom === lastDomNode) {
-      lastDomNode._component.dom = null
-    }
-    lastDomNode._component = null
   }
   return domNode
 }
