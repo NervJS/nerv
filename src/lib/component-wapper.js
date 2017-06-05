@@ -24,7 +24,7 @@ class ComponentWrapper {
     const { props, state, context } = this.component
     this.component = previous.component
     this.component.props = extend(this.component.props, props)
-    this.component.state = extend(this.component.props, state)
+    this.component.state = extend(this.component.state, state)
     this.component.context = extend(this.component.context, context)
     this.component.update(UPDATE_SELF)
     return this.component.dom

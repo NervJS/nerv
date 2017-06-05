@@ -29,7 +29,11 @@ function createElement (vnode, isSvg) {
   }
   if (Array.isArray(vnode)) {
     const domNode = doc.createDocumentFragment()
-    vnode.forEach(child => domNode.appendChild(createElement(child, isSvg)))
+    vnode.forEach(child => {
+      if (child !== undefined && child !== null && child !== false) {
+        return domNode.appendChild(createElement(child, isSvg))
+      }
+    })
     return domNode
   }
   return null
