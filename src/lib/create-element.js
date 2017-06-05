@@ -9,7 +9,7 @@ import AttributeHook from './hooks/attribute-hook'
 
 const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i
 
-function transformPropsForRealTag (props) {
+function transformPropsForRealTag (tagName, props) {
   let newProps = {}
   const DOMAttributeNamespaces = SVGPropertyConfig.DOMAttributeNamespaces
   for (let propName in props) {
@@ -68,6 +68,9 @@ function transformPropsForRealTag (props) {
       }
       continue
     }
+    if (/input|textarea/.test(tagName) && propName === 'value') {
+      newProps[propName] = propValue
+    }
     newProps.attributes = newProps.attributes || {}
     newProps.attributes[propName] = propValue
   }
@@ -95,7 +98,7 @@ function createElement (tagName, properties) {
   }
   let props
   if (isString(tagName)) {
-    props = transformPropsForRealTag(properties)
+    props = transformPropsForRealTag(tagName, properties)
     return h(tagName, props, children)
   } else if (isFunction(tagName)) {
     props = transformPropsForComponent(properties)
