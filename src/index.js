@@ -1,6 +1,7 @@
 import Events from './lib/events'
 import Module from './lib/module'
 import Component from './lib/component'
+import PureComponent from './lib/pure-component'
 import { render, renderComponentToString } from './lib/render'
 import createElement from './lib/create-element'
 import cloneElement from './lib/clone-element'
@@ -15,6 +16,7 @@ if (isBrowser()) {
     Events,
     Module,
     Component,
+    PureComponent,
     createElement,
     cloneElement,
     Util,
@@ -26,6 +28,7 @@ if (isBrowser()) {
     Events,
     Module,
     Component,
+    PureComponent,
     createElement,
     cloneElement,
     render,
