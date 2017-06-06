@@ -46,8 +46,6 @@ function patchSingle (domNode, vpatch) {
       return patchVNode(domNode, patchObj)
     case VPatch.INSERT:
       return patchInsert(domNode, patchObj)
-    case VPatch.THUNK:
-      return replaceRoot(domNode, patch(domNode, patchObj))
     case VPatch.WIDGET:
       return patchWidget(domNode, oldVNode, patchObj)
     case VPatch.PROPS:
@@ -91,14 +89,6 @@ function patchVNode (domNode, patch) {
     parentNode.replaceChild(newNode, domNode)
   }
   return newNode
-}
-
-function replaceRoot (oldRoot, newRoot) {
-  if (oldRoot && newRoot && oldRoot !== newRoot && oldRoot.parentNode) {
-    oldRoot.parentNode.replaceChild(newRoot, oldRoot)
-  }
-
-  return newRoot
 }
 
 function patchInsert (parentNode, vnode) {

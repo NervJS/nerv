@@ -1,7 +1,7 @@
 import h from '#/h'
 import SVGPropertyConfig from '#/svg-property-config'
 import { isFunction, isString, isNumber, isBoolean, isObject } from '~'
-import ComponentWrapper from './component-wapper'
+import ComponentWrapper from './component-wrapper'
 import RefHook from './hooks/ref-hook'
 import HtmlHook from './hooks/html-hook'
 import EventHook from './hooks/event-hook'
@@ -103,9 +103,7 @@ function createElement (tagName, properties) {
   } else if (isFunction(tagName)) {
     props = transformPropsForComponent(properties)
     props.children = children
-    return (tagName.prototype && isFunction(tagName.prototype.render))
-      ? new ComponentWrapper(tagName, props)
-      : tagName(props)
+    return new ComponentWrapper(tagName, props)
   }
   return tagName
 }

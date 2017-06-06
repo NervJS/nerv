@@ -1,6 +1,6 @@
 import VNode from './vnode/vnode'
 import VText from './vnode/VText'
-import { isVNode, isVText, isWidget, isThunk } from './vnode/types'
+import { isVNode, isVText, isWidget } from './vnode/types'
 import { isString, isArray, isNumber } from '~'
 
 function h (tagName, properties, children) {
@@ -38,7 +38,7 @@ function addChildren (childNodes, children, tagName) {
 }
 
 function isChild (node) {
-  return isVNode(node) || isVText(node) || isWidget(node) || isThunk(node)
+  return isVNode(node) || isVText(node) || isWidget(node)
 }
 
 function isChildren (x) {

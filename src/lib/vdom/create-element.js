@@ -1,12 +1,10 @@
 import { isVNode, isVText, isWidget, isHook } from './vnode/types'
-import handleThunk from './vnode/handle-thunk'
 import { isObject } from '~'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
 function createElement (vnode, isSvg) {
   const doc = document
-  vnode = handleThunk(vnode).a
   if (isWidget(vnode)) {
     return vnode.init()
   }

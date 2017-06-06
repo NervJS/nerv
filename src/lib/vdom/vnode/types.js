@@ -10,10 +10,6 @@ export function isWidget (node) {
   return node && node.type === 'Widget'
 }
 
-export function isThunk (node) {
-  return node && node.type === 'Thunk'
-}
-
 export function isHook (arg) {
   if (arg && (typeof arg.hook === 'function' && !arg.hasOwnProperty('hook'))
     || arg && (typeof arg.unhook === 'function' && !arg.hasOwnProperty('unhook'))) {

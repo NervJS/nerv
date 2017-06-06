@@ -1,6 +1,5 @@
 import VPatch from './vpatch'
-import { isVNode, isVText, isWidget, isThunk, isHook } from './vnode/types'
-import handleThunk from './vnode/handle-thunk'
+import { isVNode, isVText, isWidget, isHook } from './vnode/types'
 import { isFunction, isArray, isObject, getPrototype } from '~'
 
 function diff (a, b) {
@@ -15,9 +14,7 @@ function walk (a, b, patches, index) {
   }
   let apply = patches[index]
   let applyClear = false
-  if (isThunk(a) || isThunk(b)) {
-    thunks(a, b, patches, index)
-  } else if (!b) {
+  if (!b) {
     if (!isWidget(a)) {
       clearState(a, patches, index)
       apply = patches[index]
@@ -101,23 +98,6 @@ function diffProps (propsA, propsB) {
     }
   }
   return diff
-}
-
-function thunks (a, b, patch, index) {
-  const nodes = handleThunk(a, b)
-  const thunkPatch = diff(nodes.a, nodes.b)
-  if (hasPatches(thunkPatch)) {
-    patch[index] = new VPatch(VPatch.THUNK, b, thunkPatch)
-  }
-}
-
-function hasPatches (patch) {
-  for (let index in patch) {
-    if (index !== 'old') {
-      return true
-    }
-  }
-  return false
 }
 
 function diffChildren (a, b, apply, patches, index) {
@@ -287,7 +267,7 @@ function unhook(vnode, patch, index) {
       )
     }
     
-    if (vnode.descendantHooks || vnode.hasThunks) {
+    if (vnode.descendantHooks) {
       let children = vnode.children
       let len = children.length
       for (let i = 0; i < len; i++) {
@@ -301,8 +281,6 @@ function unhook(vnode, patch, index) {
         }
       }
     }
-  } else if (isThunk(vnode)) {
-    thunks(vnode, null, patch, index)
   }
 }
 
@@ -311,7 +289,7 @@ function destroyWidgets (vnode, patch, index) {
     if (isFunction(vnode.destroy)) {
       patch[index] = appendPatch(patch[index], new VPatch(VPatch.REMOVE, vnode, null))
     }
-  } else if (isVNode(vnode) && (vnode.hasWidgets || vnode.hasThunks)) {
+  } else if (isVNode(vnode) && vnode.hasWidgets) {
     vnode.children.forEach(child => {
       index += 1
       destroyWidgets(child, patch, index)
@@ -319,8 +297,6 @@ function destroyWidgets (vnode, patch, index) {
         index += child.count
       }
     })
-  } else if (isThunk(vnode)) {
-    thunks(vnode, null, patch, index)
   }
 }
 

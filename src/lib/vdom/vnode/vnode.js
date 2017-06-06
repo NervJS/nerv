@@ -1,5 +1,5 @@
 import { isString, isFunction } from '~'
-import { isWidget, isVNode, isThunk, isHook } from './types'
+import { isWidget, isVNode, isHook } from './types'
 
 class VNode {
   constructor (tagName, properties, children, key, namespace) {
@@ -11,7 +11,6 @@ class VNode {
     let count = this.children.length || 0
     let descendants = 0
     let hasWidgets = false
-    let hasThunks = false
     let descendantHooks = false
     let hooks
     for (let propName in properties) {
@@ -32,9 +31,6 @@ class VNode {
           if (!hasWidgets && child.hasWidgets) {
             hasWidgets = true
           }
-          if (!hasThunks && child.hasThunks) {
-            hasThunks = true
-          }
           if (!descendantHooks && (child.hooks || child.descendantHooks)) {
             descendantHooks = true
           }
@@ -42,19 +38,15 @@ class VNode {
           if (isFunction(child.destroy)) {
             hasWidgets = true
           }
-        } else if (!hasThunks && isThunk(child)) {
-          hasThunks = true
         }
       })
     }
     this.count = count + descendants
     this.hasWidgets = hasWidgets
-    this.hasThunks = hasThunks
     this.hooks = hooks
     this.descendantHooks = descendantHooks
   }
+  type = 'VirtualNode'
 }
-
-VNode.prototype.type = 'VirtualNode'
 
 export default VNode

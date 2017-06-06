@@ -1,33 +1,22 @@
-import { proxy } from './util'
-import createElement from '#/create-element'
+import { mountVNode, flushMount } from './lifecycle'
 import { isWidget } from '#/vnode/types'
-import diff from '#/diff'
-import patch from '#/patch'
 
 export function render (vnode, container, callback) {
   if (!vnode || !container) {
     return
   }
-  let component = vnode.component
-  let unmount
-  if (component && component.mount) {
-    component.mount(container)
-    unmount = proxy(component.unmount, component)
-  } else {
-    let domNode = createElement(vnode)
-    if (domNode && container.appendChild) {
-      container.appendChild(domNode)
-    }
-    unmount = function () {
-      let patches = diff(vnode, null)
-      domNode = patch(domNode, patches)
-      if (domNode && container.removeChild) {
-        container.removeChild(domNode)
-      }
-    }
+  const parentContext = {}
+  const dom = mountVNode(vnode, parentContext)
+  if (dom) {
+    container.appendChild(dom)
   }
-  callback && setTimeout(callback)
-  return unmount
+  flushMount()
+  
+  if (callback) {
+    callback()
+  }
+
+  return vnode.component || dom
 }
 
 export function renderComponentToString (vnode, callback) {
