@@ -1,24 +1,33 @@
-import { isVNode, isVText, isWidget, isHook } from './vnode/types'
+import { isVNode, isVText, isWidget, isStateLess, isHook } from './vnode/types'
 import { isObject } from '~'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
+const doc = document
 function createElement (vnode, isSvg) {
-  const doc = document
-  if (isWidget(vnode)) {
+  if (isWidget(vnode) || isStateLess(vnode)) {
     return vnode.init()
   }
   if (isVText(vnode)) {
     return doc.createTextNode(vnode.text)
   }
   if (isVNode(vnode)) {
-    isSvg = vnode.tagName === 'svg' ? true : vnode.tagName === 'foreignObject' ? false : isSvg
+    if (vnode.isSvg) {
+      isSvg = true
+    } else if (vnode.tagName === 'svg' ) {
+      isSvg = true
+    } else if (vnode.tagName === 'foreignObject') {
+      isSvg = false
+    }
     if (isSvg) {
       vnode.namespace = SVG_NAMESPACE
     }
     const domNode = (vnode.namespace === null) ? doc.createElement(vnode.tagName)
       : doc.createElementNS(vnode.namespace, vnode.tagName)
     setProps(domNode, vnode.properties)
+    if (isSvg) {
+      vnode.isSvg = isSvg
+    }
     const children = vnode.children
     if (children.length) {
       children.forEach(child => domNode.appendChild(createElement(child, isSvg)))

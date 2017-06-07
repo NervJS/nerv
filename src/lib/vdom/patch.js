@@ -1,5 +1,6 @@
 import VPatch from './vpatch'
 import { isArray, isFunction, isString, isObject, getPrototype } from '~'
+import shallowEqual from '~/shallow-equal'
 import domIndex from './dom-index'
 import { isWidget, isHook } from './vnode/types'
 import createElement from './create-element'
@@ -48,6 +49,8 @@ function patchSingle (domNode, vpatch) {
       return patchInsert(domNode, patchObj)
     case VPatch.WIDGET:
       return patchWidget(domNode, oldVNode, patchObj)
+    case VPatch.STATELESS:
+      return patchStateLess(domNode, oldVNode, patchObj)
     case VPatch.PROPS:
       return patchProperties(domNode, patchObj, oldVNode.properties)
     case VPatch.ORDER:
@@ -107,12 +110,26 @@ function patchWidget (domNode, vnode, patch) {
   } else {
     newNode = createElement(patch)
   }
-  let parentNode = domNode.parentNode
+  const parentNode = domNode.parentNode
   if (parentNode && domNode !== newNode) {
     parentNode.replaceChild(newNode, domNode)
   }
   if (!isUpdate && vnode) {
     destroyWidget(domNode, vnode)
+  }
+  return newNode
+}
+
+function patchStateLess (domNode, vnode, patch) {
+  const oldProps = vnode.props
+  const newProps = patch.props
+  if (shallowEqual(oldProps, newProps)) {
+    return domNode
+  }
+  const newNode = createElement(patch)
+  const parentNode = domNode.parentNode
+  if (parentNode && domNode !== newNode) {
+    parentNode.replaceChild(newNode, domNode)
   }
   return newNode
 }

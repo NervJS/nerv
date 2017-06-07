@@ -2,29 +2,25 @@ import { extend, isFunction, clone } from './util'
 import nextTick from './util/next-tick'
 import CurrentOwner from './current-owner'
 import createElement from '#/create-element'
-import { isWidget, isVNode } from '#/vnode/types'
 import diff from '#/diff'
 import patch from '#/patch'
 
 const readyComponents = []
 
 export function mountVNode (vnode, parentContext) {
-  let dom
-  if (isVNode(vnode)) {
-    dom = mountElement(vnode)
-  }
-  if (isWidget(vnode)) {
-    dom = mountComponent(vnode, parentContext)
-  }
-  return dom
-}
-
-export function mountElement (vnode) {
+  vnode.parentContext = parentContext
   return createElement(vnode)
 }
 
-export function mountComponent (vnode, parentContext) {
-  vnode.mount()
+export function mountComponent (vnode) {
+  const parentContext = vnode.parentContext
+  const componentPrototype = vnode.ComponentType.prototype
+  if (componentPrototype && isFunction(componentPrototype.render)) {
+    vnode.component = new vnode.ComponentType(vnode.props, vnode.context)
+    let constructor =  vnode.component.constructor
+    vnode.name = constructor.name || constructor.toString().match(/^function\s*([^\s(]+)/)[1]
+    constructor.displayName = vnode.name
+  }
   const component = vnode.component
   if (isFunction(component.componentWillMount)) {
     component.componentWillMount()
@@ -40,6 +36,11 @@ export function mountComponent (vnode, parentContext) {
   const dom = mountVNode(rendered, getChildContext(component, parentContext))
   component.dom = dom
   return dom
+}
+
+export function mountStatelessComponent (vnode) {
+  vnode._renderd = vnode.tagName(vnode.props, vnode.parentContext)
+  return mountVNode(vnode._renderd, vnode.parentContext)
 }
 
 export function getChildContext (component, context) {
@@ -133,7 +134,7 @@ export function unmoutComponent (component) {
   if (isFunction(component.componentWillUnmount)) {
     component.componentWillUnmount()
   }
-  component.dom = component.lastRendered = this.rendered = null
+  component.dom = component.lastRendered = component.rendered = null
   if (isFunction(component.__ref)) {
     component.__ref(null)
   }

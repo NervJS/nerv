@@ -1,5 +1,5 @@
 import VPatch from './vpatch'
-import { isVNode, isVText, isWidget, isHook } from './vnode/types'
+import { isVNode, isVText, isWidget, isStateLess, isHook } from './vnode/types'
 import { isFunction, isArray, isObject, getPrototype } from '~'
 
 function diff (a, b) {
@@ -52,6 +52,9 @@ function walk (a, b, patches, index) {
       walk(null, item, patches, index)
       index++
     })
+  } else if (isStateLess(b)) {
+    applyClear = true
+    apply = appendPatch(apply, new VPatch(VPatch.STATELESS, a, b))
   }
   if (apply) {
     patches[index] = apply
@@ -273,14 +276,14 @@ function unhook(vnode, patch, index) {
       for (let i = 0; i < len; i++) {
         let child = children[i]
         index += 1
-
         unhook(child, patch, index)
-
         if (isVNode(child) && child.count) {
           index += child.count
         }
       }
     }
+  } else if (isStateLess(vnode)) {
+    unhook(vnode._renderd, patch, index)
   }
 }
 
@@ -297,6 +300,8 @@ function destroyWidgets (vnode, patch, index) {
         index += child.count
       }
     })
+  } else if (isStateLess(vnode)) {
+    destroyWidgets(vnode._renderd, patch, index)
   }
 }
 

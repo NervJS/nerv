@@ -5,7 +5,6 @@ import { enqueueRender } from './render-queue'
 class Component extends Events {
   constructor (props, context) {
     super()
-    this._dirty = true
     if (!this.state) {
       this.state = {}
     }
