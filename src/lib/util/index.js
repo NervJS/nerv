@@ -57,12 +57,11 @@ export function isNative (Ctor) {
 }
 
 export function extend (source, from) {
+  if (!from) {
+    return source
+  }
   for (let key in from) {
-    if (!source[key]) {
-      source[key] = from[key]
-    } else if (type(from[key]) === 'object') {
-      source[key] = extend(source[key], from[key])
-    } else {
+    if (from.hasOwnProperty(key)) {
       source[key] = from[key]
     }
   }
