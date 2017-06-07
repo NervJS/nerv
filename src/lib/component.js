@@ -1,6 +1,7 @@
 import Events from './events'
 import { isFunction, extend, clone } from './util'
 import { enqueueRender } from './render-queue'
+import { updateComponent } from './lifecycle'
 
 class Component extends Events {
   constructor (props, context) {
@@ -25,6 +26,10 @@ class Component extends Events {
       (this._renderCallbacks = (this._renderCallbacks || [])).push(callback)
     }
     enqueueRender(this)
+  }
+
+  forceUpdate (callback) {
+    updateComponent(this, true)
   }
 }
 
