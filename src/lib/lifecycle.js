@@ -58,6 +58,9 @@ export function renderComponent (component) {
 }
 
 export function flushMount () {
+  if (!readyComponents.length) {
+    return
+  }
   const queue = readyComponents.slice(0)
   readyComponents.length = 0
   queue.forEach(item => {
@@ -77,7 +80,7 @@ export function reRenderComponent (previous, current) {
   return current.component.dom
 }
 
-export function updateComponent (component) {
+export function updateComponent (component, isForce) {
   const lastDom = component.dom
   let props = component.props
   let state = component.state
@@ -89,7 +92,7 @@ export function updateComponent (component) {
   component.state = prevState
   component.context = prevContext
   let skip = false
-  if (isFunction(component.shouldComponentUpdate)
+  if (!isForce && isFunction(component.shouldComponentUpdate)
     && component.shouldComponentUpdate(props, state, context) === false) {
     skip = true
   } else if (isFunction(component.componentWillUpdate)) {
@@ -111,6 +114,7 @@ export function updateComponent (component) {
   component.prevProps = clone(component.props)
   component.prevState = clone(component.state)
   component.prevContext = clone(component.context)
+  flushMount()
   if (component._renderCallbacks) {
     while (component._renderCallbacks.length) {
       component._renderCallbacks.pop().call(component)
