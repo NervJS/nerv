@@ -3,6 +3,7 @@ import SVGPropertyConfig from '#/svg-property-config'
 import { isFunction, isString, isNumber, isBoolean, isObject } from '~'
 import FullComponent from './full-component'
 import StatelessComponent from './stateless-component'
+import CurrentOwner from './current-owner'
 import RefHook from './hooks/ref-hook'
 import HtmlHook from './hooks/html-hook'
 import EventHook from './hooks/event-hook'
@@ -100,10 +101,12 @@ function createElement (tagName, properties) {
   let props
   if (isString(tagName)) {
     props = transformPropsForRealTag(tagName, properties)
+    props.owner = CurrentOwner.current
     return h(tagName, props, children)
   } else if (isFunction(tagName)) {
     props = transformPropsForComponent(properties)
     props.children = children
+    props.owner = CurrentOwner.current
     return (tagName.prototype && tagName.prototype.render) ?
       new FullComponent(tagName, props) :
       new StatelessComponent(tagName, props)

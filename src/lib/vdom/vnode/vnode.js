@@ -2,12 +2,13 @@ import { isString, isFunction } from '~'
 import { isWidget, isVNode, isHook } from './types'
 
 class VNode {
-  constructor (tagName, properties, children, key, namespace) {
+  constructor (tagName, properties, children, key, namespace, owner) {
     this.tagName = tagName || 'DIV'
     this.properties = properties || {}
     this.children = children || []
     this.key = key || null
     this.namespace = (isString(namespace)) ? namespace : null
+    this._owner = owner
     let count = this.children.length || 0
     let descendants = 0
     let hasWidgets = false

@@ -4,6 +4,8 @@ class ComponentWrapper {
   constructor (ComponentType, props) {
     this.ComponentType = ComponentType
     this.props = props
+    this._owner = props.owner
+    delete props.owner
   }
 
   type = 'Widget'

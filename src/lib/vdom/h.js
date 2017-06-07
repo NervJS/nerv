@@ -4,7 +4,7 @@ import { isVNode, isVText, isWidget, isStateLess } from './vnode/types'
 import { isString, isArray, isNumber } from '~'
 
 function h (tagName, properties, children) {
-  let key, namespace, childNodes = []
+  let key, namespace, owner, childNodes = []
   if (!children && isChildren(properties)) {
     children = properties
     properties = {}
@@ -18,10 +18,14 @@ function h (tagName, properties, children) {
     namespace = properties.namespace
     delete properties.namespace
   }
+  if (properties.hasOwnProperty('owner') && properties.owner) {
+    owner = properties.owner
+    delete properties.owner
+  }
   if (children) {
     addChildren(childNodes, children, tagName)
   }
-  return new VNode(tagName, properties, childNodes, key, namespace)
+  return new VNode(tagName, properties, childNodes, key, namespace, owner)
 }
 
 function addChildren (childNodes, children, tagName) {
