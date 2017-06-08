@@ -4,6 +4,8 @@ class ComponentWrapper {
   constructor (ComponentType, props) {
     this.ComponentType = ComponentType
     this.props = props
+    this.name = ComponentType.name || ComponentType.toString().match(/^function\s*([^\s(]+)/)[1]
+    ComponentType.displayName = this.name
     this._owner = props.owner
     delete props.owner
   }

@@ -17,9 +17,6 @@ export function mountComponent (vnode) {
   const componentPrototype = vnode.ComponentType.prototype
   if (componentPrototype && isFunction(componentPrototype.render)) {
     vnode.component = new vnode.ComponentType(vnode.props, vnode.context)
-    let constructor =  vnode.component.constructor
-    vnode.name = constructor.name || constructor.toString().match(/^function\s*([^\s(]+)/)[1]
-    constructor.displayName = vnode.name
   }
   const component = vnode.component
   if (isFunction(component.componentWillMount)) {
@@ -69,15 +66,18 @@ export function flushMount () {
 }
 
 export function reRenderComponent (previous, current) {
-  current.component = previous.component
-  if (isFunction(current.component.componentWillReceiveProps)) {
-    current.component.componentWillReceiveProps(current.props, current.state)
+  const component = current.component = previous.component
+  if (isFunction(component.componentWillReceiveProps)) {
+    component.componentWillReceiveProps(current.props, current.state)
   }
-  current.component.props = extend(current.component.props, current.props)
-  current.component.state = extend(current.component.state, current.state)
-  current.component.context = extend(current.component.context, current.context)
-  updateComponent(current.component)
-  return current.component.dom
+  component.prevProps = clone(component.props)
+  component.prevState = clone(component.state)
+  component.prevContext = clone(component.context)
+  component.props = extend(component.props, current.props)
+  component.state = extend(component.state, current.state)
+  component.context = extend(component.context, current.context)
+  updateComponent(component)
+  return component.dom
 }
 
 export function updateComponent (component, isForce) {
