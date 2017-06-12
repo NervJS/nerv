@@ -245,7 +245,6 @@ function diffList (oldList, newList, key) {
 
 function remove(arr, index, key) {
   arr.splice(index, 1)
-
   return {
     from: index,
     key
@@ -283,6 +282,7 @@ function unhook(vnode, patch, index) {
       }
     }
   } else if (isStateLess(vnode)) {
+    index += 1
     unhook(vnode._renderd, patch, index)
   }
 }
@@ -301,6 +301,7 @@ function destroyWidgets (vnode, patch, index) {
       }
     })
   } else if (isStateLess(vnode)) {
+    index += 1
     destroyWidgets(vnode._renderd, patch, index)
   }
 }
