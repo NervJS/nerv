@@ -11,6 +11,8 @@ import AttributeHook from './hooks/attribute-hook'
 
 const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i
 
+const EMPTY_CHILDREN = []
+
 function transformPropsForRealTag (tagName, props) {
   let newProps = {}
   const DOMAttributeNamespaces = SVGPropertyConfig.DOMAttributeNamespaces
@@ -89,11 +91,19 @@ function transformPropsForComponent (props) {
 }
 
 function createElement (tagName, properties) {
-  let children = []
+  let children = EMPTY_CHILDREN
   for (let i = 2, len = arguments.length; i < len; i++) {
-    let argumentsItem = arguments[i]
+    const argumentsItem = arguments[i]
     if (Array.isArray(argumentsItem)) {
-      argumentsItem.forEach(item => children.push(item))
+      argumentsItem.forEach(item => {
+        if (children === EMPTY_CHILDREN) {
+          children = [item]
+        } else {
+          children.push(item)
+        }
+      })
+    } else if (children === EMPTY_CHILDREN) {
+      children = [argumentsItem]
     } else {
       children.push(argumentsItem)
     }

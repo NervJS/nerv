@@ -67,15 +67,16 @@ export function flushMount () {
 
 export function reRenderComponent (previous, current) {
   const component = current.component = previous.component
+  const nextProps = current.props
+  const nextContext = current.context
   if (isFunction(component.componentWillReceiveProps)) {
-    component.componentWillReceiveProps(current.props, current.state)
+    component.componentWillReceiveProps(nextProps)
   }
-  component.prevProps = clone(component.props)
-  component.prevState = clone(component.state)
-  component.prevContext = clone(component.context)
-  component.props = extend(component.props, current.props)
-  component.state = extend(component.state, current.state)
-  component.context = extend(component.context, current.context)
+  component.prevProps = component.props
+  component.prevState = component.state
+  component.prevContext = component.context
+  component.props = nextProps
+  component.context = nextContext
   updateComponent(component)
   return component.dom
 }
