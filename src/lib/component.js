@@ -10,7 +10,6 @@ class Component extends Events {
       this.state = {}
     }
     this.props = props || {}
-    this.props = extend(clone(this.constructor.defaultProps || {}), this.props)
     this.context = context || {}
   }
 
