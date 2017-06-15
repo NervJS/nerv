@@ -149,7 +149,9 @@ function patchProperties (domNode, patch, previousProps) {
         previousValue.unhook(domNode, propName)
       } else if (propName === 'attributes') {
         for (let attrName in previousValue) {
-          domNode.removeAttribute(attrName)
+          if (domNode.removeAttribute) {
+            domNode.removeAttribute(attrName)
+          }
         }
       } else if (propName === 'style') {
         for (let styleName in previousValue) {
@@ -166,9 +168,9 @@ function patchProperties (domNode, patch, previousProps) {
     } else if (propName === 'attributes') {
       for (let attrName in propValue) {
         let attrValue = propValue[attrName]
-        if (attrValue === undefined) {
+        if (attrValue === undefined && domNode.removeAttribute) {
           domNode.removeAttribute(attrName)
-        } else {
+        } else if (domNode.setAttribute) {
           domNode.setAttribute(attrName, attrValue)
         }
       }

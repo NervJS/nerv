@@ -14,7 +14,9 @@ class AttributeHook {
       prev.namespace === this.namespace) {
       return
     }
-    node.setAttributeNS(this.namespace, prop, this.value)
+    if (node.setAttributeNS) {
+      node.setAttributeNS(this.namespace, prop, this.value)
+    }
   }
 
   unhook (node, prop, next) {
@@ -24,7 +26,9 @@ class AttributeHook {
     }
     const colonPosition = prop.indexOf(':')
     const localName = colonPosition > -1 ? prop.substr(colonPosition + 1) : prop
-    node.removeAttributeNS(this.namespace, localName)
+    if (node.removeAttributeNS) {
+      node.removeAttributeNS(this.namespace, localName)
+    }
   }
 }
 

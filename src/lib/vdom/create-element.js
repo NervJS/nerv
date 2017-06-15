@@ -23,21 +23,25 @@ function createElement (vnode, isSvg) {
       vnode.namespace = SVG_NAMESPACE
     }
     const domNode = (vnode.namespace === null) ? doc.createElement(vnode.tagName)
-      : doc.createElementNS(vnode.namespace, vnode.tagName)
+      : doc.createElementNS ? doc.createElementNS(vnode.namespace, vnode.tagName) : doc.createElement(vnode.tagName)
     setProps(domNode, vnode.properties)
     if (isSvg) {
       vnode.isSvg = isSvg
     }
     const children = vnode.children
     if (children.length) {
-      children.forEach(child => domNode.appendChild(createElement(child, isSvg)))
+      children.forEach(child => {
+        if (child !== undefined && child !== null && child !== false && domNode.appendChild) {
+          domNode.appendChild(createElement(child, isSvg))
+        }
+      })
     }
     return domNode
   }
   if (Array.isArray(vnode)) {
     const domNode = doc.createDocumentFragment()
     vnode.forEach(child => {
-      if (child !== undefined && child !== null && child !== false) {
+      if (child !== undefined && child !== null && child !== false && domNode.appendChild) {
         return domNode.appendChild(createElement(child, isSvg))
       }
     })
@@ -57,7 +61,7 @@ function setProps (domNode, props) {
       if (p === 'attributes') {
         for (let k in propValue) {
           let attrValue = propValue[k]
-          if (attrValue !== undefined) {
+          if (attrValue !== undefined && domNode.setAttribute) {
             domNode.setAttribute(k, attrValue)
           }
         }
