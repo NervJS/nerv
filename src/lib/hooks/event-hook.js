@@ -1,42 +1,118 @@
 import { isFunction } from '~'
 import SimpleMap from '~/simple-map'
 
-let delegatedEvents = new SimpleMap()
+const delegatedEvents = new SimpleMap()
+
+const unbubbleEvents = {
+  onmousemove: 1,
+  ontouchmove: 1,
+  onmouseleave: 1,
+  onmouseenter: 1,
+  onload: 1,
+  onunload: 1,
+  onscroll: 1,
+  onfocus: 1,
+  onblur: 1,
+  onrowexit: 1,
+  onbeforeunload: 1,
+  onstop: 1,
+  ondragdrop: 1,
+  ondragenter: 1,
+  ondragexit: 1,
+  ondraggesture: 1,
+  ondragover: 1,
+  oncontextmenu: 1,
+  onerror: 1,
+  onabort: 1,
+  oncanplay: 1,
+  oncanplaythrough: 1,
+  ondurationchange: 1,
+  onemptied: 1,
+  onended: 1,
+  onloadeddata: 1,
+  onloadedmetadata: 1,
+  onloadstart: 1,
+  onencrypted: 1,
+  onpause: 1,
+  onplay: 1,
+  onplaying: 1,
+  onprogress: 1,
+  onratechange: 1,
+  onseeking: 1,
+  onseeked: 1,
+  onstalled: 1,
+  onsuspend: 1,
+  ontimeupdate: 1,
+  onvolumechange: 1,
+  onwaiting: 1
+}
 
 class EventHook {
   constructor (eventName, handler) {
-    this.eventName = eventName
+    this.eventName = getEventName(eventName)
     this.handler = handler
   }
 
   hook (node) {
-    let delegatedRoots = delegatedEvents.get(this.eventName)
-    if (!delegatedRoots) {
-      delegatedRoots = {
-        items: new SimpleMap()
+    const eventName = this.eventName
+    let delegatedRoots = delegatedEvents.get(eventName)
+    if (unbubbleEvents[eventName] === 1) {
+      if (!delegatedRoots) {
+        delegatedRoots = new SimpleMap()
       }
-      delegatedRoots.event = attachEventToDocument(this.eventName, delegatedRoots)
-      delegatedEvents.set(this.eventName, delegatedRoots)
-    }
-    if (isFunction(this.handler)) {
-      delegatedRoots.items.set(node, this.handler)
+      const event = attachEventToNode(node, eventName, delegatedRoots)
+      delegatedEvents.set(eventName, delegatedRoots)
+      if (isFunction(this.handler)) {
+        delegatedRoots.set(node, {
+          eventHandler: this.handler,
+          event
+        })
+      }
+    } else {
+      if (!delegatedRoots) {
+        delegatedRoots = {
+          items: new SimpleMap()
+        }
+        delegatedRoots.event = attachEventToDocument(document, eventName, delegatedRoots)
+        delegatedEvents.set(eventName, delegatedRoots)
+      }
+      if (isFunction(this.handler)) {
+        delegatedRoots.items.set(node, this.handler)
+      }
     }
   }
 
   unhook (node) {
-    let delegatedRoots = delegatedEvents.get(this.eventName)
-    if (delegatedRoots && delegatedRoots.items) {
+    const eventName = this.eventName
+    let delegatedRoots = delegatedEvents.get(eventName)
+    if (unbubbleEvents[eventName] === 1 && delegatedRoots) {
+      let event = delegatedRoots.get(node)
+      node.removeEventListener(parseEventName(eventName), event.event, false)
+      delegatedRoots.remove(node)
+      if (delegatedRoots.size() === 0) {
+        delegatedEvents.remove(eventName)
+      }
+    } else if (delegatedRoots && delegatedRoots.items) {
       let items = delegatedRoots.items
       if (items.remove(node) && items.size() === 0) {
-        document.removeEventListener(parseEventName(this.eventName), delegatedRoots.event, false);
-        delegatedEvents.remove(this.eventName)
+        document.removeEventListener(parseEventName(eventName), delegatedRoots.event, false)
+        delegatedEvents.remove(eventName)
       }
     }
   }
 }
 
+function getEventName (name) {
+  if (name === 'onDoubleClick') {
+    name = 'ondblclick'
+  } else if (name === 'onTouchTap') {
+    name = 'onclick'
+  }
+  return name.toLowerCase()
+}
+
 function parseEventName (name) {
-  return name.substr(2).toLowerCase()
+  return name.substr(2)
 }
 
 function stopPropagation () {
@@ -63,8 +139,8 @@ function dispatchEvent (event, target, items, count, eventData) {
   }
 }
 
-function attachEventToDocument (eventName, delegatedRoots) {
-  const docEvent = (event) => {
+function attachEventToDocument (doc, eventName, delegatedRoots) {
+  const eventHandler = (event) => {
     const count = delegatedRoots.items.size()
     if (count > 0) {
       const eventData = {
@@ -84,8 +160,31 @@ function attachEventToDocument (eventName, delegatedRoots) {
       dispatchEvent(event, event.target, delegatedRoots.items, count, eventData)
     }
   }
-  document.addEventListener(parseEventName(eventName), docEvent, false)
-  return docEvent
+  doc.addEventListener(parseEventName(eventName), eventHandler, false)
+  return eventHandler
+}
+
+function attachEventToNode (node, eventName, delegatedRoots) {
+  const eventHandler = (event) => {
+    const eventToTrigger = delegatedRoots.get(node)
+    if (eventToTrigger && eventToTrigger.eventHandler) {
+      const eventData = {
+        currentTarget: event.target
+      };
+      Object.defineProperties(event, {
+        currentTarget: {
+          configurable: true,
+          get () {
+            return eventData.currentTarget
+          }
+        }
+      })
+      eventData.currentTarget = event.target
+      eventToTrigger.eventHandler(event)
+    }
+  }
+  node.addEventListener(parseEventName(eventName), eventHandler, false)
+  return eventHandler
 }
 
 export default EventHook
