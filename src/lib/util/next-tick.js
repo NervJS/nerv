@@ -27,7 +27,7 @@ function canUseMutationObserver () {
 function installPromise () {
   let p = Promise.resolve()
   let logErr = err => console.error(err)
-  runNextTick = function () {
+  runNextTick = function _runNextTick () {
     p.then(nextHandler).catch(logErr)
   }
 }
@@ -39,14 +39,14 @@ function installMutationObserver () {
   observer.observe(textNode, {
     characterData: true
   })
-  runNextTick = function () {
+  runNextTick = function _runNextTick () {
     observeNum = (observeNum + 1) % 2
     textNode.data = observeNum
   }
 }
 
 function installSetTimeout () {
-  runNextTick = function () {
+  runNextTick = function _runNextTick () {
     let timer = setTimeout
     timer(nextHandler, 0)
   }
