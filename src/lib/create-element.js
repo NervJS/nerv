@@ -59,7 +59,8 @@ function transformPropsForRealTag (tagName, props) {
     }
     if (propName === 'style') {
       if (isString(propValue)) {
-        newProps[propName] = propValue
+        newProps.attributes = newProps.attributes || {}
+        newProps.attributes[propName] = propValue
       } else if (isObject(propValue)) {
         for (let styleName in propValue) {
           let styleValue = propValue[styleName]

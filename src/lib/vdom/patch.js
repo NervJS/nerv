@@ -1,5 +1,5 @@
 import VPatch from './vpatch'
-import { isArray, isFunction, isString, isObject, getPrototype } from '~'
+import { isFunction, isString, isObject, getPrototype } from '~'
 import shallowEqual from '~/shallow-equal'
 import domIndex from './dom-index'
 import { isWidget, isHook } from './vnode/types'
@@ -23,7 +23,7 @@ function applyPatch (rootNode, domNode, patch) {
     return rootNode
   }
   let newNode
-  if (!isArray(patch)) {
+  if (!Array.isArray(patch)) {
     patch = [patch]
   }
   patch.forEach(patchItem => {

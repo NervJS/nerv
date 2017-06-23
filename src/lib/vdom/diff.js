@@ -1,6 +1,6 @@
 import VPatch from './vpatch'
 import { isVNode, isVText, isWidget, isStateLess, isHook } from './vnode/types'
-import { isFunction, isArray, isObject, getPrototype } from '~'
+import { isFunction, isObject, getPrototype } from '~'
 
 function diff (a, b) {
   let patches = {old: a}
@@ -46,7 +46,7 @@ function walk (a, b, patches, index) {
       applyClear = true
     }
     apply = appendPatch(apply, new VPatch(VPatch.WIDGET, a, b))
-  } else if (isArray(b)) {
+  } else if (Array.isArray(b)) {
     applyClear = true
     b.forEach(item => {
       walk(null, item, patches, index)
@@ -335,7 +335,7 @@ function undefinedKeys (obj) {
 
 function appendPatch (apply, patch) {
   if (apply) {
-    if (isArray(apply)) {
+    if (Array.isArray(apply)) {
       apply.push(patch)
     } else {
       apply = [apply, patch]
