@@ -5,8 +5,8 @@ export default function shallowEqual (obj1, obj2) {
   if (Object.is(obj1, obj2)) {
     return true
   }
-  const obj1Keys = Object.keys(obj1)
-  const obj2Keys = Object.keys(obj2)
+  const obj1Keys = obj1 ? Object.keys(obj1) : []
+  const obj2Keys = obj2 ? Object.keys(obj2) : []
   if (obj1Keys.length !== obj2Keys.length) {
     return false
   }
