@@ -3,15 +3,17 @@ import { updateComponent} from './lifecycle'
 let items = []
 
 export function enqueueRender (component) {
-  if (items.push(component) === 1) {
+  if (!component._dirty && (component._dirty = true) && items.push(component) === 1) {
     nextTick(rerender)
   }
 }
 
 export function rerender () {
-  let p, list = items
-  items = []
+  let p, list = items.concat()
+  items.length = 0
   while ((p = list.pop())) {
-    updateComponent(p)
+    if (p._dirty) {
+      updateComponent(p)
+    }
   }
 }

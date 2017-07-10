@@ -11,23 +11,41 @@ class Component extends Events {
     }
     this.props = props || {}
     this.context = context || {}
+
+    this._dirty = true
+    this._disable = true
   }
 
   setState (state, callback) {
-    if (!this.prevState) {
-      this.prevState = clone(this.state)
+    if (state) {
+      (this._pendingStates = (this._pendingStates || [])).push(state)
     }
-    if (isFunction(state)) {
-      state = state(this.state, this.props)
+    if (isFunction(callback)) {
+      (this._pendingCallbacks = (this._pendingCallbacks || [])).push(callback)
     }
-    extend(this.state, state)
-    if (callback) {
-      (this._renderCallbacks = (this._renderCallbacks || [])).push(callback)
+    if (!this._disable) {
+      enqueueRender(this)
     }
-    enqueueRender(this)
   }
 
-  forceUpdate (callback) {
+  getState () {
+    const { _pendingStates = [], state, props } = this
+    if (!_pendingStates.length) {
+      return state
+    }
+    const stateClone = clone(state)
+    const queue = _pendingStates.concat()
+    this._pendingStates.length = 0
+    queue.forEach(nextState => {
+      if (isFunction(nextState)) {
+        nextState = nextState.call(this, state, props)
+      }
+      extend(stateClone, nextState)
+    })
+    return stateClone
+  }
+
+  forceUpdate () {
     updateComponent(this, true)
   }
 }

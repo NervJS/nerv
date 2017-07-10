@@ -21,17 +21,20 @@ export function mountComponent (vnode) {
   const component = vnode.component
   if (isFunction(component.componentWillMount)) {
     component.componentWillMount()
+    component.state = component.getState()
   }
+  component._dirty = false
   const rendered = renderComponent(component)
   component._rendered = rendered
   if (isFunction(component.componentDidMount)) {
     readyComponents.push(() => component.componentDidMount())
   }
-  if (isFunction(vnode.__ref)) {
-    readyComponents.push(() => vnode.__ref(component))
+  if (isFunction(vnode.props.ref)) {
+    readyComponents.push(() => vnode.props.ref(component))
   }
   const dom = mountVNode(rendered, getChildContext(component, parentContext))
   component.dom = dom
+  component._disable = false
   return dom
 }
 
@@ -65,13 +68,15 @@ export function flushMount () {
   })
 }
 
-export function reRenderComponent (previous, current) {
-  const component = current.component = previous.component
+export function reRenderComponent (prev, current) {
+  const component = current.component = prev.component
   const nextProps = current.props
   const nextContext = current.context
+  component._disable = true
   if (isFunction(component.componentWillReceiveProps)) {
     component.componentWillReceiveProps(nextProps)
   }
+  component._disable = false
   component.prevProps = component.props
   component.prevState = component.state
   component.prevContext = component.context
@@ -84,13 +89,11 @@ export function reRenderComponent (previous, current) {
 export function updateComponent (component, isForce) {
   const lastDom = component.dom
   let props = component.props
-  let state = component.state
+  let state = component.getState()
   let context = component.context
   let prevProps = component.prevProps || props
-  let prevState = component.prevState || state
   let prevContext = component.prevContext || context
   component.props = prevProps
-  component.state = prevState
   component.context = prevContext
   let skip = false
   if (!isForce && isFunction(component.shouldComponentUpdate)
@@ -102,6 +105,7 @@ export function updateComponent (component, isForce) {
   component.props = props
   component.state = state
   component.context = context
+  component._dirty = false
   if (!skip) {
     const lastRendered = component._rendered
     const rendered = renderComponent(component)
@@ -116,9 +120,9 @@ export function updateComponent (component, isForce) {
   component.prevState = clone(component.state)
   component.prevContext = clone(component.context)
   flushMount()
-  if (component._renderCallbacks) {
-    while (component._renderCallbacks.length) {
-      component._renderCallbacks.pop().call(component)
+  if (component._pendingCallbacks) {
+    while (component._pendingCallbacks.length) {
+      component._pendingCallbacks.pop().call(component)
     }
   }
 }
@@ -140,7 +144,7 @@ export function unmoutComponent (component) {
     component.componentWillUnmount()
   }
   component.dom = component.lastRendered = component.rendered = null
-  if (isFunction(component.__ref)) {
-    component.__ref(null)
+  if (isFunction(component.props.ref)) {
+    component.props.ref(null)
   }
 }

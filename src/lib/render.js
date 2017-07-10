@@ -1,30 +1,22 @@
 import { mountVNode, flushMount } from './lifecycle'
-import { isWidget } from '#/vnode/types'
+import { isWidget, isVNode } from '#/vnode/types'
 
 export function render (vnode, container, callback) {
-  if (!vnode || !container) {
-    return
+  if (!isVNode(vnode) && !isWidget(vnode)) {
+    throw new Error(`${vnode} should be Widget or VirtualNode`)
   }
-  const parentContext = {}
-  const dom = mountVNode(vnode, parentContext)
+  if (!container || container.nodeType !== 1) {
+    throw new Error(`${container} should be a DOM Element`)
+  }
+  const dom = mountVNode(vnode, {})
   if (dom) {
     container.appendChild(dom)
   }
   flushMount()
-  
+
   if (callback) {
     callback()
   }
 
   return vnode.component || dom
-}
-
-export function renderComponentToString (vnode, callback) {
-  if (!isWidget(vnode)) {
-    return
-  }
-  let component = vnode.component
-  component.isServer = true
-  component.on('mounted', callback || (() => {}))
-  component.mount()
 }

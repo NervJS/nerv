@@ -2,7 +2,7 @@ import Events from './lib/events'
 import Module from './lib/module'
 import Component from './lib/component'
 import PureComponent from './lib/pure-component'
-import { render, renderComponentToString } from './lib/render'
+import { render } from './lib/render'
 import createElement from './lib/create-element'
 import cloneElement from './lib/clone-element'
 import * as Util from './lib/util'
@@ -31,7 +31,6 @@ if (isBrowser()) {
     PureComponent,
     createElement,
     cloneElement,
-    render,
-    renderComponentToString
+    render
   }
 }
