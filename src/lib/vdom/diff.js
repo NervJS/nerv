@@ -32,7 +32,7 @@ function walk (a, b, patches, index) {
       apply = appendPatch(apply, new VPatch(VPatch.VNODE, a, b))
       applyClear = true
     } else if (a.tagName === b.tagName && a.key === b.key) {
-      const propsPatch = diffProps(a.properties, b.properties)
+      const propsPatch = diffProps(a.props, b.props)
       if (propsPatch) {
         apply = appendPatch(apply, new VPatch(VPatch.PROPS, a, propsPatch))
       }
@@ -268,7 +268,7 @@ function unhook(vnode, patch, index) {
         )
       )
     }
-    
+
     if (vnode.descendantHooks) {
       let children = vnode.children
       let len = children.length

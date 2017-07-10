@@ -2,9 +2,9 @@ import { isString, isFunction } from '~'
 import { isWidget, isVNode, isHook } from './types'
 
 class VNode {
-  constructor (tagName, properties, children, key, namespace, owner) {
+  constructor (tagName, props, children, key, namespace, owner) {
     this.tagName = tagName || 'DIV'
-    this.properties = properties || {}
+    this.props = props || {}
     this.children = children || []
     this.key = key || null
     this.namespace = (isString(namespace)) ? namespace : null
@@ -14,9 +14,9 @@ class VNode {
     let hasWidgets = false
     let descendantHooks = false
     let hooks
-    for (let propName in properties) {
-      if (properties.hasOwnProperty(propName)) {
-        let property = properties[propName]
+    for (let propName in props) {
+      if (props.hasOwnProperty(propName)) {
+        let property = props[propName]
         if (isHook(property) && property.unhook) {
           if (!hooks) {
             hooks = {}

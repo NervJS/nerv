@@ -3,29 +3,29 @@ import VText from './vnode/VText'
 import { isVNode, isVText, isWidget, isStateLess } from './vnode/types'
 import { isString, isArray, isNumber } from '~'
 
-function h (tagName, properties, children) {
+function h (tagName, props, children) {
   let key, namespace, owner, childNodes = []
-  if (!children && isChildren(properties)) {
-    children = properties
-    properties = {}
+  if (!children && isChildren(props)) {
+    children = props
+    props = {}
   }
-  properties = properties || {}
-  if (properties.hasOwnProperty('key') && properties.key) {
-    key = properties.key
-    delete properties.key
+  props = props || {}
+  if (props.hasOwnProperty('key') && props.key) {
+    key = props.key
+    delete props.key
   }
-  if (properties.hasOwnProperty('namespace') && properties.namespace) {
-    namespace = properties.namespace
-    delete properties.namespace
+  if (props.hasOwnProperty('namespace') && props.namespace) {
+    namespace = props.namespace
+    delete props.namespace
   }
-  if (properties.hasOwnProperty('owner') && properties.owner) {
-    owner = properties.owner
-    delete properties.owner
+  if (props.hasOwnProperty('owner') && props.owner) {
+    owner = props.owner
+    delete props.owner
   }
   if (children) {
     addChildren(childNodes, children, tagName)
   }
-  return new VNode(tagName, properties, childNodes, key, namespace, owner)
+  return new VNode(tagName, props, childNodes, key, namespace, owner)
 }
 
 function addChildren (childNodes, children, tagName) {

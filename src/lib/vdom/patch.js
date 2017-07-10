@@ -52,7 +52,7 @@ function patchSingle (domNode, vpatch) {
     case VPatch.STATELESS:
       return patchStateLess(domNode, oldVNode, patchObj)
     case VPatch.PROPS:
-      return patchProperties(domNode, patchObj, oldVNode.properties)
+      return patchProps(domNode, patchObj, oldVNode.props)
     case VPatch.ORDER:
       return patchOrder(domNode, patchObj)
     case VPatch.REMOVE:
@@ -140,7 +140,7 @@ function destroyWidget (domNode, widget) {
   }
 }
 
-function patchProperties (domNode, patch, previousProps) {
+function patchProps (domNode, patch, previousProps) {
   for (let propName in patch) {
     let propValue = patch[propName]
     let previousValue = previousProps[propName]

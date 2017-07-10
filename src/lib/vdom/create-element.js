@@ -24,7 +24,7 @@ function createElement (vnode, isSvg) {
     }
     const domNode = (vnode.namespace === null) ? doc.createElement(vnode.tagName)
       : doc.createElementNS ? doc.createElementNS(vnode.namespace, vnode.tagName) : doc.createElement(vnode.tagName)
-    setProps(domNode, vnode.properties)
+    setProps(domNode, vnode.props)
     if (isSvg) {
       vnode.isSvg = isSvg
     }
