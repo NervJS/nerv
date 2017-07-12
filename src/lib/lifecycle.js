@@ -19,6 +19,7 @@ export function mountComponent (vnode) {
     vnode.component = new vnode.ComponentType(vnode.props, vnode.context)
   }
   const component = vnode.component
+  component.context = vnode.context || parentContext
   if (isFunction(component.componentWillMount)) {
     component.componentWillMount()
     component.state = component.getState()
@@ -71,7 +72,7 @@ export function flushMount () {
 export function reRenderComponent (prev, current) {
   const component = current.component = prev.component
   const nextProps = current.props
-  const nextContext = current.context
+  const nextContext = component.context
   component._disable = true
   if (isFunction(component.componentWillReceiveProps)) {
     component.componentWillReceiveProps(nextProps)

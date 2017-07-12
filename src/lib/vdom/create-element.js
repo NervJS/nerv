@@ -32,6 +32,9 @@ function createElement (vnode, isSvg) {
     if (children.length) {
       children.forEach(child => {
         if (child !== undefined && child !== null && child !== false && domNode.appendChild) {
+          if (isWidget(child)) {
+            child.parentContext = vnode.parentContext || {}
+          }
           domNode.appendChild(createElement(child, isSvg))
         }
       })
