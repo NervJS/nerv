@@ -1,3 +1,12 @@
+if (!Object.is) {
+  Object.is = function (x, y) {
+    if (x === y) {
+      return x !== 0 || 1 / x === 1 / y
+    }
+    return x !== x && y !== y
+  }
+}
+
 export default function shallowEqual (obj1, obj2) {
   if (obj1 === null || obj2 === null) {
     return false

@@ -6,45 +6,24 @@
   "scripts": {
     "clear": "rm -rf dist",
     "eslint": "eslint src test",
-    "test": "npm-run-all eslint test:ava",
-    "test:ava": "ava --tap | tap-diff",
+    "test": "npm-run-all eslint test:karma",
+    "test:karma": "node node_modules/karma-event-driver-ext",
     "build": "npm-run-all clear transpile:main",
     "transpile:main": "rollup -c build/rollup.config.js"
   },
   "keywords": [
-    "base"
+    "react-like"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/o2team/nerv.git"
   },
-  "ava": {
-    "files": [
-      "test/**/*.js"
-    ],
-    "source": [
-      "**/*.js",
-      "!dist/**/*"
-    ],
-    "concurrency": 5,
-    "failFast": true,
-    "failWithoutAssertions": false,
-    "tap": true,
-    "powerAssert": true,
-    "require": [
-      "babel-register",
-      "babel-polyfill"
-    ],
-    "babel": {
-      "babelrc": "inherit"
-    }
-  },
   "author": "luckyadam",
   "license": "MIT",
   "devDependencies": {
-    "ava": "^0.19.1",
     "babel-core": "^6.24.0",
     "babel-eslint": "^7.2.2",
+    "babel-loader": "^7.1.1",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-root-import": "^5.1.0",
     "babel-plugin-transform-es3-member-expression-literals": "^6.22.0",
@@ -56,16 +35,25 @@
     "babel-preset-stage-0": "^6.22.0",
     "babel-register": "^6.24.0",
     "babel-runtime": "^6.23.0",
+    "chai": "^4.1.0",
     "eslint": "^3.19.0",
     "eslint-plugin-react": "^6.10.3",
     "global": "^4.3.1",
+    "karma": "^1.7.0",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-event-driver-ext": "^0.0.13",
+    "karma-mocha": "^1.3.0",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^2.0.4",
+    "mocha": "^3.4.2",
     "npm-run-all": "^4.0.2",
     "rollup": "^0.41.6",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-memory": "^2.0.0",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "tap-diff": "^0.1.1"
+    "webpack": "^3.3.0"
   },
   "bugs": {
     "url": "https://github.com/o2team/nerv.git/issues"
