@@ -73,6 +73,10 @@ function transformPropsForRealTag (tagName, props) {
       }
       continue
     }
+    if (propName === 'children' || propName === 'owner') {
+      newProps[propName] = propValue
+      continue
+    }
     if (/input|textarea/.test(tagName) && propName === 'value') {
       newProps[propName] = propValue
     }

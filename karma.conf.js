@@ -3,6 +3,77 @@
 
 const webpack = require('webpack')
 
+const coverage = String(process.env.COVERAGE) !== 'false'
+const ci = String(process.env.CI).match(/^(1|true)$/gi)
+const realBrowser = String(process.env.BROWSER).match(/^(1|true)$/gi)
+const sauceLabs = realBrowser && ci
+
+const sauceLabsLaunchers = {
+  sl_win_chrome: {
+		base: 'SauceLabs',
+		browserName: 'chrome',
+		platform: 'Windows 10'
+  },
+  sl_mac_chrome: {
+		base: 'SauceLabs',
+		browserName: 'chrome',
+		platform: 'Windows 10'
+	},
+	sl_firefox: {
+		base: 'SauceLabs',
+		browserName: 'firefox',
+		platform: 'Windows 10'
+  },
+  sl_mac_firfox: {
+		base: 'SauceLabs',
+		browserName: 'firefox',
+		platform: 'macOS 10.12'
+	},
+	sl_safari: {
+		base: 'SauceLabs',
+		browserName: 'safari',
+		platform: 'macOS 10.12'
+	},
+	sl_edge: {
+		base: 'SauceLabs',
+		browserName: 'MicrosoftEdge',
+		platform: 'Windows 10'
+	},
+	sl_ie_11: {
+		base: 'SauceLabs',
+		browserName: 'internet explorer',
+		version: '11.103',
+		platform: 'Windows 10'
+	},
+	sl_ie_10: {
+		base: 'SauceLabs',
+		browserName: 'internet explorer',
+		version: '10.0',
+		platform: 'Windows 7'
+	},
+	sl_ie_9: {
+		base: 'SauceLabs',
+		browserName: 'internet explorer',
+		version: '9.0',
+		platform: 'Windows 7'
+  },
+  sl_ie_8: {
+		base: 'SauceLabs',
+		browserName: 'internet explorer',
+		version: '8.0',
+		platform: 'Windows 7'
+	}
+}
+
+const travisLaunchers = {
+	chrome_travis: {
+		base: 'Chrome',
+		flags: ['--no-sandbox']
+	}
+}
+
+const localBrowsers = realBrowser ? Object.keys(travisLaunchers) : ['Chrome']
+
 module.exports = function(config) {
   config.set({
 
@@ -12,7 +83,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'chai'],
+    frameworks: ['source-map-support', 'mocha', 'chai-sinon'],
 
 
     // list of files / patterns to load in the browser
@@ -36,6 +107,9 @@ module.exports = function(config) {
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['progress'],
 
+    mochaReporter: {
+			showDiff: true
+		},
 
     // web server port
     port: 9876,
@@ -43,7 +117,6 @@ module.exports = function(config) {
 
     // enable / disable colors in the output (reporters and logs)
     colors: true,
-
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
@@ -56,7 +129,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: sauceLabs ? Object.keys(sauceLabsLaunchers) : localBrowsers,
 
 
     // Continuous Integration mode

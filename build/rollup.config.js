@@ -1,11 +1,12 @@
-import resolve from 'rollup-plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
+import resolve from 'rollup-plugin-node-resolve'
+import babel from 'rollup-plugin-babel'
 import fs from 'fs'
 
 const babelConfig = JSON.parse(String(fs.readFileSync('.babelrc')))
 babelConfig.plugins.push('external-helpers')
 
 export default {
+  moduleName: 'Nerv',
   entry: 'src/index.js',
   format: 'iife',
   plugins: [
@@ -16,7 +17,7 @@ export default {
       sourceMap: true,
       babelrc: false,
       presets: [
-        ["es2015", {
+        ['es2015', {
           modules: false,
           loose: true
         }],
@@ -27,4 +28,4 @@ export default {
     })
   ],
   dest: 'dist/nerv.js'
-};
+}

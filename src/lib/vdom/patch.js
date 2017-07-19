@@ -142,6 +142,9 @@ function destroyWidget (domNode, widget) {
 
 function patchProps (domNode, patch, previousProps) {
   for (let propName in patch) {
+    if (propName === 'children') {
+      continue
+    }
     let propValue = patch[propName]
     let previousValue = previousProps[propName]
     if (propValue === undefined || isHook(propValue)) {
@@ -188,7 +191,7 @@ function patchProps (domNode, patch, previousProps) {
         getPrototype(previousValue) !== getPrototype(propValue)) {
         domNode[propName] = propValue
       }
-    } else {
+    } else if (propName in domNode) {
       domNode[propName] = propValue
     }
   }

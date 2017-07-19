@@ -10,7 +10,12 @@ module.exports = {
   },
   globals: {
     describe: true,
-    it: true
+    it: true,
+    before: true,
+    beforeEach: true,
+    after: true,
+    sinon: true,
+    expect: true
   },
   parser: 'babel-eslint'
 }

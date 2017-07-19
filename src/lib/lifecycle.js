@@ -8,7 +8,9 @@ import patch from '#/patch'
 const readyComponents = []
 
 export function mountVNode (vnode, parentContext) {
-  vnode.parentContext = parentContext
+  if (vnode) {
+    vnode.parentContext = parentContext
+  }
   return createElement(vnode)
 }
 
@@ -41,6 +43,7 @@ export function mountComponent (vnode) {
 
 export function mountStatelessComponent (vnode) {
   vnode._renderd = vnode.tagName(vnode.props, vnode.parentContext)
+  debugger
   return mountVNode(vnode._renderd, vnode.parentContext)
 }
 
