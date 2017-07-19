@@ -146,7 +146,7 @@ function patchProps (domNode, patch, previousProps) {
     let previousValue = previousProps[propName]
     if (propValue === undefined || isHook(propValue)) {
       if (isHook(previousValue) && previousValue.unhook) {
-        previousValue.unhook(domNode, propName)
+        previousValue.unhook(domNode, propName, propValue)
       } else if (propName === 'attributes') {
         for (let attrName in previousValue) {
           if (domNode.removeAttribute) {
