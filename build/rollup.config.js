@@ -26,6 +26,5 @@ export default {
       plugins: babelConfig.plugins,
       exclude: 'node_modules/**'
     })
-  ],
-  dest: 'dist/nerv.js'
+  ]
 }

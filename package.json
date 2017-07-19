@@ -2,14 +2,16 @@
   "name": "nervjs",
   "version": "0.0.1",
   "description": "A react-like framework based on virtual-dom",
-  "main": "index.js",
+  "main": "dist/nerv.js",
   "scripts": {
     "clear": "rm -rf dist",
     "eslint": "eslint src test",
     "test": "npm-run-all eslint test:karma",
     "test:karma": "node node_modules/karma-event-driver-ext",
-    "build": "npm-run-all clear transpile:main",
-    "transpile:main": "rollup -c build/rollup.config.js"
+    "build": "npm-run-all clear transpile optimize",
+    "transpile:main": "rollup -c build/rollup.config.js -m dist/nerv.dev.js.map -o dist/nerv.dev.js",
+    "transpile": "npm-run-all transpile:main",
+    "optimize": "uglifyjs dist/nerv.dev.js -c conditionals=false,sequences=false,loops=false,join_vars=false,collapse_vars=false --pure-funcs=Object.defineProperty -b width=120,quote_style=3 -o dist/nerv.js -p relative --in-source-map dist/nerv.dev.js.map --source-map dist/nerv.js.map"
   },
   "keywords": [
     "react-like"
@@ -64,6 +66,7 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "sinon": "^2.3.8",
     "sinon-chai": "^2.12.0",
+    "uglify-js": "^2.8.29",
     "webpack": "^3.3.0"
   },
   "bugs": {
