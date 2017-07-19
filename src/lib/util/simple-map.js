@@ -29,7 +29,6 @@ class SimpleMap {
         return item.v
       }
     }
-    return
   }
 
   has (k) {

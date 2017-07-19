@@ -65,7 +65,7 @@ class Module {
       })
       this._readyStack = []
     }
-    
+
     if (this._requiredStack.length > 0) {
       this._requiredStack.forEach(func => {
         if (!func.excuting) {
@@ -141,7 +141,7 @@ function getPathByName (name) {
 function getModule (name) {
   const path = name.indexOf(':') > -1 ? name : getPathByName(name)
   const cache = Module.cache[name]
-  return cache ? cache : new Module(name, path)
+  return cache || new Module(name, path)
 }
 
 const Script = {
@@ -152,7 +152,7 @@ const Script = {
       return
     }
     this._paths[opts.src] = true
-    this._rules.forEach(rule => rule.call(null, opts))
+    this._rules.forEach(rule => rule(opts))
     const head = document.getElementsByTagName('head')[0]
     let node = document.createElement('script')
     node.type = opts.type || 'text/javascript'
@@ -184,9 +184,9 @@ function isPathsLoaded (paths) {
   let r = true
   paths.forEach((path) => {
     if (!(path in Module.loadedPaths)) {
-      return r = false
+      return (r = false)
     }
-  });
+  })
   return r
 }
 
@@ -240,7 +240,7 @@ function use (names, fn) {
   if (names.length) {
     let args = []
     let flags = []
-    names.forEach((name, i) => flags[i] = false)
+    names.forEach((name, i) => (flags[i] = false))
     names.forEach((name, i) => {
       const mod = getModule(name)
       mod.ready(() => {

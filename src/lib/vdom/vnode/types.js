@@ -15,8 +15,8 @@ export function isStateLess (node) {
 }
 
 export function isHook (arg) {
-  if (arg && (typeof arg.hook === 'function' && !arg.hasOwnProperty('hook'))
-    || arg && (typeof arg.unhook === 'function' && !arg.hasOwnProperty('unhook'))) {
+  if ((arg && (typeof arg.hook === 'function' && !arg.hasOwnProperty('hook'))) ||
+    (arg && (typeof arg.unhook === 'function' && !arg.hasOwnProperty('unhook')))) {
     return true
   }
   return false

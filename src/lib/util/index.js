@@ -11,9 +11,9 @@ export function type (arg) {
     return arg + ''
   }
 
-  return (typeof arg === 'object' || typeof arg === 'function') ?
-    class2type[toString.call(arg)] || 'object' :
-    typeof arg
+  return (typeof arg === 'object' || typeof arg === 'function')
+    ? class2type[toString.call(arg)] || 'object'
+    : typeof arg
 }
 
 export function isBoolean (arg) {
@@ -73,11 +73,13 @@ export function clone (obj) {
 }
 
 export function getPrototype (obj) {
+  /* eslint-disable */
   if (Object.getPrototypeOf) {
     return Object.getPrototypeOf(obj)
   } else if (obj.__proto__) {
     return obj.__proto__
   }
+  /* eslint-enable */
   return obj.constructor.prototype
 }
 
@@ -105,7 +107,7 @@ export function debounce (func, wait, immediate) {
   let context
   let timestamp
   let result
-  const later = function later() {
+  const later = function later () {
     const last = +(new Date()) - timestamp
     if (last < wait && last >= 0) {
       timeout = setTimeout(later, wait - last)
@@ -120,7 +122,7 @@ export function debounce (func, wait, immediate) {
       }
     }
   }
-  return function debounced() {
+  return function debounced () {
     context = this
     args = arguments
     timestamp = +(new Date())
@@ -146,7 +148,8 @@ export function throttle (fn, threshhold, scope) {
   return function () {
     let context = scope || this
 
-    let now = +new Date, args = arguments
+    let now = +new Date()
+    let args = arguments
     if (last && now < last + threshhold) {
       clearTimeout(deferTimer)
       deferTimer = setTimeout(() => {

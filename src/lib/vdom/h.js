@@ -4,7 +4,10 @@ import { isVNode, isVText, isWidget, isStateLess } from './vnode/types'
 import { isString, isArray, isNumber } from '~'
 
 function h (tagName, props, children) {
-  let key, namespace, owner, childNodes = []
+  let key
+  let namespace
+  let owner
+  let childNodes = []
   if (!children && isChildren(props)) {
     children = props
     props = {}
@@ -36,8 +39,6 @@ function addChildren (childNodes, children, tagName) {
     childNodes.push(children)
   } else if (isArray(children)) {
     children.forEach(child => addChildren(childNodes, child, tagName))
-  } else if (children === null || children === undefined) {
-    return
   }
 }
 

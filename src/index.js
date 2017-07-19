@@ -8,8 +8,10 @@ import cloneElement from './lib/clone-element'
 import * as Util from './lib/util'
 import nextTick from './lib/util/next-tick'
 
+/* eslint-disable */
 const isBrowser = new Function('try {return this===window}catch(e){ return false}')
 const isNode = new Function('try {return this===global}catch(e){ return false}')
+/* eslint-enable */
 
 if (isBrowser()) {
   window.Nerv = {

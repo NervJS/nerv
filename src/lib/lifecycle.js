@@ -97,8 +97,8 @@ export function updateComponent (component, isForce) {
   component.props = prevProps
   component.context = prevContext
   let skip = false
-  if (!isForce && isFunction(component.shouldComponentUpdate)
-    && component.shouldComponentUpdate(props, state, context) === false) {
+  if (!isForce && isFunction(component.shouldComponentUpdate) &&
+    component.shouldComponentUpdate(props, state, context) === false) {
     skip = true
   } else if (isFunction(component.componentWillUpdate)) {
     component.componentWillUpdate(props, state, context)

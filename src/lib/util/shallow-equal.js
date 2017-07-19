@@ -1,3 +1,4 @@
+/* eslint-disable */
 if (!Object.is) {
   Object.is = function (x, y) {
     if (x === y) {
@@ -6,6 +7,7 @@ if (!Object.is) {
     return x !== x && y !== y
   }
 }
+/* eslint-enable */
 
 export default function shallowEqual (obj1, obj2) {
   if (obj1 === null || obj2 === null) {

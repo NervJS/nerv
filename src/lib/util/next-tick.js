@@ -1,4 +1,4 @@
-import { isFunction, isNative } from './index';
+import { isFunction, isNative } from './index'
 
 let callbacks = []
 let pending = false
@@ -12,16 +12,16 @@ function nextHandler () {
 }
 
 function canUsePromise () {
-  return 'Promise' in window
-    && isFunction(Promise)
-    && isNative(Promise)
+  return 'Promise' in window &&
+    isFunction(Promise) &&
+    isNative(Promise)
 }
 
 function canUseMutationObserver () {
-  return 'MutationObserver' in window
-    && isFunction(MutationObserver)
-    && (isNative(MutationObserver)
-    || MutationObserver.toString() === '[object MutationObserverConstructor]')
+  return 'MutationObserver' in window &&
+    isFunction(MutationObserver) &&
+    (isNative(MutationObserver) ||
+    MutationObserver.toString() === '[object MutationObserverConstructor]')
 }
 
 function installPromise () {
@@ -33,7 +33,7 @@ function installPromise () {
 }
 
 function installMutationObserver () {
-  let observeNum = 1;
+  let observeNum = 1
   let textNode = document.createTextNode(observeNum)
   let observer = new MutationObserver(nextHandler)
   observer.observe(textNode, {
@@ -55,9 +55,9 @@ function installSetTimeout () {
 if (canUsePromise()) {
   installPromise()
 } else if (canUseMutationObserver()) {
-  installMutationObserver();
+  installMutationObserver()
 } else {
-  installSetTimeout();
+  installSetTimeout()
 }
 
 function nextTick (cb, ctx) {

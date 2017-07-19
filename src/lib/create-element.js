@@ -20,15 +20,15 @@ function transformPropsForRealTag (tagName, props) {
     const propValue = props[propName]
     const originalPropName = propName
     const domAttributeName = SVGPropertyConfig.DOMAttributeNames[propName]
-    propName = domAttributeName ? domAttributeName : propName
-    if (DOMAttributeNamespaces.hasOwnProperty(originalPropName)
-      && (isString(propValue) || isNumber(propValue) || isBoolean(propValue))) {
+    propName = domAttributeName || propName
+    if (DOMAttributeNamespaces.hasOwnProperty(originalPropName) &&
+      (isString(propValue) || isNumber(propValue) || isBoolean(propValue))) {
       const namespace = DOMAttributeNamespaces[originalPropName]
       newProps[propName] = !(propValue instanceof AttributeHook) ? new AttributeHook(namespace, propValue) : propValue
       continue
     }
-    if ((propName === 'id' || propName === 'className' || propName === 'namespace')
-      && propValue !== undefined) {
+    if ((propName === 'id' || propName === 'className' || propName === 'namespace') &&
+      propValue !== undefined) {
       newProps[propName] = propValue
       continue
     }
@@ -118,9 +118,9 @@ function createElement (tagName, properties) {
     props = transformPropsForComponent(properties)
     props.children = children
     props.owner = CurrentOwner.current
-    return (tagName.prototype && tagName.prototype.render) ?
-      new FullComponent(tagName, props) :
-      new StatelessComponent(tagName, props)
+    return (tagName.prototype && tagName.prototype.render)
+      ? new FullComponent(tagName, props)
+      : new StatelessComponent(tagName, props)
   }
   return tagName
 }

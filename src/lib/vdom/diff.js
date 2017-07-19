@@ -75,7 +75,7 @@ function diffProps (propsA, propsB) {
     let bValue = propsB[key]
     if (aValue === bValue) {
       continue
-    } else if (isObject(aValue)&& isObject(bValue)) {
+    } else if (isObject(aValue) && isObject(bValue)) {
       if (getPrototype(aValue) !== getPrototype(bValue)) {
         diff = diff || {}
         diff[key] = bValue
@@ -202,16 +202,13 @@ function diffList (oldList, newList, key) {
             simulateItem = simulate[simulateIndex]
             if (!simulateItem || simulateItemKey !== newItemKey) {
               inserts.push({key: newItemKey, to: k})
-            }
-            else {
+            } else {
               simulateIndex++
             }
-          }
-          else {
+          } else {
             inserts.push({key: newItemKey, to: k})
           }
-        }
-        else {
+        } else {
           inserts.push({key: newItemKey, to: k})
         }
         k++
@@ -243,7 +240,7 @@ function diffList (oldList, newList, key) {
   }
 }
 
-function remove(arr, index, key) {
+function remove (arr, index, key) {
   arr.splice(index, 1)
   return {
     from: index,
@@ -256,7 +253,7 @@ function clearState (vnode, patch, index) {
   destroyWidgets(vnode, patch, index)
 }
 
-function unhook(vnode, patch, index) {
+function unhook (vnode, patch, index) {
   if (isVNode(vnode)) {
     if (vnode.hooks) {
       patch[index] = appendPatch(
@@ -321,7 +318,6 @@ function mapListKeyIndex (list, key) {
     free
   }
 }
-
 
 function undefinedKeys (obj) {
   let result = {}

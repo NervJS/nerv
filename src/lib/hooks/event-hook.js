@@ -170,7 +170,7 @@ function attachEventToNode (node, eventName, delegatedRoots) {
     if (eventToTrigger && eventToTrigger.eventHandler) {
       const eventData = {
         currentTarget: event.target
-      };
+      }
       Object.defineProperties(event, {
         currentTarget: {
           configurable: true,

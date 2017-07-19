@@ -1,5 +1,5 @@
 import nextTick from './util/next-tick'
-import { updateComponent} from './lifecycle'
+import { updateComponent } from './lifecycle'
 let items = []
 
 export function enqueueRender (component) {
@@ -9,7 +9,8 @@ export function enqueueRender (component) {
 }
 
 export function rerender () {
-  let p, list = items.concat()
+  let p
+  let list = items.concat()
   items.length = 0
   while ((p = list.pop())) {
     if (p._dirty) {

@@ -1,5 +1,5 @@
 import { extend, clone } from './util'
-import { mountComponent, reRenderComponent, unmoutComponent} from './lifecycle'
+import { mountComponent, reRenderComponent, unmoutComponent } from './lifecycle'
 
 class ComponentWrapper {
   constructor (ComponentType, props) {

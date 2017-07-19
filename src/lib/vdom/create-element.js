@@ -14,7 +14,7 @@ function createElement (vnode, isSvg) {
   if (isVNode(vnode)) {
     if (vnode.isSvg) {
       isSvg = true
-    } else if (vnode.tagName === 'svg' ) {
+    } else if (vnode.tagName === 'svg') {
       isSvg = true
     } else if (vnode.tagName === 'foreignObject') {
       isSvg = false
