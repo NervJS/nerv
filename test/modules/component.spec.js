@@ -1,5 +1,6 @@
 /** @jsx createElement */
 import { Component, createElement, render, cloneElement } from '../../src'
+import createVText from '#/create-vtext'
 
 const Empty = () => null
 describe('Component', function () {
@@ -66,8 +67,6 @@ describe('Component', function () {
     }
     sinon.spy(C.prototype, 'render')
     render(<C {...props} />, scratch)
-    delete constructorProps.children
-    delete constructorProps.owner
     expect(constructorProps).to.deep.equal(props)
 
     expect(C.prototype.render)
@@ -233,7 +232,8 @@ describe('Component', function () {
       .to.have.been.calledOnce
       .and.to.have.been.calledWithMatch(PROPS)
       .and.to.have.returned(sinon.match({
-        ComponentType: Inner
+        tagName: Inner,
+        props: PROPS
       }))
 
       expect(Inner)
@@ -241,7 +241,8 @@ describe('Component', function () {
         .and.to.have.been.calledWithMatch(PROPS)
         .and.to.have.returned(sinon.match({
           tagName: 'div',
-          children: ['inner']
+          children: [createVText('inner')],
+          props: sinon.match.has('attributes')
         }))
 
       expect(scratch.innerHTML).to.equal('<div foo="bar">inner</div>')

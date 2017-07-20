@@ -74,9 +74,7 @@ export function flushMount () {
     if (isFunction(item)) {
       item()
     } else if (item.componentDidMount) {
-      nextTick(() => {
-        item.componentDidMount()
-      })
+      item.componentDidMount()
     }
   })
 }
@@ -132,12 +130,12 @@ export function updateComponent (component, isForce) {
   component.prevProps = clone(component.props)
   component.prevState = clone(component.state)
   component.prevContext = clone(component.context)
-  flushMount()
   if (component._pendingCallbacks) {
     while (component._pendingCallbacks.length) {
       component._pendingCallbacks.pop().call(component)
     }
   }
+  flushMount()
 }
 
 function updateVNode (vnode, lastVNode, lastDom, childContext) {
