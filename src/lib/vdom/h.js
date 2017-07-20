@@ -1,5 +1,5 @@
 import VNode from './vnode/vnode'
-import VText from './vnode/VText'
+import VText from './vnode/vtext'
 import { isVNode, isVText, isWidget, isStateLess } from './vnode/types'
 import { isString, isArray, isNumber } from '~'
 
@@ -21,9 +21,15 @@ function h (tagName, props, children) {
     namespace = props.namespace
     delete props.namespace
   }
-  if (props.hasOwnProperty('owner') && props.owner) {
+  if (props.hasOwnProperty('owner')) {
     owner = props.owner
     delete props.owner
+  }
+  if (props.hasOwnProperty('children') && props.children) {
+    if (!children || !children.length) {
+      children = props.children
+    }
+    delete props.children
   }
   if (children) {
     addChildren(childNodes, children, tagName)

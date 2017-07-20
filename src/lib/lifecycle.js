@@ -1,7 +1,8 @@
-import { extend, isFunction, clone } from './util'
+import { extend, isFunction, isNumber, isString, clone } from './util'
 import nextTick from './util/next-tick'
 import CurrentOwner from './current-owner'
 import createElement from '#/create-element'
+import createVText from '#/create-vtext'
 import diff from '#/diff'
 import patch from '#/patch'
 
@@ -30,7 +31,7 @@ export function mountComponent (vnode) {
   const rendered = renderComponent(component)
   component._rendered = rendered
   if (isFunction(component.componentDidMount)) {
-    readyComponents.push(() => component.componentDidMount())
+    readyComponents.push(component)
   }
   if (isFunction(vnode.props.ref)) {
     readyComponents.push(() => vnode.props.ref(component))
@@ -43,7 +44,6 @@ export function mountComponent (vnode) {
 
 export function mountStatelessComponent (vnode) {
   vnode._renderd = vnode.tagName(vnode.props, vnode.parentContext)
-  debugger
   return mountVNode(vnode._renderd, vnode.parentContext)
 }
 
@@ -56,7 +56,10 @@ export function getChildContext (component, context) {
 
 export function renderComponent (component) {
   CurrentOwner.current = component
-  const rendered = component.render()
+  let rendered = component.render()
+  if (isNumber(rendered) || isString(rendered)) {
+    rendered = createVText(rendered)
+  }
   CurrentOwner.current = null
   return rendered
 }
@@ -68,7 +71,13 @@ export function flushMount () {
   const queue = readyComponents.slice(0)
   readyComponents.length = 0
   queue.forEach(item => {
-    item && nextTick(item)
+    if (isFunction(item)) {
+      item()
+    } else if (item.componentDidMount) {
+      nextTick(() => {
+        item.componentDidMount()
+      })
+    }
   })
 }
 
@@ -132,7 +141,9 @@ export function updateComponent (component, isForce) {
 }
 
 function updateVNode (vnode, lastVNode, lastDom, childContext) {
-  vnode.context = childContext
+  if (vnode) {
+    vnode.context = childContext
+  }
   let domNode
   if (!lastDom) {
     domNode = createElement(vnode)

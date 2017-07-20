@@ -120,7 +120,13 @@ function createElement (tagName, properties) {
     return h(tagName, props, children)
   } else if (isFunction(tagName)) {
     props = transformPropsForComponent(properties)
-    props.children = children
+    if (props.children) {
+      if (!Array.isArray(props.children)) {
+        props.children = [props.children]
+      }
+    } else {
+      props.children = children
+    }
     props.owner = CurrentOwner.current
     return (tagName.prototype && tagName.prototype.render)
       ? new FullComponent(tagName, props)

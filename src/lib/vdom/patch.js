@@ -237,10 +237,12 @@ function patchRemove (domNode, vnode) {
 
 function isUpdateWidget (a, b) {
   if (isWidget(a) && isWidget(b)) {
+    const keyA = a.props.key
+    const keyB = b.props.key
     if ('name' in a && 'name' in b) {
-      return a.name === b.name
+      return a.name === b.name && keyA === keyB
     }
-    return a.init === b.init
+    return a.init === b.init && keyA === keyB
   }
   return false
 }
