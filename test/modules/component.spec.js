@@ -451,5 +451,173 @@ describe('Component', function () {
 
       expect(sortAttributes(scratch.innerHTML)).to.equal(sortAttributes('<div foo="bar" j="4" i="5">inner</div>'))
     })
+
+    it('should resolve intermediary functional component', () => {
+      let ctx = {}
+      class Root extends Component {
+        getChildContext () {
+          return { ctx }
+        }
+        render () {
+          return <Func />
+        }
+      }
+      const Func = sinon.spy(() => <Inner />)
+      class Inner extends Component {
+        componentWillMount () {}
+        componentDidMount () {}
+        componentWillUnmount () {}
+        render () {
+          return <div>inner</div>
+        }
+      }
+      sinon.spy(Inner.prototype, 'componentWillMount')
+      sinon.spy(Inner.prototype, 'componentDidMount')
+      render(<Root />, scratch)
+      expect(Inner.prototype.componentWillMount).to.have.been.calledOnce
+      expect(Inner.prototype.componentDidMount).to.have.been.calledOnce
+      expect(Inner.prototype.componentWillMount).to.have.been.calledBefore(Inner.prototype.componentDidMount)
+    })
+
+    it('should unmount children of high-order components without unmounting parent', () => {
+      let outer
+      let inner2
+      let counter = 0
+
+      class Outer extends Component {
+        constructor (props, context) {
+          super(props, context)
+          outer = this
+          this.state = {
+            child: this.props.child
+          }
+        }
+        componentWillUnmount () { }
+        componentWillMount () { }
+        componentDidMount () { }
+        render () {
+          const C = this.state.child
+          return <C />
+        }
+      }
+
+      sinon.spy(Outer.prototype, 'render')
+      sinon.spy(Outer.prototype, 'componentWillMount')
+      sinon.spy(Outer.prototype, 'componentDidMount')
+      sinon.spy(Outer.prototype, 'componentWillUnmount')
+
+      class Inner extends Component {
+        componentWillUnmount () {}
+        componentWillMount () {}
+        componentDidMount () {}
+        render () {
+          return createElement('element' + (++counter))
+        }
+      }
+
+      sinon.spy(Inner.prototype, 'render')
+      sinon.spy(Inner.prototype, 'componentWillMount')
+      sinon.spy(Inner.prototype, 'componentDidMount')
+      sinon.spy(Inner.prototype, 'componentWillUnmount')
+
+      class Inner2 extends Component {
+        constructor (props, context) {
+          super(props, context)
+          inner2 = this
+        }
+        componentWillUnmount () {}
+        componentWillMount () {}
+        componentDidMount () {}
+        render () {
+          return createElement('element' + (++counter))
+        }
+      }
+
+      sinon.spy(Inner2.prototype, 'render')
+      sinon.spy(Inner2.prototype, 'componentWillMount')
+      sinon.spy(Inner2.prototype, 'componentDidMount')
+      sinon.spy(Inner2.prototype, 'componentWillUnmount')
+
+      render(<Outer child={Inner} />, scratch)
+
+      expect(Outer.prototype.componentWillMount, 'outer initial').to.have.been.calledOnce
+      expect(Outer.prototype.componentDidMount, 'outer initial').to.have.been.calledOnce
+      expect(Outer.prototype.componentWillUnmount, 'outer initial').not.to.have.been.called
+
+      expect(Inner.prototype.componentWillMount, 'inner initial').to.have.been.calledOnce
+      expect(Inner.prototype.componentDidMount, 'inner initial').to.have.been.calledOnce
+      expect(Inner.prototype.componentWillUnmount, 'inner initial').not.to.have.been.called
+
+      outer.setState({ child: Inner2 })
+      outer.forceUpdate()
+
+      expect(Inner2.prototype.render).to.have.been.calledOnce
+
+      expect(Outer.prototype.componentWillMount, 'outer swap').to.have.been.calledOnce
+      expect(Outer.prototype.componentDidMount, 'outer swap').to.have.been.calledOnce
+      expect(Outer.prototype.componentWillUnmount, 'outer swap').not.to.have.been.called
+
+      expect(Inner2.prototype.componentWillMount, 'inner2 swap').to.have.been.calledOnce
+      expect(Inner2.prototype.componentDidMount, 'inner2 swap').to.have.been.calledOnce
+      expect(Inner2.prototype.componentWillUnmount, 'inner2 swap').not.to.have.been.called
+
+      inner2.forceUpdate()
+
+      expect(Inner2.prototype.render, 'inner2 update').to.have.been.calledTwice
+      expect(Inner2.prototype.componentWillMount, 'inner2 update').to.have.been.calledOnce
+      expect(Inner2.prototype.componentDidMount, 'inner2 update').to.have.been.calledOnce
+      expect(Inner2.prototype.componentWillUnmount, 'inner2 update').not.to.have.been.called
+    })
+
+    it('should remount when swapping between HOC child types', () => {
+      let doRender = null
+
+      class Outer extends Component {
+        constructor () {
+          super(...arguments)
+          this.state = {
+            child: this.props.child
+          }
+        }
+
+        componentDidMount () {
+          doRender = () => this.setState({
+            child: <InnerFunc />
+          })
+        }
+
+        render () {
+          const Child = this.state.child
+          return <Child />
+        }
+      }
+
+      class Inner extends Component {
+        componentWillMount () {}
+        componentWillUnmount () {}
+        render () {
+          return <div class='inner'>foo</div>
+        }
+      }
+
+      sinon.spy(Inner.prototype, 'render')
+      sinon.spy(Inner.prototype, 'componentWillMount')
+      sinon.spy(Inner.prototype, 'componentWillUnmount')
+
+      const InnerFunc = () => (
+        <div class='inner-func'>bar</div>
+      )
+
+      render(<Outer child={Inner} />, scratch)
+
+      expect(Inner.prototype.componentWillMount, 'initial mount').to.have.been.calledOnce
+      expect(Inner.prototype.componentWillUnmount, 'initial mount').not.to.have.been.called
+
+      Inner.prototype.componentWillMount.reset()
+      doRender()
+      rerender()
+      expect(Inner.prototype.componentWillMount, 'unmount').not.to.have.been.called
+      expect(Inner.prototype.componentWillUnmount, 'unmount').to.have.been.calledOnce
+    })
   })
 })
