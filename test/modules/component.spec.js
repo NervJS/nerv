@@ -1,6 +1,25 @@
 /** @jsx createElement */
 import { Component, createElement, render, cloneElement } from '../../src'
 import createVText from '#/create-vtext'
+import { rerender } from '../../src/lib/render-queue'
+
+function getAttributes (node) {
+  let attrs = {}
+  if (node.attributes) {
+    for (let i = node.attributes.length; i--;) {
+      attrs[node.attributes[i].name] = node.attributes[i].value
+    }
+  }
+  return attrs
+}
+
+function sortAttributes (html) {
+  return html.replace(/<([a-z0-9-]+)((?:\s[a-z0-9:_.-]+=".*?")+)((?:\s*\/)?>)/gi, (s, pre, attrs, after) => {
+    let list = attrs.match(/\s[a-z0-9:_.-]+=".*?"/gi).sort((a, b) => a > b ? 1 : -1)
+    if (~after.indexOf('/')) after = `></${pre}>`
+    return '<' + pre + list.join('') + after
+  })
+}
 
 const Empty = () => null
 describe('Component', function () {
@@ -246,6 +265,191 @@ describe('Component', function () {
         }))
 
       expect(scratch.innerHTML).to.equal('<div foo="bar">inner</div>')
+    })
+
+    it('should re-render nested functional components', () => {
+      let doRender = null
+      class Outer extends Component {
+        componentDidMount () {
+          let i = 1
+          doRender = () => this.setState({ i: ++i })
+        }
+        componentWillUnmount () {}
+        render () {
+          return <Inner i={this.state.i} {...this.props} />
+        }
+      }
+      sinon.spy(Outer.prototype, 'render')
+      sinon.spy(Outer.prototype, 'componentWillUnmount')
+
+      let j = 0
+      const Inner = sinon.spy(
+        props => <div j={++j} {...props}>inner</div>
+      )
+
+      render(<Outer foo='bar' />, scratch)
+
+      doRender()
+      rerender()
+
+      expect(Outer.prototype.componentWillUnmount)
+        .not.to.have.been.called
+
+      expect(Inner).to.have.been.calledTwice
+
+      expect(Inner.secondCall)
+        .to.have.been.calledWithMatch({ foo: 'bar', i: 2 })
+        .and.to.have.returned(sinon.match({
+          props: {
+            attributes: {
+              j: 2,
+              i: 2,
+              foo: 'bar'
+            }
+          }
+        }))
+
+      expect(getAttributes(scratch.firstElementChild)).to.eql({
+        j: '2',
+        i: '2',
+        foo: 'bar'
+      })
+
+      doRender()
+      rerender()
+
+      expect(Inner).to.have.been.calledThrice
+
+      expect(Inner.thirdCall)
+        .to.have.been.calledWithMatch({ foo: 'bar', i: 3 })
+        .and.to.have.returned(sinon.match({
+          props: {
+            attributes: {
+              j: 3,
+              i: 3,
+              foo: 'bar'
+            }
+          }
+        }))
+
+      expect(getAttributes(scratch.firstElementChild)).to.eql({
+        j: '3',
+        i: '3',
+        foo: 'bar'
+      })
+    })
+
+    it('should re-render nested components', () => {
+      let doRender = null
+      let alt = false
+
+      class Outer extends Component {
+        componentDidMount () {
+          let i = 1
+          doRender = () => this.setState({ i: ++i })
+        }
+        componentWillUnmount () {}
+        render () {
+          if (alt) return <div is-alt />
+          return <Inner i={this.state.i} {...this.props} />
+        }
+      }
+      sinon.spy(Outer.prototype, 'render')
+      sinon.spy(Outer.prototype, 'componentDidMount')
+      sinon.spy(Outer.prototype, 'componentWillUnmount')
+
+      let j = 0
+      class Inner extends Component {
+        constructor (...args) {
+          super(...args)
+          this._constructor(...args)
+        }
+        _constructor () {}
+        componentWillMount () {}
+        componentDidMount () {}
+        componentWillUnmount () {}
+        render () {
+          return <div j={++j} {...this.props}>inner</div>
+        }
+      }
+      sinon.spy(Inner.prototype, '_constructor')
+      sinon.spy(Inner.prototype, 'render')
+      sinon.spy(Inner.prototype, 'componentWillMount')
+      sinon.spy(Inner.prototype, 'componentDidMount')
+      sinon.spy(Inner.prototype, 'componentWillUnmount')
+
+      render(<Outer foo='bar' />, scratch)
+
+      expect(Outer.prototype.componentDidMount).to.have.been.calledOnce
+
+      doRender()
+      rerender()
+
+      expect(Outer.prototype.componentWillUnmount).not.to.have.been.called
+
+      expect(Inner.prototype._constructor).to.have.been.calledOnce
+      expect(Inner.prototype.componentWillUnmount).not.to.have.been.called
+      expect(Inner.prototype.componentWillMount).to.have.been.calledOnce
+      expect(Inner.prototype.componentDidMount).to.have.been.calledOnce
+      expect(Inner.prototype.render).to.have.been.calledTwice
+
+      expect(Inner.prototype.render.secondCall)
+        .and.to.have.returned(sinon.match({
+          props: {
+            attributes: {
+              j: 2,
+              i: 2,
+              foo: 'bar'
+            }
+          }
+        }))
+
+      expect(getAttributes(scratch.firstElementChild)).to.eql({
+        j: '2',
+        i: '2',
+        foo: 'bar'
+      })
+
+      expect(sortAttributes(scratch.innerHTML)).to.equal(sortAttributes('<div foo="bar" j="2" i="2">inner</div>'))
+
+      doRender()
+      rerender()
+
+      expect(Inner.prototype.componentWillUnmount).not.to.have.been.called
+      expect(Inner.prototype.componentWillMount).to.have.been.calledOnce
+      expect(Inner.prototype.componentDidMount).to.have.been.calledOnce
+      expect(Inner.prototype.render).to.have.been.calledThrice
+
+      expect(Inner.prototype.render.thirdCall)
+        .and.to.have.returned(sinon.match({
+          props: {
+            attributes: {
+              j: 3,
+              i: 3,
+              foo: 'bar'
+            }
+          }
+        }))
+
+      expect(getAttributes(scratch.firstElementChild)).to.eql({
+        j: '3',
+        i: '3',
+        foo: 'bar'
+      })
+
+      alt = true
+      doRender()
+      rerender()
+
+      expect(Inner.prototype.componentWillUnmount).to.have.been.calledOnce
+
+      expect(scratch.innerHTML).to.equal('<div is-alt="true"></div>')
+
+      alt = false
+      doRender()
+      rerender()
+
+      expect(sortAttributes(scratch.innerHTML)).to.equal(sortAttributes('<div foo="bar" j="4" i="5">inner</div>'))
     })
   })
 })
