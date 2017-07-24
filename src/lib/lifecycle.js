@@ -1,5 +1,4 @@
-import { extend, isFunction, isNumber, isString, clone } from './util'
-import nextTick from './util/next-tick'
+import { extend, isFunction, isNumber, isString } from './util'
 import CurrentOwner from './current-owner'
 import createElement from '#/create-element'
 import createVText from '#/create-vtext'
@@ -49,7 +48,7 @@ export function mountStatelessComponent (vnode) {
 
 export function getChildContext (component, context) {
   if (component.getChildContext) {
-    return extend(extend({}, context), component.getChildContext())
+    return extend(context, component.getChildContext())
   }
   return context
 }
@@ -85,7 +84,7 @@ export function reRenderComponent (prev, current) {
   const nextContext = component.context
   component._disable = true
   if (isFunction(component.componentWillReceiveProps)) {
-    component.componentWillReceiveProps(nextProps)
+    component.componentWillReceiveProps(nextProps, nextContext)
   }
   component._disable = false
   component.prevProps = component.props
@@ -127,9 +126,9 @@ export function updateComponent (component, isForce) {
       component.componentDidUpdate(props, state, context)
     }
   }
-  component.prevProps = clone(component.props)
-  component.prevState = clone(component.state)
-  component.prevContext = clone(component.context)
+  component.prevProps = component.props
+  component.prevState = component.state
+  component.prevContext = component.context
   if (component._pendingCallbacks) {
     while (component._pendingCallbacks.length) {
       component._pendingCallbacks.pop().call(component)

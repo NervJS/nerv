@@ -6,9 +6,9 @@ class ComponentWrapper {
     this.ComponentType = ComponentType
     this.name = ComponentType.name || ComponentType.toString().match(/^function\s*([^\s(]+)/)[1]
     ComponentType.displayName = this.name
-    this.props = extend(clone(ComponentType.defaultProps || {}), props)
     this._owner = props.owner
     delete props.owner
+    this.props = extend(clone(ComponentType.defaultProps || {}), props)
   }
 
   type = 'Widget'
