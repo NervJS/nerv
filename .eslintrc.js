@@ -8,6 +8,9 @@ module.exports = {
     node: true,
     es6: true
   },
+  rules: {
+    'no-unused-expressions': 0
+  },
   globals: {
     describe: true,
     it: true,
