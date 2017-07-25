@@ -45,7 +45,10 @@ class Component extends Events {
     return stateClone
   }
 
-  forceUpdate () {
+  forceUpdate (callback) {
+    if (isFunction(callback)) {
+      (this._pendingCallbacks = (this._pendingCallbacks || [])).push(callback)
+    }
     updateComponent(this, true)
   }
 }

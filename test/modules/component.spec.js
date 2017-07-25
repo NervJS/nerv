@@ -3,6 +3,8 @@ import { Component, createElement, render, cloneElement } from '../../src'
 import createVText from '#/create-vtext'
 import { rerender } from '../../src/lib/render-queue'
 
+const EMPTY_CHILDREN = []
+
 function getAttributes (node) {
   let attrs = {}
   if (node.attributes) {
@@ -210,6 +212,165 @@ describe('Component', function () {
     expect(scratch.textContent, 'new component without key re-rendered').to.equal('D')
     expect(Comp.prototype.componentWillMount).to.not.have.been.called
     expect(sideEffect).to.not.have.been.called
+  })
+
+  describe('defaultProps', () => {
+    it('should apply default props on initial render', () => {
+      class WithDefaultProps extends Component {
+        constructor (props, context) {
+          super(props, context)
+          expect(props).to.be.deep.equal({
+            children: EMPTY_CHILDREN,
+            fieldA: 1,
+            fieldB: 2,
+            fieldC: 1,
+            fieldD: 2
+          })
+        }
+        render () {
+          return <div />
+        }
+      }
+      WithDefaultProps.defaultProps = { fieldC: 1, fieldD: 1 }
+      render(<WithDefaultProps fieldA={1} fieldB={2} fieldD={2} />, scratch)
+    })
+
+    it('should apply default props on rerender', () => {
+      let doRender
+      class Outer extends Component {
+        constructor () {
+          super()
+          this.state = { i: 1 }
+        }
+        componentDidMount () {
+          doRender = () => this.setState({ i: 2 })
+        }
+        render () {
+          return <WithDefaultProps fieldA={1} fieldB={this.state.i} fieldD={this.state.i} />
+        }
+      }
+      class WithDefaultProps extends Component {
+        constructor (props, context) {
+          super(props, context)
+          this.ctor(props, context)
+        }
+        ctor () {}
+        renderCall () {}
+        componentWillReceiveProps () {}
+        render () {
+          this.renderCall(this.props)
+          return <div />
+        }
+      }
+      WithDefaultProps.defaultProps = { fieldC: 1, fieldD: 1 }
+
+      let proto = WithDefaultProps.prototype
+      sinon.spy(proto, 'ctor')
+      sinon.spy(proto, 'componentWillReceiveProps')
+      sinon.spy(proto, 'renderCall')
+
+      render(<Outer />, scratch)
+      doRender()
+
+      const PROPS1 = {
+        fieldA: 1,
+        fieldB: 1,
+        fieldC: 1,
+        fieldD: 1
+      }
+
+      const PROPS2 = {
+        fieldA: 1,
+        fieldB: 2,
+        fieldC: 1,
+        fieldD: 2
+      }
+
+      expect(proto.ctor).to.have.been.calledWithMatch(PROPS1)
+      expect(proto.renderCall).to.have.been.calledWithMatch(PROPS1)
+
+      rerender()
+
+      expect(proto.componentWillReceiveProps).to.have.been.calledWithMatch(PROPS2)
+      expect(proto.renderCall).to.have.been.calledWithMatch(PROPS2)
+    })
+
+    it('should cache default props', () => {
+      class WithDefaultProps extends Component {
+        constructor (props, context) {
+          super(props, context)
+          expect(props).to.be.deep.equal({
+            children: EMPTY_CHILDREN,
+            fieldA: 1,
+            fieldB: 2,
+            fieldC: 1,
+            fieldD: 2,
+            fieldX: 10
+          })
+        }
+        render () {
+          return <div />
+        }
+      }
+      WithDefaultProps.defaultProps = {
+        fieldA: 1,
+        fieldB: 1,
+        fieldC: 1,
+        fieldD: 1
+      }
+      render((
+        <div>
+          <WithDefaultProps fieldB={2} fieldD={2} fieldX={10} />
+          <WithDefaultProps fieldB={2} fieldD={2} fieldX={10} />
+          <WithDefaultProps fieldB={2} fieldD={2} fieldX={10} />
+        </div>
+      ), scratch)
+    })
+  })
+
+  describe('forceUpdate', () => {
+    it('should force a rerender', () => {
+      let forceUpdate
+      class ForceUpdateComponent extends Component {
+        componentWillUpdate () {}
+        componentDidMount () {
+          forceUpdate = () => this.forceUpdate()
+        }
+        render () {
+          return <div />
+        }
+      }
+      sinon.spy(ForceUpdateComponent.prototype, 'componentWillUpdate')
+      sinon.spy(ForceUpdateComponent.prototype, 'forceUpdate')
+      render(<ForceUpdateComponent />, scratch)
+      expect(ForceUpdateComponent.prototype.componentWillUpdate).not.to.have.been.called
+
+      forceUpdate()
+
+      expect(ForceUpdateComponent.prototype.componentWillUpdate).to.have.been.called
+      expect(ForceUpdateComponent.prototype.forceUpdate).to.have.been.called
+    })
+
+    it('should add callback to renderCallbacks', () => {
+      let forceUpdate
+      let callback = sinon.spy()
+      class ForceUpdateComponent extends Component {
+        componentDidMount () {
+          forceUpdate = () => this.forceUpdate(callback)
+        }
+        render () {
+          return <div />
+        }
+      }
+      sinon.spy(ForceUpdateComponent.prototype, 'forceUpdate')
+      render(<ForceUpdateComponent />, scratch)
+
+      forceUpdate()
+
+      expect(ForceUpdateComponent.prototype.forceUpdate).to.have.been.called
+      expect(ForceUpdateComponent.prototype.forceUpdate).to.have.been.calledWith(callback)
+      expect(callback).to.have.been.called
+    })
   })
 
   describe('props.children', () => {
