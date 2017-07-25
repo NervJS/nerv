@@ -3,7 +3,7 @@ import { Component, createElement, render } from '../../src'
 import createVText from '#/create-vtext'
 import { rerender } from '../../src/lib/render-queue'
 
-const CHILDREN_MATCHER = sinon.match(v => v === null || (Array.isArray(v) && !v.length), '[empty children]')
+import { CHILDREN_MATCHER } from '../util'
 
 describe('context', () => {
   let scratch

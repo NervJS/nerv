@@ -1,4 +1,4 @@
-import { extend, isFunction, isNumber, isString } from './util'
+import { extend, isFunction, isNumber, isString, isObject } from './util'
 import CurrentOwner from './current-owner'
 import createElement from '#/create-element'
 import createVText from '#/create-vtext'
@@ -8,7 +8,7 @@ import patch from '#/patch'
 const readyComponents = []
 
 export function mountVNode (vnode, parentContext) {
-  if (vnode) {
+  if (isObject(vnode)) {
     vnode.parentContext = parentContext
   }
   return createElement(vnode)
@@ -138,7 +138,7 @@ export function updateComponent (component, isForce) {
 }
 
 function updateVNode (vnode, lastVNode, lastDom, childContext) {
-  if (vnode) {
+  if (isObject(vnode)) {
     vnode.context = childContext
   }
   let domNode

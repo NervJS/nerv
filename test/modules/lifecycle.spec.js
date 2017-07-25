@@ -2,7 +2,7 @@
 import { Component, createElement, render } from '../../src'
 import { rerender } from '../../src/lib/render-queue'
 
-const EMPTY_CHILDREN = []
+import { EMPTY_CHILDREN } from '../util'
 
 describe('Lifecycle methods', () => {
   let scratch

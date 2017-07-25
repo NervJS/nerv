@@ -1,9 +1,14 @@
 import { mountVNode, flushMount } from './lifecycle'
+import { isString, isNumber } from '~'
 import { isWidget, isVNode, isStateLess } from '#/vnode/types'
 
+function isVChild (vnode) {
+  return isVNode(vnode) || isString(vnode) || isNumber(vnode)
+}
+
 export function render (vnode, container, callback) {
-  if (!isVNode(vnode) && !isWidget(vnode) && !isStateLess(vnode)) {
-    throw new Error(`${vnode} should be Widget or VirtualNode or StateLess`)
+  if (!isVChild(vnode) && !isWidget(vnode) && !isStateLess(vnode)) {
+    return null
   }
   if (!container || container.nodeType !== 1) {
     throw new Error(`${container} should be a DOM Element`)

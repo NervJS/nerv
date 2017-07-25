@@ -77,7 +77,7 @@ function transformPropsForRealTag (tagName, props) {
       newProps[propName] = propValue
       continue
     }
-    if (/input|textarea/.test(tagName) && propName === 'value') {
+    if (/input|textarea/.test(tagName) && propName === 'value' && propValue !== null && propValue !== undefined) {
       newProps[propName] = propValue
     }
     newProps.attributes = newProps.attributes || {}

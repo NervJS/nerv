@@ -1,5 +1,5 @@
 import VNode from './vnode/vnode'
-import VText from './vnode/vtext'
+import createVText from './create-vtext'
 import { isVNode, isVText, isWidget, isStateLess } from './vnode/types'
 import { isString, isArray, isNumber } from '~'
 
@@ -40,7 +40,7 @@ function h (tagName, props, children) {
 function addChildren (childNodes, children, tagName) {
   if (isString(children) || isNumber(children)) {
     children = String(children)
-    childNodes.push(new VText(children))
+    childNodes.push(createVText(children))
   } else if (isChild(children)) {
     childNodes.push(children)
   } else if (isArray(children)) {

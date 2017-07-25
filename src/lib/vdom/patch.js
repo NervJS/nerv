@@ -171,7 +171,7 @@ function patchProps (domNode, patch, previousProps) {
     } else if (propName === 'attributes') {
       for (let attrName in propValue) {
         let attrValue = propValue[attrName]
-        if (attrValue === undefined && domNode.removeAttribute) {
+        if (attrValue === undefined && attrValue !== null && domNode.removeAttribute) {
           domNode.removeAttribute(attrName)
         } else if (domNode.setAttribute) {
           domNode.setAttribute(attrName, attrValue)
