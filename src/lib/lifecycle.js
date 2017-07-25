@@ -151,11 +151,13 @@ function updateVNode (vnode, lastVNode, lastDom, childContext) {
   return domNode
 }
 
-export function unmoutComponent (component) {
+export function unmountComponent (component) {
   if (isFunction(component.componentWillUnmount)) {
     component.componentWillUnmount()
   }
-  component.dom = component.lastRendered = component.rendered = null
+  const lastRendered = component._rendered
+  updateVNode(null, lastRendered, component.dom, component.context)
+  component.dom = component._rendered = null
   if (isFunction(component.props.ref)) {
     component.props.ref(null)
   }

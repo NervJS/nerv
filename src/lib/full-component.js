@@ -1,5 +1,5 @@
 import { extend, clone } from './util'
-import { mountComponent, reRenderComponent, unmoutComponent } from './lifecycle'
+import { mountComponent, reRenderComponent, unmountComponent } from './lifecycle'
 
 class ComponentWrapper {
   constructor (ComponentType, props) {
@@ -22,7 +22,7 @@ class ComponentWrapper {
   }
 
   destroy () {
-    unmoutComponent(this.component)
+    unmountComponent(this.component)
   }
 }
 
