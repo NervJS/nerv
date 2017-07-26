@@ -404,7 +404,7 @@ describe('Component', function () {
         .and.to.have.returned(sinon.match({
           tagName: 'div',
           children: [createVText('inner')],
-          props: sinon.match.has('attributes')
+          props: sinon.match.has('foo')
         }))
 
       expect(scratch.innerHTML).to.equal('<div foo="bar">inner</div>')
@@ -444,11 +444,9 @@ describe('Component', function () {
         .to.have.been.calledWithMatch({ foo: 'bar', i: 2 })
         .and.to.have.returned(sinon.match({
           props: {
-            attributes: {
-              j: 2,
-              i: 2,
-              foo: 'bar'
-            }
+            j: 2,
+            i: 2,
+            foo: 'bar'
           }
         }))
 
@@ -467,11 +465,9 @@ describe('Component', function () {
         .to.have.been.calledWithMatch({ foo: 'bar', i: 3 })
         .and.to.have.returned(sinon.match({
           props: {
-            attributes: {
-              j: 3,
-              i: 3,
-              foo: 'bar'
-            }
+            j: 3,
+            i: 3,
+            foo: 'bar'
           }
         }))
 
@@ -539,11 +535,9 @@ describe('Component', function () {
       expect(Inner.prototype.render.secondCall)
         .and.to.have.returned(sinon.match({
           props: {
-            attributes: {
-              j: 2,
-              i: 2,
-              foo: 'bar'
-            }
+            j: 2,
+            i: 2,
+            foo: 'bar'
           }
         }))
 
@@ -566,11 +560,9 @@ describe('Component', function () {
       expect(Inner.prototype.render.thirdCall)
         .and.to.have.returned(sinon.match({
           props: {
-            attributes: {
-              j: 3,
-              i: 3,
-              foo: 'bar'
-            }
+            j: 3,
+            i: 3,
+            foo: 'bar'
           }
         }))
 
