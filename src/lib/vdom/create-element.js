@@ -1,5 +1,5 @@
 import { isVNode, isVText, isWidget, isStateLess, isHook } from './vnode/types'
-import { isObject, isString, isNumber } from '~'
+import { isObject, isString, isNumber, isFunction } from '~'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
@@ -67,14 +67,7 @@ function setProps (domNode, props) {
         propValue.hook(domNode, p)
       }
     } else if (isObject(propValue)) {
-      if (p === 'attributes') {
-        for (let k in propValue) {
-          let attrValue = propValue[k]
-          if (attrValue !== undefined && attrValue !== null && domNode.setAttribute) {
-            domNode.setAttribute(k, attrValue)
-          }
-        }
-      } else if (p === 'style') {
+      if (p === 'style') {
         for (let s in propValue) {
           let styleValue = propValue[s]
           if (styleValue !== undefined) {
@@ -83,9 +76,28 @@ function setProps (domNode, props) {
             } catch (err) {}
           }
         }
+      } else {
+        if (p in domNode) {
+          try {
+            domNode[p] = propValue
+          } catch (err) {}
+        } else {
+          domNode.setAttribute(p, propValue)
+        }
       }
-    } else if (p in domNode) {
-      domNode[p] = propValue
+    } else if (p !== 'list' && p !== 'type' && p in domNode) {
+      try {
+        domNode[p] = propValue == null ? '' : propValue
+      } catch (err) {}
+      if (propValue == null || propValue === false) {
+        domNode.removeAttribute(p)
+      }
+    } else {
+      if (propValue == null || propValue === false) {
+        domNode.removeAttribute(p)
+      } else if (!isFunction(propValue)) {
+        domNode.setAttribute(p, propValue)
+      }
     }
   }
 }

@@ -49,18 +49,9 @@ function transformPropsForRealTag (tagName, props) {
       newProps.value = props.value || props.defaultValue
       continue
     }
-    if (isBoolean(propValue)) {
-      if (propValue) {
-        newProps.attributes = newProps.attributes || {}
-        newProps.attributes[propName] = propValue
-      }
-      newProps[propName] = propValue
-      continue
-    }
     if (propName === 'style') {
       if (isString(propValue)) {
-        newProps.attributes = newProps.attributes || {}
-        newProps.attributes[propName] = propValue
+        newProps[propName] = propValue
       } else if (isObject(propValue)) {
         for (let styleName in propValue) {
           let styleValue = propValue[styleName]
@@ -73,15 +64,7 @@ function transformPropsForRealTag (tagName, props) {
       }
       continue
     }
-    if (propName === 'children' || propName === 'owner') {
-      newProps[propName] = propValue
-      continue
-    }
-    if (/input|textarea/.test(tagName) && propName === 'value' && propValue !== null && propValue !== undefined) {
-      newProps[propName] = propValue
-    }
-    newProps.attributes = newProps.attributes || {}
-    newProps.attributes[propName] = propValue
+    newProps[propName] = propValue
   }
   return newProps
 }

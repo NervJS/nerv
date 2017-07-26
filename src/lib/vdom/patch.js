@@ -147,52 +147,62 @@ function patchProps (domNode, patch, previousProps) {
     }
     let propValue = patch[propName]
     let previousValue = previousProps[propName]
-    if (propValue === undefined || isHook(propValue)) {
+    if (isHook(propValue)) {
       if (isHook(previousValue) && previousValue.unhook) {
         previousValue.unhook(domNode, propName, propValue)
-      } else if (propName === 'attributes') {
-        for (let attrName in previousValue) {
-          if (domNode.removeAttribute) {
-            domNode.removeAttribute(attrName)
-          }
-        }
-      } else if (propName === 'style') {
-        for (let styleName in previousValue) {
-          domNode.style[styleName] = ''
-        }
-      } else if (isString(previousValue)) {
-        domNode[propName] = ''
-      } else {
-        domNode[propName] = null
       }
       if (propValue && propValue.hook) {
         propValue.hook(domNode, propName, previousValue)
       }
-    } else if (propName === 'attributes') {
-      for (let attrName in propValue) {
-        let attrValue = propValue[attrName]
-        if (attrValue === undefined && attrValue !== null && domNode.removeAttribute) {
-          domNode.removeAttribute(attrName)
-        } else if (domNode.setAttribute) {
-          domNode.setAttribute(attrName, attrValue)
+    } else if (propValue == null || propValue === false) {
+      if (isHook(previousValue) && previousValue.unhook) {
+        previousValue.unhook(domNode, propName, propValue)
+      } else if (propName === 'style') {
+        for (let styleName in previousValue) {
+          domNode.style[styleName] = ''
         }
+      } else if (propName in domNode) {
+        if (isString(previousValue)) {
+          domNode[propName] = ''
+        } else {
+          domNode[propName] = null
+        }
+        domNode.removeAttribute(propName)
+      } else {
+        domNode.removeAttribute(propName)
       }
     } else if (propName === 'style') {
-      for (let styleName in propValue) {
-        let styleValue = propValue[styleName]
-        if (styleValue !== undefined) {
-          try {
-            domNode[propName][styleName] = styleValue
-          } catch (err) {}
+      if (isString(propValue)) {
+        try {
+          domNode[propName] = propValue
+        } catch (err) {}
+      } else {
+        for (let styleName in propValue) {
+          let styleValue = propValue[styleName]
+          if (styleValue != null && styleValue !== false) {
+            try {
+              domNode[propName][styleName] = styleValue
+            } catch (err) {}
+          }
         }
       }
     } else if (isObject(propValue)) {
       if (previousValue && isObject(previousValue) &&
         getPrototype(previousValue) !== getPrototype(propValue)) {
-        domNode[propName] = propValue
+        if (propName in domNode) {
+          try {
+            domNode[propName] = propValue
+          } catch (err) {}
+        } else {
+          domNode.setAttribute(propName, propValue)
+        }
       }
-    } else if (propName in domNode) {
-      domNode[propName] = propValue
+    } else if (propName !== 'list' && propName !== 'type' && propName in domNode) {
+      try {
+        domNode[propName] = propValue
+      } catch (err) {}
+    } else if (!isFunction(propValue)) {
+      domNode.setAttribute(propName, propValue)
     }
   }
   return domNode
