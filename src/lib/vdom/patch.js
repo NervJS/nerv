@@ -52,7 +52,7 @@ function patchSingle (domNode, vpatch) {
     case VPatch.STATELESS:
       return patchStateLess(domNode, oldVNode, patchObj)
     case VPatch.PROPS:
-      return patchProps(domNode, patchObj, oldVNode.props)
+      return patchProps(domNode, patchObj, oldVNode.props, oldVNode.isSvg)
     case VPatch.ORDER:
       return patchOrder(domNode, patchObj)
     case VPatch.REMOVE:
@@ -140,7 +140,7 @@ function destroyWidget (domNode, widget) {
   }
 }
 
-function patchProps (domNode, patch, previousProps) {
+function patchProps (domNode, patch, previousProps, isSvg) {
   for (let propName in patch) {
     if (propName === 'children') {
       continue
@@ -197,7 +197,7 @@ function patchProps (domNode, patch, previousProps) {
           domNode.setAttribute(propName, propValue)
         }
       }
-    } else if (propName !== 'list' && propName !== 'type' && propName in domNode) {
+    } else if (propName !== 'list' && propName !== 'type' && !isSvg && propName in domNode) {
       try {
         domNode[propName] = propValue
       } catch (err) {}

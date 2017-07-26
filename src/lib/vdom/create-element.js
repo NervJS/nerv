@@ -27,7 +27,7 @@ function createElement (vnode, isSvg) {
     }
     const domNode = (vnode.namespace === null) ? doc.createElement(vnode.tagName)
       : doc.createElementNS ? doc.createElementNS(vnode.namespace, vnode.tagName) : doc.createElement(vnode.tagName)
-    setProps(domNode, vnode.props)
+    setProps(domNode, vnode.props, isSvg)
     if (isSvg) {
       vnode.isSvg = isSvg
     }
@@ -56,7 +56,7 @@ function createElement (vnode, isSvg) {
   return null
 }
 
-function setProps (domNode, props) {
+function setProps (domNode, props, isSvg) {
   for (let p in props) {
     if (p === 'children') {
       continue
@@ -85,7 +85,7 @@ function setProps (domNode, props) {
           domNode.setAttribute(p, propValue)
         }
       }
-    } else if (p !== 'list' && p !== 'type' && p in domNode) {
+    } else if (p !== 'list' && p !== 'type' && !isSvg && p in domNode) {
       try {
         domNode[p] = propValue == null ? '' : propValue
       } catch (err) {}

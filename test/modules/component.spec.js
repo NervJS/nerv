@@ -1,9 +1,15 @@
 /** @jsx createElement */
-import { Component, createElement, render, cloneElement } from '../../src'
+import { Component, createElement, render, cloneElement, PureComponent } from '../../src'
 import createVText from '#/create-vtext'
 import { rerender } from '../../src/lib/render-queue'
 
 import { EMPTY_CHILDREN, getAttributes, sortAttributes } from '../util'
+
+function fireEvent (on, type) {
+  let e = document.createEvent('Event')
+  e.initEvent(type, true, true)
+  on.dispatchEvent(e)
+}
 
 const Empty = () => null
 describe('Component', function () {
@@ -176,7 +182,6 @@ describe('Component', function () {
     good.setState({ alt: true })
     good.forceUpdate()
     expect(scratch.textContent, 'new component with key present re-rendered').to.equal('C')
-    // we are recycling the first 2 components already rendered, just need a new one
     expect(Comp.prototype.componentWillMount).to.have.been.calledOnce
     expect(sideEffect).to.have.been.calledOnce
 
@@ -310,6 +315,81 @@ describe('Component', function () {
     })
   })
 
+  describe('setState', () => {
+    it('test setState async && batched', () => {
+      class A extends Component {
+        constructor (props) {
+          super(props)
+          this.state = {
+            count: 1
+          }
+        }
+
+        shouldComponentUpdate () {}
+
+        componentWillUpdate () {}
+
+        componentDidMount () {
+          this.setState({
+            count: this.state.count + 1
+          })
+          expect(this.state.count).to.equal(1)
+          this.setState({
+            count: this.state.count + 1
+          })
+          expect(this.state.count).to.equal(1)
+        }
+
+        render () {
+          return <div>{this.state.count}</div>
+        }
+      }
+
+      render(<A />, scratch)
+      sinon.spy(A.prototype, 'componentWillUpdate')
+      expect(A.prototype.componentWillUpdate).not.to.have.been.called
+    })
+
+    it('test setState first param to be a function and setState callback', () => {
+      let a = 1
+      class A extends Component {
+        constructor (props) {
+          super(props)
+          this.state = {
+            count: 1
+          }
+        }
+        shouldComponentUpdate () {
+          return false
+        }
+        click () {
+          this.setState((s) => {
+            s.count++
+          }, () => {
+            a++
+          })
+
+          this.setState((s) => {
+            s.count++
+          }, () => {
+            a++
+          })
+        }
+        render () {
+          return <div onClick={this.click.bind(this)}>{this.state.count}</div>
+        }
+      }
+
+      render(<A />, scratch)
+      const firstChild = scratch.childNodes[0]
+      expect(firstChild.innerHTML).to.equal('1')
+      fireEvent(firstChild, 'click')
+      rerender()
+      expect(firstChild.innerHTML).to.equal('1')
+      expect(a).to.equal(3)
+    })
+  })
+
   describe('forceUpdate', () => {
     it('should force a rerender', () => {
       let forceUpdate
@@ -373,6 +453,36 @@ describe('Component', function () {
       const Foo = props => <div {...props}>a</div>
       render(<Foo children={'b'} />, scratch)
       expect(scratch.innerHTML).to.equal('<div>a</div>')
+    })
+  })
+
+  describe('PureComponent', () => {
+    it('use PureComponent', () => {
+      class App extends PureComponent {
+        constructor (props) {
+          super(props)
+          this.state = {
+            a: 7
+          }
+        }
+
+        click () {
+          this.setState({
+            a: 7
+          })
+        }
+        componentWillUpdate () {}
+        render () {
+          return <div onClick={this.click.bind(this)}>{this.state.a}</div>
+        }
+      }
+      sinon.spy(App.prototype, 'componentWillUpdate')
+      const s = render(<App />, scratch)
+      expect(s.dom.innerHTML).to.equal('7')
+      fireEvent(scratch.childNodes[0], 'click')
+      rerender()
+      expect(s.dom.innerHTML).to.equal('7')
+      expect(App.prototype.componentWillUpdate).not.to.have.been.called
     })
   })
 

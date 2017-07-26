@@ -22,7 +22,7 @@ class ComponentWrapper {
   }
 
   destroy () {
-    unmountComponent(this.component)
+    unmountComponent(this)
   }
 }
 

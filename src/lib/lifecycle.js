@@ -4,6 +4,8 @@ import createElement from '#/create-element'
 import createVText from '#/create-vtext'
 import diff from '#/diff'
 import patch from '#/patch'
+import RefHook from './hooks/ref-hook'
+import { isVNode } from '#/vnode/types'
 
 const readyComponents = []
 
@@ -42,8 +44,17 @@ export function mountComponent (vnode) {
 }
 
 export function mountStatelessComponent (vnode) {
+  let ref = vnode.props.ref
+  delete vnode.props.ref
   vnode._renderd = vnode.tagName(vnode.props, vnode.parentContext)
-  return mountVNode(vnode._renderd, vnode.parentContext)
+  const rendered = vnode._renderd
+  if (isVNode(rendered) && isFunction(ref)) {
+    ref = new RefHook(ref)
+  }
+  if (rendered) {
+    rendered.props.ref = ref
+  }
+  return mountVNode(rendered, vnode.parentContext)
 }
 
 export function getChildContext (component, context) {
@@ -92,6 +103,9 @@ export function reRenderComponent (prev, current) {
   component.prevContext = component.context
   component.props = nextProps
   component.context = nextContext
+  if (isFunction(current.props.ref)) {
+    current.props.ref(component)
+  }
   updateComponent(component)
   return component.dom
 }
@@ -151,14 +165,15 @@ function updateVNode (vnode, lastVNode, lastDom, childContext) {
   return domNode
 }
 
-export function unmountComponent (component) {
+export function unmountComponent (vnode) {
+  const component = vnode.component
   if (isFunction(component.componentWillUnmount)) {
     component.componentWillUnmount()
   }
   const lastRendered = component._rendered
   updateVNode(null, lastRendered, component.dom, component.context)
   component.dom = component._rendered = null
-  if (isFunction(component.props.ref)) {
-    component.props.ref(null)
+  if (isFunction(vnode.props.ref)) {
+    vnode.props.ref(null)
   }
 }
