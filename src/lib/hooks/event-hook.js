@@ -48,12 +48,18 @@ const unbubbleEvents = {
 }
 
 class EventHook {
+  type = 'EventHook'
   constructor (eventName, handler) {
     this.eventName = getEventName(eventName)
     this.handler = handler
   }
 
-  hook (node) {
+  hook (node, prop, prev) {
+    if (prev && prev.type === 'EventHook' &&
+      prev.handler === this.handler &&
+      prev.eventName === this.eventName) {
+      return
+    }
     const eventName = this.eventName
     let delegatedRoots = delegatedEvents.get(eventName)
     if (unbubbleEvents[eventName] === 1) {
@@ -82,7 +88,12 @@ class EventHook {
     }
   }
 
-  unhook (node) {
+  unhook (node, prop, next) {
+    if (next && next.type === 'EventHook' &&
+      next.handler === this.handler &&
+      next.eventName === next.eventName) {
+      return
+    }
     const eventName = this.eventName
     let delegatedRoots = delegatedEvents.get(eventName)
     if (unbubbleEvents[eventName] === 1 && delegatedRoots) {
