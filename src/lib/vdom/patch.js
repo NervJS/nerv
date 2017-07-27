@@ -158,8 +158,12 @@ function patchProps (domNode, patch, previousProps, isSvg) {
       if (isHook(previousValue) && previousValue.unhook) {
         previousValue.unhook(domNode, propName, propValue)
       } else if (propName === 'style') {
-        for (let styleName in previousValue) {
-          domNode.style[styleName] = ''
+        if (isString(previousValue)) {
+          for (let styleName in previousValue) {
+            domNode.style[styleName] = ''
+          }
+        } else {
+          domNode.removeAttribute(propName)
         }
       } else if (propName in domNode) {
         if (isString(previousValue)) {
@@ -173,9 +177,7 @@ function patchProps (domNode, patch, previousProps, isSvg) {
       }
     } else if (propName === 'style') {
       if (isString(propValue)) {
-        try {
-          domNode[propName] = propValue
-        } catch (err) {}
+        domNode.setAttribute(propName, propValue)
       } else {
         for (let styleName in propValue) {
           let styleValue = propValue[styleName]

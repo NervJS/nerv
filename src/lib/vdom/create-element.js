@@ -66,8 +66,10 @@ function setProps (domNode, props, isSvg) {
       if (propValue.hook) {
         propValue.hook(domNode, p)
       }
-    } else if (isObject(propValue)) {
-      if (p === 'style') {
+    } else if (p === 'style') {
+      if (isString(propValue)) {
+        domNode.setAttribute(p, propValue)
+      } else if (isObject(propValue)) {
         for (let s in propValue) {
           let styleValue = propValue[s]
           if (styleValue !== undefined) {
@@ -76,14 +78,14 @@ function setProps (domNode, props, isSvg) {
             } catch (err) {}
           }
         }
+      }
+    } else if (isObject(propValue)) {
+      if (p in domNode) {
+        try {
+          domNode[p] = propValue
+        } catch (err) {}
       } else {
-        if (p in domNode) {
-          try {
-            domNode[p] = propValue
-          } catch (err) {}
-        } else {
-          domNode.setAttribute(p, propValue)
-        }
+        domNode.setAttribute(p, propValue)
       }
     } else if (p !== 'list' && p !== 'type' && !isSvg && p in domNode) {
       try {
