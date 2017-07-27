@@ -2,7 +2,7 @@
 import { Component, createElement, render } from '../../src'
 import { rerender } from '../../src/lib/render-queue'
 
-import { getAttributes, sortAttributes } from '../util'
+import { getAttributes } from '../util'
 
 describe('render()', function () {
   this.timeout(20000)
