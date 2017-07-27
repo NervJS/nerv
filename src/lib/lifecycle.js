@@ -50,8 +50,6 @@ export function mountStatelessComponent (vnode) {
   const rendered = vnode._renderd
   if (isVNode(rendered) && isFunction(ref)) {
     ref = new RefHook(ref)
-  }
-  if (rendered) {
     rendered.props.ref = ref
   }
   return mountVNode(rendered, vnode.parentContext)
