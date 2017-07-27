@@ -13,10 +13,6 @@ class HtmlHook {
   }
 
   unhook (node, prop, next) {
-    if (next && next.type === 'HtmlHook' &&
-      next.value === this.value) {
-      return
-    }
     node.innerHTML = next ? next.value.__html : ''
   }
 }
