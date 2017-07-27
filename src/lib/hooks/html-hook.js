@@ -13,7 +13,7 @@ class HtmlHook {
   }
 
   unhook (node, prop, next) {
-    node.innerHTML = next ? next.value.__html : ''
+    node.innerHTML = ''
   }
 }
 

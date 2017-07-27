@@ -147,14 +147,7 @@ function patchProps (domNode, patch, previousProps, isSvg) {
     }
     let propValue = patch[propName]
     let previousValue = previousProps[propName]
-    if (isHook(propValue)) {
-      if (isHook(previousValue) && previousValue.unhook) {
-        previousValue.unhook(domNode, propName, propValue)
-      }
-      if (propValue && propValue.hook) {
-        propValue.hook(domNode, propName, previousValue)
-      }
-    } else if (propValue == null || propValue === false) {
+    if (propValue == null || propValue === false) {
       if (isHook(previousValue) && previousValue.unhook) {
         previousValue.unhook(domNode, propName, propValue)
       } else if (propName === 'style') {
@@ -175,36 +168,45 @@ function patchProps (domNode, patch, previousProps, isSvg) {
       } else {
         domNode.removeAttribute(propName)
       }
-    } else if (propName === 'style') {
-      if (isString(propValue)) {
-        domNode.setAttribute(propName, propValue)
-      } else {
-        for (let styleName in propValue) {
-          let styleValue = propValue[styleName]
-          if (styleValue != null && styleValue !== false) {
-            try {
-              domNode[propName][styleName] = styleValue
-            } catch (err) {}
+    } else {
+      if (isHook(propValue)) {
+        if (isHook(previousValue) && previousValue.unhook) {
+          previousValue.unhook(domNode, propName, propValue)
+        }
+        if (propValue && propValue.hook) {
+          propValue.hook(domNode, propName, previousValue)
+        }
+      } else if (propName === 'style') {
+        if (isString(propValue)) {
+          domNode.setAttribute(propName, propValue)
+        } else {
+          for (let styleName in propValue) {
+            let styleValue = propValue[styleName]
+            if (styleValue != null && styleValue !== false) {
+              try {
+                domNode[propName][styleName] = styleValue
+              } catch (err) {}
+            }
           }
         }
-      }
-    } else if (isObject(propValue)) {
-      if (previousValue && isObject(previousValue) &&
-        getPrototype(previousValue) !== getPrototype(propValue)) {
-        if (propName in domNode) {
-          try {
-            domNode[propName] = propValue
-          } catch (err) {}
-        } else {
-          domNode.setAttribute(propName, propValue)
+      } else if (isObject(propValue)) {
+        if (previousValue && isObject(previousValue) &&
+          getPrototype(previousValue) !== getPrototype(propValue)) {
+          if (propName in domNode) {
+            try {
+              domNode[propName] = propValue
+            } catch (err) {}
+          } else {
+            domNode.setAttribute(propName, propValue)
+          }
         }
+      } else if (propName !== 'list' && propName !== 'type' && !isSvg && propName in domNode) {
+        try {
+          domNode[propName] = propValue
+        } catch (err) {}
+      } else if (!isFunction(propValue)) {
+        domNode.setAttribute(propName, propValue)
       }
-    } else if (propName !== 'list' && propName !== 'type' && !isSvg && propName in domNode) {
-      try {
-        domNode[propName] = propValue
-      } catch (err) {}
-    } else if (!isFunction(propValue)) {
-      domNode.setAttribute(propName, propValue)
     }
   }
   return domNode
