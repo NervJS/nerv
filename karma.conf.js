@@ -56,13 +56,13 @@ const sauceLabsLaunchers = {
 		browserName: 'internet explorer',
 		version: '9.0',
 		platform: 'Windows 7'
-  },
-  sl_ie_8: {
-		base: 'SauceLabs',
-		browserName: 'internet explorer',
-		version: '8.0',
-		platform: 'Windows 7'
-	}
+  }
+  // sl_ie_8: {
+	// 	base: 'SauceLabs',
+	// 	browserName: 'internet explorer',
+	// 	version: '8.0',
+	// 	platform: 'Windows 7'
+	// }
 }
 
 const travisLaunchers = {
@@ -105,7 +105,9 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['mocha'],
+    reporters: ['mocha'].concat(
+      sauceLabs ? 'saucelabs' : []
+    ),
 
     mochaReporter: {
 			showDiff: true
