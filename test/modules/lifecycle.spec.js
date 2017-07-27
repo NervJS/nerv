@@ -286,7 +286,10 @@ describe('Lifecycle methods', () => {
       constructor (p, c) {
         super(p, c)
         this.state = { show: true }
-        setState = s => this.setState(s)
+        setState = s => {
+          this.setState(s)
+          this.forceUpdate()
+        }
       }
       render () {
         return (
@@ -344,7 +347,6 @@ describe('Lifecycle methods', () => {
       it('should be invoked for components on unmount', () => {
         reset()
         setState({ show: false })
-        rerender()
 
         expect(proto.componentWillUnmount).to.have.been.called
       })
@@ -352,7 +354,6 @@ describe('Lifecycle methods', () => {
       it('should be invoked for components on re-render', () => {
         reset()
         setState({ show: true })
-        rerender()
 
         expect(proto._constructor).to.have.been.called
         expect(proto.componentDidMount).to.have.been.called
@@ -376,7 +377,10 @@ describe('Lifecycle methods', () => {
         constructor () {
           super()
           this.state = { show: true }
-          setState = s => this.setState(s)
+          setState = s => {
+            this.setState(s)
+            this.forceUpdate()
+          }
         }
         render () {
           return (
@@ -418,14 +422,12 @@ describe('Lifecycle methods', () => {
 
       it('should be invoked normally on unmount', () => {
         setState({ show: false })
-        rerender()
 
         expect(proto.componentWillUnmount).to.have.been.called
       })
 
       it('should still invoke mount for shouldComponentUpdate():false', () => {
         setState({ show: true })
-        rerender()
 
         expect(proto.componentWillMount).to.have.been.called
         expect(proto.componentWillMount).to.have.been.calledBefore(proto.componentDidMount)
@@ -434,7 +436,6 @@ describe('Lifecycle methods', () => {
 
       it('should still invoke unmount for shouldComponentUpdate():false', () => {
         setState({ show: false })
-        rerender()
 
         expect(proto.componentWillUnmount).to.have.been.called
       })

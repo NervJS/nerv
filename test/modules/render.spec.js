@@ -409,7 +409,7 @@ describe('render()', function () {
     doRender1()
     rerender()
 
-    expect(scratch.childNodes[0]).to.have.nested.deep.property('style.cssText').that.equals('color: rgb(0, 255, 255); background: 10px 10px / cover rgb(255, 100, 0); padding: 5px; top: 100px; left: 100%;')
+    expect(style).to.have.property('color').that.equals('rgb(0, 255, 255)')
     doRender2()
     rerender()
 
