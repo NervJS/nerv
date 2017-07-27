@@ -66,6 +66,7 @@ function setProps (domNode, props, isSvg) {
       if (propValue.hook) {
         propValue.hook(domNode, p)
       }
+      continue
     } else if (p === 'style') {
       if (isString(propValue)) {
         domNode.setAttribute(p, propValue)
@@ -79,6 +80,7 @@ function setProps (domNode, props, isSvg) {
           }
         }
       }
+      continue
     } else if (isObject(propValue)) {
       if (p in domNode) {
         try {
@@ -87,6 +89,7 @@ function setProps (domNode, props, isSvg) {
       } else {
         domNode.setAttribute(p, propValue)
       }
+      continue
     } else if (p !== 'list' && p !== 'type' && !isSvg && p in domNode) {
       try {
         domNode[p] = propValue == null ? '' : propValue
@@ -94,11 +97,14 @@ function setProps (domNode, props, isSvg) {
       if (propValue == null || propValue === false) {
         domNode.removeAttribute(p)
       }
+      continue
     } else {
       if (propValue == null || propValue === false) {
         domNode.removeAttribute(p)
-      } else if (!isFunction(propValue)) {
-        domNode.setAttribute(p, propValue)
+      } else {
+        if (!isFunction(propValue)) {
+          domNode.setAttribute(p, propValue)
+        }
       }
     }
   }

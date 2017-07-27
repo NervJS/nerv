@@ -150,6 +150,7 @@ function patchProps (domNode, patch, previousProps, isSvg) {
     if (propValue == null || propValue === false) {
       if (isHook(previousValue) && previousValue.unhook) {
         previousValue.unhook(domNode, propName, propValue)
+        continue
       } else if (propName === 'style') {
         if (isString(previousValue)) {
           for (let styleName in previousValue) {
@@ -158,6 +159,7 @@ function patchProps (domNode, patch, previousProps, isSvg) {
         } else {
           domNode.removeAttribute(propName)
         }
+        continue
       } else if (propName in domNode) {
         if (isString(previousValue)) {
           domNode[propName] = ''
@@ -176,6 +178,7 @@ function patchProps (domNode, patch, previousProps, isSvg) {
         if (propValue && propValue.hook) {
           propValue.hook(domNode, propName, previousValue)
         }
+        continue
       } else if (propName === 'style') {
         if (isString(propValue)) {
           domNode.setAttribute(propName, propValue)
@@ -189,6 +192,7 @@ function patchProps (domNode, patch, previousProps, isSvg) {
             }
           }
         }
+        continue
       } else if (isObject(propValue)) {
         if (previousValue && isObject(previousValue) &&
           getPrototype(previousValue) !== getPrototype(propValue)) {
@@ -200,10 +204,12 @@ function patchProps (domNode, patch, previousProps, isSvg) {
             domNode.setAttribute(propName, propValue)
           }
         }
+        continue
       } else if (propName !== 'list' && propName !== 'type' && !isSvg && propName in domNode) {
         try {
           domNode[propName] = propValue
         } catch (err) {}
+        continue
       } else if (!isFunction(propValue)) {
         domNode.setAttribute(propName, propValue)
       }
