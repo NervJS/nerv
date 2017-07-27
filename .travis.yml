@@ -25,7 +25,7 @@ install:
 
 script:
   - npm run test
-  - ROWSER=true npm run test:karma
+  - BROWSER=true npm run test:karma
   - npm run build
 
 env:
