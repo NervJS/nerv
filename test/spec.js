@@ -1,6 +1,7 @@
 import './modules/h.spec'
 import './modules/createElement.spec'
 import './modules/diff.spec'
+import './modules/vtypes.spec'
 import './modules/render.spec'
 import './modules/refs.spec'
 import './modules/keys.spec'
