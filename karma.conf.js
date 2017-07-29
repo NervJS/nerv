@@ -172,7 +172,8 @@ module.exports = function(config) {
             test: /\.js$/,
             loader: 'babel-loader',
             exclude: /node_modules/
-          }, {
+          },
+          coverage ? {
             enforce: 'post',
             test: /\.js$/,
             use: {
@@ -181,7 +182,7 @@ module.exports = function(config) {
             },
             include: path.resolve('src/'),
             exclude: /node_modules/
-          }
+          }: {}
         ]
       }
     },
