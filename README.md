@@ -4,4 +4,4 @@
 
 [![Build Status](https://travis-ci.org/o2team/nerv.svg?branch=master)](https://travis-ci.org/o2team/nerv)
 
-[![Sauce Test Status](https://saucelabs.com/open_sauce/build_matrix/nervjs.svg)](https://saucelabs.com/u/nervjs)
+[![Build Status](https://saucelabs.com/browser-matrix/nerv-project.svg)](https://saucelabs.com/beta/builds/8e3ed6ac63ec44568f8fe81f1967695d)
