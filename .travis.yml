@@ -26,7 +26,7 @@ install:
 script:
   - COVERAGE=true npm run test
   - ./node_modules/coveralls/bin/coveralls.js < ./coverage/lcov.info
-  - BROWSER=true npm run test:karma
+  - BROWSER=true COVERAGE=false npm run test:karma
   - npm run build
 
 env:
