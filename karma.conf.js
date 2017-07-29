@@ -1,6 +1,7 @@
 // Karma configuration
 // Generated on Tue Jul 18 2017 18:01:48 GMT+0800 (CST)
 
+const path = require('path')
 const webpack = require('webpack')
 
 const coverage = String(process.env.COVERAGE) !== 'false'
@@ -57,12 +58,6 @@ const sauceLabsLaunchers = {
 		version: '9.0',
 		platform: 'Windows 7'
   }
-  // sl_ie_8: {
-	// 	base: 'SauceLabs',
-	// 	browserName: 'internet explorer',
-	// 	version: '8.0',
-	// 	platform: 'Windows 7'
-	// }
 }
 
 const travisLaunchers = {
@@ -106,8 +101,28 @@ module.exports = function(config) {
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['mocha'].concat(
+      coverage ? 'coverage-istanbul' : [],
       sauceLabs ? 'saucelabs' : []
     ),
+
+    coverageIstanbulReporter: {
+			dir: './coverage',
+      reports: ['html', 'lcovonly', 'text-summary'],
+      fixWebpackSourcePaths: true,
+      skipFilesWithNoCoverage: true,
+      'report-config': {
+        html: {
+          subdir: 'html'
+        },
+        'text-summary': {
+          subdir: 'text-summary'
+        },
+        lcovonly: {
+          subdir: '.',
+          file: 'lcov.info'
+        }
+      }
+		},
 
     mochaReporter: {
 			showDiff: true
@@ -151,10 +166,20 @@ module.exports = function(config) {
     webpack: {
       devtool: 'inline-source-map',
       module: {
-        loaders: [
+        rules: [
           {
+            enforce: 'pre',
             test: /\.js$/,
             loader: 'babel-loader',
+            exclude: /node_modules/
+          }, {
+            enforce: 'post',
+            test: /\.js$/,
+            use: {
+              loader: 'istanbul-instrumenter-loader',
+              options: { esModules: true }
+            },
+            include: path.resolve('src/'),
             exclude: /node_modules/
           }
         ]

@@ -31,3 +31,5 @@ dist
 # editor config
 .vscode/
 .npm-debug.log
+
+coverage
