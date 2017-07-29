@@ -57,7 +57,19 @@ const sauceLabsLaunchers = {
 		browserName: 'internet explorer',
 		version: '9.0',
 		platform: 'Windows 7'
-  }
+  },
+  sl_ie_8_7: {
+		base: 'SauceLabs',
+		browserName: 'internet explorer',
+		version: '8.0',
+		platform: 'Windows 7'
+	},
+	sl_ie_8_xp: {
+		base: 'SauceLabs',
+		browserName: 'internet explorer',
+		version: '8.0',
+		platform: 'Windows xp'
+	}
 }
 
 const travisLaunchers = {
@@ -82,7 +94,10 @@ module.exports = function(config) {
 
 
     // list of files / patterns to load in the browser
-    files: ['test/spec.js'],
+    files: [
+      './node_modules/es5-polyfill/dist/polyfill.js',
+      'test/spec.js'
+    ],
 
 
     // list of files to exclude

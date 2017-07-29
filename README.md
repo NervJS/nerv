@@ -2,6 +2,8 @@
 
 > 一个基于virtual dom的类React组件框架
 
+[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
+
 [![Coverage Status](https://coveralls.io/repos/github/o2team/nerv/badge.svg?branch=master)](https://coveralls.io/github/o2team/nerv?branch=master)
 [![Build Status](https://travis-ci.org/o2team/nerv.svg?branch=master)](https://travis-ci.org/o2team/nerv)
 

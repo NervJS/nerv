@@ -38,6 +38,7 @@
     "babel-register": "^6.24.0",
     "chai": "^4.1.0",
     "coveralls": "^2.13.1",
+    "es5-polyfill": "^0.0.1",
     "eslint": "^3.19.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-config-standard-jsx": "^4.0.2",
