@@ -57,19 +57,7 @@ const sauceLabsLaunchers = {
 		browserName: 'internet explorer',
 		version: '9.0',
 		platform: 'Windows 7'
-  },
-  sl_ie_8_7: {
-		base: 'SauceLabs',
-		browserName: 'internet explorer',
-		version: '8.0',
-		platform: 'Windows 7'
-	},
-	sl_ie_8_xp: {
-		base: 'SauceLabs',
-		browserName: 'internet explorer',
-		version: '8.0',
-		platform: 'Windows xp'
-	}
+  }
 }
 
 const travisLaunchers = {
@@ -146,11 +134,14 @@ module.exports = function(config) {
     browserLogOptions: { terminal: true },
 		browserConsoleLogOptions: { terminal: true },
 
-		browserNoActivityTimeout: 5 * 60 * 1000,
+    browserNoActivityTimeout: 5 * 60 * 1000,
+    browserDisconnectTimeout: 15 * 1000,
+    browserDisconnectTolerance: 2,
+
+    concurrency: 2,
 
     // web server port
     port: 9876,
-
 
     // enable / disable colors in the output (reporters and logs)
     colors: true,
@@ -199,7 +190,14 @@ module.exports = function(config) {
             exclude: /node_modules/
           }: {}
         ]
-      }
+      },
+      plugins: [
+				new webpack.DefinePlugin({
+					coverage: coverage,
+					NODE_ENV: JSON.stringify(process.env.NODE_ENV || ''),
+					DISABLE_FLAKEY: !!String(process.env.FLAKEY).match(/^(0|false)$/gi)
+				})
+			]
     },
 
     webpackMiddleware: {
