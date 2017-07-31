@@ -180,7 +180,7 @@ function attachEventToNode (node, eventName, delegatedRoots) {
     const eventToTrigger = delegatedRoots.get(node)
     if (eventToTrigger && eventToTrigger.eventHandler) {
       const eventData = {
-        currentTarget: event.target
+        currentTarget: node
       }
       Object.defineProperties(event, {
         currentTarget: {
@@ -190,7 +190,6 @@ function attachEventToNode (node, eventName, delegatedRoots) {
           }
         }
       })
-      eventData.currentTarget = event.target
       eventToTrigger.eventHandler(event)
     }
   }
