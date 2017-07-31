@@ -1,3 +1,5 @@
+import './modules/util.spec'
+import './modules/events.spec'
 import './modules/h.spec'
 import './modules/createElement.spec'
 import './modules/diff.spec'

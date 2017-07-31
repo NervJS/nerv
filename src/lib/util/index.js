@@ -85,7 +85,7 @@ export function getPrototype (obj) {
 
 export function proxy (fn, context) {
   return function () {
-    fn.apply(context || this, arguments)
+    return fn.apply(context || this, arguments)
   }
 }
 
