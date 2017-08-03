@@ -1,5 +1,4 @@
 import Events from './lib/events'
-import Module from './lib/module'
 import Component from './lib/component'
 import PureComponent from './lib/pure-component'
 import { render } from './lib/render'
@@ -10,7 +9,6 @@ import nextTick from './lib/util/next-tick'
 
 export {
   Events,
-  Module,
   Component,
   PureComponent,
   createElement,
