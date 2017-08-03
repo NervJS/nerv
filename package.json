@@ -14,8 +14,7 @@
     "transpile": "npm-run-all transpile:main",
     "optimize": "uglifyjs dist/nerv.dev.js -c conditionals=false,sequences=false,loops=false,join_vars=false,collapse_vars=false --pure-funcs=Object.defineProperty -b width=120,quote_style=3 -o dist/nerv.js -p relative --in-source-map dist/nerv.dev.js.map --source-map dist/nerv.js.map",
     "minify": "uglifyjs dist/nerv.js -c collapse_vars,evaluate,screw_ie8,unsafe,loops=false,keep_fargs=false,pure_getters,unused,dead_code -m -o dist/nerv.min.js -p relative --in-source-map dist/nerv.js.map --source-map dist/nerv.min.js.map",
-    "release": "npm run smart-release",
-    "smart-release": "npm run build && npm test && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
+    "release": "npm run build && npm test && release-it -d --github.release -p"
   },
   "keywords": [
     "react-like"
@@ -68,6 +67,7 @@
     "karma-webpack": "^2.0.4",
     "mocha": "^3.4.2",
     "npm-run-all": "^4.0.2",
+    "release-it": "^2.8.2",
     "rollup": "^0.41.6",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^8.0.2",

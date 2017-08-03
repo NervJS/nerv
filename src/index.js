@@ -7,7 +7,7 @@ import cloneElement from './lib/clone-element'
 import * as Util from './lib/util'
 import nextTick from './lib/util/next-tick'
 
-export default {
+export {
   Events,
   Component,
   PureComponent,

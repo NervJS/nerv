@@ -11,75 +11,73 @@ const sauceLabs = realBrowser && ci
 
 const sauceLabsLaunchers = {
   sl_win_chrome: {
-		base: 'SauceLabs',
-		browserName: 'chrome',
-		platform: 'Windows 10'
+    base: 'SauceLabs',
+    browserName: 'chrome',
+    platform: 'Windows 10'
   },
   sl_mac_chrome: {
-		base: 'SauceLabs',
-		browserName: 'chrome',
-		platform: 'Windows 10'
-	},
-	sl_firefox: {
-		base: 'SauceLabs',
-		browserName: 'firefox',
-		platform: 'Windows 10'
+    base: 'SauceLabs',
+    browserName: 'chrome',
+    platform: 'Windows 10'
+  },
+  sl_firefox: {
+    base: 'SauceLabs',
+    browserName: 'firefox',
+    platform: 'Windows 10'
   },
   sl_mac_firfox: {
-		base: 'SauceLabs',
-		browserName: 'firefox',
-		platform: 'macOS 10.12'
-	},
-	sl_safari: {
-		base: 'SauceLabs',
-		browserName: 'safari',
-		platform: 'macOS 10.12'
-	},
-	sl_edge: {
-		base: 'SauceLabs',
-		browserName: 'MicrosoftEdge',
-		platform: 'Windows 10'
-	},
-	sl_ie_11: {
-		base: 'SauceLabs',
-		browserName: 'internet explorer',
-		version: '11.103',
-		platform: 'Windows 10'
-	},
-	sl_ie_10: {
-		base: 'SauceLabs',
-		browserName: 'internet explorer',
-		version: '10.0',
-		platform: 'Windows 7'
-	},
-	sl_ie_9: {
-		base: 'SauceLabs',
-		browserName: 'internet explorer',
-		version: '9.0',
-		platform: 'Windows 7'
+    base: 'SauceLabs',
+    browserName: 'firefox',
+    platform: 'macOS 10.12'
+  },
+  sl_safari: {
+    base: 'SauceLabs',
+    browserName: 'safari',
+    platform: 'macOS 10.12'
+  },
+  sl_edge: {
+    base: 'SauceLabs',
+    browserName: 'MicrosoftEdge',
+    platform: 'Windows 10'
+  },
+  sl_ie_11: {
+    base: 'SauceLabs',
+    browserName: 'internet explorer',
+    version: '11.103',
+    platform: 'Windows 10'
+  },
+  sl_ie_10: {
+    base: 'SauceLabs',
+    browserName: 'internet explorer',
+    version: '10.0',
+    platform: 'Windows 7'
+  },
+  sl_ie_9: {
+    base: 'SauceLabs',
+    browserName: 'internet explorer',
+    version: '9.0',
+    platform: 'Windows 7'
   }
 }
 
 const travisLaunchers = {
-	chrome_travis: {
-		base: 'Chrome',
-		flags: ['--no-sandbox']
-	}
+  chrome_travis: {
+    base: 'Chrome',
+    flags: ['--no-sandbox']
+  }
 }
 
 const localBrowsers = realBrowser ? Object.keys(travisLaunchers) : ['Chrome']
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
 
-
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['source-map-support', 'mocha', 'sinon-chai'],
-
 
     // list of files / patterns to load in the browser
     files: [
@@ -87,18 +85,15 @@ module.exports = function(config) {
       'test/spec.js'
     ],
 
-
     // list of files to exclude
     exclude: [
     ],
-
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'test/**/*.js': ['webpack', 'sourcemap']
     },
-
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
@@ -109,7 +104,7 @@ module.exports = function(config) {
     ),
 
     coverageIstanbulReporter: {
-			dir: './coverage',
+      dir: './coverage',
       reports: ['html', 'lcovonly', 'text-summary'],
       fixWebpackSourcePaths: true,
       skipFilesWithNoCoverage: true,
@@ -125,20 +120,18 @@ module.exports = function(config) {
           file: 'lcov.info'
         }
       }
-		},
+    },
 
     mochaReporter: {
-			showDiff: true
+      showDiff: true
     },
 
     browserLogOptions: { terminal: true },
-		browserConsoleLogOptions: { terminal: true },
+    browserConsoleLogOptions: { terminal: true },
 
     browserNoActivityTimeout: 5 * 60 * 1000,
     browserDisconnectTimeout: 15 * 1000,
     browserDisconnectTolerance: 2,
-
-    concurrency: 2,
 
     // web server port
     port: 9876,
@@ -150,10 +143,8 @@ module.exports = function(config) {
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_INFO,
 
-
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
-
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
@@ -167,7 +158,7 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: Infinity,
+    concurrency: 2,
 
     webpack: {
       devtool: 'inline-source-map',
@@ -188,16 +179,16 @@ module.exports = function(config) {
             },
             include: path.resolve('src/'),
             exclude: /node_modules/
-          }: {}
+          } : {}
         ]
       },
       plugins: [
-				new webpack.DefinePlugin({
-					coverage: coverage,
-					NODE_ENV: JSON.stringify(process.env.NODE_ENV || ''),
-					DISABLE_FLAKEY: !!String(process.env.FLAKEY).match(/^(0|false)$/gi)
-				})
-			]
+        new webpack.DefinePlugin({
+          coverage: coverage,
+          NODE_ENV: JSON.stringify(process.env.NODE_ENV || ''),
+          DISABLE_FLAKEY: !!String(process.env.FLAKEY).match(/^(0|false)$/gi)
+        })
+      ]
     },
 
     webpackMiddleware: {
