@@ -8,7 +8,7 @@ babelConfig.plugins.push('external-helpers')
 export default {
   moduleName: 'Nerv',
   entry: 'src/index.js',
-  format: 'iife',
+  format: 'umd',
   plugins: [
     resolve({
       main: true
