@@ -38,7 +38,10 @@ function createElement (vnode, isSvg) {
           if (isWidget(child)) {
             child.parentContext = vnode.parentContext || {}
           }
-          domNode.appendChild(createElement(child, isSvg))
+          const childNode = createElement(child, isSvg)
+          if (childNode) {
+            domNode.appendChild(childNode)
+          }
         }
       })
     }
@@ -48,7 +51,11 @@ function createElement (vnode, isSvg) {
     const domNode = doc.createDocumentFragment()
     vnode.forEach(child => {
       if (child !== undefined && child !== null && child !== false && domNode.appendChild) {
-        return domNode.appendChild(createElement(child, isSvg))
+        const childNode = createElement(child, isSvg)
+        if (childNode) {
+          domNode.appendChild(childNode)
+        }
+        return domNode.appendChild(childNode)
       }
     })
     return domNode
