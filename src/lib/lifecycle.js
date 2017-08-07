@@ -153,13 +153,8 @@ function updateVNode (vnode, lastVNode, lastDom, childContext) {
   if (isObject(vnode)) {
     vnode.context = childContext
   }
-  let domNode
-  if (!lastDom) {
-    domNode = createElement(vnode)
-  } else {
-    let patches = diff(lastVNode, vnode)
-    domNode = patch(lastDom, patches)
-  }
+  let patches = diff(lastVNode, vnode)
+  let domNode = patch(lastDom, patches)
   return domNode
 }
 

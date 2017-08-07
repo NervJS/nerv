@@ -14,6 +14,9 @@ function createElement (vnode, isSvg) {
   if (isVText(vnode)) {
     return doc.createTextNode(vnode.text)
   }
+  if (vnode === null || vnode === false) {
+    return doc.createComment('Empty dom node')
+  }
   if (isVNode(vnode)) {
     if (vnode.isSvg) {
       isSvg = true
