@@ -18,7 +18,7 @@ const sauceLabsLaunchers = {
   sl_mac_chrome: {
     base: 'SauceLabs',
     browserName: 'chrome',
-    platform: 'Windows 10'
+    platform: 'macOS 10.12'
   },
   sl_firefox: {
     base: 'SauceLabs',
