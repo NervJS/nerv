@@ -67,6 +67,9 @@ function walk (a, b, patches, index) {
 function diffProps (propsA, propsB) {
   let diff = null
   for (let key in propsA) {
+    if (key === 'children') {
+      continue
+    }
     if (!propsB.hasOwnProperty(key)) {
       diff = diff || {}
       diff[key] = undefined
