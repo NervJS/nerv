@@ -10,7 +10,22 @@ export function isFunction (arg) {
   return typeof arg === 'function'
 }
 
+export function isBoolean (arg) {
+  return arg === true || arg === false
+}
+
 export const isArray = Array.isArray
+
+export function getPrototype (obj) {
+  /* eslint-disable */
+  if (Object.getPrototypeOf) {
+    return Object.getPrototypeOf(obj)
+  } else if (obj.__proto__) {
+    return obj.__proto__
+  }
+  /* eslint-enable */
+  return obj.constructor.prototype
+}
 
 export function isObject (arg) {
   return arg === Object(arg)

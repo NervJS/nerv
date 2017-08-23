@@ -1,7 +1,6 @@
 import { isFunction } from '~'
-import SimpleMap from '~/simple-map'
 
-const delegatedEvents = new SimpleMap()
+const delegatedEvents = new Map()
 
 const unbubbleEvents = {
   onmousemove: 1,
@@ -64,7 +63,7 @@ class EventHook {
     let delegatedRoots = delegatedEvents.get(eventName)
     if (unbubbleEvents[eventName] === 1) {
       if (!delegatedRoots) {
-        delegatedRoots = new SimpleMap()
+        delegatedRoots = new Map()
       }
       const event = attachEventToNode(node, eventName, delegatedRoots)
       delegatedEvents.set(eventName, delegatedRoots)
@@ -77,7 +76,7 @@ class EventHook {
     } else {
       if (!delegatedRoots) {
         delegatedRoots = {
-          items: new SimpleMap()
+          items: new Map()
         }
         delegatedRoots.event = attachEventToDocument(document, eventName, delegatedRoots)
         delegatedEvents.set(eventName, delegatedRoots)
@@ -99,15 +98,15 @@ class EventHook {
     if (unbubbleEvents[eventName] === 1 && delegatedRoots) {
       let event = delegatedRoots.get(node)
       node.removeEventListener(parseEventName(eventName), event.event, false)
-      delegatedRoots.remove(node)
-      if (delegatedRoots.size() === 0) {
-        delegatedEvents.remove(eventName)
+      delegatedRoots.delete(node)
+      if (delegatedRoots.size === 0) {
+        delegatedEvents.delete(eventName)
       }
     } else if (delegatedRoots && delegatedRoots.items) {
       let items = delegatedRoots.items
-      if (items.remove(node) && items.size() === 0) {
+      if (items.delete(node) && items.size === 0) {
         document.removeEventListener(parseEventName(eventName), delegatedRoots.event, false)
-        delegatedEvents.remove(eventName)
+        delegatedEvents.delete(eventName)
       }
     }
   }
@@ -152,7 +151,7 @@ function dispatchEvent (event, target, items, count, eventData) {
 
 function attachEventToDocument (doc, eventName, delegatedRoots) {
   const eventHandler = (event) => {
-    const count = delegatedRoots.items.size()
+    const count = delegatedRoots.items.size
     if (count > 0) {
       const eventData = {
         currentTarget: event.target
