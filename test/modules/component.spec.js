@@ -62,6 +62,37 @@ describe('Component', function () {
     expect(scratch.innerHTML).to.equal('<div foo="bar"></div>')
   })
 
+  it('should update nested functional components', () => {
+    const A = <div>A</div>
+    const B = <div>B</div>
+
+    class C extends Component {
+      constructor () {
+        super()
+        this.state = {
+          show: true
+        }
+      }
+
+      render () {
+        return (
+          <div>
+            {this.state.show ? <A /> : <B />}
+          </div>
+        )
+      }
+    }
+    let c
+    render(<C ref={ins => (c = ins)} />, scratch)
+    expect(scratch.innerHTML).to.equal('<div><div>A</div></div>')
+
+    c.setState({
+      show: false
+    })
+    c.forceUpdate()
+    expect(scratch.innerHTML).to.equal('<div><div>B</div></div>')
+  })
+
   it('should render components with props', () => {
     const props = { foo: 'bar', onBaz: () => { } }
     let constructorProps

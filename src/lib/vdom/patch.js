@@ -119,7 +119,7 @@ function patchWidget (domNode, vnode, patch) {
 function patchStateLess (domNode, vnode, patch) {
   const oldProps = vnode.props
   const newProps = patch.props
-  if (shallowEqual(oldProps, newProps)) {
+  if (vnode.tagName === patch.tagName && shallowEqual(oldProps, newProps)) {
     return domNode
   }
   const newNode = createElement(patch)

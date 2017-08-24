@@ -1,6 +1,6 @@
 {
   "name": "nervjs",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A react-like framework based on virtual-dom",
   "main": "dist/nerv.js",
   "scripts": {
