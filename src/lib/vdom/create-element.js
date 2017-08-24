@@ -67,11 +67,11 @@ function createElement (vnode, isSvg) {
 }
 
 function setProps (domNode, props, isSvg) {
-  for (let p in props) {
+  for (const p in props) {
     if (p === 'children') {
       continue
     }
-    let propValue = props[p]
+    const propValue = props[p]
     if (isHook(propValue)) {
       if (propValue.hook) {
         propValue.hook(domNode, p)
@@ -81,8 +81,8 @@ function setProps (domNode, props, isSvg) {
       if (isString(propValue)) {
         domNode.setAttribute(p, propValue)
       } else if (isObject(propValue)) {
-        for (let s in propValue) {
-          let styleValue = propValue[s]
+        for (const s in propValue) {
+          const styleValue = propValue[s]
           if (styleValue !== undefined) {
             try {
               domNode[p][s] = styleValue

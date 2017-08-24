@@ -38,7 +38,7 @@ export function extend (source, from) {
   if (!from) {
     return source
   }
-  for (let key in from) {
+  for (const key in from) {
     if (from.hasOwnProperty(key)) {
       source[key] = from[key]
     }
@@ -53,7 +53,7 @@ export function isEmptyObject (obj) {
   if (!obj) {
     return true
   }
-  for (let prop in obj) {
+  for (const prop in obj) {
     if (obj.hasOwnProperty(prop)) {
       return false
     }

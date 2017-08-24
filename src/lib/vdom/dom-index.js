@@ -12,13 +12,13 @@ function recurse (rootNode, tree, patchIndices, nodes, index) {
     if (indexInRange(patchIndices, index, index)) {
       nodes[index] = rootNode
     }
-    let vChildren = tree.children
+    const vChildren = tree.children
     if (vChildren) {
-      let childNodes = rootNode.childNodes
+      const childNodes = rootNode.childNodes
       vChildren.forEach((vChild, i) => {
         index++
         vChild = vChild || {}
-        let nextIndex = index + (vChild.count || 0)
+        const nextIndex = index + (vChild.count || 0)
         if (indexInRange(patchIndices, index, nextIndex)) {
           recurse(childNodes[i], vChild, patchIndices, nodes, index)
         }

@@ -9,7 +9,8 @@ module.exports = {
     es6: true
   },
   rules: {
-    'no-unused-expressions': 0
+    'no-unused-expressions': 0,
+    'prefer-const': ['error']
   },
   globals: {
     describe: true,

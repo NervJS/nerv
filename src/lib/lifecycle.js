@@ -110,11 +110,11 @@ export function reRenderComponent (prev, current) {
 
 export function updateComponent (component, isForce) {
   const lastDom = component.dom
-  let props = component.props
-  let state = component.getState()
-  let context = component.context
-  let prevProps = component.prevProps || props
-  let prevContext = component.prevContext || context
+  const props = component.props
+  const state = component.getState()
+  const context = component.context
+  const prevProps = component.prevProps || props
+  const prevContext = component.prevContext || context
   component.props = prevProps
   component.context = prevContext
   let skip = false
@@ -153,8 +153,8 @@ function updateVNode (vnode, lastVNode, lastDom, childContext) {
   if (isObject(vnode)) {
     vnode.context = childContext
   }
-  let patches = diff(lastVNode, vnode)
-  let domNode = patch(lastDom, patches)
+  const patches = diff(lastVNode, vnode)
+  const domNode = patch(lastDom, patches)
   return domNode
 }
 

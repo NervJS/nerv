@@ -3,7 +3,7 @@ import { isVNode, isVText, isWidget, isStateLess, isHook } from './vnode/types'
 import { isFunction, isObject, getPrototype } from '~'
 
 function diff (a, b) {
-  let patches = {old: a}
+  const patches = {old: a}
   walk(a, b, patches, 0)
   return patches
 }
@@ -66,13 +66,13 @@ function walk (a, b, patches, index) {
 
 function diffProps (propsA, propsB) {
   let diff = null
-  for (let key in propsA) {
+  for (const key in propsA) {
     if (!propsB.hasOwnProperty(key)) {
       diff = diff || {}
       diff[key] = undefined
     }
-    let aValue = propsA[key]
-    let bValue = propsB[key]
+    const aValue = propsA[key]
+    const bValue = propsB[key]
     if (aValue === bValue) {
       continue
     } else if (isObject(aValue) && isObject(bValue)) {
@@ -83,7 +83,7 @@ function diffProps (propsA, propsB) {
         diff = diff || {}
         diff[key] = bValue
       } else {
-        let objDiff = diffProps(aValue, bValue)
+        const objDiff = diffProps(aValue, bValue)
         if (objDiff) {
           diff = diff || {}
           diff[key] = objDiff
@@ -94,7 +94,7 @@ function diffProps (propsA, propsB) {
       diff[key] = bValue
     }
   }
-  for (let key in propsB) {
+  for (const key in propsB) {
     if (!propsA.hasOwnProperty(key)) {
       diff = diff || {}
       diff[key] = propsB[key]
@@ -106,11 +106,11 @@ function diffProps (propsA, propsB) {
 function diffChildren (a, b, apply, patches, index) {
   const aChildren = a.children
   const diffSet = diffList(aChildren, b.children, 'key')
-  let bChildren = diffSet.list
-  let len = Math.max(aChildren.length, bChildren.length)
+  const bChildren = diffSet.list
+  const len = Math.max(aChildren.length, bChildren.length)
   for (let i = 0; i < len; i++) {
-    let leftNode = aChildren[i]
-    let rightNode = bChildren[i]
+    const leftNode = aChildren[i]
+    const rightNode = bChildren[i]
     index += 1
     if (!leftNode) {
       if (rightNode) {
@@ -160,15 +160,15 @@ function diffList (oldList, newList, key) {
       deletedItems++
       return null
     }
-    let itemIndex = newListFree[freeIndex++]
-    let freeItem = newList[itemIndex]
+    const itemIndex = newListFree[freeIndex++]
+    const freeItem = newList[itemIndex]
     if (!freeItem) {
       deletedItems++
       return null
     }
     return freeItem
   })
-  let lastFreeIndex = freeIndex >= newListFree.length ? newList.length : newListFree[freeIndex]
+  const lastFreeIndex = freeIndex >= newListFree.length ? newList.length : newListFree[freeIndex]
   newList.forEach((newItem, index) => {
     const itemKey = newItem[key]
     if (itemKey) {
@@ -180,10 +180,10 @@ function diffList (oldList, newList, key) {
     }
   })
 
-  let simulate = listChange.slice(0)
+  const simulate = listChange.slice(0)
   let simulateIndex = 0
-  let removes = []
-  let inserts = []
+  const removes = []
+  const inserts = []
   let simulateItem
   for (let k = 0; k < newList.length;) {
     simulateItem = simulate[simulateIndex]
@@ -191,9 +191,9 @@ function diffList (oldList, newList, key) {
       removes.push(remove(simulate, simulateIndex, null))
       simulateItem = simulate[simulateIndex]
     }
-    let newItem = newList[k]
-    let newItemKey = newItem[key]
-    let simulateItemKey = simulateItem[key]
+    const newItem = newList[k]
+    const newItemKey = newItem[key]
+    const simulateItemKey = simulateItem[key]
     if (!simulateItem || simulateItemKey !== newItemKey) {
       if (newItem[key]) {
         if (simulateItem && simulateItemKey) {
@@ -267,10 +267,10 @@ function unhook (vnode, patch, index) {
     }
 
     if (vnode.descendantHooks) {
-      let children = vnode.children
-      let len = children.length
+      const children = vnode.children
+      const len = children.length
       for (let i = 0; i < len; i++) {
-        let child = children[i]
+        const child = children[i]
         index += 1
         unhook(child, patch, index)
         if (isVNode(child) && child.count) {
@@ -304,8 +304,8 @@ function destroyWidgets (vnode, patch, index) {
 }
 
 function mapListKeyIndex (list, key) {
-  let keyMap = {}
-  let free = []
+  const keyMap = {}
+  const free = []
   list.forEach((item, i) => {
     if (item[key]) {
       keyMap[item[key]] = i
@@ -320,9 +320,9 @@ function mapListKeyIndex (list, key) {
 }
 
 function undefinedKeys (obj) {
-  let result = {}
+  const result = {}
 
-  for (let key in obj) {
+  for (const key in obj) {
     result[key] = undefined
   }
 

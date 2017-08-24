@@ -14,7 +14,7 @@ const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^or
 const EMPTY_CHILDREN = []
 
 function transformPropsForRealTag (tagName, props) {
-  let newProps = {}
+  const newProps = {}
   const DOMAttributeNamespaces = SVGPropertyConfig.DOMAttributeNamespaces
   for (let propName in props) {
     const propValue = props[propName]
@@ -53,7 +53,7 @@ function transformPropsForRealTag (tagName, props) {
       if (isString(propValue)) {
         newProps[propName] = propValue
       } else if (isObject(propValue)) {
-        for (let styleName in propValue) {
+        for (const styleName in propValue) {
           let styleValue = propValue[styleName]
           if (styleValue !== undefined && (isString(styleValue) || !isNaN(styleValue))) {
             styleValue = isNumber(styleValue) && IS_NON_DIMENSIONAL.test(styleName) === false ? (styleValue + 'px') : styleValue
@@ -70,9 +70,9 @@ function transformPropsForRealTag (tagName, props) {
 }
 
 function transformPropsForComponent (props) {
-  let newProps = {}
-  for (let propName in props) {
-    let propValue = props[propName]
+  const newProps = {}
+  for (const propName in props) {
+    const propValue = props[propName]
     newProps[propName] = propValue
   }
   return newProps

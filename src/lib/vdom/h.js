@@ -7,7 +7,7 @@ function h (tagName, props, children) {
   let key
   let namespace
   let owner
-  let childNodes = []
+  const childNodes = []
   if (!children && isChildren(props)) {
     children = props
     props = {}

@@ -9,14 +9,14 @@ class VNode {
     this.key = key || null
     this.namespace = (isString(namespace)) ? namespace : null
     this._owner = owner
-    let count = this.children.length || 0
+    const count = this.children.length || 0
     let descendants = 0
     let hasWidgets = false
     let descendantHooks = false
     let hooks
-    for (let propName in props) {
+    for (const propName in props) {
       if (props.hasOwnProperty(propName)) {
-        let property = props[propName]
+        const property = props[propName]
         if (isHook(property) && property.unhook) {
           if (!hooks) {
             hooks = {}

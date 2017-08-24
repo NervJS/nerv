@@ -6,12 +6,12 @@ import { isWidget, isHook } from './vnode/types'
 import createElement from './create-element'
 
 function patch (rootNode, patches) {
-  let patchIndices = getPatchIndices(patches)
+  const patchIndices = getPatchIndices(patches)
   if (patchIndices.length === 0) {
     return rootNode
   }
-  let oldTree = patches.old
-  let nodes = domIndex(rootNode, oldTree, patchIndices)
+  const oldTree = patches.old
+  const nodes = domIndex(rootNode, oldTree, patchIndices)
   patchIndices.forEach(index => {
     rootNode = applyPatch(rootNode, nodes[index], patches[index])
   })
@@ -36,9 +36,9 @@ function applyPatch (rootNode, domNode, patch) {
 }
 
 function patchSingle (domNode, vpatch) {
-  let type = vpatch.type
-  let oldVNode = vpatch.vnode
-  let patchObj = vpatch.patch
+  const type = vpatch.type
+  const oldVNode = vpatch.vnode
+  const patchObj = vpatch.patch
 
   switch (type) {
     case VPatch.VTEXT:
@@ -70,8 +70,8 @@ function patchVText (domNode, patch) {
     domNode.nodeValue = patch.text
     return domNode
   }
-  let parentNode = domNode.parentNode
-  let newNode = createElement(patch)
+  const parentNode = domNode.parentNode
+  const newNode = createElement(patch)
   if (parentNode) {
     parentNode.replaceChild(newNode, domNode)
   }
@@ -82,8 +82,8 @@ function patchVNode (domNode, patch) {
   if (domNode === null) {
     return createElement(patch)
   }
-  let parentNode = domNode.parentNode
-  let newNode = createElement(patch)
+  const parentNode = domNode.parentNode
+  const newNode = createElement(patch)
   if (parentNode && newNode !== domNode) {
     parentNode.replaceChild(newNode, domNode)
   }
@@ -91,7 +91,7 @@ function patchVNode (domNode, patch) {
 }
 
 function patchInsert (parentNode, vnode) {
-  let newNode = createElement(vnode)
+  const newNode = createElement(vnode)
   if (parentNode && newNode) {
     parentNode.appendChild(newNode)
   }
@@ -137,19 +137,19 @@ function destroyWidget (domNode, widget) {
 }
 
 function patchProps (domNode, patch, previousProps, isSvg) {
-  for (let propName in patch) {
+  for (const propName in patch) {
     if (propName === 'children') {
       continue
     }
-    let propValue = patch[propName]
-    let previousValue = previousProps[propName]
+    const propValue = patch[propName]
+    const previousValue = previousProps[propName]
     if (propValue == null || propValue === false) {
       if (isHook(previousValue) && previousValue.unhook) {
         previousValue.unhook(domNode, propName, propValue)
         continue
       } else if (propName === 'style') {
         if (isString(previousValue)) {
-          for (let styleName in previousValue) {
+          for (const styleName in previousValue) {
             domNode.style[styleName] = ''
           }
         } else {
@@ -179,8 +179,8 @@ function patchProps (domNode, patch, previousProps, isSvg) {
         if (isString(propValue)) {
           domNode.setAttribute(propName, propValue)
         } else {
-          for (let styleName in propValue) {
-            let styleValue = propValue[styleName]
+          for (const styleName in propValue) {
+            const styleValue = propValue[styleName]
             if (styleValue != null && styleValue !== false) {
               try {
                 domNode[propName][styleName] = styleValue
@@ -215,10 +215,10 @@ function patchProps (domNode, patch, previousProps, isSvg) {
 }
 
 function patchOrder (domNode, patch) {
-  let removes = patch.removes
-  let inserts = patch.inserts
-  let childNodes = domNode.childNodes
-  let keyMap = {}
+  const removes = patch.removes
+  const inserts = patch.inserts
+  const childNodes = domNode.childNodes
+  const keyMap = {}
   let node
   let remove
   let insert
@@ -241,7 +241,7 @@ function patchOrder (domNode, patch) {
 }
 
 function patchRemove (domNode, vnode) {
-  let parentNode = domNode.parentNode
+  const parentNode = domNode.parentNode
   if (parentNode) {
     parentNode.removeChild(domNode)
   }
@@ -264,9 +264,9 @@ function isUpdateWidget (a, b) {
 }
 
 function getPatchIndices (patches) {
-  let indices = []
+  const indices = []
   if (patches) {
-    for (let i in patches) {
+    for (const i in patches) {
       if (i !== 'old' && patches.hasOwnProperty(i)) {
         indices.push(Number(i))
       }

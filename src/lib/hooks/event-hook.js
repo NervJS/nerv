@@ -94,16 +94,16 @@ class EventHook {
       return
     }
     const eventName = this.eventName
-    let delegatedRoots = delegatedEvents.get(eventName)
+    const delegatedRoots = delegatedEvents.get(eventName)
     if (unbubbleEvents[eventName] === 1 && delegatedRoots) {
-      let event = delegatedRoots.get(node)
+      const event = delegatedRoots.get(node)
       node.removeEventListener(parseEventName(eventName), event.event, false)
       delegatedRoots.delete(node)
       if (delegatedRoots.size === 0) {
         delegatedEvents.delete(eventName)
       }
     } else if (delegatedRoots && delegatedRoots.items) {
-      let items = delegatedRoots.items
+      const items = delegatedRoots.items
       if (items.delete(node) && items.size === 0) {
         document.removeEventListener(parseEventName(eventName), delegatedRoots.event, false)
         delegatedEvents.delete(eventName)
