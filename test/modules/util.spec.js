@@ -1,4 +1,4 @@
-import { Util } from '../../src'
+// import Util from '../../src/lib/util/index'
 import shallowEqual from '../../src/lib/util/shallow-equal'
 // import SimpleMap from '../../src/lib/util/simple-map'
 
@@ -8,14 +8,14 @@ describe('Util', () => {
   //   const b = 'b'
   //   const c = () => {}
   //   const d = {}
-  //   const e = new Date()
-  //   const f = [1, 2, 3]
-  //   const g = /\s/
-  //   const h = false
-  //   const i = new Error('error')
+  // //   const e = new Date()
+  // //   const f = [1, 2, 3]
+  // //   const g = /\s/
+  // //   const h = false
+  // //   const i = new Error('error')
 
-  //   expect(Util.isNumber(a)).to.be.true
-  //   expect(Util.isString(b)).to.be.true
+  // //   expect(Util.isNumber(a)).to.be.true
+  // //   expect(Util.isString(b)).to.be.true
   //   expect(Util.isFunction(c)).to.be.true
   //   expect(Util.isObject(d)).to.be.true
   //   expect(Util.isDate(e)).to.be.true
