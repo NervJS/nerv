@@ -1,7 +1,8 @@
 import { isNative } from './index'
 
 const canUsePromise = (function () {
-  return typeof Promise === 'function' &&
+  return 'Promise' in window &&
+    typeof Promise === 'function' &&
     isNative(Promise)
 })()
 const resolved = Promise.resolve()
