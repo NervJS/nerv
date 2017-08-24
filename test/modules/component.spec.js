@@ -6,7 +6,7 @@ import { rerender } from '../../src/lib/render-queue'
 import { EMPTY_CHILDREN, getAttributes, sortAttributes } from '../util'
 
 function fireEvent (on, type) {
-  let e = document.createEvent('Event')
+  const e = document.createEvent('Event')
   e.initEvent(type, true, true)
   on.dispatchEvent(e)
 }
@@ -21,7 +21,7 @@ describe('Component', function () {
   })
 
   beforeEach(() => {
-    let c = scratch.firstElementChild
+    const c = scratch.firstElementChild
     if (c) {
       render(<Empty />, scratch)
     }
@@ -90,8 +90,8 @@ describe('Component', function () {
 
   it('should clone components', () => {
     function Comp () { }
-    let instance = <Comp />
-    let clone = cloneElement(instance)
+    const instance = <Comp />
+    const clone = cloneElement(instance)
     expect(clone.prototype).to.equal(instance.prototype)
   })
 
@@ -119,8 +119,8 @@ describe('Component', function () {
 
   it('should not recycle common class children with different keys', () => {
     let idx = 0
-    let msgs = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-    let sideEffect = sinon.spy()
+    const msgs = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    const sideEffect = sinon.spy()
 
     class Comp extends Component {
       componentWillMount () {
@@ -251,7 +251,7 @@ describe('Component', function () {
       }
       WithDefaultProps.defaultProps = { fieldC: 1, fieldD: 1 }
 
-      let proto = WithDefaultProps.prototype
+      const proto = WithDefaultProps.prototype
       sinon.spy(proto, 'ctor')
       sinon.spy(proto, 'componentWillReceiveProps')
       sinon.spy(proto, 'renderCall')
@@ -415,7 +415,7 @@ describe('Component', function () {
 
     it('should add callback to renderCallbacks', () => {
       let forceUpdate
-      let callback = sinon.spy()
+      const callback = sinon.spy()
       class ForceUpdateComponent extends Component {
         componentDidMount () {
           forceUpdate = () => this.forceUpdate(callback)
@@ -698,7 +698,7 @@ describe('Component', function () {
     })
 
     it('should resolve intermediary functional component', () => {
-      let ctx = {}
+      const ctx = {}
       class Root extends Component {
         getChildContext () {
           return { ctx }

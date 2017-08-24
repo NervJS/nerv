@@ -5,7 +5,7 @@
   "main": "dist/nerv.js",
   "scripts": {
     "clear": "rm -rf dist",
-    "eslint:fix": "eslint --fix src",
+    "eslint:fix": "eslint --fix src test",
     "eslint": "eslint src test",
     "test": "npm-run-all eslint test:karma",
     "test:karma": "karma start karma.conf.js --single-run",

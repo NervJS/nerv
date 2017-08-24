@@ -1,4 +1,4 @@
-import { Events } from '../../src'
+import Events from '../../src/lib/events'
 
 describe('Events', () => {
   it('evnets props', () => {
