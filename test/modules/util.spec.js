@@ -7,11 +7,8 @@ describe('Util', () => {
     const b = 'b'
     const c = () => {}
     const d = {}
-    const e = new Date()
     const f = [1, 2, 3]
-    const g = /\s/
     const h = false
-    const i = new Error('error')
 
     expect(Util.isNumber(a)).to.be.true
     expect(Util.isString(b)).to.be.true
