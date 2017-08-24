@@ -66,12 +66,8 @@ function patchVText (domNode, patch) {
   if (domNode === null) {
     return createElement(patch)
   }
-  if (domNode.nodeType === 3) {
-    if (domNode.textContent) {
-      domNode.textContent = patch.text
-    } else {
-      domNode.nodeValue = patch.text
-    }
+  if (domNode.splitText !== undefined) {
+    domNode.nodeValue = patch.text
     return domNode
   }
   let parentNode = domNode.parentNode
