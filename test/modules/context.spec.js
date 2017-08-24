@@ -71,7 +71,7 @@ describe('context', () => {
 
     expect(Outer.prototype.getChildContext).to.have.been.calledTwice
 
-    let props = { children: CHILDREN_MATCHER, ...PROPS }
+    const props = { children: CHILDREN_MATCHER, ...PROPS }
     expect(Inner.prototype.shouldComponentUpdate).to.have.been.calledOnce.and.calledWith(props, {}, CONTEXT)
     expect(Inner.prototype.componentWillReceiveProps).to.have.been.calledWith(props, CONTEXT)
     expect(Inner.prototype.componentWillUpdate).to.have.been.calledWith(props, {})
@@ -128,7 +128,7 @@ describe('context', () => {
 
     expect(Outer.prototype.getChildContext).to.have.been.calledTwice
 
-    let props = { children: CHILDREN_MATCHER, ...PROPS }
+    const props = { children: CHILDREN_MATCHER, ...PROPS }
     expect(Inner.prototype.shouldComponentUpdate).to.have.been.calledOnce.and.calledWith(props, {}, CONTEXT)
     expect(Inner.prototype.componentWillReceiveProps).to.have.been.calledWith(props, CONTEXT)
     expect(Inner.prototype.componentWillUpdate).to.have.been.calledWith(props, {})
@@ -137,8 +137,8 @@ describe('context', () => {
   })
 
   it('should preserve existing context properties when creating child contexts', () => {
-    let outerContext = { outer: 1 }
-    let innerContext = { inner: 2 }
+    const outerContext = { outer: 1 }
+    const innerContext = { inner: 2 }
     class Outer extends Component {
       getChildContext () {
         return { ...outerContext }

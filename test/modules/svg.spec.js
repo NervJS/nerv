@@ -34,7 +34,7 @@ describe('svg', () => {
       </svg>
     ), scratch)
 
-    let html = sortAttributes(String(scratch.innerHTML).replace(' xmlns="http://www.w3.org/2000/svg"', ''))
+    const html = sortAttributes(String(scratch.innerHTML).replace(' xmlns="http://www.w3.org/2000/svg"', ''))
     expect(html).to.equal(sortAttributes('<svg viewBox="0 0 360 360"><path d="M 347.1 357.9 L 183.3 256.5 L 13 357.9 V 1.7 h 334.1 v 356.2 Z M 58.5 47.2 v 231.4 l 124.8 -74.1 l 118.3 72.8 V 47.2 H 58.5 Z" fill="black" stroke="white"></path></svg>'.replace(/[\n\t]+/g, '')))
   })
 
@@ -46,14 +46,14 @@ describe('svg', () => {
     )
     render(<Demo />, scratch)
 
-    let html = sortAttributes(String(scratch.innerHTML).replace(' xmlns="http://www.w3.org/2000/svg"', ''))
+    const html = sortAttributes(String(scratch.innerHTML).replace(' xmlns="http://www.w3.org/2000/svg"', ''))
     expect(html).to.equal(sortAttributes('<svg viewBox="0 0 360 360"><path stroke="white" fill="black" d="M 347.1 357.9 L 183.3 256.5 L 13 357.9 V 1.7 h 334.1 v 356.2 Z M 58.5 47.2 v 231.4 l 124.8 -74.1 l 118.3 72.8 V 47.2 H 58.5 Z"></path></svg>'))
   })
 
   it('should render with the correct namespace URI', () => {
     render(<svg />, scratch)
 
-    let namespace = scratch.querySelector('svg').namespaceURI
+    const namespace = scratch.querySelector('svg').namespaceURI
 
     expect(namespace).to.equal('http://www.w3.org/2000/svg')
   })

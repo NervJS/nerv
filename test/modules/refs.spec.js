@@ -1,8 +1,8 @@
 /** @jsx createElement */
 import { Component, createElement, render } from '../../src'
 
-let spy = (name, ...args) => {
-  let spy = sinon.spy(...args)
+const spy = (name, ...args) => {
+  const spy = sinon.spy(...args)
   spy.displayName = `spy('${name}')`
   return spy
 }
@@ -25,14 +25,14 @@ describe('refs', () => {
   })
 
   it('should invoke refs in render()', () => {
-    let ref = spy('ref')
+    const ref = spy('ref')
     render(<div ref={ref} />, scratch)
     expect(ref).to.have.been.calledOnce.and.calledWith(scratch.firstChild)
   })
 
   it('should invoke refs in Component.render()', () => {
-    let outer = spy('outer')
-    let inner = spy('inner')
+    const outer = spy('outer')
+    const inner = spy('inner')
     class Foo extends Component {
       render () {
         return (
@@ -49,7 +49,7 @@ describe('refs', () => {
   })
 
   it('should pass components to ref functions', () => {
-    let ref = spy('ref')
+    const ref = spy('ref')
     let instance
     class Foo extends Component {
       constructor () {
@@ -66,7 +66,7 @@ describe('refs', () => {
   })
 
   it('should pass rendered DOM from functional components to ref functions', () => {
-    let ref = spy('ref')
+    const ref = spy('ref')
 
     const Foo = () => <div />
 
@@ -75,8 +75,8 @@ describe('refs', () => {
   })
 
   it('should pass children to ref functions', () => {
-    let outer = spy('outer')
-    let inner = spy('inner')
+    const outer = spy('outer')
+    const inner = spy('inner')
     let InnermostComponent = 'span'
     let rerender
     let inst
@@ -141,9 +141,9 @@ describe('refs', () => {
   })
 
   it('should pass high-order children to ref functions', () => {
-    let outer = spy('outer')
-    let inner = spy('inner')
-    let innermost = spy('innermost')
+    const outer = spy('outer')
+    const inner = spy('inner')
+    const innermost = spy('innermost')
     let InnermostComponent = 'span'
     let outerInst
     let innerInst

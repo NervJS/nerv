@@ -53,7 +53,7 @@ describe('render()', function () {
     expect(scratch.childNodes).to.have.length(1)
     expect(scratch.childNodes[0]).to.have.deep.property('nodeName', 'DIV')
 
-    let c = scratch.childNodes[0].childNodes
+    const c = scratch.childNodes[0].childNodes
     expect(c).to.have.length(3)
     expect(c[0]).to.have.deep.property('nodeName', 'SPAN')
     expect(c[1]).to.have.deep.property('nodeName', 'FOO')
@@ -133,7 +133,7 @@ describe('render()', function () {
   })
 
   it('should clear falsey input values', () => {
-    let root = render((
+    const root = render((
       <div>
         <input value={0} />
         <input value={false} />
@@ -175,7 +175,7 @@ describe('render()', function () {
   it('should apply string attributes', () => {
     render(<div foo='bar' data-foo='databar' />, scratch)
 
-    let div = scratch.childNodes[0]
+    const div = scratch.childNodes[0]
     expect(div).to.have.deep.property('attributes').to.have.lengthOf(2)
 
     expect(div).to.have.deep.nested.property('attributes[0].name', 'foo')
@@ -188,14 +188,14 @@ describe('render()', function () {
   it('should not serialize function props as attributes', () => {
     render(<div click={function a () { }} ONCLICK={function b () { }} />, scratch)
 
-    let div = scratch.childNodes[0]
+    const div = scratch.childNodes[0]
     expect(div).to.have.deep.nested.property('attributes.length', 0)
   })
 
   it('should serialize object props as attributes', () => {
     render(<div foo={{ a: 'b' }} bar={{ toString () { return 'abc' } }} />, scratch)
 
-    let div = scratch.childNodes[0]
+    const div = scratch.childNodes[0]
     expect(div).to.have.nested.deep.property('attributes.length', 2)
 
     expect(div).to.have.nested.deep.property('attributes[0].name', 'foo')
@@ -223,12 +223,12 @@ describe('render()', function () {
   })
 
   it('should only register on* functions as handlers', () => {
-    let click = () => { }
-    let onclick = () => { }
+    const click = () => { }
+    const onclick = () => { }
 
     let doRender = null
 
-    let proto = document.constructor.prototype
+    const proto = document.constructor.prototype
 
     sinon.spy(proto, 'addEventListener')
 
@@ -268,17 +268,17 @@ describe('render()', function () {
   })
 
   it('should add and remove event handlers', () => {
-    let click = sinon.spy()
-    let mousedown = sinon.spy()
+    const click = sinon.spy()
+    const mousedown = sinon.spy()
 
     let doRender = null
 
-    let proto = document.constructor.prototype
+    const proto = document.constructor.prototype
     sinon.spy(proto, 'addEventListener')
     sinon.spy(proto, 'removeEventListener')
 
     function fireEvent (on, type) {
-      let e = document.createEvent('Event')
+      const e = document.createEvent('Event')
       e.initEvent(type, true, true)
       on.dispatchEvent(e)
     }
@@ -397,7 +397,7 @@ describe('render()', function () {
     }
     render(<Outer />, scratch)
 
-    let { style } = scratch.childNodes[0]
+    const { style } = scratch.childNodes[0]
     expect(style).to.have.property('color').that.equals('rgb(255, 255, 255)')
     expect(style).to.have.property('background').that.contains('rgb(255, 100, 0)')
     expect(style).to.have.property('backgroundPosition').that.equals('10px 10px')
@@ -417,7 +417,7 @@ describe('render()', function () {
   })
 
   it('should support dangerouslySetInnerHTML', () => {
-    let html = '<b>foo &amp; bar</b>'
+    const html = '<b>foo &amp; bar</b>'
     render(<div dangerouslySetInnerHTML={{ __html: html }} />, scratch)
 
     expect(scratch.firstChild, 'set').to.have.property('innerHTML', html)
@@ -461,19 +461,19 @@ describe('render()', function () {
   })
 
   it('should hydrate with dangerouslySetInnerHTML', () => {
-    let html = '<b>foo &amp; bar</b>'
+    const html = '<b>foo &amp; bar</b>'
     render(<div dangerouslySetInnerHTML={{ __html: html }} />, scratch)
     expect(scratch.firstChild).to.have.property('innerHTML', '<b>foo &amp; bar</b>')
     expect(scratch.innerHTML).to.equal(`<div>${html}</div>`)
   })
 
   it('should reconcile mutated DOM attributes', () => {
-    let check = p => {
+    const check = p => {
       scratch.innerHTML = ''
       render(<input type='checkbox' checked={p} />, scratch)
     }
-    let value = () => scratch.lastChild.checked
-    let setValue = p => (scratch.lastChild.checked = p)
+    const value = () => scratch.lastChild.checked
+    const setValue = p => (scratch.lastChild.checked = p)
     check(true)
     expect(value()).to.equal(true)
     check(false)
@@ -524,8 +524,8 @@ describe('render()', function () {
     let outer
     render(<Outer ref={c => (outer = c)} />, scratch)
 
-    let a = scratch.firstChild.firstChild
-    let b = scratch.firstChild.lastChild
+    const a = scratch.firstChild.firstChild
+    const b = scratch.firstChild.lastChild
 
     expect(a).to.have.property('nodeName', 'A')
     expect(b).to.have.property('nodeName', 'B')
@@ -541,8 +541,8 @@ describe('render()', function () {
   it('should skip non-nerv elements', () => {
     class Foo extends Component {
       render () {
-        let alt = this.props.alt || this.state.alt || this.alt
-        let c = [
+        const alt = this.props.alt || this.state.alt || this.alt
+        const c = [
           <a>foo</a>,
           <b>{alt ? 'alt' : 'bar'}</b>
         ]
@@ -554,11 +554,11 @@ describe('render()', function () {
     let comp
     render(<Foo ref={c => (comp = c)} />, scratch)
 
-    let c = document.createElement('c')
+    const c = document.createElement('c')
     c.textContent = 'baz'
     comp.dom.appendChild(c)
 
-    let b = document.createElement('b')
+    const b = document.createElement('b')
     b.textContent = 'bat'
     comp.dom.appendChild(b)
 
@@ -601,7 +601,8 @@ describe('render()', function () {
         this.setState({ text: e.target.value })
       }
       addTodo () {
-        let { todos, text } = this.state
+        const { text } = this.state
+        let { todos } = this.state
         todos = todos.concat({ text })
         this.setState({ todos, text: '' })
       }

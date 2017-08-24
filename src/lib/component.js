@@ -1,11 +1,9 @@
-import Events from './events'
 import { isFunction, extend, clone } from './util'
 import { enqueueRender } from './render-queue'
 import { updateComponent } from './lifecycle'
 
-class Component extends Events {
+class Component {
   constructor (props, context) {
-    super()
     if (!this.state) {
       this.state = {}
     }

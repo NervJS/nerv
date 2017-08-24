@@ -89,7 +89,7 @@ describe('Lifecycle methods', () => {
     })
 
     it('should be called after children are mounted', () => {
-      let log = []
+      const log = []
 
       class Inner extends Component {
         componentDidMount () {
@@ -280,10 +280,10 @@ describe('Lifecycle methods', () => {
     })
   })
 
-  let _it = it
+  const _it = it
   describe('#constructor and component(Did|Will)(Mount|Unmount)', () => {
     /* global DISABLE_FLAKEY xit */
-    let it = DISABLE_FLAKEY ? xit : _it
+    const it = DISABLE_FLAKEY ? xit : _it
     let setState
     class Outer extends Component {
       constructor (p, c) {
@@ -331,12 +331,12 @@ describe('Lifecycle methods', () => {
       render () { return <div /> }
     }
 
-    let spies = ['_constructor', 'componentWillMount', 'componentDidMount', 'componentWillUnmount']
+    const spies = ['_constructor', 'componentWillMount', 'componentDidMount', 'componentWillUnmount']
 
-    let verifyLifycycleMethods = (TestComponent) => {
-      let proto = TestComponent.prototype
+    const verifyLifycycleMethods = (TestComponent) => {
+      const proto = TestComponent.prototype
       spies.forEach(s => sinon.spy(proto, s))
-      let reset = () => spies.forEach(s => proto[s].reset())
+      const reset = () => spies.forEach(s => proto[s].reset())
 
       it('should be invoked for components on initial render', () => {
         reset()
@@ -408,11 +408,11 @@ describe('Lifecycle methods', () => {
         }
       }
 
-      let proto = Inner.prototype
-      let spies = ['componentWillMount', 'componentDidMount', 'componentWillUnmount']
+      const proto = Inner.prototype
+      const spies = ['componentWillMount', 'componentDidMount', 'componentWillUnmount']
       spies.forEach(s => sinon.spy(proto, s))
 
-      let reset = () => spies.forEach(s => proto[s].reset())
+      const reset = () => spies.forEach(s => proto[s].reset())
 
       beforeEach(() => reset())
 
@@ -543,11 +543,11 @@ describe('Lifecycle methods', () => {
         }
       }
 
-      let proto = Inner.prototype
-      let spies = ['componentWillMount', 'componentDidMount', 'componentWillUnmount']
+      const proto = Inner.prototype
+      const spies = ['componentWillMount', 'componentDidMount', 'componentWillUnmount']
       spies.forEach(s => sinon.spy(proto, s))
 
-      let reset = () => spies.forEach(s => proto[s].reset())
+      const reset = () => spies.forEach(s => proto[s].reset())
 
       render(<Outer />, scratch)
       expect(proto.componentWillMount).to.have.been.called
@@ -568,7 +568,7 @@ describe('Lifecycle methods', () => {
     })
 
     it('should remove this.dom for HOC', () => {
-      let createComponent = (name, fn) => {
+      const createComponent = (name, fn) => {
         class C extends Component {
           componentWillUnmount () {
             expect(this.dom, `${name}.componentWillUnmount`).to.exist
@@ -588,14 +588,14 @@ describe('Lifecycle methods', () => {
         }
       }
 
-      let One = createComponent('One', () => <Wrapper>one</Wrapper>)
-      let Two = createComponent('Two', () => <Wrapper>two</Wrapper>)
-      let Three = createComponent('Three', () => <Wrapper>three</Wrapper>)
+      const One = createComponent('One', () => <Wrapper>one</Wrapper>)
+      const Two = createComponent('Two', () => <Wrapper>two</Wrapper>)
+      const Three = createComponent('Three', () => <Wrapper>three</Wrapper>)
 
-      let components = [One, Two, Three]
+      const components = [One, Two, Three]
 
-      let Selector = createComponent('Selector', ({ page }) => {
-        let Child = components[page]
+      const Selector = createComponent('Selector', ({ page }) => {
+        const Child = components[page]
         return Child && <Child />
       })
 
