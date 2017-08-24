@@ -1,6 +1,6 @@
 import { isFunction } from '~'
 
-window.Map = window.Map || require('es6-map')
+const Map = require('es6-map')
 
 const delegatedEvents = new Map()
 
