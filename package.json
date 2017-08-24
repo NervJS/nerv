@@ -82,5 +82,8 @@
   "bugs": {
     "url": "https://github.com/NervJS/nerv/issues"
   },
-  "homepage": "https://github.com/NervJS/nerv.git#readme"
+  "homepage": "https://github.com/NervJS/nerv.git#readme",
+  "dependencies": {
+    "es6-map": "^0.1.5"
+  }
 }
