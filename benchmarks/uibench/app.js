@@ -1,5 +1,5 @@
 
-class TableCell extends React.PureComponent {
+class TableCell extends Nerv.PureComponent {
   constructor(props) {
     super(props);
     this.onClick = this.onClick.bind(this);
@@ -11,7 +11,7 @@ class TableCell extends React.PureComponent {
   }
 
   render() {
-    return React.createElement(
+    return Nerv.createElement(
       'td',
       { className: 'TableCell', onClick: this.onClick },
       this.props.text
@@ -19,7 +19,7 @@ class TableCell extends React.PureComponent {
   }
 }
 
-class TableRow extends React.PureComponent {
+class TableRow extends Nerv.PureComponent {
   render() {
     const { data } = this.props;
 
@@ -30,35 +30,35 @@ class TableRow extends React.PureComponent {
 
     const children = [];
     for (let i = 0; i < cells.length; i++) {
-      // Key is used because React prints warnings that there should be a key, libraries that can detect that children
+      // Key is used because Nerv prints warnings that there should be a key, libraries that can detect that children
       // shape isn't changing should render cells without keys.
-      children.push(React.createElement(TableCell, { key: i, text: cells[i] }));
+      children.push(Nerv.createElement(TableCell, { key: i, text: cells[i] }));
     }
 
-    // First table cell is inserted this way to prevent react from printing warning that it doesn't have key property
-    return React.createElement(
+    // First table cell is inserted this way to prevent Nerv from printing warning that it doesn't have key property
+    return Nerv.createElement(
       'tr',
       { className: classes, 'data-id': data.id },
-      React.createElement(TableCell, { text: '#' + data.id }),
+      Nerv.createElement(TableCell, { text: '#' + data.id }),
       children
     );
   }
 }
 
-class Table extends React.PureComponent {
+class Table extends Nerv.PureComponent {
   render() {
     const items = this.props.data.items;
 
     const children = [];
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
-      children.push(React.createElement(TableRow, { key: item.id, data: item }));
+      children.push(Nerv.createElement(TableRow, { key: item.id, data: item }));
     }
 
-    return React.createElement(
+    return Nerv.createElement(
       'table',
       { className: 'Table' },
-      React.createElement(
+      Nerv.createElement(
         'tbody',
         null,
         children
@@ -67,7 +67,7 @@ class Table extends React.PureComponent {
   }
 }
 
-class AnimBox extends React.PureComponent {
+class AnimBox extends Nerv.PureComponent {
   render() {
     const { data } = this.props;
     const time = data.time;
@@ -76,21 +76,21 @@ class AnimBox extends React.PureComponent {
       'background': 'rgba(0,0,0,' + (0.5 + time % 10 / 10).toString() + ')'
     };
 
-    return React.createElement('div', { className: 'AnimBox', 'data-id': data.id, style: style });
+    return Nerv.createElement('div', { className: 'AnimBox', 'data-id': data.id, style: style });
   }
 }
 
-class Anim extends React.PureComponent {
+class Anim extends Nerv.PureComponent {
   render() {
     const items = this.props.data.items;
 
     const children = [];
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
-      children.push(React.createElement(AnimBox, { key: item.id, data: item }));
+      children.push(Nerv.createElement(AnimBox, { key: item.id, data: item }));
     }
 
-    return React.createElement(
+    return Nerv.createElement(
       'div',
       { className: 'Anim' },
       children
@@ -98,9 +98,9 @@ class Anim extends React.PureComponent {
   }
 }
 
-class TreeLeaf extends React.PureComponent {
+class TreeLeaf extends Nerv.PureComponent {
   render() {
-    return React.createElement(
+    return Nerv.createElement(
       'li',
       { className: 'TreeLeaf' },
       this.props.data.id
@@ -108,7 +108,7 @@ class TreeLeaf extends React.PureComponent {
   }
 }
 
-class TreeNode extends React.PureComponent {
+class TreeNode extends Nerv.PureComponent {
   render() {
     const { data } = this.props;
     const children = [];
@@ -116,13 +116,13 @@ class TreeNode extends React.PureComponent {
     for (let i = 0; i < data.children.length; i++) {
       const n = data.children[i];
       if (n.container) {
-        children.push(React.createElement(TreeNode, { key: n.id, data: n }));
+        children.push(Nerv.createElement(TreeNode, { key: n.id, data: n }));
       } else {
-        children.push(React.createElement(TreeLeaf, { key: n.id, data: n }));
+        children.push(Nerv.createElement(TreeLeaf, { key: n.id, data: n }));
       }
     }
 
-    return React.createElement(
+    return Nerv.createElement(
       'ul',
       { className: 'TreeNode' },
       children
@@ -130,31 +130,31 @@ class TreeNode extends React.PureComponent {
   }
 }
 
-class Tree extends React.PureComponent {
+class Tree extends Nerv.PureComponent {
   render() {
-    return React.createElement(
+    return Nerv.createElement(
       'div',
       { className: 'Tree' },
-      React.createElement(TreeNode, { data: this.props.data.root })
+      Nerv.createElement(TreeNode, { data: this.props.data.root })
     );
   }
 }
 
-class Main extends React.PureComponent {
+class Main extends Nerv.PureComponent {
   render() {
     const { data } = this.props;
     const location = data.location;
 
     var section;
     if (location === 'table') {
-      section = React.createElement(Table, { data: data.table });
+      section = Nerv.createElement(Table, { data: data.table });
     } else if (location === 'anim') {
-      section = React.createElement(Anim, { data: data.anim });
+      section = Nerv.createElement(Anim, { data: data.anim });
     } else if (location === 'tree') {
-      section = React.createElement(Tree, { data: data.tree });
+      section = Nerv.createElement(Tree, { data: data.tree });
     }
 
-    return React.createElement(
+    return Nerv.createElement(
       'div',
       { className: 'Main' },
       section
@@ -162,15 +162,15 @@ class Main extends React.PureComponent {
   }
 }
 
-uibench.init('React[PC]', React.version);
+uibench.init('Nerv[PC]', Nerv.version);
 
 document.addEventListener('DOMContentLoaded', function (e) {
   const container = document.querySelector('#App');
 
   uibench.run(function (state) {
-    ReactDOM.render(React.createElement(Main, { data: state }), container);
+    Nerv.render(Nerv.createElement(Main, { data: state }), container);
   }, function (samples) {
-    ReactDOM.render(React.createElement(
+    Nerv.render(Nerv.createElement(
       'pre',
       null,
       JSON.stringify(samples, null, ' ')
