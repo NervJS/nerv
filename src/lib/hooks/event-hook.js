@@ -106,15 +106,15 @@ class EventHook {
       const event = delegatedRoots.get(node)
       node.removeEventListener(parseEventName(eventName), event.event, false)
       const delegatedRootsSize = typeof delegatedRoots.size === 'function' ? delegatedRoots.size.bind(delegatedRoots) : () => delegatedRoots.size
-      if (delegatedRoots['delete'](node) && delegatedRootsSize() === 0) {
-        delegatedEvents['delete'](eventName)
+      if (delegatedRoots.delete(node) && delegatedRootsSize() === 0) {
+        delegatedEvents.delete(eventName)
       }
     } else if (delegatedRoots && delegatedRoots.items) {
       const items = delegatedRoots.items
       const itemsSize = typeof items.size === 'function' ? items.size.bind(items) : () => items.size
-      if (items['delete'](node) && itemsSize() === 0) {
+      if (items.delete(node) && itemsSize() === 0) {
         document.removeEventListener(parseEventName(eventName), delegatedRoots.event, false)
-        delegatedEvents['delete'](eventName)
+        delegatedEvents.delete(eventName)
       }
     }
   }
