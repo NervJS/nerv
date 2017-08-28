@@ -1,8 +1,13 @@
-import { isFunction } from '~'
+import { isFunction, isNative } from '~'
+import SimpleMap from '../util/simple-map'
 
-const Map = require('es6-map')
+const canUseNativeMap = (function () {
+  return 'Map' in window && isNative(Map)
+})()
 
-const delegatedEvents = new Map()
+const MapClass = canUseNativeMap ? Map : SimpleMap
+
+const delegatedEvents = new MapClass()
 
 const unbubbleEvents = {
   onmousemove: 1,
@@ -65,7 +70,7 @@ class EventHook {
     let delegatedRoots = delegatedEvents.get(eventName)
     if (unbubbleEvents[eventName] === 1) {
       if (!delegatedRoots) {
-        delegatedRoots = new Map()
+        delegatedRoots = new MapClass()
       }
       const event = attachEventToNode(node, eventName, delegatedRoots)
       delegatedEvents.set(eventName, delegatedRoots)
@@ -78,7 +83,7 @@ class EventHook {
     } else {
       if (!delegatedRoots) {
         delegatedRoots = {
-          items: new Map()
+          items: new MapClass()
         }
         delegatedRoots.event = attachEventToDocument(document, eventName, delegatedRoots)
         delegatedEvents.set(eventName, delegatedRoots)
@@ -100,15 +105,16 @@ class EventHook {
     if (unbubbleEvents[eventName] === 1 && delegatedRoots) {
       const event = delegatedRoots.get(node)
       node.removeEventListener(parseEventName(eventName), event.event, false)
-      delegatedRoots.delete(node)
-      if (delegatedRoots.size === 0) {
-        delegatedEvents.delete(eventName)
+      const delegatedRootsSize = typeof delegatedRoots.size === 'function' ? delegatedRoots.size.bind(delegatedRoots) : () => delegatedRoots.size
+      if (delegatedRoots['delete'](node) && delegatedRootsSize() === 0) {
+        delegatedEvents['delete'](eventName)
       }
     } else if (delegatedRoots && delegatedRoots.items) {
       const items = delegatedRoots.items
-      if (items.delete(node) && items.size === 0) {
+      const itemsSize = typeof items.size === 'function' ? items.size.bind(items) : () => items.size
+      if (items['delete'](node) && itemsSize() === 0) {
         document.removeEventListener(parseEventName(eventName), delegatedRoots.event, false)
-        delegatedEvents.delete(eventName)
+        delegatedEvents['delete'](eventName)
       }
     }
   }
@@ -153,7 +159,8 @@ function dispatchEvent (event, target, items, count, eventData) {
 
 function attachEventToDocument (doc, eventName, delegatedRoots) {
   const eventHandler = (event) => {
-    const count = delegatedRoots.items.size
+    const items = delegatedRoots.items
+    const count = typeof items.size === 'function' ? items.size() : items.size
     if (count > 0) {
       const eventData = {
         currentTarget: event.target
