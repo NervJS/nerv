@@ -215,13 +215,10 @@ function patchProps (domNode, patch, previousProps, isSvg) {
 }
 
 function patchOrder (domNode, patch) {
-  const removes = patch.removes
-  const inserts = patch.inserts
+  const { removes, inserts } = patch
   const childNodes = domNode.childNodes
   const keyMap = {}
-  let node
-  let remove
-  let insert
+  let node, remove, insert
   for (let i = 0; i < removes.length; i++) {
     remove = removes[i]
     node = childNodes[remove.from]

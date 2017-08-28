@@ -1,6 +1,6 @@
 import { isFunction } from '~'
-
-const Map = require('es6-map')
+// TODO: find a better aproach for Map
+// import * as Map from 'es6-map'
 
 const delegatedEvents = new Map()
 
