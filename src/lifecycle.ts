@@ -78,7 +78,7 @@ export function flushMount () {
   }
   const queue = readyComponents.slice(0)
   readyComponents.length = 0
-  queue.forEach(item => {
+  queue.forEach((item) => {
     if (isFunction(item)) {
       item()
     } else if (item.componentDidMount) {

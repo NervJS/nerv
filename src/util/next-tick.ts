@@ -31,7 +31,7 @@ function installPromise () {
 
 function installMutationObserver () {
   let observeNum = 1
-  const textNode = document.createTextNode(observeNum)
+  const textNode = document.createTextNode(observeNum.toString())
   const observer = new MutationObserver(nextHandler)
   observer.observe(textNode, {
     characterData: true
