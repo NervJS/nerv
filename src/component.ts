@@ -1,20 +1,26 @@
 import { isFunction, extend, clone } from './util'
 import { enqueueRender } from './render-queue'
 import { updateComponent } from './lifecycle'
+import { IProps } from './types'
 
-class Component {
-  constructor (props, context) {
+class Component<P, S> {
+  public static defaultProps: {}
+  state: S | null = null
+  props: P & IProps
+  context: any
+  _dirty = true
+  _disable = true
+  _pendingStates: S[] = []
+  _pendingCallbacks: Function[]
+  constructor (props?: P, context?: any) {
     if (!this.state) {
-      this.state = {}
+      this.state = {} as S
     }
-    this.props = props || {}
+    this.props = props || {} as P
     this.context = context || {}
-
-    this._dirty = true
-    this._disable = true
   }
 
-  setState (state, callback) {
+  setState (state, callback?: Function) {
     if (state) {
       (this._pendingStates = (this._pendingStates || [])).push(state)
     }
@@ -27,14 +33,15 @@ class Component {
   }
 
   getState () {
-    const { _pendingStates = [], state, props } = this
+    // tslint:disable-next-line:no-this-assignment
+    const { _pendingStates, state, props } = this
     if (!_pendingStates.length) {
       return state
     }
     const stateClone = clone(state)
     const queue = _pendingStates.concat()
     this._pendingStates.length = 0
-    queue.forEach(nextState => {
+    queue.forEach((nextState) => {
       if (isFunction(nextState)) {
         nextState = nextState.call(this, state, props)
       }
@@ -43,12 +50,15 @@ class Component {
     return stateClone
   }
 
-  forceUpdate (callback) {
+  forceUpdate (callback?: Function) {
     if (isFunction(callback)) {
       (this._pendingCallbacks = (this._pendingCallbacks || [])).push(callback)
     }
     updateComponent(this, true)
   }
+
+  // tslint:disable-next-line
+  public render (nextProps?: P, nextState?, nextContext?): any { }
 }
 
 export default Component

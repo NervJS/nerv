@@ -1,15 +1,16 @@
 import { isVNode, isVText, isWidget, isStateLess, isHook } from './vnode/types'
 import { isObject, isString, isNumber, isFunction } from '../util'
+import VNode from './vnode/vnode'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
 const doc = document
-function createElement (vnode, isSvg: boolean) {
+function createElement (vnode: VNode, isSvg?: boolean) {
   if (isWidget(vnode) || isStateLess(vnode)) {
     return vnode.init()
   }
   if (isString(vnode) || isNumber(vnode)) {
-    return doc.createTextNode(vnode)
+    return doc.createTextNode(vnode as string)
   }
   if (isVText(vnode)) {
     return doc.createTextNode(vnode.text)
@@ -81,6 +82,7 @@ function setProps (domNode, props, isSvg) {
       if (isString(propValue)) {
         domNode.setAttribute(p, propValue)
       } else if (isObject(propValue)) {
+        // tslint:disable-next-line:forin
         for (const s in propValue) {
           const styleValue = propValue[s]
           if (styleValue !== undefined) {

@@ -48,7 +48,7 @@ function walk (a, b, patches, index) {
     apply = appendPatch(apply, new VPatch(VPatch.WIDGET, a, b))
   } else if (Array.isArray(b)) {
     applyClear = true
-    b.forEach(item => {
+    b.forEach((item) => {
       walk(null, item, patches, index)
       index++
     })
@@ -293,7 +293,7 @@ function destroyWidgets (vnode, patch, index) {
       patch[index] = appendPatch(patch[index], new VPatch(VPatch.REMOVE, vnode, null))
     }
   } else if (isVNode(vnode) && vnode.hasWidgets) {
-    vnode.children.forEach(child => {
+    vnode.children.forEach((child) => {
       index += 1
       destroyWidgets(child, patch, index)
       if (isVNode(child) && child.count) {
@@ -325,6 +325,7 @@ function mapListKeyIndex (list, key) {
 function undefinedKeys (obj) {
   const result = {}
 
+  // tslint:disable-next-line:forin
   for (const key in obj) {
     result[key] = undefined
   }

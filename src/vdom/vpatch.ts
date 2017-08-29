@@ -1,3 +1,4 @@
+import VNode from './vnode/vnode'
 class VPatch {
   static NODE = 'NODE'
   static VTEXT = 'VTEXT'
@@ -8,8 +9,9 @@ class VPatch {
   static ORDER = 'ORDER'
   static INSERT = 'INSERT'
   static REMOVE = 'REMOVE'
-  type = 'VirtualPatch'
-  constructor (type, vnode, patch) {
+  type: string
+  vnode: VNode
+  constructor (type = 'VirtualPatch', vnode: VNode, patch) {
     this.type = type
     this.vnode = vnode
     this.patch = patch

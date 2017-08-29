@@ -1,14 +1,16 @@
 import { mountStatelessComponent } from './lifecycle'
 
 class StateLessComponent {
+  type = 'StateLess'
+  tagName: string
+  _owner: any
+  props: any
   constructor (tagName, props) {
     this.tagName = tagName
     this._owner = props.owner
     delete props.owner
     this.props = props
   }
-
-  type = 'StateLess'
 
   init () {
     return mountStatelessComponent(this)

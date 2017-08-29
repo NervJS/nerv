@@ -1,13 +1,10 @@
 import { isString, isFunction } from '../../util'
 import { isWidget, isVNode, isHook } from './types'
 
-export type VnodeChildren = | string
-  | number
-  | boolean
-  | undefined
-  | VNode
-  | Array<string | number | VNode>
-  | null
+export type VnodeChildren = Array<string | number | VNode>
+export interface IHooks {
+  [props: string]: any
+}
 
 class VNode {
   type = 'VirtualNode'
@@ -16,6 +13,11 @@ class VNode {
   children: VnodeChildren
   key: string | number | undefined
   namespace: string | null | undefined
+  _owner: any // TODO: this is a component
+  count: number
+  hasWidgets: boolean
+  hooks: IHooks
+  descendantHooks: boolean
   constructor (tagName, props, children, key, namespace, owner) {
     this.tagName = tagName || 'DIV'
     this.props = props || {}
@@ -40,7 +42,7 @@ class VNode {
       }
     }
     if (count) {
-      this.children.forEach((child) => {
+      this.children.forEach((child: VNode) => {
         if (isVNode(child)) {
           descendants += child.count || 0
           if (!hasWidgets && child.hasWidgets) {
@@ -50,7 +52,7 @@ class VNode {
             descendantHooks = true
           }
         } else if (!hasWidgets && isWidget(child)) {
-          if (isFunction(child.destroy)) {
+          if (isFunction((child as any).destroy)) {
             hasWidgets = true
           }
         }

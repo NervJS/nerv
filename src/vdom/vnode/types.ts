@@ -1,16 +1,20 @@
-export function isVNode (node) {
+import VNode from './vnode'
+import VText from './vtext'
+import FullComponent from '../../full-component'
+import StateLess from '../../stateless-component'
+export function isVNode (node): node is VNode {
   return node && node.type === 'VirtualNode'
 }
 
-export function isVText (node) {
+export function isVText (node): node is VText {
   return node && node.type === 'VirtualText'
 }
 
-export function isWidget (node) {
+export function isWidget (node): node is FullComponent {
   return node && node.type === 'Widget'
 }
 
-export function isStateLess (node) {
+export function isStateLess (node): node is StateLess {
   return node && node.type === 'StateLess'
 }
 

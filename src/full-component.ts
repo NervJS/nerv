@@ -2,6 +2,12 @@ import { extend, clone } from './util'
 import { mountComponent, reRenderComponent, unmountComponent } from './lifecycle'
 
 class ComponentWrapper {
+  type = 'Widget'
+  ComponentType: any
+  name: string
+  _owner: any
+  props: any
+
   constructor (ComponentType, props) {
     this.ComponentType = ComponentType
     this.name = ComponentType.name || ComponentType.toString().match(/^function\s*([^\s(]+)/)[1]
@@ -10,8 +16,6 @@ class ComponentWrapper {
     delete props.owner
     this.props = extend(clone(ComponentType.defaultProps || {}), props)
   }
-
-  type = 'Widget'
 
   init () {
     return mountComponent(this)

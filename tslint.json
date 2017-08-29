@@ -6,6 +6,7 @@
   "defaultSeverity": "warning",
   "rules": {
     "prefer-for-of": false,
+    "one-variable-per-declaration": false,
     "ordered-imports": [
       "false"
     ],
