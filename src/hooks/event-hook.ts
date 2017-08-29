@@ -1,13 +1,13 @@
 import { isFunction, isNative } from '../util'
 import SimpleMap from '../util/simple-map'
 
-const canUseNativeMap = (function () {
+const canUseNativeMap = (() => {
   return 'Map' in window && isNative(Map)
 })()
 
 const MapClass = canUseNativeMap ? Map : SimpleMap
 
-const delegatedEvents = new MapClass()
+const delegatedEvents = new (MapClass as MapConstructor)()
 
 const unbubbleEvents = {
   onmousemove: 1,
@@ -70,7 +70,7 @@ class EventHook {
     let delegatedRoots = delegatedEvents.get(eventName)
     if (unbubbleEvents[eventName] === 1) {
       if (!delegatedRoots) {
-        delegatedRoots = new MapClass()
+        delegatedRoots = new (MapClass as MapConstructor)()
       }
       const event = attachEventToNode(node, eventName, delegatedRoots)
       delegatedEvents.set(eventName, delegatedRoots)
@@ -105,7 +105,9 @@ class EventHook {
     if (unbubbleEvents[eventName] === 1 && delegatedRoots) {
       const event = delegatedRoots.get(node)
       node.removeEventListener(parseEventName(eventName), event.event, false)
-      const delegatedRootsSize = typeof delegatedRoots.size === 'function' ? delegatedRoots.size.bind(delegatedRoots) : () => delegatedRoots.size
+      const delegatedRootsSize = typeof delegatedRoots.size === 'function'
+        ? delegatedRoots.size.bind(delegatedRoots)
+        : () => delegatedRoots.size
       if (delegatedRoots.delete(node) && delegatedRootsSize() === 0) {
         delegatedEvents.delete(eventName)
       }

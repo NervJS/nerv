@@ -12,7 +12,7 @@ function patch (rootNode, patches) {
   }
   const oldTree = patches.old
   const nodes = domIndex(rootNode, oldTree, patchIndices)
-  patchIndices.forEach(index => {
+  patchIndices.forEach((index) => {
     rootNode = applyPatch(rootNode, nodes[index], patches[index])
   })
   return rootNode
@@ -26,7 +26,7 @@ function applyPatch (rootNode, domNode, patch) {
   if (!Array.isArray(patch)) {
     patch = [patch]
   }
-  patch.forEach(patchItem => {
+  patch.forEach((patchItem) => {
     newNode = patchSingle(domNode, patchItem)
     if (domNode === rootNode) {
       rootNode = newNode
@@ -261,7 +261,7 @@ function isUpdateWidget (a, b) {
 }
 
 function getPatchIndices (patches) {
-  const indices = []
+  const indices: number[] = []
   if (patches) {
     for (const i in patches) {
       if (i !== 'old' && patches.hasOwnProperty(i)) {

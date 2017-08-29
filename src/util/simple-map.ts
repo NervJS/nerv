@@ -1,10 +1,10 @@
-interface ICache {
-  k: any,
-  v: any
+interface ICache<Key, Value> {
+  k: Key,
+  v: Value
 }
 
-class SimpleMap {
-  cache: ICache[]
+class SimpleMap<Key, Value> {
+  cache: Array<ICache<Key, Value>>
   constructor () {
     this.cache = []
   }

@@ -1,7 +1,21 @@
 import { isString, isFunction } from '../../util'
 import { isWidget, isVNode, isHook } from './types'
 
+export type VnodeChildren = | string
+  | number
+  | boolean
+  | undefined
+  | VNode
+  | Array<string | number | VNode>
+  | null
+
 class VNode {
+  type = 'VirtualNode'
+  tagName: string | undefined
+  props: object
+  children: VnodeChildren
+  key: string | number | undefined
+  namespace: string | null | undefined
   constructor (tagName, props, children, key, namespace, owner) {
     this.tagName = tagName || 'DIV'
     this.props = props || {}
@@ -47,7 +61,6 @@ class VNode {
     this.hooks = hooks
     this.descendantHooks = descendantHooks
   }
-  type = 'VirtualNode'
 }
 
 export default VNode

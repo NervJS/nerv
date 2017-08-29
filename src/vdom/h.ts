@@ -44,7 +44,7 @@ function addChildren (childNodes, children, tagName) {
   } else if (isChild(children)) {
     childNodes.push(children)
   } else if (isArray(children)) {
-    children.forEach(child => addChildren(childNodes, child, tagName))
+    children.forEach((child) => addChildren(childNodes, child, tagName))
   }
 }
 

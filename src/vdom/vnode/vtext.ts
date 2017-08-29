@@ -1,9 +1,9 @@
 class VText {
-  constructor (text) {
+  type = 'VirtualText'
+  text: string | number
+  constructor (text: string | number) {
     this.text = text || ''
   }
-
-  type = 'VirtualText'
 }
 
 export default VText

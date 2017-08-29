@@ -4,7 +4,7 @@ import { isObject, isString, isNumber, isFunction } from '../util'
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
 const doc = document
-function createElement (vnode, isSvg) {
+function createElement (vnode, isSvg: boolean) {
   if (isWidget(vnode) || isStateLess(vnode)) {
     return vnode.init()
   }
@@ -36,7 +36,7 @@ function createElement (vnode, isSvg) {
     }
     const children = vnode.children
     if (children.length) {
-      children.forEach(child => {
+      children.forEach((child) => {
         if (child !== undefined && child !== null && child !== false && domNode.appendChild) {
           if (isWidget(child)) {
             child.parentContext = vnode.parentContext || {}
@@ -52,7 +52,7 @@ function createElement (vnode, isSvg) {
   }
   if (Array.isArray(vnode)) {
     const domNode = doc.createDocumentFragment()
-    vnode.forEach(child => {
+    vnode.forEach((child) => {
       if (child !== undefined && child !== null && child !== false && domNode.appendChild) {
         const childNode = createElement(child, isSvg)
         if (childNode) {
