@@ -5,9 +5,15 @@
   ],
   "defaultSeverity": "warning",
   "rules": {
+    "prefer-for-of": false,
     "ordered-imports": [
       "false"
     ],
+    "no-console": [
+      false,
+      "error"
+    ],
+    "ban-types": false,
     "no-bitwise": false,
     "no-object-literal-type-assertion": false,
     "member-access": false,

@@ -1,6 +1,6 @@
 import { isNative } from './index'
 
-let callbacks = []
+let callbacks: Function[] = []
 let pending = false
 let runNextTick
 
@@ -8,14 +8,14 @@ function nextHandler () {
   pending = false
   const copies = callbacks.slice(0)
   callbacks = []
-  copies.forEach(task => task())
+  copies.forEach((task) => task())
 }
 
-const canUsePromise = (function () {
+const canUsePromise = (() => {
   return 'Promise' in window && isNative(Promise)
 })()
 
-const canUseMutationObserver = (function () {
+const canUseMutationObserver = (() => {
   return 'MutationObserver' in window &&
     (isNative(MutationObserver) ||
     MutationObserver.toString() === '[object MutationObserverConstructor]')
@@ -23,7 +23,7 @@ const canUseMutationObserver = (function () {
 
 function installPromise () {
   const p = Promise.resolve()
-  const logErr = err => console.error(err)
+  const logErr = (err) => console.error(err)
   runNextTick = function _runNextTick () {
     p.then(nextHandler).catch(logErr)
   }
@@ -31,7 +31,7 @@ function installPromise () {
 
 function installMutationObserver () {
   let observeNum = 1
-  const textNode = document.createTextNode(observeNum.toString())
+  const textNode = document.createTextNode(observeNum)
   const observer = new MutationObserver(nextHandler)
   observer.observe(textNode, {
     characterData: true
@@ -73,7 +73,7 @@ function nextTick (cb, ctx) {
     pending = true
     runNextTick()
   }
-  if (!cb && canUsePromise()) {
+  if (!cb && canUsePromise) {
     return new Promise((resolve) => {
       _resolve = resolve
     })

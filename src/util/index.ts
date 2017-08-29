@@ -1,16 +1,16 @@
-export function isNumber (arg) {
+export function isNumber (arg): arg is number {
   return typeof arg === 'number'
 }
 
-export function isString (arg) {
+export function isString (arg): arg is string {
   return typeof arg === 'string'
 }
 
-export function isFunction (arg) {
+export function isFunction (arg): arg is () => any {
   return typeof arg === 'function'
 }
 
-export function isBoolean (arg) {
+export function isBoolean (arg): arg is true | false {
   return arg === true || arg === false
 }
 
@@ -27,7 +27,7 @@ export function getPrototype (obj) {
   return obj.constructor.prototype
 }
 
-export function isObject (arg) {
+export function isObject (arg): arg is object {
   return arg === Object(arg) && !isFunction(arg)
 }
 export function isNative (Ctor) {

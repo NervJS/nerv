@@ -1,4 +1,10 @@
+interface ICache {
+  k: any,
+  v: any
+}
+
 class SimpleMap {
+  cache: ICache[]
   constructor () {
     this.cache = []
   }
