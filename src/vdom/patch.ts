@@ -1,6 +1,6 @@
 import VPatch from './vpatch'
-import { isFunction, isString, isObject, getPrototype } from '~'
-import shallowEqual from '~/shallow-equal'
+import { isFunction, isString, isObject, getPrototype } from '../util'
+import shallowEqual from '../util/shallow-equal'
 import domIndex from './dom-index'
 import { isWidget, isHook } from './vnode/types'
 import createElement from './create-element'

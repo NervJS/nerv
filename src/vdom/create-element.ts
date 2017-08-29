@@ -1,5 +1,5 @@
 import { isVNode, isVText, isWidget, isStateLess, isHook } from './vnode/types'
-import { isObject, isString, isNumber, isFunction } from '~'
+import { isObject, isString, isNumber, isFunction } from '../util'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 

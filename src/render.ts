@@ -1,6 +1,6 @@
 import { mountVNode, flushMount } from './lifecycle'
-import { isString, isNumber } from '~'
-import { isWidget, isVNode, isStateLess } from '#/vnode/types'
+import { isString, isNumber } from './util'
+import { isWidget, isVNode, isStateLess } from './vdom/vnode/types'
 
 function isVChild (vnode) {
   return isVNode(vnode) || isString(vnode) || isNumber(vnode)

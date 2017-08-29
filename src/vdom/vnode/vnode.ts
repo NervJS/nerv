@@ -1,4 +1,4 @@
-import { isString, isFunction } from '~'
+import { isString, isFunction } from '../../util'
 import { isWidget, isVNode, isHook } from './types'
 
 class VNode {

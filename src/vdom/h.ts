@@ -1,7 +1,7 @@
 import VNode from './vnode/vnode'
 import createVText from './create-vtext'
 import { isVNode, isVText, isWidget, isStateLess } from './vnode/types'
-import { isString, isArray, isNumber } from '~'
+import { isString, isArray, isNumber } from '../util'
 
 function h (tagName, props, children) {
   let key

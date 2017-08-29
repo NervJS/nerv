@@ -1,4 +1,4 @@
-import { isFunction, isNative } from '~'
+import { isFunction, isNative } from '../util'
 import SimpleMap from '../util/simple-map'
 
 const canUseNativeMap = (function () {

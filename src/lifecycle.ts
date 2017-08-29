@@ -1,11 +1,11 @@
 import { extend, isFunction, isNumber, isString, isObject } from './util'
 import CurrentOwner from './current-owner'
-import createElement from '#/create-element'
-import createVText from '#/create-vtext'
-import diff from '#/diff'
-import patch from '#/patch'
+import createElement from './vdom/create-element'
+import createVText from './vdom/create-vtext'
+import diff from './vdom/diff'
+import patch from './vdom/patch'
 import RefHook from './hooks/ref-hook'
-import { isVNode } from '#/vnode/types'
+import { isVNode } from './vdom/vnode/types'
 
 const readyComponents = []
 

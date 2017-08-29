@@ -1,6 +1,6 @@
 import VPatch from './vpatch'
 import { isVNode, isVText, isWidget, isStateLess, isHook } from './vnode/types'
-import { isFunction, isObject, getPrototype } from '~'
+import { isFunction, isObject, getPrototype } from '../util'
 
 function diff (a, b) {
   const patches = {old: a}
