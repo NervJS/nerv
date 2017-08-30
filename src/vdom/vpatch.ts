@@ -1,4 +1,4 @@
-import VNode from './vnode/vnode'
+import { VirtualNode } from '../types'
 class VPatch {
   static NODE = 'NODE'
   static VTEXT = 'VTEXT'
@@ -10,8 +10,9 @@ class VPatch {
   static INSERT = 'INSERT'
   static REMOVE = 'REMOVE'
   type: string
-  vnode: VNode
-  constructor (type = 'VirtualPatch', vnode: VNode, patch) {
+  vnode: VirtualNode
+  patch: VirtualNode
+  constructor (type = 'VirtualPatch', vnode: VirtualNode, patch: VirtualNode) {
     this.type = type
     this.vnode = vnode
     this.patch = patch

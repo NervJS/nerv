@@ -1,13 +1,12 @@
-function domIndex (rootNode, tree, patchIndices, nodes) {
+function domIndex (rootNode: Element, tree, patchIndices: number[], nodes?) {
   if (!patchIndices || patchIndices.length === 0) {
     return {}
   }
   patchIndices.sort((v1, v2) => v1 - v2)
-  return recurse(rootNode, tree, patchIndices, nodes, 0)
+  return recurse(rootNode, tree, patchIndices, nodes)
 }
 
-function recurse (rootNode, tree, patchIndices, nodes, index) {
-  nodes = nodes || {}
+function recurse (rootNode: Element, tree, patchIndices: number[], nodes = {}, index = 0) {
   if (rootNode) {
     if (indexInRange(patchIndices, index, index)) {
       nodes[index] = rootNode
@@ -20,7 +19,7 @@ function recurse (rootNode, tree, patchIndices, nodes, index) {
         vChild = vChild || {}
         const nextIndex = index + (vChild.count || 0)
         if (indexInRange(patchIndices, index, nextIndex)) {
-          recurse(childNodes[i], vChild, patchIndices, nodes, index)
+          recurse(childNodes[i] as Element, vChild, patchIndices, nodes, index)
         }
         index = nextIndex
       })
@@ -29,14 +28,14 @@ function recurse (rootNode, tree, patchIndices, nodes, index) {
   return nodes
 }
 
-function indexInRange (indices, left, right) {
+function indexInRange (indices: number[], left: number, right: number) {
   if (indices.length === 0) {
     return false
   }
   let minIndex = 0
   let maxIndex = indices.length - 1
-  let currentIndex
-  let currentItem
+  let currentIndex: number
+  let currentItem: number
   while (minIndex <= maxIndex) {
     currentIndex = ((maxIndex + minIndex) / 2) >> 0
     currentItem = indices[currentIndex]

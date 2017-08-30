@@ -22,11 +22,11 @@ class ComponentWrapper {
     return mountComponent(this)
   }
 
-  update (previous) {
+  update (previous, domNode?) {
     return reRenderComponent(previous, this)
   }
 
-  destroy () {
+  destroy (dom?: Element) {
     unmountComponent(this)
   }
 }

@@ -5,7 +5,7 @@ import { VirtualNode, IProps } from '../types'
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
 const doc = document
-function createElement (vnode: VirtualNode, isSvg?: boolean) {
+function createElement (vnode: VirtualNode, isSvg?: boolean): Element | Text | Comment | DocumentFragment | null {
   if (isWidget(vnode) || isStateLess(vnode)) {
     return vnode.init()
   }
@@ -59,7 +59,7 @@ function createElement (vnode: VirtualNode, isSvg?: boolean) {
         if (childNode) {
           domNode.appendChild(childNode)
         }
-        return domNode.appendChild(childNode)
+        return domNode.appendChild(childNode as Element)
       }
     })
     return domNode

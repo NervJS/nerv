@@ -51,6 +51,8 @@ class VNode {
             descendantHooks = true
           }
         } else if (!hasWidgets && isWidget(child)) {
+          // TODO: figure out is function check really necessarily
+          // there are so many widght function check
           if (isFunction((child as any).destroy)) {
             hasWidgets = true
           }

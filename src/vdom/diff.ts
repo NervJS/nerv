@@ -1,14 +1,15 @@
 import VPatch from './vpatch'
 import { isVNode, isVText, isWidget, isStateLess, isHook } from './vnode/types'
 import { isFunction, isObject, getPrototype } from '../util'
+import { VirtualNode } from '../types'
 
-function diff (a, b) {
+function diff (a: VirtualNode, b: VirtualNode) {
   const patches = {old: a}
   walk(a, b, patches, 0)
   return patches
 }
 
-function walk (a, b, patches, index) {
+function walk (a: VirtualNode, b: VirtualNode, patches, index: number) {
   if (a === b) {
     return
   }
@@ -25,7 +26,7 @@ function walk (a, b, patches, index) {
       applyClear = true
       apply = appendPatch(apply, new VPatch(VPatch.VTEXT, a, b))
     } else if (a.text !== b.text) {
-      apply = appendPatch(apply, new VPatch(VPatch.VTEXT, a, b))
+      apply = appendPatch(apply, new VPatch(VPatch.VTEXT, a as any, b))
     }
   } else if (isVNode(b)) {
     if (!isVNode(a)) {
@@ -287,7 +288,7 @@ function unhook (vnode, patch, index) {
   }
 }
 
-function destroyWidgets (vnode, patch, index) {
+function destroyWidgets (vnode: VirtualNode, patch, index) {
   if (isWidget(vnode)) {
     if (isFunction(vnode.destroy)) {
       patch[index] = appendPatch(patch[index], new VPatch(VPatch.REMOVE, vnode, null))
@@ -333,7 +334,7 @@ function undefinedKeys (obj) {
   return result
 }
 
-function appendPatch (apply, patch) {
+function appendPatch (apply, patch: VPatch) {
   if (apply) {
     if (Array.isArray(apply)) {
       apply.push(patch)

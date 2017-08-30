@@ -1,10 +1,20 @@
 import VNode from './vdom/vnode/vnode'
 import Stateless from './stateless-component'
 import Widget from './full-component'
+import VText from './vdom/vnode/vtext'
 
 export type Ref = (node?: Element | null) => void | null
 
-export type VirtualNode = IVNode | Widget | Stateless | Array<string | number | IVNode> | boolean | string | number
+export type VirtualNode = IVNode
+  | VText
+  | Widget
+  | Stateless
+  | Array<string | number | IVNode>
+  | boolean
+  | string
+  | number
+  | null
+  | undefined
 
 export interface IProps {
   children?: Array<string | number | VNode>

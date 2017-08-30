@@ -1,10 +1,10 @@
 import Component from './component'
 import shallowEqual from './util/shallow-equal'
 
-class PureComponent extends Component {
+class PureComponent<P, S> extends Component<P, S> {
   isPureComponent = true
 
-  shouldComponentUpdate (nextProps, nextState) {
+  shouldComponentUpdate (nextProps: P, nextState: S) {
     return !shallowEqual(this.props, nextProps) || !shallowEqual(this.state, nextState)
   }
 }

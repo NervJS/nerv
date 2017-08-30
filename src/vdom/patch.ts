@@ -1,11 +1,16 @@
+/* tslint:disable: no-shadowed-variable*/
 import VPatch from './vpatch'
 import { isFunction, isString, isObject, getPrototype } from '../util'
 import shallowEqual from '../util/shallow-equal'
 import domIndex from './dom-index'
 import { isWidget, isHook } from './vnode/types'
 import createElement from './create-element'
+import VText from './vnode/vtext'
+import { IProps, VirtualNode, IVNode } from '../types'
+import Widget from '../full-component'
+import Stateless from '../stateless-component'
 
-function patch (rootNode, patches) {
+function patch (rootNode: Element, patches) {
   const patchIndices = getPatchIndices(patches)
   if (patchIndices.length === 0) {
     return rootNode
@@ -18,7 +23,7 @@ function patch (rootNode, patches) {
   return rootNode
 }
 
-function applyPatch (rootNode, domNode, patch) {
+function applyPatch (rootNode: Element, domNode: Element, patch: VirtualNode | VirtualNode[]) {
   if (!domNode) {
     return rootNode
   }
@@ -26,8 +31,8 @@ function applyPatch (rootNode, domNode, patch) {
   if (!Array.isArray(patch)) {
     patch = [patch]
   }
-  patch.forEach((patchItem) => {
-    newNode = patchSingle(domNode, patchItem)
+  (patch as VirtualNode[]).forEach((patchItem) => {
+    newNode = patchSingle(domNode, patchItem as any)
     if (domNode === rootNode) {
       rootNode = newNode
     }
@@ -35,26 +40,26 @@ function applyPatch (rootNode, domNode, patch) {
   return rootNode
 }
 
-function patchSingle (domNode, vpatch) {
+function patchSingle (domNode: Element, vpatch: VPatch) {
   const type = vpatch.type
   const oldVNode = vpatch.vnode
   const patchObj = vpatch.patch
 
   switch (type) {
     case VPatch.VTEXT:
-      return patchVText(domNode, patchObj)
+      return patchVText(domNode as any, patchObj)
     case VPatch.VNODE:
       return patchVNode(domNode, patchObj)
     case VPatch.INSERT:
       return patchInsert(domNode, patchObj)
     case VPatch.WIDGET:
-      return patchWidget(domNode, oldVNode, patchObj)
+      return patchWidget(domNode, oldVNode as Widget, patchObj as Widget)
     case VPatch.STATELESS:
-      return patchStateLess(domNode, oldVNode, patchObj)
+      return patchStateLess(domNode, oldVNode as Stateless, patchObj as Stateless)
     case VPatch.PROPS:
-      return patchProps(domNode, patchObj, oldVNode.props, oldVNode.isSvg)
+      return patchProps(domNode, patchObj as IProps, (oldVNode as IVNode).props, (oldVNode as IVNode).isSvg)
     case VPatch.ORDER:
-      return patchOrder(domNode, patchObj)
+      return patchOrder(domNode, patchObj as any)
     case VPatch.REMOVE:
       return patchRemove(domNode, oldVNode)
     default:
@@ -62,35 +67,35 @@ function patchSingle (domNode, vpatch) {
   }
 }
 
-function patchVText (domNode, patch) {
+function patchVText (domNode: Text, patch: VirtualNode) {
   if (domNode === null) {
     return createElement(patch)
   }
   if (domNode.splitText !== undefined) {
-    domNode.nodeValue = patch.text
+    domNode.nodeValue = (patch as VText).text as string
     return domNode
   }
   const parentNode = domNode.parentNode
   const newNode = createElement(patch)
   if (parentNode) {
-    parentNode.replaceChild(newNode, domNode)
+    parentNode.replaceChild(newNode as Element, domNode)
   }
   return newNode
 }
 
-function patchVNode (domNode, patch) {
+function patchVNode (domNode: Element, patch: VirtualNode) {
   if (domNode === null) {
     return createElement(patch)
   }
   const parentNode = domNode.parentNode
   const newNode = createElement(patch)
   if (parentNode && newNode !== domNode) {
-    parentNode.replaceChild(newNode, domNode)
+    parentNode.replaceChild(newNode as Element, domNode)
   }
   return newNode
 }
 
-function patchInsert (parentNode, vnode) {
+function patchInsert (parentNode: Element, vnode: VirtualNode) {
   const newNode = createElement(vnode)
   if (parentNode && newNode) {
     parentNode.appendChild(newNode)
@@ -98,14 +103,11 @@ function patchInsert (parentNode, vnode) {
   return parentNode
 }
 
-function patchWidget (domNode, vnode, patch) {
+function patchWidget (domNode: Element, vnode: Widget, patch: Widget) {
   const isUpdate = isUpdateWidget(vnode, patch)
-  let newNode
-  if (isUpdate) {
-    newNode = patch.update(vnode, domNode) || domNode
-  } else {
-    newNode = createElement(patch)
-  }
+  const newNode = isUpdate
+    ? (patch as Widget).update(vnode, domNode) || domNode
+    : createElement(patch)
   const parentNode = domNode.parentNode
   if (parentNode && domNode !== newNode) {
     parentNode.replaceChild(newNode, domNode)
@@ -116,7 +118,7 @@ function patchWidget (domNode, vnode, patch) {
   return newNode
 }
 
-function patchStateLess (domNode, vnode, patch) {
+function patchStateLess (domNode: Element, vnode: Stateless, patch: Stateless) {
   const oldProps = vnode.props
   const newProps = patch.props
   if (vnode.tagName === patch.tagName && shallowEqual(oldProps, newProps)) {
@@ -125,18 +127,18 @@ function patchStateLess (domNode, vnode, patch) {
   const newNode = createElement(patch)
   const parentNode = domNode.parentNode
   if (parentNode && domNode !== newNode) {
-    parentNode.replaceChild(newNode, domNode)
+    parentNode.replaceChild(newNode as Element, domNode)
   }
   return newNode
 }
 
-function destroyWidget (domNode, widget) {
+function destroyWidget (domNode: Element, widget) {
   if (isFunction(widget.destroy) && isWidget(widget)) {
     widget.destroy(domNode)
   }
 }
 
-function patchProps (domNode, patch, previousProps, isSvg) {
+function patchProps (domNode: Element, patch: IProps, previousProps: IProps, isSvg?: boolean) {
   for (const propName in patch) {
     if (propName === 'children') {
       continue
@@ -158,11 +160,7 @@ function patchProps (domNode, patch, previousProps, isSvg) {
         }
         continue
       } else if (propName in domNode) {
-        if (isString(previousValue)) {
-          domNode[propName] = ''
-        } else {
-          domNode[propName] = null
-        }
+        domNode[propName] = isString(previousValue) ? '' : null
         domNode.removeAttribute(propName)
       } else {
         domNode.removeAttribute(propName)
@@ -216,7 +214,7 @@ function patchProps (domNode, patch, previousProps, isSvg) {
   return domNode
 }
 
-function patchOrder (domNode, patch) {
+function patchOrder (domNode: Element, patch: { removes: any[], inserts: any[] }) {
   const { removes, inserts } = patch
   const childNodes = domNode.childNodes
   const keyMap = {}
@@ -239,7 +237,7 @@ function patchOrder (domNode, patch) {
   return domNode
 }
 
-function patchRemove (domNode, vnode) {
+function patchRemove (domNode: Element, vnode: VirtualNode) {
   const parentNode = domNode.parentNode
   if (parentNode) {
     parentNode.removeChild(domNode)
@@ -250,7 +248,7 @@ function patchRemove (domNode, vnode) {
   return null
 }
 
-function isUpdateWidget (a, b) {
+function isUpdateWidget (a: VirtualNode, b: VirtualNode) {
   if (isWidget(a) && isWidget(b)) {
     const keyA = a.props.key
     const keyB = b.props.key
