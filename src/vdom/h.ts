@@ -2,8 +2,8 @@ import VNode from './vnode/vnode'
 import createVText from './create-vtext'
 import { isVNode, isVText, isWidget, isStateLess } from './vnode/types'
 import { isString, isArray, isNumber } from '../util'
-
-function h (tagName, props, children) {
+import { IProps, VirtualChildren, VirtualNode } from '../types'
+function h (tagName: string, props: IProps, children: VirtualChildren) {
   let key
   let namespace
   let owner
@@ -37,22 +37,22 @@ function h (tagName, props, children) {
   return new VNode(tagName, props, childNodes, key, namespace, owner)
 }
 
-function addChildren (childNodes, children, tagName) {
+function addChildren (childNodes: VirtualNode[], children: VirtualNode, tagName: string) {
   if (isString(children) || isNumber(children)) {
     children = String(children)
     childNodes.push(createVText(children))
   } else if (isChild(children)) {
     childNodes.push(children)
   } else if (isArray(children)) {
-    children.forEach((child) => addChildren(childNodes, child, tagName))
+    (children as any[]).forEach((child) => addChildren(childNodes, child, tagName))
   }
 }
 
-function isChild (node) {
+function isChild (node): node is VirtualNode {
   return isVNode(node) || isVText(node) || isWidget(node) || isStateLess(node)
 }
 
-function isChildren (x) {
+function isChildren (x): x is VirtualChildren {
   return isString(x) || isArray(x) || isChild(x)
 }
 

@@ -1,4 +1,3 @@
-import VNode from './vdom/vnode/vnode'
 import Stateless from './stateless-component'
 import Widget from './full-component'
 import VText from './vdom/vnode/vtext'
@@ -27,7 +26,7 @@ export interface PatchOrder {
 export type Patch = PatchOrder | VirtualNode
 
 export interface IProps {
-  children?: Array<string | number | VNode>
+  children?: VirtualChildren
   ref?: Ref
   key?: any
   className?: string
