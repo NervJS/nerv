@@ -1,11 +1,11 @@
 import { isVNode, isVText, isWidget, isStateLess, isHook } from './vnode/types'
 import { isObject, isString, isNumber, isFunction } from '../util'
-import VNode from './vnode/vnode'
+import { VirtualNode, IProps } from '../types'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
 const doc = document
-function createElement (vnode: VNode, isSvg?: boolean) {
+function createElement (vnode: VirtualNode, isSvg?: boolean) {
   if (isWidget(vnode) || isStateLess(vnode)) {
     return vnode.init()
   }
@@ -13,9 +13,9 @@ function createElement (vnode: VNode, isSvg?: boolean) {
     return doc.createTextNode(vnode as string)
   }
   if (isVText(vnode)) {
-    return doc.createTextNode(vnode.text)
+    return doc.createTextNode(vnode.text as string)
   }
-  if (vnode === null || vnode === false) {
+  if (vnode === null || (vnode as any) === false) {
     return doc.createComment('Empty dom node')
   }
   if (isVNode(vnode)) {
@@ -38,7 +38,7 @@ function createElement (vnode: VNode, isSvg?: boolean) {
     const children = vnode.children
     if (children.length) {
       children.forEach((child) => {
-        if (child !== undefined && child !== null && child !== false && domNode.appendChild) {
+        if (child !== undefined && child !== null && (child as any) !== false && domNode.appendChild) {
           if (isWidget(child)) {
             child.parentContext = vnode.parentContext || {}
           }
@@ -54,7 +54,7 @@ function createElement (vnode: VNode, isSvg?: boolean) {
   if (Array.isArray(vnode)) {
     const domNode = doc.createDocumentFragment()
     vnode.forEach((child) => {
-      if (child !== undefined && child !== null && child !== false && domNode.appendChild) {
+      if (child !== undefined && child !== null && (child as any) !== false && domNode.appendChild) {
         const childNode = createElement(child, isSvg)
         if (childNode) {
           domNode.appendChild(childNode)
@@ -67,7 +67,7 @@ function createElement (vnode: VNode, isSvg?: boolean) {
   return null
 }
 
-function setProps (domNode, props, isSvg) {
+function setProps (domNode: Element, props: IProps, isSvg?: boolean) {
   for (const p in props) {
     if (p === 'children') {
       continue
@@ -88,7 +88,9 @@ function setProps (domNode, props, isSvg) {
           if (styleValue !== undefined) {
             try {
               domNode[p][s] = styleValue
-            } catch (err) {}
+            } catch (err) {
+              console.warn(`Can't set empty style`)
+            }
           }
         }
       }
@@ -97,7 +99,9 @@ function setProps (domNode, props, isSvg) {
       if (p in domNode) {
         try {
           domNode[p] = propValue
-        } catch (err) {}
+        } catch (err) {
+          console.warn('set prop failed, prop value:', propValue)
+        }
       } else {
         domNode.setAttribute(p, propValue)
       }
@@ -105,7 +109,9 @@ function setProps (domNode, props, isSvg) {
     } else if (p !== 'list' && p !== 'type' && !isSvg && p in domNode) {
       try {
         domNode[p] = propValue == null ? '' : propValue
-      } catch (err) {}
+      } catch (err) {
+        console.warn('set prop failed, prop value:', propValue)
+      }
       if (propValue == null || propValue === false) {
         domNode.removeAttribute(p)
       }

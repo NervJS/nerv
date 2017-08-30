@@ -7,6 +7,7 @@ class ComponentWrapper {
   name: string
   _owner: any
   props: any
+  parentContext: any
 
   constructor (ComponentType, props) {
     this.ComponentType = ComponentType

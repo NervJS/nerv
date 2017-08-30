@@ -1,5 +1,5 @@
-const CurrentOwner = {
+const Current = {
   current: null
 }
 
-export default CurrentOwner
+export default Current

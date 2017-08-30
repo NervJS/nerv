@@ -27,26 +27,26 @@ export function getPrototype (obj) {
   return obj.constructor.prototype
 }
 
-export function isObject (arg): arg is object {
+export function isObject (arg) {
   return arg === Object(arg) && !isFunction(arg)
 }
 export function isNative (Ctor) {
   return isFunction(Ctor) && /native code/.test(Ctor.toString())
 }
 
-export function extend (source, from) {
+export function extend<K, V> (source: K, from: V): K | V & K {
   if (!from) {
     return source
   }
   for (const key in from) {
     if (from.hasOwnProperty(key)) {
-      source[key] = from[key]
+      (source as any)[key] = from[key]
     }
   }
   return source
 }
 
-export function clone (obj) {
+export function clone<T> (obj: T): T | {} {
   return extend({}, obj)
 }
 export function isEmptyObject (obj) {

@@ -56,7 +56,7 @@ if (canUsePromise) {
   installSetTimeout()
 }
 
-function nextTick (cb, ctx) {
+function nextTick (cb: Function, ctx?) {
   let _resolve
   callbacks.push(() => {
     if (cb) {

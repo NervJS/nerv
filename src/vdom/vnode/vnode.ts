@@ -1,7 +1,6 @@
 import { isString, isFunction } from '../../util'
 import { isWidget, isVNode, isHook } from './types'
-
-export type VnodeChildren = Array<string | number | VNode>
+import { IProps } from '../../types'
 export interface IHooks {
   [props: string]: any
 }
@@ -9,8 +8,8 @@ export interface IHooks {
 class VNode {
   type = 'VirtualNode'
   tagName: string | undefined
-  props: object
-  children: VnodeChildren
+  props: IProps
+  children: Array<string | number | VNode>
   key: string | number | undefined
   namespace: string | null | undefined
   _owner: any // TODO: this is a component

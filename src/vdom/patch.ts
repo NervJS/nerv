@@ -149,6 +149,7 @@ function patchProps (domNode, patch, previousProps, isSvg) {
         continue
       } else if (propName === 'style') {
         if (isString(previousValue)) {
+          // tslint:disable-next-line:forin
           for (const styleName in previousValue) {
             domNode.style[styleName] = ''
           }
