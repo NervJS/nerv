@@ -9,12 +9,22 @@ export type VirtualNode = IVNode
   | VText
   | Widget
   | Stateless
-  | Array<string | number | IVNode>
+  | VirtualChildren
   | boolean
   | string
   | number
   | null
   | undefined
+
+export type VirtualChildren = Array<string | number | IVNode>
+
+// tslint:disable-next-line:interface-name
+export interface PatchOrder {
+  removes: any[]
+  inserts: any[]
+}
+
+export type Patch = PatchOrder | VirtualNode
 
 export interface IProps {
   children?: Array<string | number | VNode>
@@ -28,7 +38,7 @@ export interface IVNode {
   type: string
   tagName: string
   props: IProps
-  children: Array<string | number | IVNode >
+  children: VirtualChildren
   key: string | number | undefined
   namespace: string | null
   _owner: any // TODO: this is a component

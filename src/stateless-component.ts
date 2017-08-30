@@ -5,6 +5,7 @@ class StateLessComponent {
   tagName: string
   _owner: any
   props: any
+  _renderd: any
   constructor (tagName, props) {
     this.tagName = tagName
     this._owner = props.owner

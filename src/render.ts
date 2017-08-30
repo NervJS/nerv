@@ -1,8 +1,9 @@
 import { mountVNode, flushMount } from './lifecycle'
 import { isString, isNumber } from './util'
 import { isWidget, isVNode, isStateLess } from './vdom/vnode/types'
+import { IVNode } from './types'
 
-function isVChild (vnode) {
+function isVChild (vnode): vnode is string | number | IVNode {
   return isVNode(vnode) || isString(vnode) || isNumber(vnode)
 }
 

@@ -1,4 +1,6 @@
 /* tslint:disable: no-shadowed-variable*/
+/* tslint:disable: no-empty*/
+
 import VPatch from './vpatch'
 import { isFunction, isString, isObject, getPrototype } from '../util'
 import shallowEqual from '../util/shallow-equal'
@@ -152,9 +154,10 @@ function patchProps (domNode: Element, patch: IProps, previousProps: IProps, isS
       } else if (propName === 'style') {
         if (isString(previousValue)) {
           // tslint:disable-next-line:forin
-          for (const styleName in previousValue) {
-            domNode.style[styleName] = ''
-          }
+          // FIX: previousValue is not iterable
+          // for (const styleName in previousValue) {
+          //   domNode.style[styleName] = ''
+          // }
         } else {
           domNode.removeAttribute(propName)
         }

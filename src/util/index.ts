@@ -27,7 +27,7 @@ export function getPrototype (obj) {
   return obj.constructor.prototype
 }
 
-export function isObject (arg) {
+export function isObject (arg): arg is Object {
   return arg === Object(arg) && !isFunction(arg)
 }
 export function isNative (Ctor) {

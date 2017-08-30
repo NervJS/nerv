@@ -1,15 +1,22 @@
+/* tslint:disable: no-shadowed-variable*/
+
 import VPatch from './vpatch'
 import { isVNode, isVText, isWidget, isStateLess, isHook } from './vnode/types'
 import { isFunction, isObject, getPrototype } from '../util'
-import { VirtualNode } from '../types'
+import { VirtualNode, IVNode, IProps, Patch, VirtualChildren } from '../types'
+import Widget from '../full-component'
+
+type Patches = Patch[] & {
+  old: VirtualNode
+}
 
 function diff (a: VirtualNode, b: VirtualNode) {
   const patches = {old: a}
-  walk(a, b, patches, 0)
+  walk(a, b, patches as Patches, 0)
   return patches
 }
 
-function walk (a: VirtualNode, b: VirtualNode, patches, index: number) {
+function walk (a: VirtualNode, b: VirtualNode, patches: Patches, index: number) {
   if (a === b) {
     return
   }
@@ -17,7 +24,7 @@ function walk (a: VirtualNode, b: VirtualNode, patches, index: number) {
   let applyClear = false
   if (!b) {
     if (!isWidget(a)) {
-      clearState(a, patches, index)
+      clearState(a, patches as VirtualNode, index)
       apply = patches[index]
     }
     apply = appendPatch(apply, new VPatch(VPatch.REMOVE, a, null))
@@ -61,12 +68,12 @@ function walk (a: VirtualNode, b: VirtualNode, patches, index: number) {
     patches[index] = apply
   }
   if (applyClear) {
-    clearState(a, patches, index)
+    clearState(a, patches as VirtualNode, index)
   }
 }
 
-function diffProps (propsA, propsB) {
-  let diff = null
+function diffProps (propsA: IProps, propsB: IProps) {
+  let diff: any = null
   for (const key in propsA) {
     if (key === 'children') {
       continue
@@ -107,7 +114,7 @@ function diffProps (propsA, propsB) {
   return diff
 }
 
-function diffChildren (a, b, apply, patches, index) {
+function diffChildren (a: IVNode, b: IVNode, apply, patches: Patches, index: number) {
   const aChildren = a.children
   const diffSet = diffList(aChildren, b.children, 'key')
   const bChildren = diffSet.list
@@ -133,7 +140,17 @@ function diffChildren (a, b, apply, patches, index) {
   return apply
 }
 
-function diffList (oldList, newList, key) {
+interface IRemove {
+  from: number,
+  key: any
+}
+
+interface IInsert {
+  key: any,
+  to: number
+}
+
+function diffList (oldList: VirtualChildren, newList: VirtualChildren, key: string) {
   const newListKeyIndex = mapListKeyIndex(newList, key)
   const newListkeyMap = newListKeyIndex.keyMap
   const newListFree = newListKeyIndex.free
@@ -152,10 +169,9 @@ function diffList (oldList, newList, key) {
       moves: null
     }
   }
-  let listChange = []
   let freeIndex = 0
   let deletedItems = 0
-  listChange = oldList.map((item) => {
+  const listChange = oldList.map((item) => {
     const itemKey = item[key]
     if (itemKey) {
       if (newListkeyMap.hasOwnProperty(itemKey)) {
@@ -186,8 +202,8 @@ function diffList (oldList, newList, key) {
 
   const simulate = listChange.slice(0)
   let simulateIndex = 0
-  const removes = []
-  const inserts = []
+  const removes: IRemove[] = []
+  const inserts: IInsert[] = []
   let simulateItem
   for (let k = 0; k < newList.length;) {
     simulateItem = simulate[simulateIndex]
@@ -244,7 +260,7 @@ function diffList (oldList, newList, key) {
   }
 }
 
-function remove (arr, index, key) {
+function remove (arr: any[], index: number, key: any) {
   arr.splice(index, 1)
   return {
     from: index,
@@ -252,20 +268,20 @@ function remove (arr, index, key) {
   }
 }
 
-function clearState (vnode, patch, index) {
+function clearState (vnode: VirtualNode, patch: VirtualNode, index: number) {
   unhook(vnode, patch, index)
   destroyWidgets(vnode, patch, index)
 }
 
-function unhook (vnode, patch, index) {
+function unhook (vnode: VirtualNode, patch: VirtualNode, index: number) {
   if (isVNode(vnode)) {
     if (vnode.hooks) {
-      patch[index] = appendPatch(
-        patch[index],
+      (patch as IVNode)[index] = appendPatch(
+        (patch as IVNode)[index],
         new VPatch(
           VPatch.PROPS,
           vnode,
-          undefinedKeys(vnode.hooks)
+          undefinedKeys(vnode.hooks) as VirtualNode
         )
       )
     }
@@ -288,10 +304,10 @@ function unhook (vnode, patch, index) {
   }
 }
 
-function destroyWidgets (vnode: VirtualNode, patch, index) {
+function destroyWidgets (vnode: VirtualNode, patch: VirtualNode, index: number) {
   if (isWidget(vnode)) {
     if (isFunction(vnode.destroy)) {
-      patch[index] = appendPatch(patch[index], new VPatch(VPatch.REMOVE, vnode, null))
+      (patch as Widget)[index] = appendPatch((patch as Widget)[index], new VPatch(VPatch.REMOVE, vnode, null))
     }
   } else if (isVNode(vnode) && vnode.hasWidgets) {
     vnode.children.forEach((child) => {
@@ -307,9 +323,9 @@ function destroyWidgets (vnode: VirtualNode, patch, index) {
   }
 }
 
-function mapListKeyIndex (list, key) {
+function mapListKeyIndex (list: any[], key: string) {
   const keyMap = {}
-  const free = []
+  const free: number[] = []
   list.forEach((item, i) => {
     if (item[key]) {
       keyMap[item[key]] = i
@@ -323,10 +339,9 @@ function mapListKeyIndex (list, key) {
   }
 }
 
-function undefinedKeys (obj) {
+function undefinedKeys (obj: Object) {
   const result = {}
 
-  // tslint:disable-next-line:forin
   for (const key in obj) {
     result[key] = undefined
   }
