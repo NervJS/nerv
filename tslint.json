@@ -9,7 +9,7 @@
       false
     ],
     "prefer-for-of": false,
-    "one-variable-per-declaration": false,
+    "one-variable-per-declaration": [false],
     "forin": false,
     "ordered-imports": [
       "false"

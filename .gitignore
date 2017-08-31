@@ -32,4 +32,8 @@ dist
 .vscode/
 .npm-debug.log
 
+# istanbul
 coverage
+
+# Rollup
+.rpt2_cache
