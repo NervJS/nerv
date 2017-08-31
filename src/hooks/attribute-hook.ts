@@ -1,5 +1,7 @@
 class AttributeHook {
   type = 'AttributeHook'
+  namespace: string
+  value: string | boolean | number
   constructor (namespace, value) {
     if (!(this instanceof AttributeHook)) {
       return new AttributeHook(namespace, value)

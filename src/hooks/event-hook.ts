@@ -5,7 +5,7 @@ const canUseNativeMap = (() => {
   return 'Map' in window && isNative(Map)
 })()
 
-const MapClass = canUseNativeMap ? Map : SimpleMap
+const MapClass = canUseNativeMap ? Map : SimpleMap as any
 
 const delegatedEvents = new (MapClass as MapConstructor)()
 
@@ -55,7 +55,9 @@ const unbubbleEvents = {
 
 class EventHook {
   type = 'EventHook'
-  constructor (eventName, handler) {
+  eventName: string
+  handler: Function
+  constructor (eventName: string, handler) {
     this.eventName = getEventName(eventName)
     this.handler = handler
   }

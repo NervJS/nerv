@@ -1,5 +1,6 @@
 import { extend, clone } from './util'
 import { mountComponent, reRenderComponent, unmountComponent } from './lifecycle'
+import Component from './component'
 
 class ComponentWrapper {
   type = 'Widget'
@@ -8,6 +9,8 @@ class ComponentWrapper {
   _owner: any
   props: any
   parentContext: any
+  component: Component<any, any>
+  context: any
 
   constructor (ComponentType, props) {
     this.ComponentType = ComponentType

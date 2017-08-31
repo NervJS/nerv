@@ -1,4 +1,4 @@
-interface ICache<Key, Value> {
+export interface ICache<Key, Value> {
   k: Key,
   v: Value
 }

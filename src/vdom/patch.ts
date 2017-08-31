@@ -8,7 +8,7 @@ import domIndex from './dom-index'
 import { isWidget, isHook } from './vnode/types'
 import createElement from './create-element'
 import VText from './vnode/vtext'
-import { IProps, VirtualNode, IVNode } from '../types'
+import { IProps, VirtualNode, IVNode, PatchOrder } from '../types'
 import Widget from '../full-component'
 import Stateless from '../stateless-component'
 
@@ -49,11 +49,11 @@ function patchSingle (domNode: Element, vpatch: VPatch) {
 
   switch (type) {
     case VPatch.VTEXT:
-      return patchVText(domNode as any, patchObj)
+      return patchVText(domNode as any, patchObj as VText)
     case VPatch.VNODE:
-      return patchVNode(domNode, patchObj)
+      return patchVNode(domNode, patchObj as IVNode)
     case VPatch.INSERT:
-      return patchInsert(domNode, patchObj)
+      return patchInsert(domNode, patchObj as VirtualNode)
     case VPatch.WIDGET:
       return patchWidget(domNode, oldVNode as Widget, patchObj as Widget)
     case VPatch.STATELESS:
@@ -61,7 +61,7 @@ function patchSingle (domNode: Element, vpatch: VPatch) {
     case VPatch.PROPS:
       return patchProps(domNode, patchObj as IProps, (oldVNode as IVNode).props, (oldVNode as IVNode).isSvg)
     case VPatch.ORDER:
-      return patchOrder(domNode, patchObj as any)
+      return patchOrder(domNode, patchObj as PatchOrder)
     case VPatch.REMOVE:
       return patchRemove(domNode, oldVNode)
     default:
@@ -217,7 +217,7 @@ function patchProps (domNode: Element, patch: IProps, previousProps: IProps, isS
   return domNode
 }
 
-function patchOrder (domNode: Element, patch: { removes: any[], inserts: any[] }) {
+function patchOrder (domNode: Element, patch: PatchOrder) {
   const { removes, inserts } = patch
   const childNodes = domNode.childNodes
   const keyMap = {}

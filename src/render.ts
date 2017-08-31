@@ -1,13 +1,13 @@
 import { mountVNode, flushMount } from './lifecycle'
 import { isString, isNumber } from './util'
 import { isWidget, isVNode, isStateLess } from './vdom/vnode/types'
-import { IVNode } from './types'
+import { IVNode, VirtualNode } from './types'
 
 function isVChild (vnode): vnode is string | number | IVNode {
   return isVNode(vnode) || isString(vnode) || isNumber(vnode)
 }
 
-export function render (vnode, container, callback) {
+export function render (vnode: VirtualNode, container: Element, callback?: Function) {
   if (!isVChild(vnode) && !isWidget(vnode) && !isStateLess(vnode)) {
     return null
   }
@@ -24,5 +24,5 @@ export function render (vnode, container, callback) {
     callback()
   }
 
-  return vnode.component || dom
+  return (vnode as any).component || dom
 }

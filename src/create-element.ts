@@ -8,14 +8,16 @@ import RefHook from './hooks/ref-hook'
 import HtmlHook from './hooks/html-hook'
 import EventHook from './hooks/event-hook'
 import AttributeHook from './hooks/attribute-hook'
-import { IProps } from './types'
+import { IProps, VirtualChildren } from './types'
+import Component from './component'
+import VNode from './vdom/vnode/vnode'
 
 const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i
 
-const EMPTY_CHILDREN = []
+// const EMPTY_CHILDREN = []
 
 function transformPropsForRealTag (tagName: string, props: IProps) {
-  const newProps = {}
+  const newProps: any = {}
   const DOMAttributeNamespaces = SVGPropertyConfig.DOMAttributeNamespaces
   for (let propName in props) {
     const propValue = props[propName]
@@ -25,7 +27,9 @@ function transformPropsForRealTag (tagName: string, props: IProps) {
     if (DOMAttributeNamespaces.hasOwnProperty(originalPropName) &&
       (isString(propValue) || isNumber(propValue) || isBoolean(propValue))) {
       const namespace = DOMAttributeNamespaces[originalPropName]
-      newProps[propName] = !(propValue instanceof AttributeHook) ? new AttributeHook(namespace, propValue) : propValue
+      newProps[propName] = !((propValue as any) instanceof AttributeHook)
+        ? new AttributeHook(namespace, propValue)
+        : propValue
       continue
     }
     if ((propName === 'id' || propName === 'className' || propName === 'namespace') &&
@@ -73,7 +77,7 @@ function transformPropsForRealTag (tagName: string, props: IProps) {
 }
 
 function transformPropsForComponent (props: IProps) {
-  const newProps = {}
+  const newProps: any = {}
   for (const propName in props) {
     const propValue = props[propName]
     newProps[propName] = propValue
@@ -81,31 +85,35 @@ function transformPropsForComponent (props: IProps) {
   return newProps
 }
 
-function createElement (tagName: string, properties) {
-  let children = EMPTY_CHILDREN
-  for (let i = 2, len = arguments.length; i < len; i++) {
-    const argumentsItem = arguments[i]
-    if (Array.isArray(argumentsItem)) {
-      argumentsItem.forEach((item) => {
-        if (children === EMPTY_CHILDREN) {
-          children = [item]
-        } else {
-          children.push(item)
-        }
-      })
-    } else if (children === EMPTY_CHILDREN) {
-      children = [argumentsItem]
-    } else {
-      children.push(argumentsItem)
-    }
-  }
+function createElement<T> (
+  tagName: string | Function | Component<any, any>,
+  properties?: T & IProps | null,
+  ...children: Array<VirtualChildren | null>
+) {
+  // let children = EMPTY_CHILDREN
+  // for (let i = 2, len = arguments.length; i < len; i++) {
+  //   const argumentsItem = arguments[i]
+  //   if (Array.isArray(argumentsItem)) {
+  //     argumentsItem.forEach((item) => {
+  //       if (children === EMPTY_CHILDREN) {
+  //         children = [item]
+  //       } else {
+  //         children.push(item)
+  //       }
+  //     })
+  //   } else if (children === EMPTY_CHILDREN) {
+  //     children = [argumentsItem]
+  //   } else {
+  //     children.push(argumentsItem)
+  //   }
+  // }
   let props
   if (isString(tagName)) {
-    props = transformPropsForRealTag(tagName, properties)
+    props = transformPropsForRealTag(tagName, properties as IProps)
     props.owner = CurrentOwner.current
-    return h(tagName, props, children)
+    return h(tagName, props, children as any) as VNode
   } else if (isFunction(tagName)) {
-    props = transformPropsForComponent(properties)
+    props = transformPropsForComponent(properties as any)
     if (props.children) {
       if (!Array.isArray(props.children)) {
         props.children = [props.children]

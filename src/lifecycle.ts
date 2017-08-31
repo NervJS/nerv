@@ -6,17 +6,19 @@ import diff from './vdom/diff'
 import patch from './vdom/patch'
 import RefHook from './hooks/ref-hook'
 import { isVNode } from './vdom/vnode/types'
+import FullComponent from './full-component'
+import Stateless from './stateless-component'
 
-const readyComponents = []
+const readyComponents: any[] = []
 
-export function mountVNode (vnode, parentContext) {
+export function mountVNode (vnode, parentContext: any) {
   if (isObject(vnode)) {
     vnode.parentContext = parentContext
   }
   return createElement(vnode)
 }
 
-export function mountComponent (vnode) {
+export function mountComponent (vnode: FullComponent) {
   const parentContext = vnode.parentContext
   const componentPrototype = vnode.ComponentType.prototype
   if (componentPrototype && isFunction(componentPrototype.render)) {
@@ -43,7 +45,7 @@ export function mountComponent (vnode) {
   return dom
 }
 
-export function mountStatelessComponent (vnode) {
+export function mountStatelessComponent (vnode: Stateless) {
   let ref = vnode.props.ref
   delete vnode.props.ref
   vnode._renderd = vnode.tagName(vnode.props, vnode.parentContext)
@@ -108,7 +110,7 @@ export function reRenderComponent (prev, current) {
   return component.dom
 }
 
-export function updateComponent (component, isForce) {
+export function updateComponent (component, isForce = false) {
   const lastDom = component.dom
   const props = component.props
   const state = component.getState()

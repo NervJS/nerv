@@ -6,7 +6,7 @@ export function isString (arg): arg is string {
   return typeof arg === 'string'
 }
 
-export function isFunction (arg): arg is () => any {
+export function isFunction (arg): arg is Function {
   return typeof arg === 'function'
 }
 
@@ -34,7 +34,7 @@ export function isNative (Ctor) {
   return isFunction(Ctor) && /native code/.test(Ctor.toString())
 }
 
-export function extend<K, V> (source: K, from: V): K | V & K {
+export function extend<S, F> (source: S, from: F): S | F & S {
   if (!from) {
     return source
   }

@@ -1,7 +1,7 @@
 import nextTick from './util/next-tick'
 import { updateComponent } from './lifecycle'
 
-let items = []
+let items: any[] = []
 
 export function enqueueRender (component) {
   // tslint:disable-next-line:no-conditional-assignment

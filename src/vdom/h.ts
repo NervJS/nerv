@@ -3,7 +3,7 @@ import createVText from './create-vtext'
 import { isVNode, isVText, isWidget, isStateLess } from './vnode/types'
 import { isString, isArray, isNumber } from '../util'
 import { IProps, VirtualChildren, VirtualNode } from '../types'
-function h (tagName: string, props: IProps, children: VirtualChildren) {
+function h (tagName: string, props: IProps, children?: VirtualChildren) {
   let key
   let namespace
   let owner

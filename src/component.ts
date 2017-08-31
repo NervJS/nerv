@@ -1,16 +1,21 @@
 import { isFunction, extend, clone } from './util'
 import { enqueueRender } from './render-queue'
 import { updateComponent } from './lifecycle'
-import { IProps } from './types'
+import { IProps, ComponentLifecycle } from './types'
 
-class Component<P, S> {
+interface Component<P = {}, S = {}> extends ComponentLifecycle<P, S > {
+  _rendered: any,
+  dom: any
+}
+
+class Component<P, S> implements ComponentLifecycle<P, S> {
   public static defaultProps: {}
-  state: S | null = null
-  props: P & IProps
+  state: Readonly<S>
+  props: Readonly<P> & Readonly<IProps>
   context: any
   _dirty = true
   _disable = true
-  _pendingStates: S[] = []
+  _pendingStates: any[] = []
   _pendingCallbacks: Function[]
   constructor (props?: P, context?: any) {
     if (!this.state) {
@@ -20,7 +25,7 @@ class Component<P, S> {
     this.context = context || {}
   }
 
-  setState (state, callback?: Function) {
+  setState<K extends keyof S> (state: Pick<S, K>, callback?: Function) {
     if (state) {
       (this._pendingStates = (this._pendingStates || [])).push(state)
     }

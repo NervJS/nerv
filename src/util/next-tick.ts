@@ -31,14 +31,14 @@ function installPromise () {
 
 function installMutationObserver () {
   let observeNum = 1
-  const textNode = document.createTextNode(observeNum)
+  const textNode = document.createTextNode(observeNum as any)
   const observer = new MutationObserver(nextHandler)
   observer.observe(textNode, {
     characterData: true
   })
   runNextTick = function _runNextTick () {
     observeNum = (observeNum + 1) % 2
-    textNode.data = observeNum
+    textNode.data = observeNum as any
   }
 }
 

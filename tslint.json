@@ -5,6 +5,9 @@
   ],
   "defaultSeverity": "warning",
   "rules": {
+    "interface-name": [
+      false
+    ],
     "prefer-for-of": false,
     "one-variable-per-declaration": false,
     "forin": false,

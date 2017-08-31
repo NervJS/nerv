@@ -2,10 +2,11 @@ import { mountStatelessComponent } from './lifecycle'
 
 class StateLessComponent {
   type = 'StateLess'
-  tagName: string
+  tagName: Function
   _owner: any
   props: any
   _renderd: any
+  parentContext: any
   constructor (tagName, props) {
     this.tagName = tagName
     this._owner = props.owner
