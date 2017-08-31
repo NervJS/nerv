@@ -89,6 +89,7 @@
     "karma-source-map-support": "^1.2.0",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.4",
+    "lint-staged": "^4.0.4",
     "minimist": "^1.2.0",
     "mocha": "^3.4.2",
     "npm-run-all": "^4.0.2",
