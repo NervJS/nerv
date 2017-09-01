@@ -163,6 +163,9 @@ module.exports = function (config) {
 
     webpack: {
       devtool: 'inline-source-map',
+      resolve: {
+        extensions: ['', '.js', '.ts']
+      },
       module: {
         rules: [
           {
@@ -170,6 +173,16 @@ module.exports = function (config) {
             test: /\.js$/,
             loader: 'babel-loader',
             exclude: /node_modules/
+          },
+          {
+            test: /\.ts$/,
+            loader: 'ts-loader',
+            options: {
+              compilerOptions: {
+                target: 'es5',
+                module: 'commonjs'
+              }
+            }
           },
           coverage ? {
             enforce: 'post',

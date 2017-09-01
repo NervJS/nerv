@@ -1,5 +1,5 @@
-import * as Util from '../../src/lib/util'
-import shallowEqual from '../../src/lib/util/shallow-equal'
+import * as Util from '../../src/util/index'
+import shallowEqual from '../../src/util/shallow-equal'
 
 describe('Util', () => {
   it('types', () => {

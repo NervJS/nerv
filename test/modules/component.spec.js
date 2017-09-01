@@ -1,6 +1,6 @@
 /** @jsx createElement */
 import { Component, createElement, render, cloneElement, PureComponent } from '../../src'
-import createVText from '../../src/lib/vdom/create-vtext'
+import createVText from '../../src/vdom/create-vtext'
 import { rerender } from '../../src/render-queue'
 
 import { EMPTY_CHILDREN, getAttributes, sortAttributes } from '../util'

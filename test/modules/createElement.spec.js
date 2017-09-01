@@ -1,7 +1,7 @@
 import { assert } from 'chai'
 
-import h from '../../src/lib/vdom/h'
-import createElement from '../../src/lib/vdom/create-element'
+import h from '../../src/vdom/h'
+import createElement from '../../src/vdom/create-element'
 
 describe('test create real dom tree from virtual dom tree', () => {
   it('test dom node', () => {
