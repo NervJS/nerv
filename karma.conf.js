@@ -3,7 +3,6 @@
 
 const path = require('path')
 const webpack = require('webpack')
-
 const coverage = String(process.env.COVERAGE) !== 'false'
 const ci = String(process.env.CI).match(/^(1|true)$/gi)
 const realBrowser = String(process.env.BROWSER).match(/^(1|true)$/gi)
@@ -164,7 +163,7 @@ module.exports = function (config) {
     webpack: {
       devtool: 'inline-source-map',
       resolve: {
-        extensions: ['', '.js', '.ts']
+        extensions: ['.js', '.ts']
       },
       module: {
         rules: [
@@ -178,6 +177,7 @@ module.exports = function (config) {
             test: /\.ts$/,
             loader: 'ts-loader',
             options: {
+              transpileOnly: true,
               compilerOptions: {
                 target: 'es5',
                 module: 'commonjs'

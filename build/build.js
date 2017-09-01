@@ -1,5 +1,6 @@
 const { mkdir } = require('fs')
 const { join } = require('path')
+const createRollup = require('./rollup')
 
 const cwd = process.cwd()
 const pkgJSON = require(join(cwd, 'package.json'))
@@ -22,11 +23,7 @@ mkdir(join(cwd, 'dist'), err => {
     }
   })
 
-  const createRollup = require('./rollup')
-  // const createBundle = require('./bundle')
-
   const rollup = createRollup(options)
-  // const bundle = createBundle(options)
 
   async function build () {
     try {
@@ -39,6 +36,7 @@ mkdir(join(cwd, 'dist'), err => {
         dest,
         format,
         sourceMap: false,
+        // FIX: sourceMap not working
         // sourceMap: isProduction || format === 'es'
         //   ? false
         //   : 'inline',
@@ -49,18 +47,4 @@ mkdir(join(cwd, 'dist'), err => {
     }
   }
   build()
-
-  // rollup
-  //   // .catch(err => console.log(err))
-  //   // .then(bundle)
-  //   .then(() => {
-  //     console.log(`${pkgJSON.name} in ${options.format} is DONE`)
-  //   })
-  //   .catch(error => {
-  //     console.warn(error)
-  //     console.error(
-  //       `${pkgJSON.name} in ${options.format} is FAILED ${error.message}`
-  //     )
-  //     exit(-1)
-  //   })
 })

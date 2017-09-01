@@ -2,7 +2,7 @@ const bublePlugin = require('rollup-plugin-buble')
 const tsPlugin = require('rollup-plugin-typescript2')
 const uglify = require('rollup-plugin-uglify')
 const optimizeJs = require('optimize-js')
-
+const resolve = require('rollup-plugin-node-resolve')
 const optJSPlugin = {
   name: 'optimizeJs',
 
@@ -16,6 +16,9 @@ const optJSPlugin = {
 
 module.exports = function (version, options) {
   const plugins = [
+    resolve({
+      main: true
+    }),
     tsPlugin({
       abortOnError: true,
       check: true,
