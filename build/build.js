@@ -14,7 +14,7 @@ mkdir(join(cwd, 'dist'), err => {
     default: {
       env: 'development',
       format: 'umd',
-      name: pkgJSON.name,
+      name: 'nerv',
       optimize: true,
       replace: true,
       uglify: true,
@@ -31,12 +31,17 @@ mkdir(join(cwd, 'dist'), err => {
   async function build () {
     try {
       const bundle = await rollup
-      const filename = `${options.name}${options.env === 'production' ? '.min' : ''}.js`
+      const isProduction = options.env === 'production'
+      const filename = `${options.name}${isProduction ? '.min' : ''}.js`
       const dest = join(cwd, 'dist', filename)
       const { format } = options
       await bundle.write({
         dest,
         format,
+        sourceMap: false,
+        // sourceMap: isProduction || format === 'es'
+        //   ? false
+        //   : 'inline',
         moduleName: 'Nerv'
       })
     } catch (err) {

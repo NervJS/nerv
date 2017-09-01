@@ -77,7 +77,7 @@ module.exports = function (config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['source-map-support', 'mocha', 'sinon-chai'],
+    frameworks: ['source-map-support', 'mocha', 'sinon-chai', 'karma-typescript'],
 
     // list of files / patterns to load in the browser
     files: [
@@ -92,7 +92,8 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'test/**/*.js': ['webpack', 'sourcemap']
+      'test/**/*.js': ['webpack', 'sourcemap'],
+      '**/*.ts': ['karma-typescript', 'sourcemap']
     },
 
     // test results reporter to use

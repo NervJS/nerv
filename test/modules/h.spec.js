@@ -1,5 +1,5 @@
 import { assert } from 'chai'
-import h from '#/h'
+import h from '../../src/lib/vdom/h'
 
 describe('test generate virtual dom tree', () => {
   it('test make virtual dom tree simply', () => {

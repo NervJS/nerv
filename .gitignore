@@ -38,3 +38,4 @@ coverage
 
 # Rollup
 .rpt2_cache
+yarn-error.log

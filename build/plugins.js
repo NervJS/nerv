@@ -17,7 +17,7 @@ const optJSPlugin = {
 module.exports = function (version, options) {
   const plugins = [
     tsPlugin({
-      abortOnError: false,
+      abortOnError: true,
       check: true,
       clean: true,
       exclude: ['*.spec*', '**/*.spec*']

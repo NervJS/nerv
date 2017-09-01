@@ -1,6 +1,6 @@
 /** @jsx createElement */
 import { Component, createElement, render } from '../../src'
-import createVText from '#/create-vtext'
+import createVText from '../../src/lib/vdom/create-vtext'
 import { rerender } from '../../src/lib/render-queue'
 
 import { CHILDREN_MATCHER } from '../util'
