@@ -11,7 +11,7 @@
     "outDir": "lib",
     "noUnusedLocals": true,
     "strictNullChecks": true,
-    "sourceMap": false
+    "sourceMap": true
   },
   "filesGlob": [
     "src/**/*.ts",

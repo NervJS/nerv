@@ -7,7 +7,6 @@ const coverage = String(process.env.COVERAGE) !== 'false'
 const ci = String(process.env.CI).match(/^(1|true)$/gi)
 const realBrowser = String(process.env.BROWSER).match(/^(1|true)$/gi)
 const sauceLabs = realBrowser && ci
-
 const sauceLabsLaunchers = {
   sl_win_chrome: {
     base: 'SauceLabs',
@@ -186,7 +185,7 @@ module.exports = function (config) {
           },
           coverage ? {
             enforce: 'post',
-            test: /\.js$/,
+            test: /\.ts$/,
             use: {
               loader: 'istanbul-instrumenter-loader',
               options: { esModules: true }
