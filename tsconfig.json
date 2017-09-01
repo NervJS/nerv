@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "es6",
+    "module": "es6",        
     "removeComments": true,
     "preserveConstEnums": true,
     "moduleResolution": "node",

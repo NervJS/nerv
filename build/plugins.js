@@ -1,8 +1,4 @@
 const bublePlugin = require('rollup-plugin-buble')
-// const commonjs = require('rollup-plugin-commonjs')
-// const nodeResolve = require('rollup-plugin-node-resolve')
-// const aliasPlugin = require('./alias')
-const replacePlugin = require('rollup-plugin-replace')
 const tsPlugin = require('rollup-plugin-typescript2')
 const uglify = require('rollup-plugin-uglify')
 const optimizeJs = require('optimize-js')
@@ -20,31 +16,14 @@ const optJSPlugin = {
 
 module.exports = function (version, options) {
   const plugins = [
-    // aliasPlugin,
-    // nodeResolve({
-    //   extensions: ['.ts', '.js', '.json'],
-    //   jsnext: true
-    // }),
-    // commonjs({
-    //   include: 'node_modules/**'
-    // }),
     tsPlugin({
       abortOnError: false,
-      // cacheRoot: `.rpt2_cache_${options.env}`,
       check: true,
       clean: true,
       exclude: ['*.spec*', '**/*.spec*']
     }),
     bublePlugin()
   ]
-
-  const replaceValues = {
-    'process.env.INFERNO_VERSION': JSON.stringify(options.version)
-  }
-
-  if (options.replace) {
-    replaceValues['process.env.NODE_ENV'] = JSON.stringify(options.env)
-  }
 
   if (options.uglify) {
     plugins.push(
@@ -68,8 +47,6 @@ module.exports = function (version, options) {
       })
     )
   }
-
-  plugins.push(replacePlugin(replaceValues))
 
   if (options.optimize) {
     plugins.push(optJSPlugin)

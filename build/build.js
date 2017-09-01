@@ -8,7 +8,6 @@ mkdir(join(cwd, 'dist'), err => {
   if (err && err.code !== 'EEXIST') {
     throw Error(err)
   }
-  var exit = process.exit
 
   const options = require('minimist')(process.argv.slice(2), {
     boolean: ['replace', 'optimize', 'uglify'],
@@ -29,17 +28,34 @@ mkdir(join(cwd, 'dist'), err => {
   const rollup = createRollup(options)
   // const bundle = createBundle(options)
 
-  rollup
-    // .catch(err => console.log(err))
-    // .then(bundle)
-    .then(() => {
-      console.log(`${pkgJSON.name} in ${options.format} is DONE`)
-    })
-    .catch(error => {
-      console.warn(error)
-      console.error(
-        `${pkgJSON.name} in ${options.format} is FAILED ${error.message}`
-      )
-      exit(-1)
-    })
+  async function build () {
+    try {
+      const bundle = await rollup
+      const filename = `${options.name}${options.env === 'production' ? '.min' : ''}.js`
+      const dest = join(cwd, 'dist', filename)
+      const { format } = options
+      await bundle.write({
+        dest,
+        format,
+        moduleName: 'Nerv'
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  build()
+
+  // rollup
+  //   // .catch(err => console.log(err))
+  //   // .then(bundle)
+  //   .then(() => {
+  //     console.log(`${pkgJSON.name} in ${options.format} is DONE`)
+  //   })
+  //   .catch(error => {
+  //     console.warn(error)
+  //     console.error(
+  //       `${pkgJSON.name} in ${options.format} is FAILED ${error.message}`
+  //     )
+  //     exit(-1)
+  //   })
 })
