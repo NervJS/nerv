@@ -37,6 +37,8 @@
     "react-like"
   ],
   "files": [
+    "README.md",
+    "LICENSE",
     "src",
     "dist",
     "index.js"
