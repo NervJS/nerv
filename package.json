@@ -2,7 +2,9 @@
   "name": "nervjs",
   "version": "0.1.0",
   "description": "A react-like framework based on virtual-dom",
-  "main": "dist/nerv.js",
+  "main": "index.js",
+  "module": "dist/nerv.esm.js",
+  "jsnext:main": "dist/nerv.esm.js",
   "scripts": {
     "precommit": "npm run lint && npm run lint-staged",
     "prepush": "npm run test",
@@ -36,7 +38,8 @@
   ],
   "files": [
     "src",
-    "dist"
+    "dist",
+    "index.js"
   ],
   "repository": {
     "type": "git",
