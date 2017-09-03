@@ -8,20 +8,7 @@
   ],
   "plugins": [
     "transform-es3-member-expression-literals",
-    "transform-es3-property-literals",
-    ["root-import", [{
-      "rootPathPrefix": "@",
-      "rootPathSuffix": "src"
-    }, {
-      "rootPathPrefix": "~",
-      "rootPathSuffix": "src/lib/util"
-    }, {
-      "rootPathPrefix": "#",
-      "rootPathSuffix": "src/lib/vdom"
-    }]],
-    ["transform-react-jsx", {
-      "pragma": "h"
-    }]
+    "transform-es3-property-literals"
   ],
   "comments": false
 }

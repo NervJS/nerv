@@ -1,3 +1,4 @@
 dist/*
 benchmarks/*
 lib/*
+build/build.js
