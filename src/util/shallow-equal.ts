@@ -1,3 +1,4 @@
+/* istanbul ignore next */
 // tslint:disable-next-line
 Object.is = Object.is || function (x, y) {
   if (x === y) {
@@ -5,7 +6,7 @@ Object.is = Object.is || function (x, y) {
   }
   return x !== x && y !== y
 }
-
+/* istanbul ignore next */
 export default function shallowEqual (obj1, obj2) {
   if (obj1 === null || obj2 === null) {
     return false

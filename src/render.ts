@@ -11,6 +11,7 @@ export function render (vnode: VirtualNode, container: Element, callback?: Funct
   if (!isVChild(vnode) && !isWidget(vnode) && !isStateLess(vnode)) {
     return null
   }
+  /* istanbul ignore if */
   if (!container || container.nodeType !== 1) {
     throw new Error(`${container} should be a DOM Element`)
   }

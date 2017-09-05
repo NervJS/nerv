@@ -75,7 +75,7 @@ module.exports = function (config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['source-map-support', 'mocha', 'sinon-chai', 'karma-typescript'],
+    frameworks: ['source-map-support', 'mocha', 'sinon-chai'],
 
     // list of files / patterns to load in the browser
     files: [
@@ -90,8 +90,7 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'test/**/*.js': ['webpack', 'sourcemap'],
-      '**/*.ts': ['karma-typescript', 'sourcemap']
+      'test/**/*.js': ['webpack', 'sourcemap']
     },
 
     // test results reporter to use
@@ -160,7 +159,7 @@ module.exports = function (config) {
     concurrency: 2,
 
     webpack: {
-      devtool: 'inline-source-map',
+      // devtool: 'inline-source-map',
       resolve: {
         extensions: ['.js', '.ts']
       },
@@ -176,6 +175,8 @@ module.exports = function (config) {
             test: /\.ts$/,
             loader: 'ts-loader',
             options: {
+              preserveComments: coverage,
+              produceSourceMap: coverage,
               transpileOnly: true,
               compilerOptions: {
                 target: 'es5',

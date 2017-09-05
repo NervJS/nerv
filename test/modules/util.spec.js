@@ -63,6 +63,8 @@ describe('Util', () => {
     const f = {a: 1, v: arr1}
     const g = {a: 1, v: arr1}
     expect(shallowEqual(a, b)).not.to.be.true
+    expect(shallowEqual(null, 110)).to.be.false
+    expect(shallowEqual([], [1])).to.be.false
     expect(shallowEqual(a, c)).to.be.true
     expect(shallowEqual(d, e)).not.to.be.true
     expect(shallowEqual(f, g)).to.be.true

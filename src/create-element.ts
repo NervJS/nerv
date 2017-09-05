@@ -90,23 +90,6 @@ function createElement<T> (
   properties?: T & IProps | null,
   ...children: Array<VirtualChildren | null>
 ) {
-  // let children = EMPTY_CHILDREN
-  // for (let i = 2, len = arguments.length; i < len; i++) {
-  //   const argumentsItem = arguments[i]
-  //   if (Array.isArray(argumentsItem)) {
-  //     argumentsItem.forEach((item) => {
-  //       if (children === EMPTY_CHILDREN) {
-  //         children = [item]
-  //       } else {
-  //         children.push(item)
-  //       }
-  //     })
-  //   } else if (children === EMPTY_CHILDREN) {
-  //     children = [argumentsItem]
-  //   } else {
-  //     children.push(argumentsItem)
-  //   }
-  // }
   let props
   if (isString(tagName)) {
     props = transformPropsForRealTag(tagName, properties as IProps)
