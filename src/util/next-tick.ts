@@ -16,6 +16,7 @@ const canUsePromise = (() => {
 })()
 
 const canUseMutationObserver = (() => {
+  /* istanbul ignore next */
   return 'MutationObserver' in window &&
     (isNative(MutationObserver) ||
     MutationObserver.toString() === '[object MutationObserverConstructor]')
@@ -23,12 +24,12 @@ const canUseMutationObserver = (() => {
 
 function installPromise () {
   const p = Promise.resolve()
-  const logErr = (err) => console.error(err)
   runNextTick = function _runNextTick () {
-    p.then(nextHandler).catch(logErr)
+    p.then(nextHandler)
   }
 }
 
+/* istanbul ignore next */
 function installMutationObserver () {
   let observeNum = 1
   const textNode = document.createTextNode(observeNum as any)
@@ -42,12 +43,14 @@ function installMutationObserver () {
   }
 }
 
+/* istanbul ignore next */
 function installSetTimeout () {
   runNextTick = function _runNextTick () {
     setTimeout(nextHandler, 0)
   }
 }
 
+/* istanbul ignore else */
 if (canUsePromise) {
   installPromise()
 } else if (canUseMutationObserver) {

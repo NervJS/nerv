@@ -16,6 +16,7 @@ export function isBoolean (arg): arg is true | false {
 
 export const isArray = Array.isArray
 
+  /* istanbul ignore next */
 export function getPrototype (obj) {
   /* eslint-disable */
   if (Object.getPrototypeOf) {

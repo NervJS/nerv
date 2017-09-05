@@ -40,7 +40,7 @@ class SimpleMap<Key, Value> {
   has (k) {
     const len = this.cache.length
     if (!len) {
-      return
+      return false
     }
     for (let i = 0; i < len; i++) {
       const item = this.cache[i]
