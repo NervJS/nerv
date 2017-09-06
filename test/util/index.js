@@ -19,3 +19,9 @@ export function sortAttributes (html) {
     return '<' + pre + list.join('') + after
   })
 }
+const comparer = document.createElement('div')
+
+export function innerHTML (HTML) {
+  comparer.innerHTML = HTML
+  return sortAttributes(comparer.innerHTML)
+}

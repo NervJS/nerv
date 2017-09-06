@@ -62,6 +62,13 @@ describe('Component', function () {
     expect(scratch.innerHTML).to.equal('<div foo="bar"></div>')
   })
 
+  it('should callback run once', () => {
+    const C = <div />
+    const f = sinon.spy()
+    render(C, scratch, f)
+    expect(f).to.have.been.calledOnce
+  })
+
   it('should update nested functional components', () => {
     const A = <div>A</div>
     const B = <div>B</div>

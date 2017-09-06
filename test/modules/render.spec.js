@@ -432,6 +432,17 @@ describe('render()', function () {
     expect(scratch.innerHTML, 're-set').to.equal('<div>' + html + '</div>')
   })
 
+  // it('Should not dangerously set innerHTML when previous is same as new one', () => {
+  //   render(<div />, scratch)
+  //   expect(scratch.innerHTML).to.equal(innerHTML('<div></div>'))
+
+  //   render(<div />, scratch)
+  //   expect(scratch.innerHTML).to.equal(innerHTML('<div></div>'))
+
+  //   render(<div dangerouslySetInnerHTML={{ __html: 'change' }} />, scratch)
+  //   expect(scratch.innerHTML).to.equal(innerHTML('<div></div>'))
+  // })
+
   it('should apply proper mutation for VNodes with dangerouslySetInnerHTML attr', () => {
     class Thing extends Component {
       constructor (props, context) {
@@ -630,5 +641,65 @@ describe('render()', function () {
       expect(/1/.test(scratch.innerHTML)).to.equal(true)
       done()
     }, 10)
+  })
+
+  it('Should have correct value on initial render', () => {
+    class TestInputRange extends Component {
+      shouldComponentUpdate () {
+        return false
+      }
+
+      render () {
+        return (
+          <input
+            name='test'
+            defaultValue={260}
+          />
+        )
+      }
+    }
+    render(<TestInputRange />, scratch)
+
+    expect(scratch.firstChild.value).to.equal('260')
+  })
+
+  it('unbubbleEvents should attach to node instaed of document', (done) => {
+    const blur = () => { }
+    const onblur = () => {}
+    class A extends Component {
+      render () {
+        return (
+          <input
+            name='test'
+            onblur={''}
+          />
+        )
+      }
+    }
+
+    render(<A />, scratch)
+    scratch.innerHTML = ''
+    const B = <input name='test' onblur={onblur} blur={blur} />
+    render(<B />, scratch)
+    const input = scratch.querySelector('input')
+    const proto = input.constructor.prototype
+    sinon.spy(proto, 'addEventListener')
+    input.focus()
+    requestAnimationFrame(() => {
+      input.blur()
+      requestAnimationFrame(() => {
+        expect(proto.addEventListener).to.have.been.calledOnce
+          // .and.to.have.been.calledWithExactly('click', sinon.match.func, false)
+        done()
+      })
+    })
+  })
+
+  it('should handle onDoubleClick and onTouchTap', () => {
+    const C = <input onDoubleClick={null} onTouchTap={null} />
+    render(<C />, scratch)
+    const input = document.querySelector('input')
+    expect(input['ondblclick']).to.be.eq(null)
+    expect(input['onclick']).to.be.eq(null)
   })
 })
