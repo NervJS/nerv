@@ -22,7 +22,7 @@ export function mountComponent (vnode: FullComponent) {
   const parentContext = vnode.parentContext
   const componentPrototype = vnode.ComponentType.prototype
   if (componentPrototype && isFunction(componentPrototype.render)) {
-    vnode.component = new vnode.ComponentType(vnode.props, vnode.context)
+    vnode.component = new vnode.ComponentType(vnode.props, parentContext)
   }
   const component = vnode.component
   component.context = vnode.context || parentContext
