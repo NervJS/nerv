@@ -1,6 +1,6 @@
 import createElement from './create-element'
 import { extend, clone } from './util'
-export default function cloneElement (vnode, props, ...children) {
+export default function cloneElement (vnode, props, ...children): any {
   const properties = extend(clone(vnode.props), props)
   if (vnode.namespace) {
     properties.namespace = vnode.namespace
