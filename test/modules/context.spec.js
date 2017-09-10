@@ -167,4 +167,32 @@ describe('context', () => {
     render(<Outer />, scratch)
     expect(scratch.innerHTML).to.equal('<div><strong>12</strong></div>')
   })
+
+  it('Should child component constructor access context', () => {
+    const randomNumber = Math.random()
+    const CONTEXT = { info: randomNumber }
+    class Outer extends Component {
+      getChildContext () {
+        return CONTEXT
+      }
+      render () {
+        return <div><Inner /></div>
+      }
+    }
+
+    class Inner extends Component {
+      constructor (props, context) {
+        super(props, context)
+        expect(context.info).to.be.equal(CONTEXT.info)
+        this.state = {
+          s: null
+        }
+      }
+      render () {
+        return null
+      }
+    }
+
+    render(<Outer />, scratch)
+  })
 })
