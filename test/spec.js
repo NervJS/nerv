@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import './modules/util.spec'
 import './modules/h.spec'
 import './modules/createElement.spec'

@@ -1,8 +1,9 @@
 /** @jsx createElement */
 import { Component, createElement, render } from '../../src'
 import { rerender } from '../../src/render-queue'
-
 import { getAttributes } from '../util'
+
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
 describe('render()', function () {
   this.timeout(20000)
@@ -663,28 +664,50 @@ describe('render()', function () {
     expect(scratch.firstChild.value).to.equal('260')
   })
 
-  it('unbubbleEvents should attach to node instaed of document', () => {
-    const blur = () => { }
-    const onblur = () => {}
-    class A extends Component {
+  it('unbubbleEvents should attach to node instaed of document', async () => {
+    const focus = sinon.spy()
+
+    let doRender = null
+
+    class Outer extends Component {
+      constructor () {
+        super(...arguments)
+        this.state = {
+          count: 0
+        }
+        this.focusHandler = () => {
+          focus(this.state.count)
+        }
+      }
+
+      componentDidMount () {
+        doRender = () => {
+          this.setState({
+            count: ++this.state.count
+          })
+        }
+      }
+
       render () {
-        return (
-          <input
-            name='test'
-            onblur={''}
-          />
-        )
+        return ([
+          <input onFocus={this.focusHandler} id='input' />,
+          <input onFocus={() => ({})} />
+        ][this.state.count])
       }
     }
 
-    render(<A />, scratch)
-    scratch.innerHTML = ''
-    const B = <input name='test' onblur={onblur} blur={blur} />
-    render(<B />, scratch)
-    const input = scratch.querySelector('input')
+    render(<Outer />, scratch)
+    const input = scratch.childNodes[0]
     const proto = input.constructor.prototype
     sinon.spy(proto, 'addEventListener')
+    sinon.spy(proto, 'removeEventListener')
     input.focus()
+    await delay(100)
+    expect(focus).to.have.been.calledOnce
+    proto.addEventListener.reset()
+    focus.reset()
+    doRender()
+    rerender()
   })
 
   it('should handle onDoubleClick and onTouchTap', () => {

@@ -4,7 +4,7 @@ import SimpleMap from '../util/simple-map'
 const canUseNativeMap = (() => {
   return 'Map' in window && isNative(Map)
 })()
-
+  /* istanbul ignore next */
 const MapClass = canUseNativeMap ? Map : SimpleMap as any
 
 const delegatedEvents = new (MapClass as MapConstructor)()
@@ -107,6 +107,7 @@ class EventHook {
     if (unbubbleEvents[eventName] === 1 && delegatedRoots) {
       const event = delegatedRoots.get(node)
       node.removeEventListener(parseEventName(eventName), event.event, false)
+      /* istanbul ignore next */
       const delegatedRootsSize = typeof delegatedRoots.size === 'function'
         ? delegatedRoots.size.bind(delegatedRoots)
         : () => delegatedRoots.size
@@ -115,6 +116,7 @@ class EventHook {
       }
     } else if (delegatedRoots && delegatedRoots.items) {
       const items = delegatedRoots.items
+        /* istanbul ignore next */
       const itemsSize = typeof items.size === 'function' ? items.size.bind(items) : () => items.size
       if (items.delete(node) && itemsSize() === 0) {
         document.removeEventListener(parseEventName(eventName), delegatedRoots.event, false)
@@ -136,7 +138,7 @@ function getEventName (name) {
 function parseEventName (name) {
   return name.substr(2)
 }
-
+  /* istanbul ignore next */
 function stopPropagation () {
   this.cancelBubble = true
   this.stopImmediatePropagation()
@@ -164,11 +166,13 @@ function dispatchEvent (event, target, items, count, eventData) {
 function attachEventToDocument (doc, eventName, delegatedRoots) {
   const eventHandler = (event) => {
     const items = delegatedRoots.items
+    /* istanbul ignore next */
     const count = typeof items.size === 'function' ? items.size() : items.size
     if (count > 0) {
       const eventData = {
         currentTarget: event.target
       }
+      /* istanbul ignore next */
       Object.defineProperties(event, {
         currentTarget: {
           configurable: true,
@@ -194,6 +198,7 @@ function attachEventToNode (node, eventName, delegatedRoots) {
       const eventData = {
         currentTarget: node
       }
+      /* istanbul ignore next */
       Object.defineProperties(event, {
         currentTarget: {
           configurable: true,
