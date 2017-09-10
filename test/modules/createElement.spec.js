@@ -16,4 +16,9 @@ describe('test create real dom tree from virtual dom tree', () => {
     assert.equal(dom.childNodes.length, 4)
     assert.equal(dom.style.width, '10px')
   })
+
+  it('should create document Fragment', () => {
+    const dom = createElement([1, 2, undefined])
+    expect(dom.innerHTML).to.be.equal(undefined)
+  })
 })

@@ -159,7 +159,6 @@ describe('context', () => {
 
     class InnerMost extends Component {
       render () {
-        console.log(this.context)
         const { outer, inner } = this.context
         return <strong>{outer}{inner}</strong>
       }
