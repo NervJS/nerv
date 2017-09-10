@@ -7,7 +7,6 @@
         "loose": true
       }
     ],
-    "es2017",
     "stage-0"
   ],
   "plugins": [
