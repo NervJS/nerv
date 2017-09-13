@@ -4,7 +4,6 @@ const options: {
   afterUpdate: null | Function
   beforeRender: null | Function
   beforeUnmount: null | Function
-  createVNode: null | Function
   findDOMNodeEnabled: boolean
   roots: Object
 } = {
@@ -13,7 +12,6 @@ const options: {
     afterUpdate: null,
     beforeRender: null,
     beforeUnmount: null,
-    createVNode: null,
     findDOMNodeEnabled: false,
     roots: {}
   }

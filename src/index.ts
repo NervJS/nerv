@@ -4,6 +4,7 @@ import { render } from './render'
 import createElement from './create-element'
 import cloneElement from './clone-element'
 import nextTick from './util/next-tick'
+import options from './options'
 
 export {
   Component,
@@ -11,5 +12,6 @@ export {
   createElement,
   cloneElement,
   render,
-  nextTick
+  nextTick,
+  options
 }
