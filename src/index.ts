@@ -6,7 +6,7 @@ import cloneElement from './clone-element'
 import nextTick from './util/next-tick'
 import options from './options'
 
-export {
+module.exports = {
   Component,
   PureComponent,
   createElement,
@@ -15,13 +15,4 @@ export {
   nextTick,
   options
 }
-
-module.exports.default = {
-  Component,
-  PureComponent,
-  createElement,
-  cloneElement,
-  render,
-  nextTick,
-  options
-}
+module.exports.default = module.exports
