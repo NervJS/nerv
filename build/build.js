@@ -53,6 +53,25 @@ const productionConfig = Object.assign({}, baseConfig, { output: Object.assign({
         uglifyPlugin,
         optJSPlugin
     ]) });
+const devtoolConfig = {
+    input: 'devtools/index.ts',
+    output: {
+        sourcemap: true,
+        name: 'nerv-devtools',
+        format: 'umd',
+        file: 'dist/devtools.js'
+    },
+    external: ['nervjs'],
+    globals: {
+        'nervjs': 'Nerv'
+    },
+    plugins: [
+        typescript({
+            check: false,
+            typescript: require('typescript')
+        })
+    ]
+};
 function rollup() {
     const target = process.env.TARGET;
     if (target === 'umd') {
@@ -61,8 +80,11 @@ function rollup() {
     else if (target === 'esm') {
         return esmConfig;
     }
+    else if (target === 'devtools') {
+        return devtoolConfig;
+    }
     else {
-        return [baseConfig, esmConfig, productionConfig];
+        return [baseConfig, esmConfig, productionConfig, devtoolConfig];
     }
 }
 export default rollup();

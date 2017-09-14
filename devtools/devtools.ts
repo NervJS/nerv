@@ -1,20 +1,4 @@
-const options: {
-  afterMount: null | Function
-  afterRender: null | Function
-  afterUpdate: null | Function
-  beforeRender: null | Function
-  beforeUnmount: null | Function
-  findDOMNodeEnabled: boolean
-  roots: Object
-} = {
-    afterMount: null,
-    afterRender: null,
-    afterUpdate: null,
-    beforeRender: null,
-    beforeUnmount: null,
-    findDOMNodeEnabled: false,
-    roots: {}
-  }
+import options from '../src/options'
 
 const instanceMap = new Map()
 
@@ -352,7 +336,7 @@ function visitNonCompositeChildren (component, visitor?) {
   }
 }
 
-function initDevTools () {
+export function initDevTools () {
   /* tslint:disable */
   if (typeof window["__REACT_DEVTOOLS_GLOBAL_HOOK__"] === "undefined") {
     /* tslint:enable */
@@ -395,5 +379,3 @@ function initDevTools () {
     options.beforeUnmount = nextBeforeUnmount
   }
 }
-
-initDevTools()

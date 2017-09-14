@@ -22,6 +22,7 @@
     "build": "npm run clean && rollup -c ./build/build.js",
     "build:esm": "rollup -c ./build/build.js --environment TARGET:esm",
     "build:umd": "rollup -c ./build/build.js --environment TARGET:umd",
+    "build:devtools": "rollup -c ./build/build.js --environment TARGET:devtools",
     "release": "npm run build && npm test && release-it -n -p"
   },
   "lint-staged": {
