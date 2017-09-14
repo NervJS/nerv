@@ -43,7 +43,9 @@ export function mountComponent (vnode: FullComponent) {
   const dom = mountVNode(rendered, getChildContext(component, parentContext))
   component.dom = dom
   component._disable = false
-  options.afterMount(component)
+  if (options.afterMount) {
+    options.afterMount(component)
+  }
   return dom
 }
 
@@ -150,7 +152,9 @@ export function updateComponent (component, isForce = false) {
       component._pendingCallbacks.pop().call(component)
     }
   }
-  options.afterUpdate(component)
+  if (options.afterUpdate) {
+    options.afterUpdate(component)
+  }
   flushMount()
 }
 
@@ -165,7 +169,9 @@ function updateVNode (vnode, lastVNode, lastDom, childContext) {
 
 export function unmountComponent (vnode) {
   const component = vnode.component
-  options.beforeUnmount(component)
+  if (options.beforeUnmount) {
+    options.beforeUnmount(component)
+  }
   if (isFunction(component.componentWillUnmount)) {
     component.componentWillUnmount()
   }
