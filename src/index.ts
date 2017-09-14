@@ -15,3 +15,13 @@ export {
   nextTick,
   options
 }
+
+module.exports.default = {
+  Component,
+  PureComponent,
+  createElement,
+  cloneElement,
+  render,
+  nextTick,
+  options
+}
