@@ -8,6 +8,7 @@ import RefHook from './hooks/ref-hook'
 import { isVNode } from './vdom/vnode/types'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
+import options from './options'
 
 const readyComponents: any[] = []
 
@@ -42,6 +43,7 @@ export function mountComponent (vnode: FullComponent) {
   const dom = mountVNode(rendered, getChildContext(component, parentContext))
   component.dom = dom
   component._disable = false
+  options.afterMount(component)
   return dom
 }
 
@@ -148,6 +150,7 @@ export function updateComponent (component, isForce = false) {
       component._pendingCallbacks.pop().call(component)
     }
   }
+  options.afterUpdate(component)
   flushMount()
 }
 
@@ -162,6 +165,7 @@ function updateVNode (vnode, lastVNode, lastDom, childContext) {
 
 export function unmountComponent (vnode) {
   const component = vnode.component
+  options.beforeUnmount(component)
   if (isFunction(component.componentWillUnmount)) {
     component.componentWillUnmount()
   }
