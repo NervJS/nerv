@@ -81,7 +81,7 @@ const devtoolConfig = {
     sourcemap: true,
     name: 'nerv-devtools',
     format: 'umd',
-    file: 'dist/devtools.js'
+    file: 'devtools.js'
   },
   external: ['nervjs'],
   globals: {

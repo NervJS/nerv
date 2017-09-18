@@ -43,7 +43,9 @@
     "LICENSE",
     "src",
     "dist",
-    "index.js"
+    "index.js",
+    "devtools.js",
+    "devtools.js.map"
   ],
   "repository": {
     "type": "git",

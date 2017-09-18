@@ -40,3 +40,9 @@ coverage
 # Rollup
 .rpt2_cache
 yarn-error.log
+
+# Additional bundles
+/devtools.js
+/devtools.js.map
+/debug.js
+/debug.js.map
