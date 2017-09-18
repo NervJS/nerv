@@ -34,12 +34,7 @@ dist
 .vscode/
 .npm-debug.log
 
-<<<<<<< HEAD
-.rpt2_cache
-
-=======
 # istanbul
->>>>>>> typescript
 coverage
 
 # Rollup
