@@ -43,8 +43,8 @@ export function mountComponent (vnode: FullComponent) {
   const dom = mountVNode(rendered, getChildContext(component, parentContext))
   component.dom = dom
   component._disable = false
-  if (options.afterMount) {
-    options.afterMount(component)
+  if (options.afterMount !== null) {
+    options.afterMount(vnode)
   }
   return dom
 }

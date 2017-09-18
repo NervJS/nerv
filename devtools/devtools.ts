@@ -1,48 +1,73 @@
-import options from '../src/options'
+// tslint:disable-next-line:no-var-requires
+const { options } = require('nervjs')
 
-const instanceMap = new Map()
-
-function findVNodeFromDOM (vnode, dom) {
-  if (!vnode) {
-    const { roots } = options
-    for (const i in roots) {
-      const root = roots[i]
-      const result = findVNodeFromDOM(root, dom)
-      if (result) {
-        return result
-      }
-    }
-  } else {
-    if (vnode.node === dom) {
-      return vnode
-    }
-
-    const children = vnode._renderedChildren
-
-    if (children) {
-      for (const child of children) {
-        if (child) {
-          const result = findVNodeFromDOM(child, dom)
-
-          if (result) {
-            return result
-          }
-        }
-      }
-    }
+/**
+ * Return a ReactElement-compatible object for the current state of a Nerv
+ * component.
+ */
+function createReactElement (component) {
+  return {
+    type: component.__proto__.constructor,
+    key: component.key,
+    ref: null,
+    props: component.props
   }
 }
 
-function getKeyForVNode (vnode) {
-  return vnode.component || vnode.dom
+/**
+ * Create a ReactDOMComponent-compatible object for a given DOM node rendered
+ * by Nerv.
+ *
+ * This implements the subset of the ReactDOMComponent interface that
+ * React DevTools requires in order to display DOM nodes in the inspector with
+ * the correct type and properties.
+ *
+ * @param {Node} node
+ */
+function createReactDOMComponent (node) {
+  const childNodes = node.nodeType === Node.ELEMENT_NODE ?
+    Array.from(node.childNodes) : []
+  const isText = node.nodeType === Node.TEXT_NODE
+
+  return {
+    // --- ReactDOMComponent interface
+    _currentElement: isText ? node.textContent : {
+      type: node.nodeName.toLowerCase(),
+      props: ''
+    },
+    _renderedChildren: childNodes.map((child: any) => {
+      if (child._component) {
+        return updateReactComponent(child._component)
+      }
+      return updateReactComponent(child)
+    }),
+    _stringText: isText ? node.textContent : null,
+
+    // --- Additional properties used by Nerv devtools
+
+    // A flag indicating whether the devtools have been notified about the
+    // existence of this component instance yet.
+    // This is used to send the appropriate notifications when DOM components
+    // are added or updated between composite component updates.
+    _inDevTools: false,
+    node
+  }
 }
 
-function getInstanceFromVNode (vnode) {
-  const key = getKeyForVNode(vnode)
-  return instanceMap.get(key)
-}
 /**
- * Return a ReactCompositeComponent-compatible object for a given Inferno
+ * Return the name of a component created by a `ReactElement`-like object.
+ *
+ * @param {ReactElement} element
+ */
+function typeName (element) {
+  if (typeof element.type === 'function') {
+    return element.type.displayName || element.type.name
+  }
+  return element.type
+}
+
+/**
+ * Return a ReactCompositeComponent-compatible object for a given Nerv
  * component instance.
  *
  * This implements the subset of the ReactCompositeComponent interface that
@@ -52,83 +77,101 @@ function getInstanceFromVNode (vnode) {
  * See https://github.com/facebook/react-devtools/blob/e31ec5825342eda570acfc9bcb43a44258fceb28/backend/getData.js
  */
 function createReactCompositeComponent (vnode) {
-  const type = vnode.type
-  const typeName = type.displayName || type.name
-  const instance = vnode.component
-  const dom = vnode.dom
-  return {
+  const _currentElement = createReactElement(vnode)
+  const node = vnode.dom || vnode.component.dom
+
+  const instance: any = {
+    // --- ReactDOMComponent properties
     getName () {
-      return typeName
+      return typeName(_currentElement)
     },
+    _currentElement: createReactElement(vnode),
+    props: vnode.props,
+    state: vnode.state,
+    forceUpdate: vnode.forceUpdate && vnode.forceUpdate.bind(vnode),
+    setState: vnode.setState && vnode.setState.bind(vnode),
 
-    type,
-    _instance: instance,
-    state: instance.state,
-    node: dom,
-    props: instance.props,
-    _currentElement: {
-      type,
-      key: normalizeKey(vnode.key),
-      props: vnode.props,
-      ref: null
-    },
-    _renderedComponent: updateReactComponent(instance._rendered, dom),
-    forceUpdate: instance.forceUpdate.bind(instance),
-    setState: instance.setState.bind(instance)
+    // --- Additional properties used by Nerv devtools
+    node
   }
+
+  // React DevTools exposes the `_instance` field of the selected item in the
+  // component tree as `$r` in the console.  `_instance` must refer to a
+  // React Component (or compatible) class instance with `props` and `state`
+  // fields and `setState()`, `forceUpdate()` methods.
+  instance._instance = vnode
+
+  // If the root node returned by this component instance's render function
+  // was itself a composite component, there will be a `_component` property
+  // containing the child component instance.
+  // Otherwise, if the render() function returned an HTML/SVG element,
+  // create a ReactDOMComponent-like object for the DOM node itself.
+  instance._renderedComponent = vnode._component
+    ? updateReactComponent(vnode._component)
+    : updateReactComponent(node)
+  return instance
 }
 
-function normalizeKey (key) {
-  if (key && key[0] === '.') {
-    return null
-  }
-}
-
-function createReactDOMComponent (vnode, parentDom) {
-  const { type, props, dom } = vnode
-
-  const isText = type === 'VirtualText'
-  return {
-    _currentElement: isText ? vnode.text + '' : {
-      type,
-      props
-    },
-    _inDevTools: false,
-    _renderedChildren: !isText && normalizeChildren(props.children, dom),
-    _stringText: isText ? vnode.text + '' : null,
-    node: dom || parentDom
-  }
-}
-
-const normalizeChildren = (children, dom) =>
-  children.map((child) =>
-    updateReactComponent(child, dom)
-)
+/**
+ * Map of Component|Node to ReactDOMComponent|ReactCompositeComponent-like
+ * object.
+ *
+ * The same React*Component instance must be used when notifying devtools
+ * about the initial mount of a component and subsequent updates.
+ */
+const instanceMap = new Map()
 
 /**
  * Update (and create if necessary) the ReactDOMComponent|ReactCompositeComponent-like
- * instance for a given Inferno component instance or DOM Node.
+ * instance for a given Nerv component instance or DOM Node.
+ *
+ * @param {Component|Node} componentOrNode
  */
-function updateReactComponent (vnode, parentDom) {
-  if (!vnode) {
-    return null
+function updateReactComponent (componentOrNode) {
+  const newInstance = componentOrNode instanceof Node ?
+    createReactDOMComponent(componentOrNode) :
+    createReactCompositeComponent(componentOrNode)
+  if (instanceMap.has(componentOrNode)) {
+    const inst = instanceMap.get(componentOrNode)
+    Object.assign(inst, newInstance)
+    return inst
   }
-  const newInstance = vnode._instance
-    ? createReactCompositeComponent(vnode)
-    : createReactDOMComponent(vnode, parentDom)
-
-  const oldInstance = getInstanceFromVNode(vnode)
-
-  if (oldInstance) {
-    Object.assign(oldInstance, newInstance)
-    return oldInstance
-  }
-  instanceMap.set(getKeyForVNode(vnode), newInstance)
+  instanceMap.set(getKeyForVNode(componentOrNode), newInstance)
   return newInstance
 }
 
+function nextRootKey (roots) {
+  return '.' + Object.keys(roots).length
+}
+
+function getKeyForVNode (vnode) {
+  return vnode._instance || vnode.component || vnode
+}
+
+function getInstanceFromVNode (vnode) {
+  const key = getKeyForVNode(vnode)
+  return instanceMap.get(key)
+}
+
 /**
- * Create a bridge for exposing Inferno's component tree to React DevTools.
+ * Find all root component instances rendered by Nerv in `node`'s children
+ * and add them to the `roots` map.
+ *
+ * @param {DOMElement} node
+ * @param {[key: string] => ReactDOMComponent|ReactCompositeComponent}
+ */
+function findRoots (node, roots) {
+  Array.from(node.childNodes).forEach((child: any) => {
+    if (child._component) {
+      roots[nextRootKey(roots)] = updateReactComponent(child._component)
+    } else {
+      findRoots(child, roots)
+    }
+  })
+}
+
+/**
+ * Create a bridge for exposing Nerv's component tree to React DevTools.
  *
  * It creates implementations of the interfaces that ReactDOM passes to
  * devtools to enable it to query the component tree and hook into component
@@ -141,106 +184,91 @@ function updateReactComponent (vnode, parentDom) {
  * for how the devtools consumes the resulting objects.
  */
 function createDevToolsBridge () {
+  // The devtools has different paths for interacting with the renderers from
+  // React Native, legacy React DOM and current React DOM.
+  //
+  // Here we emulate the interface for the current React DOM (v15+) lib.
+
+  // ReactDOMComponentTree-like object
   const ComponentTree = {
     getNodeFromInstance (instance) {
       return instance.node
     },
-    getClosestInstanceFromNode (dom) {
-      const vNode = findVNodeFromDOM(null, dom)
-
-      return vNode ? updateReactComponent(vNode, null) : null
+    getClosestInstanceFromNode (node) {
+      while (node && !node._component) {
+        node = node.parentNode
+      }
+      return node ? updateReactComponent(node._component) : null
     }
   }
 
   // Map of root ID (the ID is unimportant) to component instance.
-  // tslint:disable-next-line:no-shadowed-variable
   const roots = {}
-
   findRoots(document.body, roots)
 
-  const Mount = {
+  // ReactMount-like object
+  //
+  // Used by devtools to discover the list of root component instances and get
+  // notified when new root components are rendered.
+  const Mount: any = {
     _instancesByReactRootID: roots,
+
+    // Stub - React DevTools expects to find this method and replace it
+    // with a wrapper in order to observe new root components being added
     // tslint:disable-next-line:no-empty
-    _renderNewRootComponent (instance) { }
+    _renderNewRootComponent (/* instance, ... */) { }
   }
 
-  const Reconciler = {
+  // ReactReconciler-like object
+  const Reconciler: any = {
+    // Stubs - React DevTools expects to find these methods and replace them
+    // with wrappers in order to observe components being mounted, updated and
+    // unmounted
     // tslint:disable-next-line:no-empty
-    mountComponent (instance) { },
+    mountComponent (/* instance, ... */) { },
     // tslint:disable-next-line:no-empty
-    performUpdateIfNecessary (instance) { },
+    performUpdateIfNecessary (/* instance, ... */) { },
     // tslint:disable-next-line:no-empty
-    receiveComponent (instance) { },
+    receiveComponent (/* instance, ... */) { },
     // tslint:disable-next-line:no-empty
-    unmountComponent (instance) { }
+    unmountComponent (/* instance, ... */) { }
   }
-
-  const queuedMountComponents = new Map()
-  const queuedReceiveComponents = new Map()
-  const queuedUnmountComponents = new Map()
-
-  const queueUpdate = (updater, map, component) => {
-    if (!map.has(component)) {
-      map.set(component, true)
-      requestAnimationFrame(() => {
-        updater(component)
-        map.delete(component)
-      })
-    }
-  }
-
-  const queueMountComponent = (component) =>
-    queueUpdate(Reconciler.mountComponent, queuedMountComponents, component)
-  const queueReceiveComponent = (component) =>
-    queueUpdate(
-      Reconciler.receiveComponent,
-      queuedReceiveComponents,
-      component
-    )
-  const queueUnmountComponent = (component) =>
-    queueUpdate(
-      Reconciler.unmountComponent,
-      queuedUnmountComponents,
-      component
-    )
 
   /** Notify devtools that a new component instance has been mounted into the DOM. */
-  const componentAdded = (vNode) => {
-    const instance = updateReactComponent(vNode, null)
-    if (isRootVNode(vNode)) {
+  const componentAdded = ({ component, _owner }) => {
+    const instance = updateReactComponent(component)
+    // if is root component
+    if (_owner === null) {
       instance._rootID = nextRootKey(roots)
       roots[instance._rootID] = instance
       Mount._renderNewRootComponent(instance)
     }
     visitNonCompositeChildren(instance, (childInst) => {
-      if (childInst) {
-        childInst._inDevTools = true
-        queueMountComponent(childInst)
-      }
+      childInst._inDevTools = true
+      Reconciler.mountComponent(childInst)
     })
-    queueMountComponent(instance)
+    Reconciler.mountComponent(instance)
   }
 
   /** Notify devtools that a component has been updated with new props/state. */
-  const componentUpdated = (vNode) => {
+  const componentUpdated = (component) => {
     const prevRenderedChildren: any[] = []
-
-    visitNonCompositeChildren(getInstanceFromVNode(vNode), (childInst) => {
+    visitNonCompositeChildren(getInstanceFromVNode(component), (childInst) => {
       prevRenderedChildren.push(childInst)
     })
 
     // Notify devtools about updates to this component and any non-composite
     // children
-    const instance = updateReactComponent(vNode, null)
-    queueReceiveComponent(instance)
+    const instance = updateReactComponent(component)
+    Reconciler.receiveComponent(instance)
     visitNonCompositeChildren(instance, (childInst) => {
       if (!childInst._inDevTools) {
         // New DOM child component
         childInst._inDevTools = true
-        queueMountComponent(childInst)
+        Reconciler.mountComponent(childInst)
       } else {
         // Updated DOM child component
-        queueReceiveComponent(childInst)
+        Reconciler.receiveComponent(childInst)
       }
     })
 
@@ -249,74 +277,44 @@ function createDevToolsBridge () {
     // the devtools
     prevRenderedChildren.forEach((childInst) => {
       if (!document.body.contains(childInst.node)) {
-        deleteInstanceForVNode(childInst.vNode)
-        queueUnmountComponent(childInst)
+        instanceMap.delete(childInst.node)
+        Reconciler.unmountComponent(childInst)
       }
     })
   }
 
   /** Notify devtools that a component has been unmounted from the DOM. */
-  const componentRemoved = (vNode) => {
-    const instance = updateReactComponent(vNode, null)
-
+  const componentRemoved = (component) => {
+    const instance = updateReactComponent(component)
     visitNonCompositeChildren((childInst) => {
-      deleteInstanceForVNode(childInst.vNode)
-      queueUnmountComponent(childInst)
+      instanceMap.delete(childInst.node)
+      Reconciler.unmountComponent(childInst)
     })
-    queueUnmountComponent(instance)
-    deleteInstanceForVNode(vNode)
+    Reconciler.unmountComponent(instance)
+    instanceMap.delete(component)
     if (instance._rootID) {
       delete roots[instance._rootID]
     }
   }
 
   return {
+    componentAdded,
+    componentUpdated,
+    componentRemoved,
+
+    // Interfaces passed to devtools via __REACT_DEVTOOLS_GLOBAL_HOOK__.inject()
     ComponentTree,
     Mount,
-    Reconciler,
-
-    componentAdded,
-    componentRemoved,
-    componentUpdated
+    Reconciler
   }
-}
-
-function deleteInstanceForVNode (vNode) {
-  const key = getKeyForVNode(vNode)
-  instanceMap.delete(key)
-}
-
-function isRootVNode (vnode) {
-  const { roots } = options
-  for (const i in roots) {
-    if (roots[i] === vnode) {
-      return true
-    }
-  }
-  return false
-}
-
-function nextRootKey (roots) {
-  return '.' + Object.keys(roots).length
-}
-
-/**
- * Find all root component instances rendered by Inferno in `node`'s children
- * and add them to the `roots` map.
- */
-function findRoots (node, roots) {
-  [...node.childNodes].forEach((child) => {
-    if (child.component) {
-      roots[nextRootKey(roots)] = updateReactComponent(child.component, null)
-    } else {
-      findRoots(child, roots)
-    }
-  })
 }
 
 /**
  * Visit all child instances of a ReactCompositeComponent-like object that are
  * not composite components (ie. they represent DOM elements or text)
+ *
+ * @param {Component} component
+ * @param {(Component) => void} visitor
  */
 function visitNonCompositeChildren (component, visitor?) {
   if (component._renderedComponent) {
@@ -326,53 +324,62 @@ function visitNonCompositeChildren (component, visitor?) {
     }
   } else if (component._renderedChildren) {
     component._renderedChildren.forEach((child) => {
-      if (child) {
-        visitor(child)
-        if (!child._component) {
-          visitNonCompositeChildren(child, visitor)
-        }
+      visitor(child)
+      if (!child._component) {
+        visitNonCompositeChildren(child, visitor)
       }
     })
   }
 }
 
+/**
+ * Create a bridge between the Nerv component tree and React's dev tools
+ * and register it.
+ *
+ * After this function is called, the React Dev Tools should be able to detect
+ * "React" on the page and show the component tree.
+ *
+ * This function hooks into Nerv VNode creation in order to expose functional
+ * components correctly, so it should be called before the root component(s)
+ * are rendered.
+ *
+ * Returns a cleanup function which unregisters the hooks.
+ */
 export function initDevTools () {
-  /* tslint:disable */
-  if (typeof window["__REACT_DEVTOOLS_GLOBAL_HOOK__"] === "undefined") {
-    /* tslint:enable */
+  if (typeof window['__REACT_DEVTOOLS_GLOBAL_HOOK__'] === 'undefined') {
     // React DevTools are not installed
     return
   }
-  // Notify devtools when preact components are mounted, updated or unmounted
+
+  // Notify devtools when Nerv components are mounted, updated or unmounted
   const bridge = createDevToolsBridge()
+
   const nextAfterMount = options.afterMount
-
-  options.afterMount = (vnode) => {
-    bridge.componentAdded(vnode)
+  options.afterMount = (component) => {
+    bridge.componentAdded(component)
     if (nextAfterMount) {
-      nextAfterMount(vnode)
+      nextAfterMount(component)
     }
   }
+
   const nextAfterUpdate = options.afterUpdate
-
-  options.afterUpdate = (vnode) => {
-    bridge.componentUpdated(vnode)
+  options.afterUpdate = (component) => {
+    bridge.componentUpdated(component)
     if (nextAfterUpdate) {
-      nextAfterUpdate(vnode)
+      nextAfterUpdate(component)
     }
   }
-  const nextBeforeUnmount = options.beforeUnmount
 
-  options.beforeUnmount = (vnode) => {
-    bridge.componentRemoved(vnode)
+  const nextBeforeUnmount = options.beforeUnmount
+  options.beforeUnmount = (component) => {
+    bridge.componentRemoved(component)
     if (nextBeforeUnmount) {
-      nextBeforeUnmount(vnode)
+      nextBeforeUnmount(component)
     }
   }
+
   // Notify devtools about this instance of "React"
-  /* tslint:disable */
-  window["__REACT_DEVTOOLS_GLOBAL_HOOK__"].inject(bridge)
-  /* tslint:enable */
+  window['__REACT_DEVTOOLS_GLOBAL_HOOK__'].inject(bridge)
   return () => {
     options.afterMount = nextAfterMount
     options.afterUpdate = nextAfterUpdate
