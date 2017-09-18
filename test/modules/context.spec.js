@@ -1,7 +1,7 @@
 /** @jsx createElement */
-import { Component, createElement, render } from '../../src'
-import createVText from '#/create-vtext'
-import { rerender } from '../../src/lib/render-queue'
+import { Component, createElement, render } from '../../src/index.ts'
+import createVText from '../../src/vdom/create-vtext'
+import { rerender } from '../../src/render-queue'
 
 import { CHILDREN_MATCHER } from '../util'
 
@@ -159,7 +159,6 @@ describe('context', () => {
 
     class InnerMost extends Component {
       render () {
-        console.log(this.context)
         const { outer, inner } = this.context
         return <strong>{outer}{inner}</strong>
       }
@@ -167,5 +166,33 @@ describe('context', () => {
 
     render(<Outer />, scratch)
     expect(scratch.innerHTML).to.equal('<div><strong>12</strong></div>')
+  })
+
+  it('Should child component constructor access context', () => {
+    const randomNumber = Math.random()
+    const CONTEXT = { info: randomNumber }
+    class Outer extends Component {
+      getChildContext () {
+        return CONTEXT
+      }
+      render () {
+        return <div><Inner /></div>
+      }
+    }
+
+    class Inner extends Component {
+      constructor (props, context) {
+        super(props, context)
+        expect(context.info).to.be.equal(CONTEXT.info)
+        this.state = {
+          s: null
+        }
+      }
+      render () {
+        return null
+      }
+    }
+
+    render(<Outer />, scratch)
   })
 })

@@ -1,7 +1,7 @@
 /** @jsx createElement */
 import { Component, createElement, render, cloneElement, PureComponent } from '../../src'
-import createVText from '#/create-vtext'
-import { rerender } from '../../src/lib/render-queue'
+import createVText from '../../src/vdom/create-vtext'
+import { rerender } from '../../src/render-queue'
 
 import { EMPTY_CHILDREN, getAttributes, sortAttributes } from '../util'
 
@@ -60,6 +60,13 @@ describe('Component', function () {
         tagName: 'div'
       }))
     expect(scratch.innerHTML).to.equal('<div foo="bar"></div>')
+  })
+
+  it('should callback run once', () => {
+    const C = <div />
+    const f = sinon.spy()
+    render(C, scratch, f)
+    expect(f).to.have.been.calledOnce
   })
 
   it('should update nested functional components', () => {
@@ -514,6 +521,37 @@ describe('Component', function () {
       rerender()
       expect(s.dom.innerHTML).to.equal('7')
       expect(App.prototype.componentWillUpdate).not.to.have.been.called
+    })
+
+    it('render child PureComponent', () => {
+      class C extends PureComponent {
+        constructor (props) {
+          super(props)
+          this.state = {
+            a: 7
+          }
+        }
+        componentWillUpdate () {}
+        render () {
+          return <div>{this.state.a}</div>
+        }
+      }
+
+      class App extends Component {
+        render () {
+          return <C />
+        }
+      }
+      let c
+      sinon.spy(C.prototype, 'componentWillUpdate')
+      const s = render(<App ref={node => (c = node)} />, scratch)
+      expect(s.dom.innerHTML).to.equal('7')
+      c.setState({
+        xx: 1
+      })
+      c.forceUpdate()
+      expect(s.dom.innerHTML).to.equal('7')
+      expect(C.prototype.componentWillUpdate).not.to.have.been.called
     })
   })
 

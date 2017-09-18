@@ -1,7 +1,12 @@
-import * as Util from '../../src/lib/util'
-import shallowEqual from '../../src/lib/util/shallow-equal'
+import * as Util from '../../src/util/index'
+import shallowEqual from '../../src/util/shallow-equal'
+import nextTick from '../../src/util/next-tick'
+import SimpleMap from '../../src/util/simple-map'
 
 describe('Util', () => {
+  const Proto = () => (this.a = 'a')
+  Proto.prototype.b = 'b'
+
   it('types', () => {
     const a = 1
     const b = 'b'
@@ -23,6 +28,7 @@ describe('Util', () => {
     expect(Util.isEmptyObject({})).to.be.true
     expect(Util.isEmptyObject(null)).to.be.true
     expect(Util.isEmptyObject(undefined)).to.be.true
+    expect(Util.isEmptyObject(new Proto())).to.be.true
   })
 
   it('isNative', () => {
@@ -51,6 +57,9 @@ describe('Util', () => {
     b.b = 10
     expect(b).to.have.property('b', 10)
     expect(a).to.have.property('b', 2)
+    const f = new Proto()
+    Util.extend({}, f)
+    expect(f).to.not.haveOwnProperty('b')
   })
 
   it('shallowEqual', () => {
@@ -63,8 +72,54 @@ describe('Util', () => {
     const f = {a: 1, v: arr1}
     const g = {a: 1, v: arr1}
     expect(shallowEqual(a, b)).not.to.be.true
+    expect(shallowEqual(null, 110)).to.be.false
+    expect(shallowEqual(+0, -0)).to.be.true
+    expect(shallowEqual([], [1])).to.be.false
     expect(shallowEqual(a, c)).to.be.true
     expect(shallowEqual(d, e)).not.to.be.true
     expect(shallowEqual(f, g)).to.be.true
+  })
+
+  describe('nextTick', () => {
+    it('accepts a callback', done => {
+      nextTick(done)
+    })
+
+    it('returns a Promise when provided no callback', done => {
+      nextTick().then(done)
+    })
+
+    it('throw error in callback can carry on', done => {
+      nextTick(() => {
+        throw new Error('e')
+      })
+      done()
+    })
+  })
+
+  describe('simpleMap', () => {
+    const map = new SimpleMap()
+    it('get and set', done => {
+      expect(map.clear()).to.be.undefined
+      expect(map.get('a')).to.be.undefined
+      expect(map.has('a')).to.be.false
+      map.set('a', 1)
+      expect(map.has('b')).to.be.false
+      map.set('a', 1)
+      expect(map.get('a')).to.be.equals(1)
+      map.set('b', 2)
+      expect(map.has('b')).to.be.true
+      expect(map.get('b')).to.be.equals(2)
+      expect(map.delete('c')).to.be.false
+      expect(map.delete('b')).to.be.true
+      map.clear()
+      expect(map.size()).to.be.equals(0)
+      done()
+      // expect(map).to.haveOwnProperty('get')
+      // expect(map).to.haveOwnProperty('has')
+      // expect(map).to.haveOwnProperty('delete')
+      // expect(map).to.haveOwnProperty('clear')
+      // expect(map).to.haveOwnProperty('size')
+    })
   })
 })

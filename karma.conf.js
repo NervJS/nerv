@@ -3,12 +3,10 @@
 
 const path = require('path')
 const webpack = require('webpack')
-
 const coverage = String(process.env.COVERAGE) !== 'false'
 const ci = String(process.env.CI).match(/^(1|true)$/gi)
 const realBrowser = String(process.env.BROWSER).match(/^(1|true)$/gi)
 const sauceLabs = realBrowser && ci
-
 const sauceLabsLaunchers = {
   sl_win_chrome: {
     base: 'SauceLabs',
@@ -161,7 +159,10 @@ module.exports = function (config) {
     concurrency: 2,
 
     webpack: {
-      devtool: 'inline-source-map',
+      // devtool: 'inline-source-map',
+      resolve: {
+        extensions: ['.js', '.ts']
+      },
       module: {
         rules: [
           {
@@ -170,9 +171,22 @@ module.exports = function (config) {
             loader: 'babel-loader',
             exclude: /node_modules/
           },
+          {
+            test: /\.ts$/,
+            loader: 'ts-loader',
+            options: {
+              preserveComments: coverage,
+              produceSourceMap: coverage,
+              transpileOnly: true,
+              compilerOptions: {
+                target: 'es5',
+                module: 'commonjs'
+              }
+            }
+          },
           coverage ? {
             enforce: 'post',
-            test: /\.js$/,
+            test: /\.ts$/,
             use: {
               loader: 'istanbul-instrumenter-loader',
               options: { esModules: true }

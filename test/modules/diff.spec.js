@@ -1,8 +1,8 @@
 import { assert } from 'chai'
 
-import h from '#/h'
-import diff from '#/diff'
-import VPatch from '#/vpatch'
+import h from '../../src/vdom/h'
+import diff from '../../src/vdom/diff'
+import VPatch from '../../src/vdom/vpatch'
 
 describe('test dom diff algorithm', () => {
   it('test diff two virtual dom tree simply', () => {

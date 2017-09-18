@@ -1,6 +1,6 @@
 /** @jsx createElement */
-import { createElement, Component } from '../../src'
-import createVText from '#/create-vtext'
+import { createElement, Component } from '../../src/index'
+import createVText from '../../src/vdom/create-vtext'
 
 describe('vtypes', () => {
   let scratch

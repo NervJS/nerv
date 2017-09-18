@@ -1,7 +1,6 @@
 /** @jsx createElement */
 import { Component, createElement, render } from '../../src'
-import { rerender } from '../../src/lib/render-queue'
-
+import { rerender } from '../../src/render-queue'
 import { getAttributes } from '../util'
 
 describe('render()', function () {
@@ -432,6 +431,17 @@ describe('render()', function () {
     expect(scratch.innerHTML, 're-set').to.equal('<div>' + html + '</div>')
   })
 
+  // it('Should not dangerously set innerHTML when previous is same as new one', () => {
+  //   render(<div />, scratch)
+  //   expect(scratch.innerHTML).to.equal(innerHTML('<div></div>'))
+
+  //   render(<div />, scratch)
+  //   expect(scratch.innerHTML).to.equal(innerHTML('<div></div>'))
+
+  //   render(<div dangerouslySetInnerHTML={{ __html: 'change' }} />, scratch)
+  //   expect(scratch.innerHTML).to.equal(innerHTML('<div></div>'))
+  // })
+
   it('should apply proper mutation for VNodes with dangerouslySetInnerHTML attr', () => {
     class Thing extends Component {
       constructor (props, context) {
@@ -630,5 +640,81 @@ describe('render()', function () {
       expect(/1/.test(scratch.innerHTML)).to.equal(true)
       done()
     }, 10)
+  })
+
+  it('Should have correct value on initial render', () => {
+    class TestInputRange extends Component {
+      shouldComponentUpdate () {
+        return false
+      }
+
+      render () {
+        return (
+          <input
+            name='test'
+            defaultValue={260}
+          />
+        )
+      }
+    }
+    render(<TestInputRange />, scratch)
+
+    expect(scratch.firstChild.value).to.equal('260')
+  })
+
+  it('unbubbleEvents should attach to node instaed of document', (done) => {
+    const focus = sinon.spy()
+
+    let doRender = null
+
+    class Outer extends Component {
+      constructor () {
+        super(...arguments)
+        this.state = {
+          count: 0
+        }
+        this.focusHandler = () => {
+          focus(this.state.count)
+        }
+      }
+
+      componentDidMount () {
+        doRender = () => {
+          this.setState({
+            count: ++this.state.count
+          })
+        }
+      }
+
+      render () {
+        return ([
+          <input onFocus={this.focusHandler} id='input' />,
+          <input onFocus={() => ({})} />
+        ][this.state.count])
+      }
+    }
+
+    render(<Outer />, scratch)
+    const input = scratch.childNodes[0]
+    const proto = input.constructor.prototype
+    sinon.spy(proto, 'addEventListener')
+    sinon.spy(proto, 'removeEventListener')
+    input.focus()
+    setTimeout(() => {
+      expect(focus).to.have.been.calledOnce
+      proto.addEventListener.reset()
+      focus.reset()
+      doRender()
+      rerender()
+      done()
+    }, 100)
+  })
+
+  it('should handle onDoubleClick and onTouchTap', () => {
+    const C = <input onDoubleClick={null} onTouchTap={null} />
+    render(<C />, scratch)
+    const input = document.querySelector('input')
+    expect(input['ondblclick']).to.be.eq(null)
+    expect(input['onclick']).to.be.eq(null)
   })
 })

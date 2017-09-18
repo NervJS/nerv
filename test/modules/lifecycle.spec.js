@@ -1,6 +1,6 @@
 /** @jsx createElement */
 import { Component, createElement, render } from '../../src'
-import { rerender } from '../../src/lib/render-queue'
+import { rerender } from '../../src/render-queue'
 
 import { EMPTY_CHILDREN } from '../util'
 

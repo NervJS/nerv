@@ -1,7 +1,7 @@
 import { assert } from 'chai'
 
-import h from '#/h'
-import createElement from '#/create-element'
+import h from '../../src/vdom/h'
+import createElement from '../../src/vdom/create-element'
 
 describe('test create real dom tree from virtual dom tree', () => {
   it('test dom node', () => {
@@ -15,5 +15,10 @@ describe('test create real dom tree from virtual dom tree', () => {
     assert.equal(dom.tagName, 'DIV')
     assert.equal(dom.childNodes.length, 4)
     assert.equal(dom.style.width, '10px')
+  })
+
+  it('should create document Fragment', () => {
+    const dom = createElement([1, 2, undefined])
+    expect(dom.innerHTML).to.be.equal(undefined)
   })
 })
