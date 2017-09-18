@@ -12,7 +12,8 @@
     "noUnusedLocals": true,
     "strictNullChecks": true,
     "sourceMap": true,
-    "declaration": true
+    "declaration": true,
+    "declarationDir": "dist"
   },
   "filesGlob": [
     "src/**/*.ts",

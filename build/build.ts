@@ -1,5 +1,5 @@
 // tslint:disable:no-var-requires
-const typescript = require('rollup-plugin-typescript2')
+import typescript from 'rollup-plugin-typescript'
 const resolve = require('rollup-plugin-node-resolve')
 const bublePlugin = require('rollup-plugin-buble')
 const uglify = require('rollup-plugin-uglify')
@@ -47,7 +47,8 @@ const baseConfig = {
     resolve(),
     typescript({
       include: 'src/**',
-      typescript: require('typescript')
+      typescript: require('typescript'),
+      useTsconfigDeclarationDir: true
     }),
     bublePlugin()
   ]
@@ -89,8 +90,9 @@ const devtoolConfig = {
   },
   plugins: [
     typescript({
-      check: false,
-      typescript: require('typescript')
+      include: 'devtools/**',
+      typescript: require('typescript'),
+      declaration: false
     })
   ]
 }
