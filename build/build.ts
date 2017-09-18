@@ -47,8 +47,7 @@ const baseConfig = {
     resolve(),
     typescript({
       include: 'src/**',
-      typescript: require('typescript'),
-      useTsconfigDeclarationDir: true
+      typescript: require('typescript')
     }),
     bublePlugin()
   ]

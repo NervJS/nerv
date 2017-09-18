@@ -2,3 +2,4 @@ dist/*
 benchmarks/*
 lib/*
 build/build.js
+devtools.js
