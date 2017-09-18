@@ -1,5 +1,5 @@
 // tslint:disable:no-var-requires
-import typescript from 'rollup-plugin-typescript'
+const typescript = require('rollup-plugin-typescript')
 const resolve = require('rollup-plugin-node-resolve')
 const bublePlugin = require('rollup-plugin-buble')
 const uglify = require('rollup-plugin-uglify')
