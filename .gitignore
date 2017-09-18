@@ -32,4 +32,6 @@ dist
 .vscode/
 .npm-debug.log
 
+.rpt2_cache
+
 coverage
