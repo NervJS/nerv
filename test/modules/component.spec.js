@@ -352,7 +352,7 @@ describe('Component', function () {
       ), scratch)
     })
 
-    it.only('defaultProps should respect null but ignore undefined', () => {
+    it('defaultProps should respect null but ignore undefined', () => {
       class Text extends Component {
         render () {
           const { text } = this.props
