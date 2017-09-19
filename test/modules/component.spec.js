@@ -351,6 +351,21 @@ describe('Component', function () {
         </div>
       ), scratch)
     })
+
+    it.only('defaultProps should respect null but ignore undefined', () => {
+      class Text extends Component {
+        render () {
+          const { text } = this.props
+          return <div>{ text === null ? 'null' : text }</div>
+        }
+      }
+      Text.defaultProps = {
+        text: 'aaa'
+      }
+      const dom = render(<div><Text text={null} /> <Text /></div>, scratch)
+      expect(dom.firstChild.textContent).to.equal('null')
+      expect(dom.lastChild.textContent).to.equal('aaa')
+    })
   })
 
   describe('setState', () => {
