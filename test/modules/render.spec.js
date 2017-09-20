@@ -699,15 +699,18 @@ describe('render()', function () {
     const proto = input.constructor.prototype
     sinon.spy(proto, 'addEventListener')
     sinon.spy(proto, 'removeEventListener')
-    input.focus()
+    // https://stackoverflow.com/questions/1096436/document-getelementbyidid-focus-is-not-working-for-firefox-or-chrome
     setTimeout(() => {
-      expect(focus).to.have.been.calledOnce
-      proto.addEventListener.reset()
-      focus.reset()
-      doRender()
-      rerender()
-      done()
-    }, 100)
+      input.focus()
+      setTimeout(() => {
+        expect(focus).to.have.been.calledOnce
+        proto.addEventListener.reset()
+        focus.reset()
+        doRender()
+        rerender()
+        done()
+      }, 100)
+    }, 0)
   })
 
   it('should handle onDoubleClick and onTouchTap', () => {

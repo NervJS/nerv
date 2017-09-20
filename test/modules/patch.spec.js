@@ -61,7 +61,8 @@ describe('patch', () => {
       )
     })
     inst.forceUpdate()
-    expect(scratch.innerHTML).to.be.equal('<div><div test="1" accesskey="" style="color: green; margin: 10px; padding: 10px;">1</div><li>a</li><li>b</li></div>')
+    const style = getComputedStyle(scratch.firstChild.firstChild)
+    expect(style.color).to.be.includes('128')
   })
 
   it('should handle order', () => {
