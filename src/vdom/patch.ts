@@ -5,14 +5,14 @@ import VPatch from './vpatch'
 import { isFunction, isString, isObject, getPrototype } from '../util'
 import shallowEqual from '../util/shallow-equal'
 import domIndex from './dom-index'
-import { isWidget, isHook } from './vnode/types'
+import { isWidget, isHook, isStateLess, isVNode } from './vnode/types'
 import createElement from './create-element'
 import VText from './vnode/vtext'
 import { IProps, VirtualNode, IVNode, PatchOrder } from '../types'
 import Widget from '../full-component'
 import Stateless from '../stateless-component'
 
-function patch (rootNode: Element, patches) {
+function patch (rootNode: Element, patches, parentContext?: any) {
   const patchIndices = getPatchIndices(patches)
   if (patchIndices.length === 0) {
     return rootNode
@@ -20,12 +20,12 @@ function patch (rootNode: Element, patches) {
   const oldTree = patches.old
   const nodes = domIndex(rootNode, oldTree, patchIndices)
   patchIndices.forEach((index) => {
-    rootNode = applyPatch(rootNode, nodes[index], patches[index])
+    rootNode = applyPatch(rootNode, nodes[index], patches[index], parentContext)
   })
   return rootNode
 }
 
-function applyPatch (rootNode: Element, domNode: Element, patch: VirtualNode | VirtualNode[]) {
+function applyPatch (rootNode: Element, domNode: Element, patch: VirtualNode | VirtualNode[], parentContext?: any) {
   if (!domNode) {
     return rootNode
   }
@@ -34,7 +34,7 @@ function applyPatch (rootNode: Element, domNode: Element, patch: VirtualNode | V
     patch = [patch]
   }
   (patch as VirtualNode[]).forEach((patchItem) => {
-    newNode = patchSingle(domNode, patchItem as any)
+    newNode = patchSingle(domNode, patchItem as any, parentContext)
     if (domNode === rootNode) {
       rootNode = newNode
     }
@@ -42,7 +42,7 @@ function applyPatch (rootNode: Element, domNode: Element, patch: VirtualNode | V
   return rootNode
 }
 
-function patchSingle (domNode: Element, vpatch: VPatch) {
+function patchSingle (domNode: Element, vpatch: VPatch, parentContext?: any) {
   const type = vpatch.type
   const oldVNode = vpatch.vnode
   const patchObj = vpatch.patch
@@ -53,7 +53,7 @@ function patchSingle (domNode: Element, vpatch: VPatch) {
     case VPatch.VNODE:
       return patchVNode(domNode, patchObj as IVNode)
     case VPatch.INSERT:
-      return patchInsert(domNode, patchObj as VirtualNode)
+      return patchInsert(domNode, patchObj as VirtualNode, parentContext)
     case VPatch.WIDGET:
       return patchWidget(domNode, oldVNode as Widget, patchObj as Widget)
     case VPatch.STATELESS:
@@ -97,7 +97,10 @@ function patchVNode (domNode: Element, patch: VirtualNode) {
   return newNode
 }
 
-function patchInsert (parentNode: Element, vnode: VirtualNode) {
+function patchInsert (parentNode: Element, vnode: VirtualNode, parentContext?: any) {
+  if (isWidget(vnode) || isVNode(vnode) || isStateLess(vnode)) {
+    vnode.parentContext = parentContext
+  }
   const newNode = createElement(vnode)
   if (parentNode && newNode) {
     parentNode.appendChild(newNode)
@@ -107,6 +110,7 @@ function patchInsert (parentNode: Element, vnode: VirtualNode) {
 
 function patchWidget (domNode: Element, vnode: Widget, patch: Widget) {
   const isUpdate = isUpdateWidget(vnode, patch)
+  patch.parentContext = vnode.parentContext
   const newNode = isUpdate
     ? (patch as Widget).update(vnode, domNode) || domNode
     : createElement(patch)

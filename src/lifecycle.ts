@@ -26,7 +26,6 @@ export function mountComponent (vnode: FullComponent) {
     vnode.component = new vnode.ComponentType(vnode.props, parentContext)
   }
   const component = vnode.component
-  component.context = vnode.context || parentContext
   if (isFunction(component.componentWillMount)) {
     component.componentWillMount()
     component.state = component.getState()
@@ -160,10 +159,10 @@ export function updateComponent (component, isForce = false) {
 
 function updateVNode (vnode, lastVNode, lastDom, childContext) {
   if (isObject(vnode)) {
-    vnode.context = childContext
+    vnode.parentContext = childContext
   }
   const patches = diff(lastVNode, vnode)
-  const domNode = patch(lastDom, patches)
+  const domNode = patch(lastDom, patches, childContext)
   return domNode
 }
 

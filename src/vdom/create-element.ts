@@ -39,7 +39,7 @@ function createElement (vnode: VirtualNode, isSvg?: boolean): Element | Text | C
     if (children.length) {
       children.forEach((child) => {
         if (child !== undefined && child !== null && (child as any) !== false && domNode.appendChild) {
-          if (isWidget(child)) {
+          if (isWidget(child) || isVNode(child) || isStateLess(child)) {
             child.parentContext = vnode.parentContext || {}
           }
           const childNode = createElement(child, isSvg)
