@@ -175,12 +175,12 @@ module.exports = function (config) {
             test: /\.ts$/,
             loader: 'ts-loader',
             options: {
-              preserveComments: coverage,
               produceSourceMap: coverage,
               transpileOnly: true,
               compilerOptions: {
                 target: 'es5',
-                module: 'commonjs'
+                module: 'commonjs',
+                preserveComments: coverage
               }
             }
           },
