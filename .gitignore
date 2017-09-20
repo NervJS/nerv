@@ -46,3 +46,4 @@ yarn-error.log
 /devtools.js.map
 /debug.js
 /debug.js.map
+devtools/*.d.ts
