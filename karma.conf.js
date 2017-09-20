@@ -175,7 +175,6 @@ module.exports = function (config) {
             test: /\.ts$/,
             loader: 'ts-loader',
             options: {
-              produceSourceMap: coverage,
               transpileOnly: true,
               compilerOptions: {
                 target: 'es5',
