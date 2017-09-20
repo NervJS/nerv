@@ -179,8 +179,7 @@ module.exports = function (config) {
               transpileOnly: true,
               compilerOptions: {
                 target: 'es5',
-                module: 'commonjs',
-                preserveComments: coverage
+                module: 'commonjs'
               }
             }
           },
