@@ -1,6 +1,7 @@
 import { isVNode, isVText, isWidget, isStateLess, isHook } from './vnode/types'
 import { isObject, isString, isNumber, isFunction } from '../util'
 import { VirtualNode, IProps } from '../types'
+import options from '../options'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
@@ -32,6 +33,9 @@ function createElement (vnode: VirtualNode, isSvg?: boolean): Element | Text | C
     const domNode = (vnode.namespace === null) ? doc.createElement(vnode.tagName)
       : doc.createElementNS ? doc.createElementNS(vnode.namespace, vnode.tagName) : doc.createElement(vnode.tagName)
     setProps(domNode, vnode.props, isSvg)
+    if (options.debug) { // for devtools
+      (domNode as any)._props = vnode.props
+    }
     if (isSvg) {
       vnode.isSvg = isSvg
     }

@@ -2,12 +2,14 @@ const options: {
   afterMount: null | Function
   afterUpdate: null | Function
   beforeUnmount: null | Function
-  roots: Object
+  roots: Object,
+  debug: boolean
 } = {
     afterMount: null,
     afterUpdate: null,
     beforeUnmount: null,
-    roots: {}
+    roots: {},
+    debug: false
   }
 
 export default options

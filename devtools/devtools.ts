@@ -1,6 +1,8 @@
 // tslint:disable-next-line:no-var-requires
 const { options } = require('nervjs')
 
+options.debug = true
+
 /**
  * Return a ReactElement-compatible object for the current state of a Nerv
  * component.
