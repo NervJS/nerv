@@ -97,7 +97,7 @@ describe('Util', () => {
     })
   })
 
-  describe.only('simpleMap', () => {
+  describe('simpleMap', () => {
     const map = new SimpleMap()
     it('get and set', done => {
       expect(map.clear()).to.be.undefined
