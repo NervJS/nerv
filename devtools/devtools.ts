@@ -35,7 +35,7 @@ function createReactDOMComponent (node) {
     // --- ReactDOMComponent interface
     _currentElement: isText ? node.textContent : {
       type: node.nodeName.toLowerCase(),
-      props: ''
+      props: node._props
     },
     _renderedChildren: childNodes.map((child: any) => {
       if (child._component) {
