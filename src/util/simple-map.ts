@@ -5,13 +5,16 @@ export interface ICache<Key, Value> {
 
 class SimpleMap<Key, Value> {
   cache: Array<ICache<Key, Value>>
+  size: number
   constructor () {
     this.cache = []
+    this.size = 0
   }
   set (k, v) {
     const len = this.cache.length
     if (!len) {
       this.cache.push({k, v})
+      this.size += 1
       return
     }
     for (let i = 0; i < len; i++) {
@@ -57,6 +60,7 @@ class SimpleMap<Key, Value> {
       const item = this.cache[i]
       if (item.k === k) {
         this.cache.splice(i, 1)
+        this.size -= 1
         return true
       }
     }
@@ -65,6 +69,7 @@ class SimpleMap<Key, Value> {
 
   clear () {
     let len = this.cache.length
+    this.size = 0
     if (!len) {
       return
     }
@@ -72,10 +77,6 @@ class SimpleMap<Key, Value> {
       this.cache.pop()
       len--
     }
-  }
-
-  size () {
-    return this.cache.length
   }
 }
 

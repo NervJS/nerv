@@ -108,17 +108,13 @@ class EventHook {
       const event = delegatedRoots.get(node)
       node.removeEventListener(parseEventName(eventName), event.event, false)
       /* istanbul ignore next */
-      const delegatedRootsSize = typeof delegatedRoots.size === 'function'
-        ? delegatedRoots.size.bind(delegatedRoots)
-        : () => delegatedRoots.size
-      if (delegatedRoots.delete(node) && delegatedRootsSize() === 0) {
+      const delegatedRootsSize = delegatedRoots.size
+      if (delegatedRoots.delete(node) && delegatedRootsSize === 0) {
         delegatedEvents.delete(eventName)
       }
     } else if (delegatedRoots && delegatedRoots.items) {
       const items = delegatedRoots.items
-        /* istanbul ignore next */
-      const itemsSize = typeof items.size === 'function' ? items.size.bind(items) : () => items.size
-      if (items.delete(node) && itemsSize() === 0) {
+      if (items.delete(node) && items.size === 0) {
         document.removeEventListener(parseEventName(eventName), delegatedRoots.event, false)
         delegatedEvents.delete(eventName)
       }
@@ -167,7 +163,7 @@ function attachEventToDocument (doc, eventName, delegatedRoots) {
   const eventHandler = (event) => {
     const items = delegatedRoots.items
     /* istanbul ignore next */
-    const count = typeof items.size === 'function' ? items.size() : items.size
+    const count = items.size
     if (count > 0) {
       const eventData = {
         currentTarget: event.target
