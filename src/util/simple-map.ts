@@ -25,6 +25,7 @@ class SimpleMap<Key, Value> {
       }
     }
     this.cache.push({k, v})
+    this.size += 1
   }
 
   get (k) {

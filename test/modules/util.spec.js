@@ -97,23 +97,27 @@ describe('Util', () => {
     })
   })
 
-  describe('simpleMap', () => {
+  describe.only('simpleMap', () => {
     const map = new SimpleMap()
     it('get and set', done => {
       expect(map.clear()).to.be.undefined
       expect(map.get('a')).to.be.undefined
       expect(map.has('a')).to.be.false
       map.set('a', 1)
+      expect(map.size).to.be.equals(1)
       expect(map.has('b')).to.be.false
       map.set('a', 1)
+      expect(map.size).to.be.equals(1)
       expect(map.get('a')).to.be.equals(1)
       map.set('b', 2)
+      expect(map.size).to.be.equals(2)
       expect(map.has('b')).to.be.true
       expect(map.get('b')).to.be.equals(2)
       expect(map.delete('c')).to.be.false
       expect(map.delete('b')).to.be.true
+      expect(map.size).to.be.equals(1)
       map.clear()
-      expect(map.size()).to.be.equals(0)
+      expect(map.size).to.be.equals(0)
       done()
       // expect(map).to.haveOwnProperty('get')
       // expect(map).to.haveOwnProperty('has')
