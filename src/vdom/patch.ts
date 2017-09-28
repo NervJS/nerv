@@ -110,7 +110,9 @@ function patchInsert (parentNode: Element, vnode: VirtualNode, parentContext?: a
 
 function patchWidget (domNode: Element, vnode: Widget, patch: Widget) {
   const isUpdate = isUpdateWidget(vnode, patch)
-  patch.parentContext = vnode.parentContext
+  if (vnode) {
+    patch.parentContext = vnode.parentContext
+  }
   const newNode = isUpdate
     ? (patch as Widget).update(vnode, domNode) || domNode
     : createElement(patch)
