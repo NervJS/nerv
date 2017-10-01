@@ -1,6 +1,9 @@
 import { isFunction, isNative } from '../util'
 import SimpleMap from '../util/simple-map'
 
+const ONINPUT = 'oninput'
+const ONPROPERTYCHANGE = 'onpropertychange'
+
 const canUseNativeMap = (() => {
   return 'Map' in window && isNative(Map)
 })()
@@ -10,6 +13,7 @@ const MapClass = canUseNativeMap ? Map : SimpleMap as any
 const delegatedEvents = new (MapClass as MapConstructor)()
 
 const unbubbleEvents = {
+  [ONPROPERTYCHANGE]: 1,
   onmousemove: 1,
   ontouchmove: 1,
   onmouseleave: 1,
@@ -53,6 +57,8 @@ const unbubbleEvents = {
   onwaiting: 1
 }
 
+let bindFocus = false
+
 class EventHook {
   type = 'EventHook'
   eventName: string
@@ -68,7 +74,12 @@ class EventHook {
       prev.eventName === this.eventName) {
       return
     }
-    const eventName = this.eventName
+    const eventName = fixEvent(node, this.eventName)
+    this.eventName = eventName
+    if (eventName === ONPROPERTYCHANGE) {
+      processOnPropertyChangeEvent(node, this.handler)
+      return
+    }
     let delegatedRoots = delegatedEvents.get(eventName)
     if (unbubbleEvents[eventName] === 1) {
       if (!delegatedRoots) {
@@ -102,7 +113,10 @@ class EventHook {
       next.eventName === next.eventName) {
       return
     }
-    const eventName = this.eventName
+    const eventName = fixEvent(node, this.eventName)
+    if (eventName === ONPROPERTYCHANGE) {
+      return
+    }
     const delegatedRoots = delegatedEvents.get(eventName)
     if (unbubbleEvents[eventName] === 1 && delegatedRoots) {
       const event = delegatedRoots.get(node)
@@ -122,13 +136,88 @@ class EventHook {
   }
 }
 
-function getEventName (name) {
-  if (name === 'onDoubleClick') {
-    name = 'ondblclick'
-  } else if (name === 'onTouchTap') {
-    name = 'onclick'
+function getEventName (eventName) {
+  if (eventName === 'onDoubleClick') {
+    eventName = 'ondblclick'
+  } else if (eventName === 'onTouchTap') {
+    eventName = 'onclick'
   }
-  return name.toLowerCase()
+  return eventName.toLowerCase()
+}
+
+let propertyChangeActiveElement
+let propertyChangeActiveElementValue
+let propertyChangeActiveElementValueProp
+let propertyChangeActiveHandler
+
+function propertyChangeHandler (event) {
+  if (event.propertyName !== 'value') {
+    return
+  }
+  const target = event.target || event.srcElement
+  const val = target.value
+  if (val === propertyChangeActiveElementValue) {
+    return
+  }
+  propertyChangeActiveElementValue = val
+  if (isFunction(propertyChangeActiveHandler)) {
+    propertyChangeActiveHandler.call(target, event)
+  }
+}
+
+function processOnPropertyChangeEvent (node, handler) {
+  propertyChangeActiveHandler = handler
+  if (!bindFocus) {
+    bindFocus = true
+    document.addEventListener('focusin', () => {
+      unbindOnPropertyChange()
+      bindOnPropertyChange(node)
+    }, false)
+    document.addEventListener('focusout', unbindOnPropertyChange, false)
+  }
+}
+
+function bindOnPropertyChange (node) {
+  propertyChangeActiveElement = node
+  propertyChangeActiveElementValue = node.value
+  propertyChangeActiveElementValueProp = Object.getOwnPropertyDescriptor(node.constructor.prototype, 'value')
+  Object.defineProperty(propertyChangeActiveElement, 'value', {
+    get () {
+      return propertyChangeActiveElementValueProp.get.call(this)
+    },
+    set (val) {
+      propertyChangeActiveElementValue = val
+      propertyChangeActiveElementValueProp.set.call(this, val)
+    }
+  })
+  propertyChangeActiveElement.addEventListener('propertychange', propertyChangeHandler, false)
+}
+
+function unbindOnPropertyChange () {
+  if (!propertyChangeActiveElement) {
+    return
+  }
+  delete propertyChangeActiveElement.value
+  propertyChangeActiveElement.removeEventListener('propertychange', propertyChangeHandler, false)
+
+  propertyChangeActiveElement = null
+  propertyChangeActiveElementValue = null
+  propertyChangeActiveElementValueProp = null
+}
+
+function detectCanUseOnInputNode (node) {
+  const nodeName = node.nodeName && node.nodeName.toLowerCase()
+  const type = node.type
+  return (nodeName === 'input' && /text|password/.test(type)) || nodeName === 'textarea'
+}
+
+function fixEvent (node, eventName) {
+  if (detectCanUseOnInputNode(node)) {
+    if (eventName === 'onchange') {
+      eventName = ONINPUT in window ? ONINPUT : ONPROPERTYCHANGE
+    }
+  }
+  return eventName
 }
 
 function parseEventName (name) {
