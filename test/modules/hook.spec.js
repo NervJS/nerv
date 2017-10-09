@@ -1,4 +1,5 @@
 import AttributeHook from '../../src/hooks/attribute-hook'
+import HtmlHook from '../../src/hooks/html-hook'
 import { createElement, Component, render, nextTick } from '../../src'
 
 describe('Hooks', () => {
@@ -16,6 +17,90 @@ describe('Hooks', () => {
   after(() => {
     scratch.parentNode.removeChild(scratch)
     scratch = null
+  })
+  describe('HTMLhook', () => {
+    it('sets and removes html', async () => {
+      let doRender = null
+      const html = '<b>foo &amp; bar</b>'
+      const hook1 = new HtmlHook({ __html: html })
+      const hook2 = new HtmlHook({ __html: '123' })
+      const first = createElement('div', { dangerouslySetInnerHTML: hook1 })
+      const second = createElement('div', { dangerouslySetInnerHTML: hook2 })
+      const third = createElement('div', { dangerouslySetInnerHTML: 456 })
+      const fourth = createElement('div', { dangerouslySetInnerHTML: 456 })
+      class Outer extends Component {
+        constructor () {
+          super(...arguments)
+          this.state = {
+            count: 0
+          }
+        }
+
+        componentDidMount () {
+          doRender = () => {
+            this.setState({
+              count: ++this.state.count
+            })
+          }
+        }
+
+        render () {
+          return ([
+            first,
+            second,
+            third,
+            fourth
+          ][this.state.count])
+        }
+      }
+
+      render(<Outer />, scratch)
+      expect(scratch.childNodes[0].innerHTML).to.eq(html)
+      doRender()
+      await nextTick()
+      expect(scratch.childNodes[0].innerHTML).to.eq('123')
+      doRender()
+      await nextTick()
+      expect(scratch.childNodes[0].innerHTML).to.eq('')
+    })
+
+    it('Should not dangerously set innerHTML when previous is same as new one', async () => {
+      let doRender = null
+      const html = '<b>foo &amp; bar</b>'
+      const hook1 = new HtmlHook({ __html: html })
+      const hook2 = new HtmlHook({ __html: html })
+      const first = createElement('div', { dangerouslySetInnerHTML: hook1 })
+      const second = createElement('div', { dangerouslySetInnerHTML: hook2 })
+      class Outer extends Component {
+        constructor () {
+          super(...arguments)
+          this.state = {
+            count: 0
+          }
+        }
+
+        componentDidMount () {
+          doRender = () => {
+            this.setState({
+              count: ++this.state.count
+            })
+          }
+        }
+
+        render () {
+          return ([
+            first,
+            second
+          ][this.state.count])
+        }
+      }
+
+      render(<Outer />, scratch)
+      expect(scratch.childNodes[0].innerHTML).to.eq(html)
+      doRender()
+      await nextTick()
+      expect(scratch.childNodes[0].innerHTML).to.eq(html)
+    })
   })
   describe('AttributeHook', () => {
     it('sets and removes namespaced attribute', async () => {

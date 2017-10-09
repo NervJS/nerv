@@ -5,16 +5,12 @@ class HtmlHook {
     this.value = value
   }
 
-  hook (node, prop, prev) {
+  hook (node: Element, prop?, prev?) {
     if (prev && prev.type === 'HtmlHook' &&
-      prev.value === this.value) {
+      prev.value.__html === this.value.__html) {
       return
     }
     node.innerHTML = this.value.__html || ''
-  }
-
-  unhook (node, prop, next) {
-    node.innerHTML = ''
   }
 }
 

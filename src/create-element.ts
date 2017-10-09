@@ -24,14 +24,6 @@ function transformPropsForRealTag (tagName: string, props: IProps) {
     const originalPropName = propName
     const domAttributeName = SVGPropertyConfig.DOMAttributeNames[propName]
     propName = domAttributeName || propName
-    if (DOMAttributeNamespaces.hasOwnProperty(originalPropName) &&
-      (isString(propValue) || isNumber(propValue) || isBoolean(propValue))) {
-      const namespace = DOMAttributeNamespaces[originalPropName]
-      newProps[propName] = !((propValue as any) instanceof AttributeHook)
-        ? new AttributeHook(namespace, propValue)
-        : propValue
-      continue
-    }
     if ((propName === 'id' || propName === 'className' || propName === 'namespace') &&
       propValue !== undefined) {
       newProps[propName] = propValue
@@ -48,6 +40,14 @@ function transformPropsForRealTag (tagName: string, props: IProps) {
     // 收集事件
     if (propName.charAt(0) === 'o' && propName.charAt(1) === 'n') {
       newProps[propName] = !(propValue instanceof EventHook) ? new EventHook(propName, propValue) : propValue
+      continue
+    }
+    if (DOMAttributeNamespaces.hasOwnProperty(originalPropName) &&
+      (isString(propValue) || isNumber(propValue) || isBoolean(propValue))) {
+      const namespace = DOMAttributeNamespaces[originalPropName]
+      newProps[propName] = !((propValue as any) instanceof AttributeHook)
+        ? new AttributeHook(namespace, propValue)
+        : propValue
       continue
     }
     if (propName === 'defaultValue') {
@@ -81,7 +81,7 @@ function transformPropsForRealTag (tagName: string, props: IProps) {
  * @param props
  * @param defaultProps
  * defaultProps should respect null but ignore undefined
- * see: https://facebook.github.io/react/docs/react-component.html#defaultprops
+ * @see: https://facebook.github.io/react/docs/react-component.html#defaultprops
  */
 function transformPropsForComponent (props: IProps, defaultProps?: IProps) {
   const newProps: any = {}
