@@ -72,7 +72,7 @@ class EventHook {
     let delegatedRoots = delegatedEvents.get(eventName)
     if (unbubbleEvents[eventName] === 1) {
       if (!delegatedRoots) {
-        delegatedRoots = new (MapClass as MapConstructor)()
+        delegatedRoots = new MapClass()
       }
       const event = attachEventToNode(node, eventName, delegatedRoots)
       delegatedEvents.set(eventName, delegatedRoots)
