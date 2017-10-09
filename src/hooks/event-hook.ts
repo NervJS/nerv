@@ -5,9 +5,9 @@ const canUseNativeMap = (() => {
   return 'Map' in window && isNative(Map)
 })()
   /* istanbul ignore next */
-const MapClass = canUseNativeMap ? Map : SimpleMap as any
+const MapClass: MapConstructor = canUseNativeMap ? Map : SimpleMap as any
 
-const delegatedEvents = new (MapClass as MapConstructor)()
+const delegatedEvents = new MapClass()
 
 const unbubbleEvents = {
   onmousemove: 1,
