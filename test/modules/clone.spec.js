@@ -28,7 +28,7 @@ describe('cloneElement()', () => {
     expect(cloneVNode).to.have.property('children').that.have.length(0)
   })
 
-  it ('can clone node with children', () => {
+  it('can clone node with children', () => {
     const vnode = (
       <div>
         <div>1</div>
@@ -40,7 +40,7 @@ describe('cloneElement()', () => {
     render(cloneVNode, scratch)
     expect(scratch.innerHTML).to.equals('<div><div>1</div><span>2</span><a href="#">ssd</a></div>')
   })
-  it ('can clone node with children contains Components', () => {
+  it('can clone node with children contains Components', () => {
     class C extends Component {
       render () {
         return <div className='ttt' />
@@ -59,7 +59,7 @@ describe('cloneElement()', () => {
     expect(scratch.innerHTML).to.equals('<div><div class="cc">1</div><div class="ttt"></div><span class="ppp">sd</span></div>')
   })
 
-  it ('can clone node by new props', () => {
+  it('can clone node by new props', () => {
     const vnode = (
       <div>
         <div className='cc'>1</div>
@@ -77,7 +77,7 @@ describe('cloneElement()', () => {
     expect(scratch.firstChild.style).to.have.property('width', '800px')
   })
 
-  it ('can clone node by new children', () => {
+  it('can clone node by new children', () => {
     const vnode = (
       <div>
         <div className='cc'>1</div>
