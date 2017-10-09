@@ -76,11 +76,25 @@ function transformPropsForRealTag (tagName: string, props: IProps) {
   return newProps
 }
 
-function transformPropsForComponent (props: IProps) {
+/**
+ *
+ * @param props
+ * @param defaultProps
+ * defaultProps should respect null but ignore undefined
+ * see: https://facebook.github.io/react/docs/react-component.html#defaultprops
+ */
+function transformPropsForComponent (props: IProps, defaultProps?: IProps) {
   const newProps: any = {}
   for (const propName in props) {
     const propValue = props[propName]
     newProps[propName] = propValue
+  }
+  if (defaultProps) {
+    for (const propName in defaultProps) {
+      if (newProps[propName] === undefined) {
+        newProps[propName] = defaultProps[propName]
+      }
+    }
   }
   return newProps
 }
@@ -113,7 +127,7 @@ function createElement<T> (
     props.owner = CurrentOwner.current
     return h(tagName, props, children as any) as VNode
   } else if (isFunction(tagName)) {
-    props = transformPropsForComponent(properties as any)
+    props = transformPropsForComponent(properties as any, (tagName as any).defaultProps)
     if (props.children) {
       if (!Array.isArray(props.children)) {
         props.children = [props.children]

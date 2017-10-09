@@ -352,13 +352,23 @@ describe('Component', function () {
       ), scratch)
     })
 
-    it('defaultProps should respect null but ignore undefined', () => {
+    it('(Component) defaultProps should respect null but ignore undefined', () => {
       class Text extends Component {
         render () {
           const { text } = this.props
           return <div>{ text === null ? 'null' : text }</div>
         }
       }
+      Text.defaultProps = {
+        text: 'aaa'
+      }
+      const dom = render(<div><Text text={null} /> <Text /></div>, scratch)
+      expect(dom.firstChild.textContent).to.equal('null')
+      expect(dom.lastChild.textContent).to.equal('aaa')
+    })
+
+    it('(StatelessComponent) defaultProps should respect null but ignore undefined', () => {
+      const Text = ({ text }) => <div>{text === null ? 'null' : text}</div>
       Text.defaultProps = {
         text: 'aaa'
       }

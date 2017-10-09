@@ -33,6 +33,8 @@ export interface IProps {
   [k: string]: any
 }
 
+export type Props = IProps | null | undefined
+
 export interface IVNode {
   type: string
   tagName: string

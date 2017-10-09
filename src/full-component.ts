@@ -1,24 +1,6 @@
 import { mountComponent, reRenderComponent, unmountComponent } from './lifecycle'
 import Component from './component'
 
-/**
- *
- * @param props
- * @param defaultProps
- * defaultProps should respect null but ignore undefined
- * see: https://facebook.github.io/react/docs/react-component.html#defaultprops
- */
-function normalizeProps (props, defaultProps?) {
-  if (defaultProps) {
-    for (const propName in defaultProps) {
-      if (props[propName] === undefined) {
-        props[propName] = defaultProps[propName]
-      }
-    }
-  }
-  return props
-}
-
 class ComponentWrapper {
   type = 'Widget'
   ComponentType: any
@@ -35,7 +17,7 @@ class ComponentWrapper {
     ComponentType.displayName = this.name
     this._owner = props.owner
     delete props.owner
-    this.props = normalizeProps(props, ComponentType.defaultProps)
+    this.props = props
   }
 
   init () {
