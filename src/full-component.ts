@@ -8,7 +8,7 @@ import Component from './component'
  * defaultProps should respect null but ignore undefined
  * see: https://facebook.github.io/react/docs/react-component.html#defaultprops
  */
-function normalizeProps (props, defaultProps) {
+function normalizeProps (props, defaultProps?) {
   if (defaultProps) {
     for (const propName in defaultProps) {
       if (props[propName] === undefined) {
