@@ -1,6 +1,6 @@
 {
   "name": "nervjs",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "A react-like framework based on virtual-dom",
   "main": "index.js",
   "module": "dist/nerv.esm.js",
@@ -23,7 +23,7 @@
     "build:esm": "rollup -c ./build/build.js --environment TARGET:esm",
     "build:umd": "rollup -c ./build/build.js --environment TARGET:umd",
     "build:devtools": "rollup -c ./build/build.js --environment TARGET:devtools",
-    "release": "npm run build && npm test && release-it -n --no-github.release --no-npm.publish && release patch"
+    "release": "npm run build && release-it -n --no-github.release --no-npm.publish && release patch"
   },
   "lint-staged": {
     "*.{js,jsx}": [
@@ -102,6 +102,7 @@
     "mocha": "^3.4.2",
     "npm-run-all": "^4.0.2",
     "optimize-js": "^1.0.3",
+    "release": "^2.5.2",
     "release-it": "^2.8.2",
     "rimraf": "^2.6.1",
     "rollup": "^0.50.0",
