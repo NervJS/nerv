@@ -5,6 +5,7 @@ const bublePlugin = require('rollup-plugin-buble')
 const uglify = require('rollup-plugin-uglify')
 const optimizeJs = require('optimize-js')
 const babel = require('rollup-plugin-babel')
+const es3 = require('rollup-plugin-es3')
 // const replace = require('rollup-plugin-re')
 
 const optJSPlugin = {
@@ -57,7 +58,8 @@ const baseConfig = {
       typescript: require('typescript')
     }),
     bublePlugin(),
-    babelPlugin
+    babelPlugin,
+    es3()
   ]
 }
 

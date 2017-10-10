@@ -4498,6 +4498,10 @@ rollup-plugin-commonjs@^8.2.1:
     resolve "^1.4.0"
     rollup-pluginutils "^2.0.1"
 
+rollup-plugin-es3@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/rollup-plugin-es3/-/rollup-plugin-es3-1.0.3.tgz#8b12e8ead28d907d0f2d124e255d5f33a53dfbfa"
+
 rollup-plugin-memory@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/rollup-plugin-memory/-/rollup-plugin-memory-2.0.0.tgz#0a8ac6b57fa0e714f89a15c3ac82bc93f89c47c5"
