@@ -154,7 +154,7 @@ export function updateComponent (component, isForce = false) {
       component._pendingCallbacks.pop().call(component)
     }
   }
-  if (options.afterUpdate) {
+  if (options.afterUpdate !== null) {
     options.afterUpdate(component)
   }
   flushMount()
@@ -171,7 +171,7 @@ function updateVNode (vnode, lastVNode, lastDom, childContext) {
 
 export function unmountComponent (vnode) {
   const component = vnode.component
-  if (options.beforeUnmount) {
+  if (options.beforeUnmount !== null) {
     options.beforeUnmount(component)
   }
   if (isFunction(component.componentWillUnmount)) {
