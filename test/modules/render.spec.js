@@ -1,7 +1,9 @@
 /** @jsx createElement */
-import { Component, createElement, render } from '../../src'
+import { Component, createElement, render, nextTick } from '../../src'
 import { rerender } from '../../src/render-queue'
 import { getAttributes } from '../util'
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 describe('render()', function () {
   this.timeout(20000)
@@ -662,7 +664,7 @@ describe('render()', function () {
     expect(scratch.firstChild.value).to.equal('260')
   })
 
-  it('unbubbleEvents should attach to node instaed of document', (done) => {
+  it('unbubbleEvents should attach to node instaed of document', async () => {
     const focus = sinon.spy()
 
     let doRender = null
@@ -700,17 +702,16 @@ describe('render()', function () {
     sinon.spy(proto, 'addEventListener')
     sinon.spy(proto, 'removeEventListener')
     // https://stackoverflow.com/questions/1096436/document-getelementbyidid-focus-is-not-working-for-firefox-or-chrome
-    setTimeout(() => {
-      input.focus()
-      setTimeout(() => {
-        expect(focus).to.have.been.calledOnce
-        proto.addEventListener.reset()
-        focus.reset()
-        doRender()
-        rerender()
-        done()
-      }, 100)
-    }, 0)
+    input.focus()
+    await delay(100)
+    expect(focus).to.have.been.calledOnce
+    proto.addEventListener.reset()
+    focus.reset()
+    doRender()
+    await nextTick()
+    rerender()
+    scratch.childNodes[0].focus()
+    await delay(100)
   })
 
   it('should handle onDoubleClick and onTouchTap', () => {

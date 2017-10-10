@@ -162,7 +162,6 @@ function dispatchEvent (event, target, items, count, eventData) {
 function attachEventToDocument (doc, eventName, delegatedRoots) {
   const eventHandler = (event) => {
     const items = delegatedRoots.items
-    /* istanbul ignore next */
     const count = items.size
     if (count > 0) {
       const eventData = {
