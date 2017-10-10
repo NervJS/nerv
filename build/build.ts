@@ -25,7 +25,7 @@ const uglifyPlugin = uglify({
     drop_debugger: true,
     unused: true
   },
-  ie8: false,
+  ie8: true,
   parse: {
     // parse options
     html5_comments: false,
