@@ -4498,6 +4498,13 @@ rollup-plugin-node-resolve@^3.0.0:
     is-module "^1.0.0"
     resolve "^1.1.6"
 
+rollup-plugin-re@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.npmjs.org/rollup-plugin-re/-/rollup-plugin-re-1.0.6.tgz#a1d5825824b348aeb4270a456fbba44ab45fdd4f"
+  dependencies:
+    magic-string "^0.16.0"
+    rollup-pluginutils "^2.0.1"
+
 rollup-plugin-replace@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/rollup-plugin-replace/-/rollup-plugin-replace-1.1.1.tgz#396315ded050a6ce43b9518a886a3f60efb1ea33"

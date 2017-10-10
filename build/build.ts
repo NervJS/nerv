@@ -4,6 +4,7 @@ const resolve = require('rollup-plugin-node-resolve')
 const bublePlugin = require('rollup-plugin-buble')
 const uglify = require('rollup-plugin-uglify')
 const optimizeJs = require('optimize-js')
+const replace = require('rollup-plugin-re')
 
 const optJSPlugin = {
   name: 'optimizeJs',
@@ -35,6 +36,18 @@ const uglifyPlugin = uglify({
   warnings: false
 })
 
+const replacePlugin = replace({
+  patterns: [
+    {
+      test: /\.delete\([A-z|0-9]+\)/g,
+      replace (str: string) {
+        const val = str.match(/[^(][A-z|0-9]+(?=\))/g)
+        return val ? `['delete'](${val})` : str
+      }
+    }
+  ]
+})
+
 const baseConfig = {
   input: 'src/index.ts',
   output: {
@@ -44,6 +57,7 @@ const baseConfig = {
     sourcemap: true
   },
   plugins: [
+    replacePlugin,
     resolve(),
     typescript({
       include: 'src/**',
