@@ -59,7 +59,7 @@ const baseConfig = {
     }),
     bublePlugin(),
     babelPlugin,
-    es3()
+    es3(['defineProperty', 'freeze'])
   ]
 }
 
