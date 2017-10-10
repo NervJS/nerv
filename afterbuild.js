@@ -4,6 +4,13 @@ const cp = require('child_process')
 
 const karmaPath = path.join(__dirname, 'node_modules', 'karma')
 
+function upgradeKarma () {
+  console.log(`you are using socket.io version under 2.x, upgrading now...`)
+  cp.execSync('npm install socket.io@2.0.3', {
+    cwd: karmaPath
+  })
+}
+
 try {
   const { version } = JSON.parse(
     fs.readFileSync(
@@ -11,9 +18,8 @@ try {
     )
   )
   if (parseInt(version, 10) < 2) {
-    console.log(`you are using karma version under 2.x, upgrading now...`)
-    cp.execSync('npm install socket.io@2.0.3', {
-      cwd: karmaPath
-    })
+    upgradeKarma()
   }
-} catch (e) {}
+} catch (e) {
+  upgradeKarma()
+}
