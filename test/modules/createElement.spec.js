@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+import assert from 'power-assert'
 
 import h from '../../src/vdom/h'
 import createElement from '../../src/vdom/create-element'

@@ -81,7 +81,7 @@ module.exports = function (config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['source-map-support', 'mocha', 'sinon-chai'],
+    frameworks: ['jasmine'],
 
     // list of files / patterns to load in the browser
     files: [
@@ -102,7 +102,7 @@ module.exports = function (config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['mocha'].concat(
+    reporters: ['spec'].concat(
       coverage ? 'coverage-istanbul' : [],
       sauceLabs ? 'saucelabs' : []
     ),
@@ -165,7 +165,7 @@ module.exports = function (config) {
     concurrency: 2,
 
     webpack: {
-      // devtool: 'inline-source-map',
+      devtool: 'inline-source-map',
       resolve: {
         extensions: ['.js', '.ts']
       },
@@ -183,7 +183,7 @@ module.exports = function (config) {
             options: {
               transpileOnly: true,
               compilerOptions: {
-                target: 'es5',
+                target: 'es3',
                 module: 'commonjs'
               }
             }
@@ -210,7 +210,8 @@ module.exports = function (config) {
     },
 
     webpackMiddleware: {
-      noInfo: true
+      noInfo: true,
+      stats: 'errors-only'
     }
   })
 }

@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+import assert from 'power-assert'
 import h from '../../src/vdom/h'
 
 describe('test generate virtual dom tree', () => {
