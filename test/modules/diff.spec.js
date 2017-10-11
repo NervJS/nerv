@@ -18,7 +18,7 @@ describe('test dom diff algorithm', () => {
     ])
     const diffSet = diff(tree1, tree2)
     const diffResult = diffSet['0']
-    assert.isArray(diffResult)
+    assert(Array.isArray(diffResult))
     diffResult.forEach(item => {
       if (item.type === VPatch.PROPS) {
         assert.equal(item.patch.style.width, '10px')

@@ -1,9 +1,9 @@
 /** @jsx createElement */
 import { Component, createElement, cloneElement, render } from '../../src'
-
+import assert from 'power-assert'
 describe('cloneElement()', () => {
   let scratch
-  before(() => {
+  beforeAll(() => {
     scratch = document.createElement('div')
     document.body.appendChild(scratch)
   })
@@ -12,7 +12,7 @@ describe('cloneElement()', () => {
     scratch.innerHTML = ''
   })
 
-  after(() => {
+  afterAll(() => {
     scratch.parentNode.removeChild(scratch)
     scratch = null
   })
@@ -22,10 +22,12 @@ describe('cloneElement()', () => {
       <div className='hh' style={{ width: '800px' }} />
     )
     const cloneVNode = cloneElement(vnode)
-    expect(cloneVNode).to.have.property('tagName', 'div')
-    expect(cloneVNode).to.have.property('props').that.have.nested.deep.property('style', { width: '800px' })
-    expect(cloneVNode).to.have.property('props').that.have.property('className', 'hh')
-    expect(cloneVNode).to.have.property('children').that.have.length(0)
+    assert(cloneVNode.tagName === 'div')
+    assert(cloneVNode.hasOwnProperty('props'))
+    const { style } = cloneVNode.props
+    assert(style.width === '800px')
+    assert(cloneVNode.props.className === 'hh')
+    assert(cloneVNode.children.length === 0)
   })
 
   it('can clone node with children', () => {
@@ -38,7 +40,7 @@ describe('cloneElement()', () => {
     )
     const cloneVNode = cloneElement(vnode)
     render(cloneVNode, scratch)
-    expect(scratch.innerHTML).to.equals('<div><div>1</div><span>2</span><a href="#">ssd</a></div>')
+    expect(scratch.innerHTML).toEqual('<div><div>1</div><span>2</span><a href="#">ssd</a></div>')
   })
   it('can clone node with children contains Components', () => {
     class C extends Component {
@@ -56,7 +58,7 @@ describe('cloneElement()', () => {
     )
     const cloneVNode = cloneElement(vnode)
     render(cloneVNode, scratch)
-    expect(scratch.innerHTML).to.equals('<div><div class="cc">1</div><div class="ttt"></div><span class="ppp">sd</span></div>')
+    expect(scratch.innerHTML).toEqual('<div><div class="cc">1</div><div class="ttt"></div><span class="ppp">sd</span></div>')
   })
 
   it('can clone node by new props', () => {
@@ -73,8 +75,11 @@ describe('cloneElement()', () => {
       className: 'hh'
     })
     render(cloneVNode, scratch)
-    expect(scratch.firstChild).to.have.property('className', 'hh')
-    expect(scratch.firstChild.style).to.have.property('width', '800px')
+    const dom = scratch.firstChild
+    assert(dom.className === 'hh')
+    assert(dom.style.width === '800px')
+    // expect(scratch.firstChild).to.have.property('className', 'hh')
+    // expect(scratch.firstChild.style).to.have.property('width', '800px')
   })
 
   it('can clone node by new children', () => {
@@ -86,6 +91,6 @@ describe('cloneElement()', () => {
     )
     const cloneVNode = cloneElement(vnode, null, <span>1</span>)
     render(cloneVNode, scratch)
-    expect(scratch.innerHTML).to.equals('<div><span>1</span></div>')
+    expect(scratch.innerHTML).toEqual('<div><span>1</span></div>')
   })
 })

@@ -16,8 +16,10 @@ module.exports = {
     describe: true,
     it: true,
     before: true,
+    beforeAll: true,
     beforeEach: true,
     after: true,
+    afterAll: true,
     sinon: true,
     expect: true
   },
