@@ -183,7 +183,7 @@ module.exports = function (config) {
             options: {
               transpileOnly: true,
               compilerOptions: {
-                target: 'es5',
+                target: 'es3',
                 module: 'commonjs'
               }
             }
