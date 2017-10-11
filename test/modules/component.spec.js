@@ -2,7 +2,7 @@
 import { Component, createElement, render, cloneElement, PureComponent } from '../../src'
 import createVText from '../../src/vdom/create-vtext'
 import { rerender } from '../../src/render-queue'
-
+import sinon from 'sinon'
 import { EMPTY_CHILDREN, getAttributes, sortAttributes } from '../util'
 
 function fireEvent (on, type) {
