@@ -39,7 +39,7 @@ describe('cloneElement()', () => {
     )
     const cloneVNode = cloneElement(vnode)
     render(cloneVNode, scratch)
-    expect(scratch.innerHTML).toEqual('<div><div>1</div><span>2</span><a href="#">ssd</a></div>')
+    expect(scratch.innerHTML.toLowerCase()).toEqual('<div><div>1</div><span>2</span><a href="#">ssd</a></div>')
   })
   it('can clone node with children contains Components', () => {
     class C extends Component {
@@ -57,7 +57,7 @@ describe('cloneElement()', () => {
     )
     const cloneVNode = cloneElement(vnode)
     render(cloneVNode, scratch)
-    expect(scratch.innerHTML).toEqual('<div><div class="cc">1</div><div class="ttt"></div><span class="ppp">sd</span></div>')
+    expect(scratch.innerHTML.toLowerCase()).toEqual('<div><div class="cc">1</div><div class="ttt"></div><span class="ppp">sd</span></div>')
   })
 
   it('can clone node by new props', () => {
@@ -90,6 +90,6 @@ describe('cloneElement()', () => {
     )
     const cloneVNode = cloneElement(vnode, null, <span>1</span>)
     render(cloneVNode, scratch)
-    expect(scratch.innerHTML).toEqual('<div><span>1</span></div>')
+    expect(scratch.innerHTML.toLowerCase()).toEqual('<div><span>1</span></div>')
   })
 })
