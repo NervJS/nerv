@@ -16,7 +16,7 @@
     "eslint": "eslint src test",
     "lint": "tslint -p tsconfig.json --type-check",
     "lint-staged": "lint-staged",
-    "test": "npm-run-all lint test:jest",
+    "test": "npm-run-all lint test:karma",
     "test:jest": "jest --no-cache",
     "test:karma": "karma start karma.conf.js --single-run",
     "test:karma:watch": "npm run test:karma -- no-single-run",
