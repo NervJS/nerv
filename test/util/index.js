@@ -12,6 +12,10 @@ export function getAttributes (node) {
   return attrs
 }
 
+export function normalizeHTML (html) {
+  return html.toLowerCase().replace(/(\r\n|\n|\r)/gm, '')
+}
+
 export function sortAttributes (html) {
   return html.replace(/<([a-z0-9-]+)((?:\s[a-z0-9:_.-]+=".*?")+)((?:\s*\/)?>)/gi, (s, pre, attrs, after) => {
     const list = attrs.match(/\s[a-z0-9:_.-]+=".*?"/gi).sort((a, b) => a > b ? 1 : -1)
