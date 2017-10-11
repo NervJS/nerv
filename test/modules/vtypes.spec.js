@@ -38,12 +38,4 @@ describe('vtypes', () => {
     const t = <T />
     expect(t).to.have.property('type').that.to.equal('Widget')
   })
-
-  it('stateless type', () => {
-    function T () {
-      return null
-    }
-    const t = <T />
-    expect(t).to.have.property('type').that.to.equal('StateLess')
-  })
 })

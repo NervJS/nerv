@@ -1,4 +1,4 @@
-import { isVNode, isVText, isWidget, isStateLess, isHook } from './vnode/types'
+import { isVNode, isVText, isWidget, isHook } from './vnode/types'
 import { isObject, isString, isNumber, isFunction } from '../util'
 import { VirtualNode, IProps } from '../types'
 import options from '../options'
@@ -7,7 +7,7 @@ const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
 const doc = document
 function createElement (vnode: VirtualNode, isSvg?: boolean): Element | Text | Comment | DocumentFragment | null {
-  if (isWidget(vnode) || isStateLess(vnode)) {
+  if (isWidget(vnode)) {
     return vnode.init()
   }
   if (isString(vnode) || isNumber(vnode)) {
@@ -43,7 +43,7 @@ function createElement (vnode: VirtualNode, isSvg?: boolean): Element | Text | C
     if (children.length) {
       children.forEach((child) => {
         if (child !== undefined && child !== null && (child as any) !== false && domNode.appendChild) {
-          if (isWidget(child) || isVNode(child) || isStateLess(child)) {
+          if (isWidget(child) || isVNode(child)) {
             child.parentContext = vnode.parentContext || {}
           }
           const childNode = createElement(child, isSvg)

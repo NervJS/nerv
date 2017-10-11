@@ -1,6 +1,6 @@
 import VNode from './vnode/vnode'
 import createVText from './create-vtext'
-import { isVNode, isVText, isWidget, isStateLess } from './vnode/types'
+import { isVNode, isVText, isWidget } from './vnode/types'
 import { isString, isArray, isNumber } from '../util'
 import { IProps, VirtualChildren, VirtualNode } from '../types'
 function h (tagName: string, props: IProps, children?: VirtualChildren) {
@@ -49,7 +49,7 @@ function addChildren (childNodes: VirtualNode[], children: VirtualNode, tagName:
 }
 
 function isChild (node): node is VirtualNode {
-  return isVNode(node) || isVText(node) || isWidget(node) || isStateLess(node)
+  return isVNode(node) || isVText(node) || isWidget(node)
 }
 
 function isChildren (x): x is VirtualChildren {

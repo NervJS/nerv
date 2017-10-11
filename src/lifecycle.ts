@@ -21,9 +21,9 @@ export function mountVNode (vnode, parentContext: any) {
 
 export function mountComponent (vnode: FullComponent) {
   const parentContext = vnode.parentContext
-  const componentPrototype = vnode.ComponentType.prototype
+  const componentPrototype = vnode.tagName.prototype
   if (componentPrototype && isFunction(componentPrototype.render)) {
-    vnode.component = new vnode.ComponentType(vnode.props, parentContext)
+    vnode.component = new vnode.tagName(vnode.props, parentContext)
   }
   const component = vnode.component
   if (isFunction(component.componentWillMount)) {
@@ -54,13 +54,15 @@ export function mountComponent (vnode: FullComponent) {
 export function mountStatelessComponent (vnode: Stateless) {
   let ref = vnode.props.ref
   delete vnode.props.ref
-  vnode._renderd = vnode.tagName(vnode.props, vnode.parentContext)
-  const rendered = vnode._renderd
+  vnode._rendered = vnode.tagName(vnode.props, vnode.parentContext)
+  const rendered = vnode._rendered
   if (isVNode(rendered) && isFunction(ref)) {
     ref = new RefHook(ref)
     rendered.props.ref = ref
   }
-  return mountVNode(rendered, vnode.parentContext)
+  const dom = mountVNode(rendered, vnode.parentContext)
+  vnode.dom = dom
+  return dom
 }
 
 export function getChildContext (component, context) {
@@ -116,6 +118,15 @@ export function reRenderComponent (prev, current) {
   return component.dom
 }
 
+export function reRenderStatelessComponent (prev, current) {
+  const lastRendered = prev._rendered
+  const rendered = current.tagName(current.props, current.parentContext)
+  current._rendered = rendered
+  const dom = updateVNode(rendered, lastRendered, prev.dom, prev.parentContext)
+  current.dom = dom
+  return dom
+}
+
 export function updateComponent (component, isForce = false) {
   const lastDom = component.dom
   const props = component.props
@@ -169,7 +180,7 @@ function updateVNode (vnode, lastVNode, lastDom, childContext) {
   return domNode
 }
 
-export function unmountComponent (vnode) {
+export function unmountComponent (vnode: FullComponent) {
   const component = vnode.component
   if (options.beforeUnmount !== null) {
     options.beforeUnmount(component)
@@ -180,6 +191,14 @@ export function unmountComponent (vnode) {
   const lastRendered = component._rendered
   updateVNode(null, lastRendered, component.dom, component.context)
   component.dom = component._rendered = null
+  if (isFunction(vnode.props.ref)) {
+    vnode.props.ref(null)
+  }
+}
+
+export function unmountStatelessComponent (vnode: Stateless) {
+  updateVNode(null, vnode._rendered, vnode.dom, vnode.parentContext)
+  vnode.dom = vnode._rendered = null
   if (isFunction(vnode.props.ref)) {
     vnode.props.ref(null)
   }
