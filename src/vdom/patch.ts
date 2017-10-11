@@ -49,7 +49,7 @@ function patchSingle (domNode: Element, vpatch: VPatch, parentContext?: any) {
     case VPatch.VTEXT:
       return patchVText(domNode as any, patchObj as VText)
     case VPatch.VNODE:
-      return patchVNode(domNode, patchObj as IVNode)
+      return patchVNode(domNode, patchObj as IVNode, parentContext)
     case VPatch.INSERT:
       return patchInsert(domNode, patchObj as VirtualNode, parentContext)
     case VPatch.WIDGET:
@@ -81,7 +81,10 @@ function patchVText (domNode: Text, patch: VirtualNode) {
   return newNode
 }
 
-function patchVNode (domNode: Element, patch: VirtualNode) {
+function patchVNode (domNode: Element, patch: VirtualNode, parentContext) {
+  if (isWidget(patch) || isVNode(patch)) {
+    patch.parentContext = parentContext
+  }
   if (domNode === null) {
     return createElement(patch)
   }
