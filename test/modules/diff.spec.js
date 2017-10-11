@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+import assert from 'power-assert'
 
 import h from '../../src/vdom/h'
 import diff from '../../src/vdom/diff'
@@ -25,12 +25,12 @@ describe('test dom diff algorithm', () => {
         assert.equal(item.patch.style.height, '200px')
         assert.equal(item.patch.attributes.prop, 'cc')
       } else if (item.type === VPatch.ORDER) {
-        assert.property(item.patch, 'removes')
-        assert.property(item.patch, 'inserts')
-        assert.isArray(item.patch.removes)
-        assert.isArray(item.patch.inserts)
+        assert(item.patch.hasOwnProperty('removes'))
+        assert(item.patch.hasOwnProperty('inserts'))
+        assert(Array.isArray(item.patch.removes))
+        assert(Array.isArray(item.patch.inserts))
       } else if (item.type === VPatch.INSERT) {
-        assert.match(item.patch.key, /3|4/)
+        assert(item.patch.key.match(/3|4/))
       } else {
         assert.fail()
       }
