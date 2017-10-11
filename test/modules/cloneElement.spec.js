@@ -1,6 +1,5 @@
 /** @jsx createElement */
 import { Component, createElement, cloneElement, render } from '../../src'
-import assert from 'power-assert'
 describe('cloneElement()', () => {
   let scratch
   beforeAll(() => {
@@ -22,12 +21,12 @@ describe('cloneElement()', () => {
       <div className='hh' style={{ width: '800px' }} />
     )
     const cloneVNode = cloneElement(vnode)
-    assert(cloneVNode.tagName === 'div')
-    assert(cloneVNode.hasOwnProperty('props'))
+    expect(cloneVNode.tagName).toEqual('div')
+    expect(cloneVNode.hasOwnProperty('props')).toBeTruthy()
     const { style } = cloneVNode.props
-    assert(style.width === '800px')
-    assert(cloneVNode.props.className === 'hh')
-    assert(cloneVNode.children.length === 0)
+    expect(style.width).toBe('800px')
+    expect(cloneVNode.props.className).toBe('hh')
+    expect(cloneVNode.children.length).toBe(0)
   })
 
   it('can clone node with children', () => {
@@ -76,8 +75,8 @@ describe('cloneElement()', () => {
     })
     render(cloneVNode, scratch)
     const dom = scratch.firstChild
-    assert(dom.className === 'hh')
-    assert(dom.style.width === '800px')
+    expect(dom.className).toBe('hh')
+    expect(dom.style.width).toBe('800px')
     // expect(scratch.firstChild).to.have.property('className', 'hh')
     // expect(scratch.firstChild.style).to.have.property('width', '800px')
   })

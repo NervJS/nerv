@@ -5,7 +5,7 @@ import { createElement, Component, render, nextTick } from '../../src'
 describe('Hooks', () => {
   let scratch
 
-  before(() => {
+  beforeAll(() => {
     scratch = document.createElement('div')
     document.body.appendChild(scratch)
   })
@@ -14,7 +14,7 @@ describe('Hooks', () => {
     scratch.innerHTML = ''
   })
 
-  after(() => {
+  afterAll(() => {
     scratch.parentNode.removeChild(scratch)
     scratch = null
   })
@@ -55,13 +55,13 @@ describe('Hooks', () => {
       }
 
       render(<Outer />, scratch)
-      expect(scratch.childNodes[0].innerHTML).to.eq(html)
+      expect(scratch.childNodes[0].innerHTML).toEqual(html)
       doRender()
       await nextTick()
-      expect(scratch.childNodes[0].innerHTML).to.eq('123')
+      expect(scratch.childNodes[0].innerHTML).toEqual('123')
       doRender()
       await nextTick()
-      expect(scratch.childNodes[0].innerHTML).to.eq('')
+      expect(scratch.childNodes[0].innerHTML).toEqual('')
     })
 
     it('Should not dangerously set innerHTML when previous is same as new one', async () => {
@@ -96,10 +96,10 @@ describe('Hooks', () => {
       }
 
       render(<Outer />, scratch)
-      expect(scratch.childNodes[0].innerHTML).to.eq(html)
+      expect(scratch.childNodes[0].innerHTML).toEqual(html)
       doRender()
       await nextTick()
-      expect(scratch.childNodes[0].innerHTML).to.eq(html)
+      expect(scratch.childNodes[0].innerHTML).toEqual(html)
     })
   })
   describe('AttributeHook', () => {
@@ -141,16 +141,16 @@ describe('Hooks', () => {
       }
 
       render(<Outer />, scratch)
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).to.eq('first value')
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).toEqual('first value')
       doRender()
       await nextTick()
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).to.eq('first value')
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).toEqual('first value')
       doRender()
       await nextTick()
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).to.eq('second value')
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).toEqual('second value')
       doRender()
       await nextTick()
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).to.eq(blankAttributeNS())
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).toEqual(blankAttributeNS())
     })
 
     it('sets the attribute if previous value was not an AttributeHook', async () => {
@@ -194,10 +194,10 @@ describe('Hooks', () => {
       }
 
       render(<Outer />, scratch)
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).to.eq(blankAttributeNS())
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual(blankAttributeNS())
       doRender()
       await nextTick()
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).to.eq('the value')
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual('the value')
     })
 
     it('removes the attribute if next value is not an AttributeHook', async () => {
@@ -240,10 +240,10 @@ describe('Hooks', () => {
       }
 
       render(<Outer />, scratch)
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).to.eq('the value')
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual('the value')
       doRender()
       await nextTick()
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).to.eq(blankAttributeNS())
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual(blankAttributeNS())
     })
 
     it('sets the attribute if previous value uses a different namespace', async () => {
@@ -281,10 +281,10 @@ describe('Hooks', () => {
       }
 
       render(<Outer />, scratch)
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).to.eq(blankAttributeNS())
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual(blankAttributeNS())
       doRender()
       await nextTick()
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).to.eq('the value')
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual('the value')
     })
 
     it('removes the attribute if next value uses a different namespace', async () => {
@@ -322,10 +322,10 @@ describe('Hooks', () => {
       }
 
       render(<Outer />, scratch)
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).to.eq('the value')
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual('the value')
       doRender()
       await nextTick()
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).to.eq(blankAttributeNS())
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual(blankAttributeNS())
     })
   })
 })

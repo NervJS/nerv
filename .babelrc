@@ -1,13 +1,8 @@
 {
   "presets": [
     [
-      "es2015",
-      {
-        "modules": false,
-        "loose": true
-      }
-    ],
-    "stage-0"
+      "env"
+    ]
   ],
   "plugins": [
     "transform-es3-member-expression-literals",

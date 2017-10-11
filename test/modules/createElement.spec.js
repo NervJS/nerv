@@ -1,4 +1,3 @@
-import assert from 'power-assert'
 
 import h from '../../src/vdom/h'
 import createElement from '../../src/vdom/create-element'
@@ -12,9 +11,9 @@ describe('test create real dom tree from virtual dom tree', () => {
       h('p', { key: '4', className: 'test_p' }, '4')
     ])
     const dom = createElement(tree)
-    assert.equal(dom.tagName, 'DIV')
-    assert.equal(dom.childNodes.length, 4)
-    assert.equal(dom.style.width, '10px')
+    expect(dom.tagName).toBe('DIV')
+    expect(dom.childNodes.length).toBe(4)
+    expect(dom.style.width).toBe('10px')
   })
 
   it('should create document Fragment', () => {
