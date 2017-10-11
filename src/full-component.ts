@@ -3,7 +3,7 @@ import Component from './component'
 
 class ComponentWrapper {
   type = 'Widget'
-  ComponentType: any
+  tagName: any
   name: string
   _owner: any
   props: any
@@ -11,10 +11,10 @@ class ComponentWrapper {
   component: Component<any, any>
   context: any
 
-  constructor (ComponentType, props) {
-    this.ComponentType = ComponentType
-    this.name = ComponentType.name || ComponentType.toString().match(/^function\s*([^\s(]+)/)[1]
-    ComponentType.displayName = this.name
+  constructor (tagName, props) {
+    this.tagName = tagName
+    this.name = tagName.name || tagName.toString().match(/^function\s*([^\s(]+)/)[1]
+    tagName.displayName = this.name
     this._owner = props.owner
     delete props.owner
     this.props = props
@@ -24,7 +24,7 @@ class ComponentWrapper {
     return mountComponent(this)
   }
 
-  update (previous, domNode?) {
+  update (previous, current?, domNode?) {
     return reRenderComponent(previous, this)
   }
 

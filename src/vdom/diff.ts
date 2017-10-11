@@ -1,10 +1,11 @@
 /* tslint:disable: no-shadowed-variable*/
 
 import VPatch from './vpatch'
-import { isVNode, isVText, isWidget, isStateLess, isHook } from './vnode/types'
+import { isVNode, isVText, isWidget, isHook } from './vnode/types'
 import { isFunction, isObject, getPrototype } from '../util'
 import { VirtualNode, IVNode, IProps, Patch, VirtualChildren } from '../types'
 import Widget from '../full-component'
+import Stateless from '../stateless-component'
 
 type Patches = Patch[] & {
   old: VirtualNode
@@ -60,9 +61,6 @@ function walk (a: VirtualNode, b: VirtualNode, patches: Patches, index: number) 
       walk(null, item, patches, index)
       index++
     })
-  } else if (isStateLess(b)) {
-    applyClear = true
-    apply = appendPatch(apply, new VPatch(VPatch.STATELESS, a, b))
   }
   if (apply) {
     patches[index] = apply
@@ -298,16 +296,14 @@ function unhook (vnode: VirtualNode, patch: VirtualNode, index: number) {
         }
       }
     }
-  } else if (isStateLess(vnode)) {
-    index += 1
-    unhook(vnode._renderd, patch, index)
   }
 }
 
 function destroyWidgets (vnode: VirtualNode, patch: VirtualNode, index: number) {
   if (isWidget(vnode)) {
     if (isFunction(vnode.destroy)) {
-      (patch as Widget)[index] = appendPatch((patch as Widget)[index], new VPatch(VPatch.REMOVE, vnode, null))
+      (patch as Widget | Stateless)[index] =
+        appendPatch((patch as Widget | Stateless)[index], new VPatch(VPatch.REMOVE, vnode, null))
     }
   } else if (isVNode(vnode) && vnode.hasWidgets) {
     vnode.children.forEach((child) => {
@@ -317,9 +313,6 @@ function destroyWidgets (vnode: VirtualNode, patch: VirtualNode, index: number) 
         index += child.count
       }
     })
-  } else if (isStateLess(vnode)) {
-    index += 1
-    destroyWidgets(vnode._renderd, patch, index)
   }
 }
 

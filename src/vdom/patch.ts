@@ -3,14 +3,12 @@
 
 import VPatch from './vpatch'
 import { isFunction, isString, isObject, getPrototype } from '../util'
-import shallowEqual from '../util/shallow-equal'
 import domIndex from './dom-index'
-import { isWidget, isHook, isStateLess, isVNode } from './vnode/types'
+import { isWidget, isHook, isVNode } from './vnode/types'
 import createElement from './create-element'
 import VText from './vnode/vtext'
 import { IProps, VirtualNode, IVNode, PatchOrder } from '../types'
 import Widget from '../full-component'
-import Stateless from '../stateless-component'
 
 function patch (rootNode: Element, patches, parentContext?: any) {
   const patchIndices = getPatchIndices(patches)
@@ -56,8 +54,6 @@ function patchSingle (domNode: Element, vpatch: VPatch, parentContext?: any) {
       return patchInsert(domNode, patchObj as VirtualNode, parentContext)
     case VPatch.WIDGET:
       return patchWidget(domNode, oldVNode as Widget, patchObj as Widget)
-    case VPatch.STATELESS:
-      return patchStateLess(domNode, oldVNode as Stateless, patchObj as Stateless)
     case VPatch.PROPS:
       return patchProps(domNode, patchObj as IProps, (oldVNode as IVNode).props, (oldVNode as IVNode).isSvg)
     case VPatch.ORDER:
@@ -98,7 +94,7 @@ function patchVNode (domNode: Element, patch: VirtualNode) {
 }
 
 function patchInsert (parentNode: Element, vnode: VirtualNode, parentContext?: any) {
-  if (isWidget(vnode) || isVNode(vnode) || isStateLess(vnode)) {
+  if (isWidget(vnode) || isVNode(vnode)) {
     vnode.parentContext = parentContext
   }
   const newNode = createElement(vnode)
@@ -114,7 +110,7 @@ function patchWidget (domNode: Element, vnode: Widget, patch: Widget) {
     patch.parentContext = vnode.parentContext
   }
   const newNode = isUpdate
-    ? (patch as Widget).update(vnode, domNode) || domNode
+    ? (patch as Widget).update(vnode, patch, domNode) || domNode
     : createElement(patch)
   const parentNode = domNode.parentNode
   if (parentNode && domNode !== newNode) {
@@ -122,20 +118,6 @@ function patchWidget (domNode: Element, vnode: Widget, patch: Widget) {
   }
   if (!isUpdate && vnode) {
     destroyWidget(domNode, vnode)
-  }
-  return newNode
-}
-
-function patchStateLess (domNode: Element, vnode: Stateless, patch: Stateless) {
-  const oldProps = vnode.props
-  const newProps = patch.props
-  if (vnode.tagName === patch.tagName && shallowEqual(oldProps, newProps)) {
-    return domNode
-  }
-  const newNode = createElement(patch)
-  const parentNode = domNode.parentNode
-  if (parentNode && domNode !== newNode) {
-    parentNode.replaceChild(newNode as Element, domNode)
   }
   return newNode
 }
