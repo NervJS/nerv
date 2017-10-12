@@ -1,6 +1,5 @@
 {
   "presets": [
-    ["env", { "module": false }],
     ["es2015-loose"],
     ["stage-0"]
   ],
