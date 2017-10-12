@@ -5,7 +5,11 @@
     ["stage-0"]
   ],
   "plugins": [
-    "transform-runtime",
+    ["transform-runtime", {
+      "helpers": false,
+      "polyfill": false,
+      "regenerator": true
+    }],
     "transform-es3-member-expression-literals",
     "transform-es3-property-literals",
     [
