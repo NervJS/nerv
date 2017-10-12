@@ -85,8 +85,8 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
-      './node_modules/es5-shim/dist/es5-shim.js',
-      './node_modules/es5-shim/dist/es5-sham.js',
+      './node_modules/es5-shim/es5-shim.js',
+      './node_modules/es5-shim/es5-sham.js',
       'test/spec.js'
     ],
 
