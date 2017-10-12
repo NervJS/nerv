@@ -1,3 +1,5 @@
+import sinon from 'sinon'
+
 export const EMPTY_CHILDREN = []
 
 export const CHILDREN_MATCHER = sinon.match(v => v === null || (Array.isArray(v) && !v.length), '[empty children]')

@@ -1,8 +1,7 @@
 {
   "presets": [
-    [
-      "env"
-    ]
+    "es2015",
+    "stage-0"
   ],
   "plugins": [
     "transform-es3-member-expression-literals",
@@ -13,6 +12,5 @@
         "pragma": "createElement"
       }
     ]
-  ],
-  "comments": false
+  ]
 }
