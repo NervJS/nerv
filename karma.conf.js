@@ -178,6 +178,11 @@ module.exports = function (config) {
             exclude: /node_modules/
           },
           {
+            test: /.js$/,
+            enforce: 'post',
+            loader: 'es3ify-loader'
+          },
+          {
             test: /\.ts$/,
             loader: 'ts-loader',
             options: {
