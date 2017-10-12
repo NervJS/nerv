@@ -124,6 +124,6 @@
     "ts-loader": "^2.3.4",
     "tslint": "^5.7.0",
     "typescript": "^2.4.2",
-    "webpack": "1.15.0"
+    "webpack": "2"
   }
 }
