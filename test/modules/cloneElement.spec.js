@@ -1,11 +1,6 @@
 /** @jsx createElement */
 import { Component, createElement, cloneElement, render } from '../../src'
-
-function normalizeHTML (html) {
-  const div = document.createElement('div')
-  div.innerHTML = html
-  return div.innerHTML
-}
+import { normalizeHTML } from '../util'
 
 describe('cloneElement()', () => {
   let scratch

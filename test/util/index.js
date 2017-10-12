@@ -4,6 +4,12 @@ export const EMPTY_CHILDREN = []
 
 export const CHILDREN_MATCHER = sinon.match(v => v === null || (Array.isArray(v) && !v.length), '[empty children]')
 
+export function normalizeHTML (html) {
+  const div = document.createElement('div')
+  div.innerHTML = html
+  return div.innerHTML
+}
+
 export function getAttributes (node) {
   const attrs = {}
   if (node.attributes) {

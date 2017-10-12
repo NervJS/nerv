@@ -1,9 +1,11 @@
 {
   "presets": [
-    "es2015",
-    "stage-0"
+    ["env", { "module": false }],
+    ["es2015", { "loose": true }],
+    ["stage-0"]
   ],
   "plugins": [
+    "transform-runtime",
     "transform-es3-member-expression-literals",
     "transform-es3-property-literals",
     [
