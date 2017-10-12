@@ -172,8 +172,9 @@ module.exports = function (config) {
       module: {
         rules: [
           {
+            enforce: 'pre',
             test: /\.js$/,
-            loader: ['es3ify', 'babel'],
+            loader: 'babel-loader',
             exclude: /node_modules/,
             query: {
               presets: ['stage-0', 'es2015-loose']
