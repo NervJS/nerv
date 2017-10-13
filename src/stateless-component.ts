@@ -9,7 +9,6 @@ class StateLessComponent {
   props: any
   _rendered: any
   parentContext: any
-  dom: any
   constructor (tagName, props) {
     this.tagName = tagName
     this._owner = props.owner
@@ -27,11 +26,11 @@ class StateLessComponent {
     if (previous.tagName === current.tagName && shallowEqual(oldProps, newProps)) {
       return domNode
     }
-    return reRenderStatelessComponent(previous, this)
+    return reRenderStatelessComponent(previous, this, domNode)
   }
 
   destroy (dom?: Element) {
-    unmountStatelessComponent(this)
+    unmountStatelessComponent(this, dom)
   }
 }
 

@@ -60,9 +60,7 @@ export function mountStatelessComponent (vnode: Stateless) {
     ref = new RefHook(ref)
     rendered.props.ref = ref
   }
-  const dom = mountVNode(rendered, vnode.parentContext)
-  vnode.dom = dom
-  return dom
+  return mountVNode(rendered, vnode.parentContext)
 }
 
 export function getChildContext (component, context) {
@@ -118,13 +116,11 @@ export function reRenderComponent (prev, current) {
   return component.dom
 }
 
-export function reRenderStatelessComponent (prev, current) {
+export function reRenderStatelessComponent (prev, current, domNode) {
   const lastRendered = prev._rendered
   const rendered = current.tagName(current.props, current.parentContext)
   current._rendered = rendered
-  const dom = updateVNode(rendered, lastRendered, prev.dom, prev.parentContext)
-  current.dom = dom
-  return dom
+  return updateVNode(rendered, lastRendered, domNode, prev.parentContext)
 }
 
 export function updateComponent (component, isForce = false) {
@@ -196,9 +192,9 @@ export function unmountComponent (vnode: FullComponent) {
   }
 }
 
-export function unmountStatelessComponent (vnode: Stateless) {
-  updateVNode(null, vnode._rendered, vnode.dom, vnode.parentContext)
-  vnode.dom = vnode._rendered = null
+export function unmountStatelessComponent (vnode: Stateless, dom) {
+  updateVNode(null, vnode._rendered, dom, vnode.parentContext)
+  vnode._rendered = null
   if (isFunction(vnode.props.ref)) {
     vnode.props.ref(null)
   }
