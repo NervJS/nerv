@@ -1,5 +1,6 @@
 /** @jsx createElement */
 import { Component, createElement, render } from '../../src'
+import sinon from 'sinon'
 
 const spy = (name, ...args) => {
   const spy = sinon.spy(...args)
@@ -10,7 +11,7 @@ const spy = (name, ...args) => {
 describe('refs', () => {
   let scratch
 
-  before(() => {
+  beforeAll(() => {
     scratch = document.createElement('div')
     document.body.appendChild(scratch)
   })
@@ -19,7 +20,7 @@ describe('refs', () => {
     scratch.innerHTML = ''
   })
 
-  after(() => {
+  afterAll(() => {
     scratch.parentNode.removeChild(scratch)
     scratch = null
   })
@@ -27,7 +28,8 @@ describe('refs', () => {
   it('should invoke refs in render()', () => {
     const ref = spy('ref')
     render(<div ref={ref} />, scratch)
-    expect(ref).to.have.been.calledOnce.and.calledWith(scratch.firstChild)
+    expect(ref.calledOnce).toBeTruthy()
+    expect(ref.calledWith(scratch.firstChild)).toBeTruthy()
   })
 
   it('should invoke refs in Component.render()', () => {
@@ -44,8 +46,8 @@ describe('refs', () => {
     }
     render(<Foo />, scratch)
 
-    expect(outer).to.have.been.calledWith(scratch.firstChild)
-    expect(inner).to.have.been.calledWith(scratch.firstChild.firstChild)
+    expect(outer.calledWith(scratch.firstChild)).toBeTruthy()
+    expect(inner.calledWith(scratch.firstChild.firstChild)).toBeTruthy()
   })
 
   it('should pass components to ref functions', () => {
@@ -62,7 +64,8 @@ describe('refs', () => {
     }
     render(<Foo ref={ref} />, scratch)
 
-    expect(ref).to.have.been.calledOnce.and.calledWith(instance)
+    expect(ref.calledOnce).toBeTruthy()
+    expect(ref.calledWith(instance)).toBeTruthy()
   })
 
   it('should pass rendered DOM from functional components to ref functions', () => {
@@ -71,7 +74,7 @@ describe('refs', () => {
     const Foo = () => <div />
 
     render(<Foo ref={ref} />, scratch)
-    expect(ref).to.have.been.calledOnce
+    expect(ref.calledOnce).toBeTruthy()
   })
 
   it('should pass children to ref functions', () => {
@@ -109,24 +112,25 @@ describe('refs', () => {
 
     render(<Outer ref={c => (outerC = c)} />, scratch)
 
-    expect(outer).to.have.been.calledOnce.and.calledWith(inst)
-    expect(inner).to.have.been.calledOnce.and.calledWith(inst.dom)
+    expect(outer.calledOnce).toBeTruthy()
+    expect(outer.calledWith(inst)).toBeTruthy()
+    expect(inner.calledOnce).toBeTruthy()
+    expect(inner.calledWith(inst.dom)).toBeTruthy()
 
     outer.reset()
     inner.reset()
 
     rerender()
 
-    expect(outer, 're-render').to.have.been.calledOnce.and.calledWith(inst)
-    expect(inner, 're-render').to.have.been.called
+    expect(outer.calledOnce).toBeTruthy()
+    expect(outer.calledWith(inst)).toBeTruthy()
 
     inner.reset()
     InnermostComponent = 'x-span'
     rerender()
-    expect(inner, 're-render swap')
-    expect(inner.firstCall, 're-render swap').to.have.been.calledWith(inst.dom)
-    expect(inner.secondCall, 're-render swap').to.have.been.calledWith(null)
-    expect(scratch.innerHTML).to.equal('<div><x-span></x-span></div>')
+    expect(inner.firstCall.calledWith(inst.dom))
+    expect(inner.secondCall.calledWith(null))
+    expect(scratch.innerHTML).toEqual('<div><x-span></x-span></div>')
     InnermostComponent = 'span'
 
     outer.reset()
@@ -135,9 +139,10 @@ describe('refs', () => {
       reset: true
     })
     outerC.forceUpdate()
-
-    expect(outer, 'unrender').to.have.been.calledOnce.and.calledWith(null)
-    expect(inner, 'unrender').to.have.been.calledOnce.and.calledWith(null)
+    expect(outer.calledOnce).toBeTruthy()
+    expect(outer.calledWith(null)).toBeTruthy()
+    expect(inner.calledOnce).toBeTruthy()
+    expect(inner.calledWith(null)).toBeTruthy()
   })
 
   it('should pass high-order children to ref functions', () => {
@@ -167,25 +172,23 @@ describe('refs', () => {
     }
 
     render(<Outer ref={outer} />, scratch)
-
-    expect(outer, 'outer initial').to.have.been.calledOnce.and.calledWith(outerInst)
-    expect(inner, 'inner initial').to.have.been.calledOnce.and.calledWith(innerInst)
-    expect(innermost, 'innerMost initial').to.have.been.calledOnce.and.calledWith(innerInst.dom)
+    expect(outer.calledWith(outerInst)).toBeTruthy()
+    expect(inner.calledWith(innerInst)).toBeTruthy()
+    expect(innermost.calledWith(innerInst.dom)).toBeTruthy()
 
     outer.reset()
     inner.reset()
     innermost.reset()
     outerInst.forceUpdate()
 
-    expect(inner, 'inner update').to.have.been.calledOnce.and.calledWith(innerInst)
-    expect(innermost, 'innerMost update').to.have.been.called
+    expect(inner.calledWith(innerInst)).toBeTruthy()
+    expect(innermost.called).toBeTruthy()
 
     innermost.reset()
     InnermostComponent = 'x-span'
     outerInst.forceUpdate()
-    expect(innermost, 'innerMost swap')
-    expect(innermost.firstCall, 'innerMost swap').to.have.been.calledWith(innerInst.dom)
-    expect(innermost.secondCall, 'innerMost swap').to.have.been.calledWith(null)
+    expect(innermost.firstCall.calledWith(innerInst.dom)).toBeTruthy()
+    expect(innermost.secondCall.calledWith(null)).toBeTruthy()
     InnermostComponent = 'span'
 
     outer.reset()
@@ -214,23 +217,23 @@ describe('refs', () => {
         return <span id='span' ref={this.handleMount}>some test content</span>
       }
     }
-    sinon.spy(Child.prototype, 'handleMount')
+    const childSpy = sinon.spy(Child.prototype, 'handleMount')
 
     render(<App />, scratch)
-    expect(inst.handleMount).to.have.been.calledOnce.and.calledWith(scratch.querySelector('#div'))
+    expect(childSpy.calledWith(scratch.querySelector('#div'))).toBeTruthy()
     inst.handleMount.reset()
 
     inst.setState({ show: true })
     inst.forceUpdate()
-    expect(inst.handleMount).to.have.been.calledTwice
-    expect(inst.handleMount.firstCall).to.have.been.calledWith(scratch.querySelector('#span'))
-    expect(inst.handleMount.secondCall).to.have.been.calledWith(null)
+    expect(childSpy.callCount).toBe(2)
+    expect(childSpy.firstCall.calledWith(scratch.querySelector('#span'))).toBeTruthy()
+    expect(childSpy.secondCall.calledWith(null)).toBeTruthy()
     inst.handleMount.reset()
 
     inst.setState({ show: false })
     inst.forceUpdate()
-    expect(inst.handleMount).to.have.been.calledTwice
-    expect(inst.handleMount.firstCall).to.have.been.calledWith(scratch.querySelector('#div'))
-    expect(inst.handleMount.secondCall).to.have.been.calledWith(null)
+    expect(childSpy.callCount).toBe(2)
+    expect(childSpy.firstCall.calledWith(scratch.querySelector('#div'))).toBeTruthy()
+    expect(childSpy.secondCall.calledWith(null)).toBeTruthy()
   })
 })

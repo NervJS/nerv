@@ -6,10 +6,9 @@ import { getAttributes } from '../util'
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 describe('render()', function () {
-  this.timeout(20000)
   let scratch
 
-  before(() => {
+  beforeAll(() => {
     scratch = document.createElement('div')
     document.body.appendChild(scratch)
   })
@@ -18,14 +17,14 @@ describe('render()', function () {
     scratch.innerHTML = ''
   })
 
-  after(() => {
+  afterAll(() => {
     scratch.parentNode.removeChild(scratch)
     scratch = null
   })
 
   it('should create empty nodes (<* />)', () => {
     render(<div />, scratch)
-    expect(scratch.childNodes).to.have.length(1)
+    expect(scratch.childNodes.length).to.have.length(1)
     expect(scratch.childNodes[0]).to.have.deep.property('nodeName', 'DIV')
     scratch.innerHTML = ''
 

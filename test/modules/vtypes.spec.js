@@ -5,7 +5,7 @@ import createVText from '../../src/vdom/create-vtext'
 describe('vtypes', () => {
   let scratch
 
-  before(() => {
+  beforeAll(() => {
     scratch = document.createElement('div')
     document.body.appendChild(scratch)
   })
@@ -14,19 +14,19 @@ describe('vtypes', () => {
     scratch.innerHTML = ''
   })
 
-  after(() => {
+  afterAll(() => {
     scratch.parentNode.removeChild(scratch)
     scratch = null
   })
 
   it('vnode type', () => {
     const div = <div />
-    expect(div).to.have.property('type').that.to.equal('VirtualNode')
+    expect(div.type).toBe('VirtualNode')
   })
 
   it('vtext type', () => {
     const div = createVText('hhh')
-    expect(div).to.have.property('type').that.to.equal('VirtualText')
+    expect(div.type).toBe('VirtualText')
   })
 
   it('widget type', () => {
@@ -36,6 +36,12 @@ describe('vtypes', () => {
       }
     }
     const t = <T />
-    expect(t).to.have.property('type').that.to.equal('Widget')
+    expect(t.type).toBe('Widget')
+  })
+
+  it('stateless type', () => {
+    const T = () => <div />
+    const t = <T />
+    expect(t.type).toBe('Widget')
   })
 })
