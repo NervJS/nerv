@@ -11,7 +11,7 @@ function recurse (rootNode: Element, tree, patchIndices: number[], nodes = {}, i
     if (indexInRange(patchIndices, index, index)) {
       nodes[index] = rootNode
     }
-    const vChildren = tree.children
+    const vChildren = tree && tree.children
     if (vChildren) {
       const childNodes = rootNode.childNodes
       vChildren.forEach((vChild, i) => {
