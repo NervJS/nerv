@@ -1,17 +1,8 @@
 {
   "presets": [
-    ["es2015-loose"],
-    ["stage-0"]
+    ["env"], ["stage-0"], ["es3"]
   ],
   "plugins": [
-    ["transform-runtime", {
-      "helpers": false,
-      "polyfill": false,
-      "regenerator": true
-    }],
-    "transform-es3-member-expression-literals",
-    "transform-es3-property-literals",
-    "transform-es2015-modules-commonjs",
     [
       "transform-react-jsx",
       {

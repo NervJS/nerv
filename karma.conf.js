@@ -1,7 +1,6 @@
 // Karma configuration
 // Generated on Tue Jul 18 2017 18:01:48 GMT+0800 (CST)
 
-const path = require('path')
 const webpack = require('webpack')
 const coverage = String(process.env.COVERAGE) !== 'false'
 const ci = String(process.env.CI).match(/^(1|true)$/gi)
@@ -85,8 +84,7 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
-      './node_modules/es5-shim/es5-shim.js',
-      './node_modules/es5-shim/es5-sham.js',
+      './node_modules/es5-polyfill/dist/polyfill.js',
       'test/spec.js'
     ],
 
@@ -97,35 +95,16 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'test/**/*.js': ['webpack', 'sourcemap']
+      'test/**/*.js': ['webpack']
     },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['spec'].concat(
-      coverage ? 'coverage-istanbul' : [],
+      coverage ? [] : [],
       sauceLabs ? 'saucelabs' : []
     ),
-
-    coverageIstanbulReporter: {
-      dir: './coverage',
-      reports: ['html', 'lcovonly', 'text-summary'],
-      fixWebpackSourcePaths: true,
-      skipFilesWithNoCoverage: true,
-      'report-config': {
-        html: {
-          subdir: 'html'
-        },
-        'text-summary': {
-          subdir: 'text-summary'
-        },
-        lcovonly: {
-          subdir: '.',
-          file: 'lcov.info'
-        }
-      }
-    },
 
     mochaReporter: {
       showDiff: true
@@ -166,44 +145,34 @@ module.exports = function (config) {
     concurrency: 2,
 
     webpack: {
-      devtool: 'inline-source-map',
+      // devtool: 'inline-source-map',
       resolve: {
-        extensions: ['.js', '.ts']
+        root: __dirname,
+        extensions: ['', '.ts', '.js']
       },
       module: {
-        rules: [
+        loaders: [
           {
-            enforce: 'pre',
             test: /\.js$/,
             loader: 'babel-loader',
             exclude: /node_modules/
           },
           {
-            test: /.js$/,
-            enforce: 'post',
-            loader: 'es3ify-loader'
-          },
-          {
-            test: /\.ts$/,
-            loader: 'ts-loader',
-            options: {
+            test: /\.ts?$/,
+            loader: 'ts-loader?' + JSON.stringify({
               transpileOnly: true,
               compilerOptions: {
                 target: 'es3',
                 module: 'commonjs'
               }
-            }
-          },
-          coverage ? {
-            enforce: 'post',
-            test: /\.ts$/,
-            use: {
-              loader: 'istanbul-instrumenter-loader',
-              options: { esModules: true }
-            },
-            include: path.resolve('src/'),
-            exclude: /node_modules/
-          } : {}
+            })
+          }
+        ],
+        postLoaders: [
+          {
+            test: /.js$/,
+            loader: 'es3ify-loader'
+          }
         ]
       },
       plugins: [
@@ -217,7 +186,9 @@ module.exports = function (config) {
 
     webpackMiddleware: {
       noInfo: true,
-      stats: 'errors-only'
+      stats: {
+        errorDetails: true
+      }
     }
   })
 }
