@@ -15,12 +15,9 @@ module.exports = {
   globals: {
     describe: true,
     it: true,
-    before: true,
     beforeAll: true,
     beforeEach: true,
-    after: true,
     afterAll: true,
-    sinon: true,
     expect: true
   },
   parser: 'babel-eslint'
