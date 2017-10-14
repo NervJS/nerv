@@ -4,7 +4,7 @@ import { Component, createElement, render } from '../../src/index'
 describe('keys', () => {
   let scratch
 
-  before(() => {
+  beforeAll(() => {
     scratch = document.createElement('div')
     document.body.appendChild(scratch)
   })
@@ -13,7 +13,7 @@ describe('keys', () => {
     scratch.innerHTML = ''
   })
 
-  after(() => {
+  afterAll(() => {
     scratch.parentNode.removeChild(scratch)
     scratch = null
   })
@@ -50,12 +50,15 @@ describe('keys', () => {
       )
     })
     inst.forceUpdate()
-    expect(scratch.innerHTML).to.equal('<div><div>2</div><li>b</li><li>c</li></div>')
+    expect(scratch.innerHTML).toEqual('<div><div>2</div><li>b</li><li>c</li></div>')
   })
 
   it('should set VNode#key property', () => {
-    expect(<div />).to.have.property('key').that.is.null
-    expect(<div a='a' />).to.have.property('key').that.is.null
-    expect(<div key='1' />).to.have.property('key', '1')
+    expect(<div />.key).toBe(null)
+    expect(<div a='a' />.key).toBe(null)
+    expect(<div key='1' />.key).toBe('1')
+    // expect(<div />).to.have.property('key').that.is.null
+    // expect(<div a='a' />).to.have.property('key').that.is.null
+    // expect(<div key='1' />).to.have.property('key', '1')
   })
 })
