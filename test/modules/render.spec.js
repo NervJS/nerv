@@ -22,19 +22,19 @@ describe('render()', function () {
 
   it('should create empty nodes (<* />)', () => {
     render(<div />, scratch)
-    expect(scratch.childNodes).toHaveLength(1)
+    expect(scratch.childNodes.length).toBe(1)
     expect(scratch.childNodes[0].nodeName).toBe('DIV')
     scratch.innerHTML = ''
 
     render(<span />, scratch)
-    expect(scratch.childNodes).toHaveLength(1)
+    expect(scratch.childNodes.length).toBe(1)
     expect(scratch.childNodes[0].nodeName).toBe('SPAN')
 
     scratch.innerHTML = ''
 
     render(<foo />, scratch)
     render(<x-bar />, scratch)
-    expect(scratch.childNodes).toHaveLength(2)
+    expect(scratch.childNodes.length).toBe(2)
     expect(scratch.childNodes[0].nodeName).toBe('FOO')
     expect(scratch.childNodes[1].nodeName).toBe('X-BAR')
   })
@@ -48,11 +48,11 @@ describe('render()', function () {
       </div>
     ), scratch)
 
-    expect(scratch.childNodes).toHaveLength(1)
+    expect(scratch.childNodes.length).toBe(1)
     expect(scratch.childNodes[0].nodeName).toBe('DIV')
 
     const c = scratch.childNodes[0].childNodes
-    expect(c).toHaveLength(3)
+    expect(c.length).toBe(3)
     expect(c[0].nodeName).toBe('SPAN')
     expect(c[1].nodeName).toBe('FOO')
     expect(c[2].nodeName).toBe('X-BAR')
@@ -174,7 +174,7 @@ describe('render()', function () {
     render(<div foo='bar' data-foo='databar' />, scratch)
 
     const div = scratch.childNodes[0]
-    expect(div.attributes).toHaveLength(2)
+    expect(div.attributes.length).toBe(2)
 
     expect(div.attributes[0].name).toBe('foo')
     expect(div.attributes[0].value).toBe('bar')
@@ -187,7 +187,7 @@ describe('render()', function () {
     render(<div click={function a () { }} ONCLICK={function b () { }} />, scratch)
 
     const div = scratch.childNodes[0]
-    expect(div.attributes).toHaveLength(0)
+    expect(div.attributes.length).toBe(0)
   })
 
   it('should serialize object props as attributes', () => {
@@ -444,29 +444,29 @@ describe('render()', function () {
     b.textContent = 'bat'
     comp.dom.appendChild(b)
 
-    expect(scratch.firstChild.children).toHaveLength(4)
+    expect(scratch.firstChild.children.length).toBe(4)
 
     comp.forceUpdate()
 
-    expect(scratch.firstChild.children).toHaveLength(4)
+    expect(scratch.firstChild.children.length).toBe(4)
     expect(scratch.innerHTML).toEqual(normalizeHTML(`<div><a>foo</a><b>bar</b><c>baz</c><b>bat</b></div>`))
 
     comp.alt = true
     comp.forceUpdate()
 
-    expect(scratch.firstChild.children).toHaveLength(4)
+    expect(scratch.firstChild.children.length).toBe(4)
     expect(scratch.innerHTML).toEqual(normalizeHTML(`<div><b>alt</b><a>foo</a><c>baz</c><b>bat</b></div>`))
 
     comp.alt = false
     comp.forceUpdate()
 
-    expect(scratch.firstChild.children).toHaveLength(4)
+    expect(scratch.firstChild.children.length).toBe(4)
     expect(scratch.innerHTML).toEqual(normalizeHTML(`<div><a>foo</a><b>bar</b><c>baz</c><b>bat</b></div>`))
 
     comp.alt = true
     comp.forceUpdate()
 
-    expect(scratch.firstChild.children).toHaveLength(4)
+    expect(scratch.firstChild.children.length).toBe(4)
     expect(scratch.innerHTML).toEqual(normalizeHTML(`<div><b>alt</b><a>foo</a><c>baz</c><b>bat</b></div>`))
   })
 
@@ -535,11 +535,11 @@ describe('render()', function () {
   })
 
   // TODO: onDoubleClick and onTouchTap failed
-  it.skip('should handle onDoubleClick and onTouchTap', () => {
-    const C = <input onDoubleClick={null} onTouchTap={null} />
-    render(<C />, scratch)
-    const input = document.querySelector('input')
-    expect(input['ondblclick']).toEqual(null)
-    expect(input['onclick']).toEqual(null)
-  })
+  // it.skip('should handle onDoubleClick and onTouchTap', () => {
+  //   const C = <input onDoubleClick={null} onTouchTap={null} />
+  //   render(<C />, scratch)
+  //   const input = document.querySelector('input')
+  //   expect(input['ondblclick']).toEqual(null)
+  //   expect(input['onclick']).toEqual(null)
+  // })
 })

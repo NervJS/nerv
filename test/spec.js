@@ -1,3 +1,5 @@
+import 'es5-shim'
+import 'es5-sham-ie8'
 import './modules/util.spec'
 import './modules/h.spec'
 import './modules/createElement.spec'

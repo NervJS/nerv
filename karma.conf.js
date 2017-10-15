@@ -80,11 +80,11 @@ module.exports = function (config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'jasmine-matchers'],
 
     // list of files / patterns to load in the browser
     files: [
-      './node_modules/es5-polyfill/dist/polyfill.js',
+      // './node_modules/es5-polyfill/dist/polyfill.js',
       'test/spec.js'
     ],
 
@@ -95,7 +95,7 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'test/**/*.js': ['webpack']
+      'test/**/*.js': ['webpack', 'sourcemap']
     },
 
     // test results reporter to use
@@ -145,35 +145,58 @@ module.exports = function (config) {
     concurrency: 2,
 
     webpack: {
-      // devtool: 'inline-source-map',
+      devtool: 'inline-source-map',
       resolve: {
-        root: __dirname,
-        extensions: ['', '.ts', '.js']
+        extensions: ['.ts', '.js']
       },
       module: {
-        loaders: [
+        rules: [
           {
+            enforce: 'pre',
             test: /\.js$/,
             loader: 'babel-loader',
             exclude: /node_modules/
           },
           {
-            test: /\.ts?$/,
-            loader: 'ts-loader?' + JSON.stringify({
+            test: /\.ts$/,
+            loader: 'ts-loader',
+            options: {
               transpileOnly: true,
               compilerOptions: {
                 target: 'es3',
                 module: 'commonjs'
               }
-            })
-          }
-        ],
-        postLoaders: [
+            }
+          },
           {
+            enforce: 'post',
             test: /.js$/,
             loader: 'es3ify-loader'
           }
         ]
+        // loaders: [
+        //   {
+        //     test: /\.js$/,
+        //     loader: 'babel-loader',
+        //     exclude: /node_modules/
+        //   },
+        //   {
+        //     test: /\.ts?$/,
+        //     loader: 'ts-loader?' + JSON.stringify({
+        //       transpileOnly: true,
+        //       compilerOptions: {
+        //         target: 'es3',
+        //         module: 'commonjs'
+        //       }
+        //     })
+        //   }
+        // ],
+        // postLoaders: [
+        //   {
+        //     test: /.js$/,
+        //     loader: 'es3ify-loader'
+        //   }
+        // ]
       },
       plugins: [
         new webpack.DefinePlugin({

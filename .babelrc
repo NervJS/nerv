@@ -1,12 +1,21 @@
 {
   "presets": [
-    ["env"], ["stage-0"], ["es3"]
+    ["env"], ["stage-0"]
   ],
   "plugins": [
     [
       "transform-react-jsx",
       {
         "pragma": "createElement"
+      }
+    ],
+    [
+      "transform-runtime",
+      {
+        "helpers": false,
+        "polyfill": false,
+        "regenerator": true,
+        "moduleName": "babel-runtime"
       }
     ]
   ]
