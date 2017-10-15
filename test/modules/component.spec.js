@@ -3,7 +3,7 @@ import { Component, createElement, render, cloneElement, PureComponent } from '.
 import createVText from '../../src/vdom/create-vtext'
 import { rerender } from '../../src/render-queue'
 import sinon from 'sinon'
-import { EMPTY_CHILDREN, getAttributes, sortAttributes } from '../util'
+import { EMPTY_CHILDREN, getAttributes, sortAttributes, normalizeHTML } from '../util'
 
 function fireEvent (on, type) {
   const e = document.createEvent('Event')
@@ -38,34 +38,32 @@ describe('Component', function () {
         return <div>C</div>
       }
     }
-    sinon.spy(C.prototype, 'render')
+    const spy = sinon.spy(C.prototype, 'render')
     render(<C />, scratch)
 
-    expect(C.prototype.render)
-      .to.have.been.calledOnce
-      .and.to.have.returned(sinon.match({ tagName: 'div' }))
+    expect(spy.calledOnce).toBeTruthy()
+    expect(spy.returned(sinon.match({ tagName: 'div' }))).toBeTruthy()
 
-    expect(scratch.innerHTML).to.equal('<div>C</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>C</div>'))
   })
 
   it('should render functional components', () => {
     const props = { foo: 'bar' }
     const C = sinon.spy(options => <div {...options} />)
     render(<C {...props} />, scratch)
-    expect(C)
-      .to.have.been.calledOnce
-      .and.to.have.been.calledWithMatch(props)
-      .and.to.have.returned(sinon.match({
-        tagName: 'div'
-      }))
-    expect(scratch.innerHTML).to.equal('<div foo="bar"></div>')
+    expect(C.calledOnce).toBeTruthy()
+    expect(C.calledWithMatch(props)).toBeTruthy()
+    expect(C.returned(sinon.match({
+      tagName: 'div'
+    }))).toBeTruthy()
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div foo="bar"></div>'))
   })
 
   it('should callback run once', () => {
     const C = <div />
     const f = sinon.spy()
     render(C, scratch, f)
-    expect(f).to.have.been.calledOnce
+    expect(f.calledOnce).toBeTruthy()
   })
 
   it('should update nested functional components', () => {
@@ -90,13 +88,13 @@ describe('Component', function () {
     }
     let c
     render(<C ref={ins => (c = ins)} />, scratch)
-    expect(scratch.innerHTML).to.equal('<div><div>A</div></div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div><div>A</div></div>'))
 
     c.setState({
       show: false
     })
     c.forceUpdate()
-    expect(scratch.innerHTML).to.equal('<div><div>B</div></div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div><div>B</div></div>'))
   })
 
   it('should render components with props', () => {
@@ -111,25 +109,29 @@ describe('Component', function () {
         return <div {...this.props}>C</div>
       }
     }
-    sinon.spy(C.prototype, 'render')
+    const spy = sinon.spy(C.prototype, 'render')
     render(<C {...props} />, scratch)
-    expect(constructorProps).to.deep.equal(props)
+    expect(constructorProps).toBe(props)
 
-    expect(C.prototype.render)
-      .to.have.been.calledOnce
-      .and.to.have.been.calledWithMatch()
-      .and.to.have.returned(sinon.match({
-        tagName: 'div'
-      }))
+    expect(spy.calledOnce).toBeTruthy()
+    expect(spy.calledWithMatch()).toBeTruthy()
+    expect(spy.returned(sinon.match({
+      tagName: 'div'
+    }))).toBeTruthy()
+      // .to.have.been.calledOnce
+      // .and.to.have.been.calledWithMatch()
+      // .and.to.have.returned(sinon.match({
+      //   tagName: 'div'
+      // }))
 
-    expect(scratch.innerHTML).to.equal('<div foo="bar">C</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div foo="bar">C</div>'))
   })
 
   it('should clone components', () => {
     function Comp () { }
     const instance = <Comp />
     const clone = cloneElement(instance)
-    expect(clone.prototype).to.equal(instance.prototype)
+    expect(clone.prototype).toEqual(instance.prototype)
   })
 
   it('should remove children when root changes to text node', () => {
@@ -144,14 +146,14 @@ describe('Component', function () {
 
     comp.setState({ alt: true })
     comp.forceUpdate()
-    expect(scratch.innerHTML, 'switching to textnode').to.equal('asdf')
+    expect(scratch.innerHTML).toEqual('asdf')
     comp.setState({ alt: false })
     comp.forceUpdate()
-    expect(scratch.innerHTML, 'switching to element').to.equal('<div>test</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>test</div>'))
 
     comp.setState({ alt: true })
     comp.forceUpdate()
-    expect(scratch.innerHTML, 'switching to textnode 2').to.equal('asdf')
+    expect(scratch.innerHTML).toEqual('asdf')
   })
 
   it('should not recycle common class children with different keys', () => {
@@ -169,7 +171,7 @@ describe('Component', function () {
         return <div>{this.innerMsg}</div>
       }
     }
-    sinon.spy(Comp.prototype, 'componentWillMount')
+    const willMount = sinon.spy(Comp.prototype, 'componentWillMount')
 
     class GoodContainer extends Component {
       constructor () {
@@ -210,32 +212,32 @@ describe('Component', function () {
     let good
     let bad
     render(<GoodContainer ref={c => (good = c)} />, scratch)
-    expect(scratch.textContent, 'new component with key present').to.equal('AB')
-    expect(Comp.prototype.componentWillMount).to.have.been.calledTwice
-    expect(sideEffect).to.have.been.calledTwice
+    expect(scratch.textContent).toEqual('AB')
+    expect(willMount.calledTwice).toBeTruthy()
+    expect(sideEffect.calledTwice).toBeTruthy()
 
     sideEffect.reset()
     Comp.prototype.componentWillMount.reset()
     good.setState({ alt: true })
     good.forceUpdate()
-    expect(scratch.textContent, 'new component with key present re-rendered').to.equal('C')
-    expect(Comp.prototype.componentWillMount).to.have.been.calledOnce
-    expect(sideEffect).to.have.been.calledOnce
+    expect(scratch.textContent).toEqual('C')
+    expect(willMount.calledOnce).toBeTruthy()
+    expect(sideEffect.calledOnce).toBeTruthy()
 
     sideEffect.reset()
     Comp.prototype.componentWillMount.reset()
     scratch.innerHTML = ''
     render(<BadContainer ref={c => (bad = c)} />, scratch)
-    expect(scratch.textContent, 'new component without key').to.equal('DE')
-    expect(Comp.prototype.componentWillMount).to.have.been.calledTwice
-    expect(sideEffect).to.have.been.calledTwice
+    expect(scratch.textContent).toEqual('DE')
+    expect(willMount.calledTwice).toBeTruthy()
+    expect(sideEffect.calledTwice).toBeTruthy()
     sideEffect.reset()
     Comp.prototype.componentWillMount.reset()
     bad.setState({ alt: true })
     bad.forceUpdate()
-    expect(scratch.textContent, 'new component without key re-rendered').to.equal('D')
-    expect(Comp.prototype.componentWillMount).to.not.have.been.called
-    expect(sideEffect).to.not.have.been.called
+    expect(scratch.textContent).toEqual('D')
+    expect(willMount.called).toBeFalsy()
+    expect(sideEffect.called).toBeFalsy()
   })
 
   describe('defaultProps', () => {
@@ -243,7 +245,7 @@ describe('Component', function () {
       class WithDefaultProps extends Component {
         constructor (props, context) {
           super(props, context)
-          expect(props).to.be.deep.equal({
+          expect(props).toEqual({
             children: EMPTY_CHILDREN,
             fieldA: 1,
             fieldB: 2,
@@ -289,9 +291,9 @@ describe('Component', function () {
       WithDefaultProps.defaultProps = { fieldC: 1, fieldD: 1 }
 
       const proto = WithDefaultProps.prototype
-      sinon.spy(proto, 'ctor')
-      sinon.spy(proto, 'componentWillReceiveProps')
-      sinon.spy(proto, 'renderCall')
+      const ctor = sinon.spy(proto, 'ctor')
+      const receiveProps = sinon.spy(proto, 'componentWillReceiveProps')
+      const renderCall = sinon.spy(proto, 'renderCall')
 
       render(<Outer />, scratch)
       doRender()
@@ -310,20 +312,20 @@ describe('Component', function () {
         fieldD: 2
       }
 
-      expect(proto.ctor).to.have.been.calledWithMatch(PROPS1)
-      expect(proto.renderCall).to.have.been.calledWithMatch(PROPS1)
+      expect(ctor.calledWithMatch(PROPS1)).toBeTruthy()
+      expect(renderCall.calledWithMatch(PROPS1)).toBeTruthy()
 
       rerender()
 
-      expect(proto.componentWillReceiveProps).to.have.been.calledWithMatch(PROPS2)
-      expect(proto.renderCall).to.have.been.calledWithMatch(PROPS2)
+      expect(receiveProps.calledWithMatch(PROPS2)).toBeTruthy()
+      expect(renderCall.calledWithMatch(PROPS2)).toBeTruthy()
     })
 
     it('should cache default props', () => {
       class WithDefaultProps extends Component {
         constructor (props, context) {
           super(props, context)
-          expect(props).to.be.deep.equal({
+          expect(props).toEqual({
             children: EMPTY_CHILDREN,
             fieldA: 1,
             fieldB: 2,
@@ -362,8 +364,8 @@ describe('Component', function () {
         text: 'aaa'
       }
       const dom = render(<div><Text text={null} /> <Text /></div>, scratch)
-      expect(dom.firstChild.textContent).to.equal('null')
-      expect(dom.lastChild.textContent).to.equal('aaa')
+      expect(dom.firstChild.textContent).toEqual('null')
+      expect(dom.lastChild.textContent).toEqual('aaa')
     })
 
     it('(StatelessComponent) defaultProps should respect null but ignore undefined', () => {
@@ -372,8 +374,8 @@ describe('Component', function () {
         text: 'aaa'
       }
       const dom = render(<div><Text text={null} /> <Text /></div>, scratch)
-      expect(dom.firstChild.textContent).to.equal('null')
-      expect(dom.lastChild.textContent).to.equal('aaa')
+      expect(dom.firstChild.textContent).toEqual('null')
+      expect(dom.lastChild.textContent).toEqual('aaa')
     })
   })
 
@@ -395,11 +397,11 @@ describe('Component', function () {
           this.setState({
             count: this.state.count + 1
           })
-          expect(this.state.count).to.equal(1)
+          expect(this.state.count).toEqual(1)
           this.setState({
             count: this.state.count + 1
           })
-          expect(this.state.count).to.equal(1)
+          expect(this.state.count).toEqual(1)
         }
 
         render () {
@@ -408,8 +410,8 @@ describe('Component', function () {
       }
 
       render(<A />, scratch)
-      sinon.spy(A.prototype, 'componentWillUpdate')
-      expect(A.prototype.componentWillUpdate).not.to.have.been.called
+      const spy = sinon.spy(A.prototype, 'componentWillUpdate')
+      expect(spy.called).toBeFalsy()
     })
 
     it('test setState first param to be a function and setState callback', () => {
@@ -444,11 +446,11 @@ describe('Component', function () {
 
       render(<A />, scratch)
       const firstChild = scratch.childNodes[0]
-      expect(firstChild.innerHTML).to.equal('1')
+      expect(firstChild.innerHTML).toEqual('1')
       fireEvent(firstChild, 'click')
       rerender()
-      expect(firstChild.innerHTML).to.equal('1')
-      expect(a).to.equal(3)
+      expect(firstChild.innerHTML).toEqual('1')
+      expect(a).toEqual(3)
     })
   })
 
@@ -464,15 +466,15 @@ describe('Component', function () {
           return <div />
         }
       }
-      sinon.spy(ForceUpdateComponent.prototype, 'componentWillUpdate')
-      sinon.spy(ForceUpdateComponent.prototype, 'forceUpdate')
+      const willUpdate = sinon.spy(ForceUpdateComponent.prototype, 'componentWillUpdate')
+      const forceUpdateSpy = sinon.spy(ForceUpdateComponent.prototype, 'forceUpdate')
       render(<ForceUpdateComponent />, scratch)
-      expect(ForceUpdateComponent.prototype.componentWillUpdate).not.to.have.been.called
+      expect(willUpdate.called).toBeFalsy()
 
       forceUpdate()
 
-      expect(ForceUpdateComponent.prototype.componentWillUpdate).to.have.been.called
-      expect(ForceUpdateComponent.prototype.forceUpdate).to.have.been.called
+      expect(willUpdate.called).toBeTruthy()
+      expect(forceUpdateSpy.called).toBeTruthy()
     })
 
     it('should add callback to renderCallbacks', () => {
@@ -486,14 +488,14 @@ describe('Component', function () {
           return <div />
         }
       }
-      sinon.spy(ForceUpdateComponent.prototype, 'forceUpdate')
+      const spy = sinon.spy(ForceUpdateComponent.prototype, 'forceUpdate')
       render(<ForceUpdateComponent />, scratch)
 
       forceUpdate()
 
-      expect(ForceUpdateComponent.prototype.forceUpdate).to.have.been.called
-      expect(ForceUpdateComponent.prototype.forceUpdate).to.have.been.calledWith(callback)
-      expect(callback).to.have.been.called
+      expect(spy.called).toBeTruthy()
+      expect(spy.calledWith(callback)).toBeTruthy()
+      expect(callback.call).toBeTruthy()
     })
   })
 
@@ -508,13 +510,13 @@ describe('Component', function () {
           456
         ]} />, scratch)
 
-      expect(scratch.innerHTML).to.equal('<div a="b"><span class="bar">bar</span>123456</div>')
+      expect(scratch.innerHTML).toEqual(normalizeHTML('<div a="b"><span class="bar">bar</span>123456</div>'))
     })
 
     it('should be ignored when explicit children exist', () => {
       const Foo = props => <div {...props}>a</div>
       render(<Foo children={'b'} />, scratch)
-      expect(scratch.innerHTML).to.equal('<div>a</div>')
+      expect(scratch.innerHTML).toEqual(normalizeHTML('<div>a</div>'))
     })
   })
 
@@ -538,13 +540,13 @@ describe('Component', function () {
           return <div onClick={this.click.bind(this)}>{this.state.a}</div>
         }
       }
-      sinon.spy(App.prototype, 'componentWillUpdate')
+      const spy = sinon.spy(App.prototype, 'componentWillUpdate')
       const s = render(<App />, scratch)
-      expect(s.dom.innerHTML).to.equal('7')
+      expect(s.dom.innerHTML).toEqual('7')
       fireEvent(scratch.childNodes[0], 'click')
       rerender()
-      expect(s.dom.innerHTML).to.equal('7')
-      expect(App.prototype.componentWillUpdate).not.to.have.been.called
+      expect(s.dom.innerHTML).toEqual('7')
+      expect(spy.called).toBeFalsy()
     })
 
     it('render child PureComponent', () => {
@@ -567,15 +569,15 @@ describe('Component', function () {
         }
       }
       let c
-      sinon.spy(C.prototype, 'componentWillUpdate')
+      const spy = sinon.spy(C.prototype, 'componentWillUpdate')
       const s = render(<App ref={node => (c = node)} />, scratch)
-      expect(s.dom.innerHTML).to.equal('7')
+      expect(s.dom.innerHTML).toEqual('7')
       c.setState({
         xx: 1
       })
       c.forceUpdate()
-      expect(s.dom.innerHTML).to.equal('7')
-      expect(C.prototype.componentWillUpdate).not.to.have.been.called
+      expect(s.dom.innerHTML).toEqual('7')
+      expect(spy.called).toBeFalsy()
     })
   })
 
@@ -593,24 +595,30 @@ describe('Component', function () {
 
       render(<Outer {...PROPS} />, scratch)
 
-      expect(Outer)
-      .to.have.been.calledOnce
-      .and.to.have.been.calledWithMatch(PROPS)
-      .and.to.have.returned(sinon.match({
+      expect(Outer.calledOnce).toBeTruthy()
+      expect(Outer.calledWithMatch(PROPS)).toBeTruthy()
+      expect(Outer.returned(sinon.match({
         tagName: Inner,
         props: PROPS
-      }))
+      }))).toBeTruthy()
 
-      expect(Inner)
-        .to.have.been.calledOnce
-        .and.to.have.been.calledWithMatch(PROPS)
-        .and.to.have.returned(sinon.match({
-          tagName: 'div',
-          children: [createVText('inner')],
-          props: sinon.match.has('foo')
-        }))
+      // expect(Outer)
+      // .to.have.been.calledOnce
+      // .and.to.have.been.calledWithMatch(PROPS)
+      // .and.to.have.returned(sinon.match({
+      //   tagName: Inner,
+      //   props: PROPS
+      // }))
 
-      expect(scratch.innerHTML).to.equal('<div foo="bar">inner</div>')
+      expect(Inner.calledOnce).toBeTruthy()
+      expect(Inner.calledWithMatch(PROPS)).toBeTruthy()
+      expect(Inner.returned(sinon.match({
+        tagName: 'div',
+        children: [createVText('inner')],
+        props: sinon.match.has('foo')
+      }))).toBeTruthy()
+
+      expect(scratch.innerHTML).toEqual(normalizeHTML('<div foo="bar">inner</div>'))
     })
 
     it('should re-render nested functional components', () => {
@@ -625,8 +633,8 @@ describe('Component', function () {
           return <Inner i={this.state.i} {...this.props} />
         }
       }
-      sinon.spy(Outer.prototype, 'render')
-      sinon.spy(Outer.prototype, 'componentWillUnmount')
+      // const renderSpy = sinon.spy(Outer.prototype, 'render')
+      const willMount = sinon.spy(Outer.prototype, 'componentWillUnmount')
 
       let j = 0
       const Inner = sinon.spy(
@@ -638,22 +646,20 @@ describe('Component', function () {
       doRender()
       rerender()
 
-      expect(Outer.prototype.componentWillUnmount)
-        .not.to.have.been.called
+      expect(willMount.called).toBeFalsy()
+      expect(Inner.calledTwice).toBeTruthy()
 
-      expect(Inner).to.have.been.calledTwice
+      expect(Inner.calledTwice).toBeTruthy()
+      expect(Inner.secondCall.calledWithMatch({ foo: 'bar', i: 2 })).toBeTruthy()
+      expect(Inner.secondCall.returned(sinon.match({
+        props: {
+          j: 2,
+          i: 2,
+          foo: 'bar'
+        }
+      }))).toBeTruthy()
 
-      expect(Inner.secondCall)
-        .to.have.been.calledWithMatch({ foo: 'bar', i: 2 })
-        .and.to.have.returned(sinon.match({
-          props: {
-            j: 2,
-            i: 2,
-            foo: 'bar'
-          }
-        }))
-
-      expect(getAttributes(scratch.firstElementChild)).to.eql({
+      expect(getAttributes(scratch.firstElementChild)).toEqual({
         j: '2',
         i: '2',
         foo: 'bar'
@@ -662,19 +668,18 @@ describe('Component', function () {
       doRender()
       rerender()
 
-      expect(Inner).to.have.been.calledThrice
+      expect(Inner.callCount).toBe(3)
 
-      expect(Inner.thirdCall)
-        .to.have.been.calledWithMatch({ foo: 'bar', i: 3 })
-        .and.to.have.returned(sinon.match({
-          props: {
-            j: 3,
-            i: 3,
-            foo: 'bar'
-          }
-        }))
+      expect(Inner.thirdCall.calledWithMatch({ foo: 'bar', i: 3 })).toBeTruthy()
+      expect(Inner.thirdCall.returned(sinon.match({
+        props: {
+          j: 3,
+          i: 3,
+          foo: 'bar'
+        }
+      }))).toBeTruthy()
 
-      expect(getAttributes(scratch.firstElementChild)).to.eql({
+      expect(getAttributes(scratch.firstElementChild)).toEqual({
         j: '3',
         i: '3',
         foo: 'bar'
@@ -696,9 +701,9 @@ describe('Component', function () {
           return <Inner i={this.state.i} {...this.props} />
         }
       }
-      sinon.spy(Outer.prototype, 'render')
-      sinon.spy(Outer.prototype, 'componentDidMount')
-      sinon.spy(Outer.prototype, 'componentWillUnmount')
+      // const outerRender = sinon.spy(Outer.prototype, 'render')
+      const outterDidMount = sinon.spy(Outer.prototype, 'componentDidMount')
+      const outerWillUnmount = sinon.spy(Outer.prototype, 'componentWillUnmount')
 
       let j = 0
       class Inner extends Component {
@@ -714,62 +719,74 @@ describe('Component', function () {
           return <div j={++j} {...this.props}>inner</div>
         }
       }
-      sinon.spy(Inner.prototype, '_constructor')
-      sinon.spy(Inner.prototype, 'render')
-      sinon.spy(Inner.prototype, 'componentWillMount')
-      sinon.spy(Inner.prototype, 'componentDidMount')
-      sinon.spy(Inner.prototype, 'componentWillUnmount')
+      const innerCtor = sinon.spy(Inner.prototype, '_constructor')
+      const innerRender = sinon.spy(Inner.prototype, 'render')
+      const innerWillMount = sinon.spy(Inner.prototype, 'componentWillMount')
+      const innerDidMount = sinon.spy(Inner.prototype, 'componentDidMount')
+      const innerWillUnmount = sinon.spy(Inner.prototype, 'componentWillUnmount')
 
       render(<Outer foo='bar' />, scratch)
 
-      expect(Outer.prototype.componentDidMount).to.have.been.calledOnce
+      expect(outterDidMount.calledOnce).toBeTruthy()
 
       doRender()
       rerender()
 
-      expect(Outer.prototype.componentWillUnmount).not.to.have.been.called
+      expect(outerWillUnmount.called).toBeFalsy()
 
-      expect(Inner.prototype._constructor).to.have.been.calledOnce
-      expect(Inner.prototype.componentWillUnmount).not.to.have.been.called
-      expect(Inner.prototype.componentWillMount).to.have.been.calledOnce
-      expect(Inner.prototype.componentDidMount).to.have.been.calledOnce
-      expect(Inner.prototype.render).to.have.been.calledTwice
+      expect(innerCtor.calledOnce).toBeTruthy()
+      expect(innerWillUnmount.called).toBeFalsy()
+      expect(innerWillMount.calledOnce).toBeTruthy()
+      expect(innerDidMount.calledOnce).toBeTruthy()
+      expect(innerRender.calledTwice).toBeTruthy()
 
-      expect(Inner.prototype.render.secondCall)
-        .and.to.have.returned(sinon.match({
-          props: {
-            j: 2,
-            i: 2,
-            foo: 'bar'
-          }
-        }))
+      expect(innerRender.secondCall.returned(sinon.match({
+        props: {
+          j: 2,
+          i: 2,
+          foo: 'bar'
+        }
+      })))
+        // .and.to.have.returned(sinon.match({
+        //   props: {
+        //     j: 2,
+        //     i: 2,
+        //     foo: 'bar'
+        //   }
+        // }))
 
-      expect(getAttributes(scratch.firstElementChild)).to.eql({
+      expect(getAttributes(scratch.firstElementChild)).toEqual({
         j: '2',
         i: '2',
         foo: 'bar'
       })
 
-      expect(sortAttributes(scratch.innerHTML)).to.equal(sortAttributes('<div foo="bar" j="2" i="2">inner</div>'))
+      expect(sortAttributes(scratch.innerHTML)).toEqual(sortAttributes('<div foo="bar" j="2" i="2">inner</div>'))
 
       doRender()
       rerender()
 
-      expect(Inner.prototype.componentWillUnmount).not.to.have.been.called
-      expect(Inner.prototype.componentWillMount).to.have.been.calledOnce
-      expect(Inner.prototype.componentDidMount).to.have.been.calledOnce
-      expect(Inner.prototype.render).to.have.been.calledThrice
+      expect(innerWillUnmount.called).toBeFalsy()
+      expect(innerWillMount.calledOnce).toBeTruthy()
+      expect(innerDidMount.calledOnce).toBeTruthy()
+      expect(innerRender.calledThrice).toBeTruthy()
 
-      expect(Inner.prototype.render.thirdCall)
-        .and.to.have.returned(sinon.match({
-          props: {
-            j: 3,
-            i: 3,
-            foo: 'bar'
-          }
-        }))
+      expect(innerRender.thirdCall.returned(sinon.match({
+        props: {
+          j: 3,
+          i: 3,
+          foo: 'bar'
+        }
+      }))).toBeTruthy()
+        // .and.to.have.returned(sinon.match({
+        //   props: {
+        //     j: 3,
+        //     i: 3,
+        //     foo: 'bar'
+        //   }
+        // }))
 
-      expect(getAttributes(scratch.firstElementChild)).to.eql({
+      expect(getAttributes(scratch.firstElementChild)).toEqual({
         j: '3',
         i: '3',
         foo: 'bar'
@@ -779,15 +796,15 @@ describe('Component', function () {
       doRender()
       rerender()
 
-      expect(Inner.prototype.componentWillUnmount).to.have.been.calledOnce
+      expect(innerWillUnmount.calledOnce).toBeTruthy()
 
-      expect(scratch.innerHTML).to.equal('<div is-alt="true"></div>')
+      expect(scratch.innerHTML).toEqual(normalizeHTML('<div is-alt="true"></div>'))
 
       alt = false
       doRender()
       rerender()
 
-      expect(sortAttributes(scratch.innerHTML)).to.equal(sortAttributes('<div foo="bar" j="4" i="5">inner</div>'))
+      expect(sortAttributes(scratch.innerHTML)).toEqual(sortAttributes('<div foo="bar" j="4" i="5">inner</div>'))
     })
 
     it('should resolve intermediary functional component', () => {
@@ -809,12 +826,12 @@ describe('Component', function () {
           return <div>inner</div>
         }
       }
-      sinon.spy(Inner.prototype, 'componentWillMount')
-      sinon.spy(Inner.prototype, 'componentDidMount')
+      const willMount = sinon.spy(Inner.prototype, 'componentWillMount')
+      const didMount = sinon.spy(Inner.prototype, 'componentDidMount')
       render(<Root />, scratch)
-      expect(Inner.prototype.componentWillMount).to.have.been.calledOnce
-      expect(Inner.prototype.componentDidMount).to.have.been.calledOnce
-      expect(Inner.prototype.componentWillMount).to.have.been.calledBefore(Inner.prototype.componentDidMount)
+      expect(willMount.calledOnce).toBeTruthy()
+      expect(didMount.calledOnce).toBeTruthy()
+      expect(willMount.calledBefore(didMount)).toBeTruthy()
     })
 
     it('should unmount children of high-order components without unmounting parent', () => {
@@ -839,10 +856,10 @@ describe('Component', function () {
         }
       }
 
-      sinon.spy(Outer.prototype, 'render')
-      sinon.spy(Outer.prototype, 'componentWillMount')
-      sinon.spy(Outer.prototype, 'componentDidMount')
-      sinon.spy(Outer.prototype, 'componentWillUnmount')
+      // const outerRender = sinon.spy(Outer.prototype, 'render')
+      const outerWillMount = sinon.spy(Outer.prototype, 'componentWillMount')
+      const outerDidMount = sinon.spy(Outer.prototype, 'componentDidMount')
+      const outerWillUnmount = sinon.spy(Outer.prototype, 'componentWillUnmount')
 
       class Inner extends Component {
         componentWillUnmount () {}
@@ -853,10 +870,10 @@ describe('Component', function () {
         }
       }
 
-      sinon.spy(Inner.prototype, 'render')
-      sinon.spy(Inner.prototype, 'componentWillMount')
-      sinon.spy(Inner.prototype, 'componentDidMount')
-      sinon.spy(Inner.prototype, 'componentWillUnmount')
+      // const innerRender = sinon.spy(Inner.prototype, 'render')
+      const innerWillMount = sinon.spy(Inner.prototype, 'componentWillMount')
+      const innerDidMount = sinon.spy(Inner.prototype, 'componentDidMount')
+      const innerWillUnmount = sinon.spy(Inner.prototype, 'componentWillUnmount')
 
       class Inner2 extends Component {
         constructor (props, context) {
@@ -871,40 +888,40 @@ describe('Component', function () {
         }
       }
 
-      sinon.spy(Inner2.prototype, 'render')
-      sinon.spy(Inner2.prototype, 'componentWillMount')
-      sinon.spy(Inner2.prototype, 'componentDidMount')
-      sinon.spy(Inner2.prototype, 'componentWillUnmount')
+      const inner2Render = sinon.spy(Inner2.prototype, 'render')
+      const inner2WillMount = sinon.spy(Inner2.prototype, 'componentWillMount')
+      const inner2DidMount = sinon.spy(Inner2.prototype, 'componentDidMount')
+      const inner2WillUnmount = sinon.spy(Inner2.prototype, 'componentWillUnmount')
 
       render(<Outer child={Inner} />, scratch)
 
-      expect(Outer.prototype.componentWillMount, 'outer initial').to.have.been.calledOnce
-      expect(Outer.prototype.componentDidMount, 'outer initial').to.have.been.calledOnce
-      expect(Outer.prototype.componentWillUnmount, 'outer initial').not.to.have.been.called
+      expect(outerWillMount.calledOnce).toBeTruthy()
+      expect(outerDidMount.calledOnce).toBeTruthy()
+      expect(outerWillUnmount.called).toBeFalsy()
 
-      expect(Inner.prototype.componentWillMount, 'inner initial').to.have.been.calledOnce
-      expect(Inner.prototype.componentDidMount, 'inner initial').to.have.been.calledOnce
-      expect(Inner.prototype.componentWillUnmount, 'inner initial').not.to.have.been.called
+      expect(innerWillMount.calledOnce).toBeTruthy()
+      expect(innerDidMount.calledOnce).toBeTruthy()
+      expect(innerWillUnmount.called).toBeFalsy()
 
       outer.setState({ child: Inner2 })
       outer.forceUpdate()
 
-      expect(Inner2.prototype.render).to.have.been.calledOnce
+      expect(inner2Render.calledOnce).toBeTruthy()
 
-      expect(Outer.prototype.componentWillMount, 'outer swap').to.have.been.calledOnce
-      expect(Outer.prototype.componentDidMount, 'outer swap').to.have.been.calledOnce
-      expect(Outer.prototype.componentWillUnmount, 'outer swap').not.to.have.been.called
+      expect(outerWillMount.calledOnce).toBeTruthy()
+      expect(outerDidMount.calledOnce).toBeTruthy()
+      expect(outerWillUnmount.called).toBeFalsy()
 
-      expect(Inner2.prototype.componentWillMount, 'inner2 swap').to.have.been.calledOnce
-      expect(Inner2.prototype.componentDidMount, 'inner2 swap').to.have.been.calledOnce
-      expect(Inner2.prototype.componentWillUnmount, 'inner2 swap').not.to.have.been.called
+      expect(inner2WillMount.calledOnce).toBeTruthy()
+      expect(inner2DidMount.calledOnce).toBeTruthy()
+      expect(inner2WillUnmount.called).toBeFalsy()
 
       inner2.forceUpdate()
 
-      expect(Inner2.prototype.render, 'inner2 update').to.have.been.calledTwice
-      expect(Inner2.prototype.componentWillMount, 'inner2 update').to.have.been.calledOnce
-      expect(Inner2.prototype.componentDidMount, 'inner2 update').to.have.been.calledOnce
-      expect(Inner2.prototype.componentWillUnmount, 'inner2 update').not.to.have.been.called
+      expect(inner2Render.calledTwice).toBeTruthy()
+      expect(inner2WillMount.calledOnce).toBeTruthy()
+      expect(inner2DidMount.calledOnce).toBeTruthy()
+      expect(inner2WillUnmount.called).toBeFalsy()
     })
 
     it('should remount when swapping between HOC child types', () => {
@@ -939,8 +956,8 @@ describe('Component', function () {
       }
 
       sinon.spy(Inner.prototype, 'render')
-      sinon.spy(Inner.prototype, 'componentWillMount')
-      sinon.spy(Inner.prototype, 'componentWillUnmount')
+      const willMount = sinon.spy(Inner.prototype, 'componentWillMount')
+      const willUnmount = sinon.spy(Inner.prototype, 'componentWillUnmount')
 
       const InnerFunc = () => (
         <div class='inner-func'>bar</div>
@@ -948,14 +965,14 @@ describe('Component', function () {
 
       render(<Outer child={Inner} />, scratch)
 
-      expect(Inner.prototype.componentWillMount, 'initial mount').to.have.been.calledOnce
-      expect(Inner.prototype.componentWillUnmount, 'initial mount').not.to.have.been.called
+      expect(willMount.calledOnce).toBeTruthy()
+      expect(willUnmount.called).toBeFalsy()
 
       Inner.prototype.componentWillMount.reset()
       doRender()
       rerender()
-      expect(Inner.prototype.componentWillMount, 'unmount').not.to.have.been.called
-      expect(Inner.prototype.componentWillUnmount, 'unmount').to.have.been.calledOnce
+      expect(willMount.called).toBeFalsy()
+      expect(willUnmount.calledOnce).toBeTruthy()
     })
   })
 })
