@@ -2,6 +2,11 @@ module.exports = {
   mapCoverage: true,
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'lcov', 'text'],
+  collectCoverage: true,
+  // collectCoverageFrom: [
+  //   'src/*.ts',
+  //   'src/**/*.ts'
+  // ],
   globals: {
     'ts-jest': {
       tsConfigFile: {
