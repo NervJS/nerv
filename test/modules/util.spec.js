@@ -1,4 +1,4 @@
-import * as Util from '../../src/util/index'
+import * as Util from '../../src/util'
 import shallowEqual from '../../src/util/shallow-equal'
 import nextTick from '../../src/util/next-tick'
 import SimpleMap from '../../src/util/simple-map'

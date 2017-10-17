@@ -1,6 +1,7 @@
 import AttributeHook from '../../src/hooks/attribute-hook'
 import HtmlHook from '../../src/hooks/html-hook'
 import { createElement, Component, render, nextTick } from '../../src'
+import { normalizeHTML } from '../util'
 
 describe('Hooks', () => {
   let scratch
@@ -55,7 +56,7 @@ describe('Hooks', () => {
       }
 
       render(<Outer />, scratch)
-      expect(scratch.childNodes[0].innerHTML).toEqual(html)
+      expect(scratch.childNodes[0].innerHTML).toEqual(normalizeHTML(html))
       doRender()
       await nextTick()
       expect(scratch.childNodes[0].innerHTML).toEqual('123')
@@ -96,10 +97,10 @@ describe('Hooks', () => {
       }
 
       render(<Outer />, scratch)
-      expect(scratch.childNodes[0].innerHTML).toEqual(html)
+      expect(scratch.childNodes[0].innerHTML).toEqual(normalizeHTML(html))
       doRender()
       await nextTick()
-      expect(scratch.childNodes[0].innerHTML).toEqual(html)
+      expect(scratch.childNodes[0].innerHTML).toEqual(normalizeHTML(html))
     })
   })
   describe('AttributeHook', () => {

@@ -1,6 +1,6 @@
 /** @jsx createElement */
 import { Component, createElement, render } from '../../src/index'
-
+import { normalizeHTML } from '../util'
 describe('keys', () => {
   let scratch
 
@@ -50,7 +50,7 @@ describe('keys', () => {
       )
     })
     inst.forceUpdate()
-    expect(scratch.innerHTML).toEqual('<div><div>2</div><li>b</li><li>c</li></div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div><div>2</div><li>b</li><li>c</li></div>'))
   })
 
   it('should set VNode#key property', () => {

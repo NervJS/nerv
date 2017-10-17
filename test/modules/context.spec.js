@@ -3,7 +3,7 @@ import { Component, createElement, render } from '../../src/index.ts'
 import createVText from '../../src/vdom/create-vtext'
 import { rerender } from '../../src/render-queue'
 import sinon from 'sinon'
-import { CHILDREN_MATCHER } from '../util'
+import { CHILDREN_MATCHER, normalizeHTML } from '../util'
 
 describe('context', () => {
   let scratch
@@ -164,7 +164,7 @@ describe('context', () => {
     }
 
     render(<Outer />, scratch)
-    expect(scratch.innerHTML).toEqual('<div><strong>12</strong></div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div><strong>12</strong></div>'))
   })
 
   it('Should child component constructor access context', () => {
