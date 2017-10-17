@@ -1,6 +1,6 @@
 import h from './vdom/h'
 import SVGPropertyConfig from './vdom/svg-property-config'
-import { isFunction, isString, isNumber, isBoolean, isObject } from './util'
+import { isFunction, isString, isNumber, isBoolean, isObject, supportSVG } from './util'
 import FullComponent from './full-component'
 import StatelessComponent from './stateless-component'
 import CurrentOwner from './current-owner'
@@ -15,6 +15,7 @@ import VNode from './vdom/vnode/vnode'
 const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i
 
 const EMPTY_CHILDREN = []
+const isSupportSVG = supportSVG()
 
 function transformPropsForRealTag (tagName: string, props: IProps) {
   const newProps: any = {}
@@ -42,7 +43,7 @@ function transformPropsForRealTag (tagName: string, props: IProps) {
       newProps[propName] = !(propValue instanceof EventHook) ? new EventHook(propName, propValue) : propValue
       continue
     }
-    if (DOMAttributeNamespaces.hasOwnProperty(originalPropName) &&
+    if (isSupportSVG && DOMAttributeNamespaces.hasOwnProperty(originalPropName) &&
       (isString(propValue) || isNumber(propValue) || isBoolean(propValue))) {
       const namespace = DOMAttributeNamespaces[originalPropName]
       newProps[propName] = !((propValue as any) instanceof AttributeHook)

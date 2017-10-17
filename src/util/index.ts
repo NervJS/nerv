@@ -61,3 +61,11 @@ export function isEmptyObject (obj) {
   }
   return true
 }
+
+export const supportSVG = (() => {
+  const SVG_NS = 'http://www.w3.org/2000/svg'
+  const doc = document
+  return () => {
+    return !!doc.createElementNS && !!doc.createElementNS(SVG_NS, 'svg').createSVGRect
+  }
+})()

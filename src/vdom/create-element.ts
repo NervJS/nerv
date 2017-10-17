@@ -1,11 +1,12 @@
 import { isVNode, isVText, isWidget, isHook } from './vnode/types'
-import { isObject, isString, isNumber, isFunction } from '../util'
+import { isObject, isString, isNumber, isFunction, supportSVG } from '../util'
 import { VirtualNode, IProps } from '../types'
 import options from '../options'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
 const doc = document
+const isSupportSVG = supportSVG()
 function createElement (vnode: VirtualNode, isSvg?: boolean): Element | Text | Comment | DocumentFragment | null {
   if (isWidget(vnode)) {
     return vnode.init()
@@ -27,17 +28,18 @@ function createElement (vnode: VirtualNode, isSvg?: boolean): Element | Text | C
     } else if (vnode.tagName === 'foreignObject') {
       isSvg = false
     }
+    if (!isSupportSVG) {
+      isSvg = false
+    }
     if (isSvg) {
       vnode.namespace = SVG_NAMESPACE
+      vnode.isSvg = isSvg
     }
     const domNode = (vnode.namespace === null) ? doc.createElement(vnode.tagName)
-      : doc.createElementNS ? doc.createElementNS(vnode.namespace, vnode.tagName) : doc.createElement(vnode.tagName)
+      : isSupportSVG ? doc.createElementNS(vnode.namespace, vnode.tagName) : doc.createElement(vnode.tagName)
     setProps(domNode, vnode.props, isSvg)
     if (options.debug) { // for devtools
       (domNode as any)._props = vnode.props
-    }
-    if (isSvg) {
-      vnode.isSvg = isSvg
     }
     const children = vnode.children
     if (children.length) {
