@@ -90,6 +90,12 @@ module.exports = function (config) {
       'test/spec.js'
     ],
 
+    specReporter: {
+      suppressFailed: false,      // do not print information about failed tests
+      suppressPassed: true,      // do not print information about passed tests
+      suppressSkipped: false      // do not print information about skipped tests
+    },
+
     // list of files to exclude
     exclude: [
     ],
