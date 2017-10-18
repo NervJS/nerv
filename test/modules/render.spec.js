@@ -1,7 +1,7 @@
 /** @jsx createElement */
 import { Component, createElement, render } from '../../src'
 import { rerender } from '../../src/render-queue'
-import { getAttributes, normalizeHTML } from '../util'
+import { getAttributes, normalizeHTML, delay } from '../util'
 
 describe('render()', function () {
   let scratch
@@ -151,7 +151,6 @@ describe('render()', function () {
       scratch.innerHTML = ''
       render((
         <div>
-          <input value={val} />
           <table border={val} />
         </div>
       ), scratch)
@@ -159,15 +158,15 @@ describe('render()', function () {
 
     test('2')
     test(false)
-    expect(scratch.innerHTML).toBe(normalizeHTML('<div><input><table></table></div>'))
+    expect(scratch.innerHTML).toBe(normalizeHTML('<div><table></table></div>'))
 
     test('3')
     test(null)
-    expect(scratch.innerHTML).toBe(normalizeHTML('<div><input><table></table></div>'))
+    expect(scratch.innerHTML).toBe(normalizeHTML('<div><table></table></div>'))
 
     test('4')
     test(undefined)
-    expect(scratch.innerHTML).toBe(normalizeHTML('<div><input><table></table></div>'))
+    expect(scratch.innerHTML).toBe(normalizeHTML('<div><table></table></div>'))
   })
 
   it('should apply string attributes', () => {
@@ -187,7 +186,7 @@ describe('render()', function () {
     render(<div click={function a () { }} ONCLICK={function b () { }} />, scratch)
 
     const div = scratch.childNodes[0]
-    expect(div.attributes.length).toBe(0)
+    expect(div.attributes.length).toMatch(/0|1/) // 1 for ie8
   })
 
   it('should serialize object props as attributes', () => {
@@ -462,7 +461,7 @@ describe('render()', function () {
     expect(normalizeHTML(scratch.innerHTML)).toEqual(normalizeHTML(`<div><b>alt</b><a>foo</a><c>baz</c><b>bat</b></div>`))
   })
 
-  it('should not execute append operation when child is at last', (done) => {
+  it('should not execute append operation when child is at last', async () => {
     let input
     class TodoList extends Component {
       constructor (props) {
@@ -500,10 +499,8 @@ describe('render()', function () {
     todo.forceUpdate()
     todo.addTodo()
     expect(document.activeElement).toEqual(input)
-    setTimeout(() => {
-      expect(/1/.test(scratch.innerHTML)).toEqual(true)
-      done()
-    }, 10)
+    await delay(100)
+    expect(/1/.test(scratch.innerHTML)).toEqual(true)
   })
 
   it('Should have correct value on initial render', () => {

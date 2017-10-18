@@ -1,6 +1,6 @@
-import 'es5-shim'
-import 'es5-sham-ie8'
 // import './modules/util.spec'
+import './util/ie8'
+import './util/polyfill'
 import './modules/h.spec'
 import './modules/createElement.spec'
 import './modules/diff.spec'

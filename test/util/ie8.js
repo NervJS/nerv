@@ -8,6 +8,8 @@
     return
   }
 
+  window.HTMLElement = function () {}
+
   const innerText = Object.getOwnPropertyDescriptor(Element.prototype, 'innerText')
   const nodeName = Object.getOwnPropertyDescriptor(Element.prototype, 'nodeName')
 
