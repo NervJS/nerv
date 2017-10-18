@@ -4,7 +4,7 @@
     return
   }
   const ieVersion = ua[1]
-  if (ieVersion > 9) {
+  if (ieVersion >= 9) {
     return
   }
 

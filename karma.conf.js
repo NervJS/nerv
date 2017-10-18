@@ -85,8 +85,8 @@ module.exports = function (config) {
     // list of files / patterns to load in the browser
     files: [
       './node_modules/es5-polyfill/dist/polyfill.js',
-      'test/util/ie8.js',
-      'test/util/polyfill.js',
+      // 'test/util/ie8.js',
+      // 'test/util/polyfill.js',
       'test/spec.js'
     ],
 

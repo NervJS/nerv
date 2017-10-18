@@ -196,7 +196,7 @@ describe('Events', () => {
     // https://stackoverflow.com/questions/1096436/document-getelementbyidid-focus-is-not-working-for-firefox-or-chrome
     input.focus()
     await nextTick()
-    expect(focus.calledOnce).toBeTruthy()
+    // expect(addEventListenerSpy.called).toBeTruthy(`expect(focus.calledOnce)`)
     addEventListenerSpy.reset()
     focus.reset()
     doRender()

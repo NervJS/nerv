@@ -1,7 +1,8 @@
 {
   "presets": [
     ["env", {
-      "spec": true
+      "spec": true,
+      "useBuiltIns": false
     }], ["stage-0"]
   ],
   "plugins": [
