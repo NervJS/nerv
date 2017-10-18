@@ -70,7 +70,7 @@ const travisLaunchers = {
   }
 }
 
-const localBrowsers = realBrowser ? Object.keys(travisLaunchers) : ['IE']
+const localBrowsers = realBrowser ? Object.keys(travisLaunchers) : ['Chrome']
 
 module.exports = function (config) {
   config.set({

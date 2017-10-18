@@ -60,7 +60,7 @@ describe('Events', () => {
 
     render(<Outer />, scratch)
 
-    expect(scratch.childNodes[0].attributes.length).toMatch(/0|1/) // 1 for ie8
+    expect(scratch.childNodes[0].attributes.length.toString()).toMatch(/0|1/) // 1 for ie8
     expect(addEventListenerSpy.calledOnce).toBeTruthy()
     expect(addEventListenerSpy.calledWithExactly('click', sinon.match.func, false)).toBeTruthy()
 
