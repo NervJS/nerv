@@ -49,6 +49,4 @@
       })
     }
   })(window.Node || window.Element)
-
-  require('./polyfill')
 }())
