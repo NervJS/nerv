@@ -186,7 +186,7 @@ describe('render()', function () {
     render(<div click={function a () { }} ONCLICK={function b () { }} />, scratch)
 
     const div = scratch.childNodes[0]
-    expect(div.attributes.length).toMatch(/0|1/) // 1 for ie8
+    expect(div.attributes.length).toMatch(/[01]/) // 1 for ie8
   })
 
   it('should serialize object props as attributes', () => {
