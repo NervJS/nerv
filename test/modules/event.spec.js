@@ -60,7 +60,7 @@ describe('Events', () => {
 
     render(<Outer />, scratch)
 
-    expect(scratch.childNodes[0].attributes.length).toBe(0)
+    expect(scratch.childNodes[0].attributes.length).toMatch(/0|1/) // 1 for ie8
     expect(addEventListenerSpy.calledOnce).toBeTruthy()
     expect(addEventListenerSpy.calledWithExactly('click', sinon.match.func, false)).toBeTruthy()
 
@@ -156,7 +156,7 @@ describe('Events', () => {
     removeEventListenerSpy.restore()
   })
 
-  it('unbubbleEvents should attach to node instaed of document', (done) => {
+  it('unbubbleEvents should attach to node instaed of document', async () => {
     const focus = sinon.spy()
 
     let doRender = null
@@ -195,21 +195,15 @@ describe('Events', () => {
     const removeEventListenerSpy = sinon.spy(proto, 'removeEventListener')
     // https://stackoverflow.com/questions/1096436/document-getelementbyidid-focus-is-not-working-for-firefox-or-chrome
     input.focus()
-    setTimeout(() => {
-      done()
-      expect(focus.calledOnce).toBeTrue()
-      // expect(addEventListenerSpy.called).toBeTruthy()
-      addEventListenerSpy.reset()
-      focus.reset()
-      doRender()
-      nextTick(() => {
-        rerender()
-        scratch.childNodes[0].focus()
-        setTimeout(() => {
-          expect(removeEventListenerSpy.called).toBeTruthy()
-          done()
-        }, 0)
-      })
-    }, 0)
+    await nextTick()
+    expect(focus.calledOnce).toBeTruthy()
+    addEventListenerSpy.reset()
+    focus.reset()
+    doRender()
+    await nextTick()
+    rerender()
+    scratch.childNodes[0].focus()
+    await nextTick()
+    expect(removeEventListenerSpy.called).toBeTruthy()
   })
 })

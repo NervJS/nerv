@@ -55,13 +55,16 @@ describe('Hooks', () => {
         }
       }
 
-      render(<Outer />, scratch)
+      let OuterC
+      render(<Outer ref={(comp) => (OuterC = comp)} />, scratch)
       expect(scratch.childNodes[0].innerHTML).toEqual(normalizeHTML(html))
       doRender()
-      await nextTick()
+      OuterC.forceUpdate()
+      // await nextTick()
       expect(scratch.childNodes[0].innerHTML).toEqual('123')
       doRender()
-      await nextTick()
+      OuterC.forceUpdate()
+      // await nextTick()
       expect(scratch.childNodes[0].innerHTML).toEqual('')
     })
 

@@ -26,7 +26,7 @@ export function sortAttributes (html) {
     if (~after.indexOf('/')) {
       after = `></${pre}>`
     }
-    return '<' + pre + list.join('') + after
+    return ('<' + pre + list.join('') + after).toLowerCase()
   })
 }
 const comparer = document.createElement('div')
@@ -35,3 +35,5 @@ export function innerHTML (HTML) {
   comparer.innerHTML = HTML
   return sortAttributes(comparer.innerHTML)
 }
+
+export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))

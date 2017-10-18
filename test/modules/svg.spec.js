@@ -79,7 +79,6 @@ describe('svg', () => {
       </svg>
     ), scratch)
 
-    console.log(scratch.getElementsByTagName('a')[0])
     expect(scratch.getElementsByTagName('a')[0] instanceof HTMLAnchorElement)
       .toBeTruthy()
   })

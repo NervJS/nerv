@@ -70,7 +70,7 @@ const travisLaunchers = {
   }
 }
 
-const localBrowsers = realBrowser ? Object.keys(travisLaunchers) : ['Chrome']
+const localBrowsers = realBrowser ? Object.keys(travisLaunchers) : ['IE']
 
 module.exports = function (config) {
   config.set({
@@ -84,7 +84,7 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
-      // './node_modules/es5-polyfill/dist/polyfill.js',
+      './node_modules/es5-polyfill/dist/polyfill.js',
       'test/spec.js'
     ],
 

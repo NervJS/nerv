@@ -761,7 +761,7 @@ describe('Component', function () {
         foo: 'bar'
       })
 
-      expect(sortAttributes(scratch.innerHTML)).toEqual(sortAttributes('<div foo="bar" j="2" i="2">inner</div>'))
+      expect(sortAttributes(scratch.innerHTML).toLowerCase()).toEqual(sortAttributes('<div foo="bar" j="2" i="2">inner</div>'))
 
       doRender()
       rerender()
@@ -804,7 +804,7 @@ describe('Component', function () {
       doRender()
       rerender()
 
-      expect(sortAttributes(scratch.innerHTML)).toEqual(sortAttributes('<div foo="bar" j="4" i="5">inner</div>'))
+      expect(sortAttributes(scratch.innerHTML).toLowerCase()).toEqual(sortAttributes('<div foo="bar" j="4" i="5">inner</div>'))
     })
 
     it('should resolve intermediary functional component', () => {

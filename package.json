@@ -8,7 +8,6 @@
   "typings": "./dist/src/index.d.ts",
   "scripts": {
     "precommit": "npm run lint && npm run lint-staged",
-    "prepush": "npm run test",
     "prebuild": "tsc --target es2017 ./build/build.ts",
     "prepublish": "npm run build",
     "clean": "rimraf dist",
