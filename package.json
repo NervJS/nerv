@@ -9,6 +9,7 @@
   "scripts": {
     "precommit": "npm run lint && npm run lint-staged",
     "prebuild": "tsc --target es2017 ./build/build.ts",
+    "prepush": "npm run test",
     "prepublish": "npm run build",
     "clean": "rimraf dist",
     "eslint:fix": "eslint --fix src test",
