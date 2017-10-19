@@ -6,6 +6,7 @@ describe('dom', () => {
 
   beforeAll(() => {
     scratch = document.createElement('div')
+    scratch.id = 'test'
     document.body.appendChild(scratch)
   })
 
@@ -49,7 +50,8 @@ describe('dom', () => {
 
       render(<Comp />, scratch)
       expect(unmountComponentAtNode(scratch)).toBe(true)
-      // expect(scratch.innerHTML).toBe('')
+      // @TODO: fix potential memory leak in stateless component
+      expect(document.getElementById('test')).toBeNull()
     })
   })
 })
