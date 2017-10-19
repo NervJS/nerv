@@ -15,13 +15,12 @@ module.exports = {
   globals: {
     describe: true,
     it: true,
-    before: true,
     beforeAll: true,
     beforeEach: true,
-    after: true,
+    afterEach: true,
     afterAll: true,
-    sinon: true,
-    expect: true
+    expect: true,
+    jasmine: true
   },
   parser: 'babel-eslint'
 }

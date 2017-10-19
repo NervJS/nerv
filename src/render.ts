@@ -19,6 +19,9 @@ export function render (vnode: VirtualNode, container: Element, callback?: Funct
   if (dom) {
     container.appendChild(dom)
   }
+  if (container) {
+    (container as any)._component = vnode
+  }
   flushMount()
 
   if (callback) {

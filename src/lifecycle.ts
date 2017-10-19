@@ -40,9 +40,6 @@ export function mountComponent (vnode: FullComponent) {
     readyComponents.push(() => vnode.props.ref(component))
   }
   const dom = mountVNode(rendered, getChildContext(component, parentContext))
-  if (options.debug) { // for devtools
-    (dom as any)._component = component
-  }
   component.dom = dom
   component._disable = false
   if (options.afterMount !== null) {
