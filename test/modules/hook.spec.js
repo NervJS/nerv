@@ -20,7 +20,7 @@ describe('Hooks', () => {
     scratch = null
   })
   describe('HTMLhook', () => {
-    it('sets and removes html', async () => {
+    it('sets and removes html', () => {
       let doRender = null
       const html = '<b>foo &amp; bar</b>'
       const hook1 = new HtmlHook({ __html: html })

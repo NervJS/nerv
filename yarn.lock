@@ -2081,14 +2081,6 @@ es5-polyfill@^0.0.1:
   version "0.0.1"
   resolved "https://registry.npmjs.org/es5-polyfill/-/es5-polyfill-0.0.1.tgz#360fe0d5a1043d05f69c86a36163dad5f1420d20"
 
-es5-sham-ie8@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/es5-sham-ie8/-/es5-sham-ie8-1.0.1.tgz#a0fa49decd118fa366b381b16241d8a175cbd1fd"
-
-es5-shim@^4.5.9:
-  version "4.5.9"
-  resolved "https://registry.npmjs.org/es5-shim/-/es5-shim-4.5.9.tgz#2a1e2b9e583ff5fed0c20a3ee2cbf3f75230a5c0"
-
 es6-iterator@2, es6-iterator@^2.0.1, es6-iterator@~2.0.1:
   version "2.0.1"
   resolved "https://registry.npmjs.org/es6-iterator/-/es6-iterator-2.0.1.tgz#8e319c9f0453bf575d374940a655920e59ca5512"
@@ -2108,7 +2100,7 @@ es6-map@^0.1.3:
     es6-symbol "~3.1.1"
     event-emitter "~0.3.5"
 
-es6-promise@^4.0.5:
+es6-promise@^4.0.5, es6-promise@^4.1.1:
   version "4.1.1"
   resolved "https://registry.npmjs.org/es6-promise/-/es6-promise-4.1.1.tgz#8811e90915d9a0dba36274f0b242dbda78f9c92a"
 
