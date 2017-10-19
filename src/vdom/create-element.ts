@@ -8,11 +8,7 @@ const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 const doc = document
 function createElement (vnode: VirtualNode, isSvg?: boolean): Element | Text | Comment | DocumentFragment | null {
   if (isWidget(vnode)) {
-    const dom: any = vnode.init()
-    if (dom !== null) {
-      dom._component = vnode
-    }
-    return dom
+    return vnode.init()
   }
   if (isString(vnode) || isNumber(vnode)) {
     return doc.createTextNode(vnode as string)

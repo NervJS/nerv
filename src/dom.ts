@@ -2,7 +2,6 @@ import { isWidget } from './vdom/vnode/types'
 
 export function unmountComponentAtNode (dom) {
   const component = dom._component
-  // console.log(component)
   if (!isWidget(component)) {
     return false
   }
@@ -11,5 +10,5 @@ export function unmountComponentAtNode (dom) {
 }
 
 export function findDOMNode (component) {
-  return component || component.dom || component
+  return component || component.dom && component
 }

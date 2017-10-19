@@ -1,7 +1,7 @@
 /** @jsx createElement */
-import { createElement, render, unmountComponentAtNode } from '../../src'
+import { Component, createElement, render, unmountComponentAtNode } from '../../src'
 
-describe('unmountComponentAtNode', () => {
+describe('dom', () => {
   let scratch
 
   beforeAll(() => {
@@ -18,34 +18,38 @@ describe('unmountComponentAtNode', () => {
     scratch = null
   })
 
-  it('returns false on non-Nerv containers', () => {
-    var d = document.createElement('div')
-    d.innerHTML = '<b>hellooo</b>'
-    expect(unmountComponentAtNode(d)).toBe(false)
-    expect(d.textContent).toBe('hellooo')
-  })
+  describe('unmountComponentAtNode', () => {
+    it('returns false on non-Nerv containers', () => {
+      var d = document.createElement('div')
+      d.innerHTML = '<b>hellooo</b>'
+      expect(unmountComponentAtNode(d)).toBe(false)
+      expect(d.textContent).toBe('hellooo')
+    })
 
-  // it('returns false on a vnode', () => {
-  //   const d = createElement('div')
-  //   render(d)
-  // })
+    it('returns false on a vnode', () => {
+      const d = createElement('div')
+      render(d, scratch)
+      expect(unmountComponentAtNode(d)).toBe(false)
+    })
 
-  // it('returns true on node has a component', () => {
-  //   class Comp extends Component {
-  //     render () {
-  //       return <span>test</span>
-  //     }
-  //   }
+    it('returns true on node has a component', () => {
+      class Comp extends Component {
+        render () {
+          return <span>test</span>
+        }
+      }
 
-  //   const dom = render(<Comp />, scratch)
-  //   console.log(scratch.innerHTML)
-  //   expect(unmountComponentAtNode(dom)).toBe(true)
-  // })
+      render(<Comp />, scratch)
+      expect(unmountComponentAtNode(scratch)).toBe(true)
+      expect(scratch.innerHTML).toBe('')
+    })
 
-  it('returns true on node has a stateless', () => {
-    const Comp = () => <span>test</span>
+    it('returns true on node has a stateless', () => {
+      const Comp = () => <span>test</span>
 
-    const dom = render(<Comp />, scratch)
-    expect(unmountComponentAtNode(dom)).toBe(true)
+      render(<Comp />, scratch)
+      expect(unmountComponentAtNode(scratch)).toBe(true)
+      expect(scratch.innerHTML).toBe('')
+    })
   })
 })
