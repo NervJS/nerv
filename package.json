@@ -25,7 +25,7 @@
     "build:esm": "rollup -c ./build/build.js --environment TARGET:esm",
     "build:umd": "rollup -c ./build/build.js --environment TARGET:umd",
     "build:devtools": "rollup -c ./build/build.js --environment TARGET:devtools",
-    "release": "npm run build && release-it -n --no-github.release --no-npm.publish && release patch"
+    "release": "npm run build && release-it -n -p"
   },
   "lint-staged": {
     "*.{js,jsx}": [
