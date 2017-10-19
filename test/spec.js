@@ -1,5 +1,5 @@
 import 'es6-promise/auto'
-import './modules/util.spec'
+// import './modules/util.spec'
 import './modules/h.spec'
 import './modules/createElement.spec'
 import './modules/diff.spec'

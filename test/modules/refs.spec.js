@@ -1,5 +1,5 @@
 /** @jsx createElement */
-import { Component, createElement, render, nextTick } from '../../src'
+import { Component, createElement, render } from '../../src'
 import sinon from 'sinon'
 
 const spy = (name, ...args) => {
@@ -77,7 +77,7 @@ describe('refs', () => {
     expect(ref.calledOnce).toBeTruthy()
   })
 
-  it('should pass children to ref functions', async () => {
+  it('should pass children to ref functions', () => {
     const outer = spy('outer')
     const inner = spy('inner')
     let InnermostComponent = 'span'
@@ -128,9 +128,9 @@ describe('refs', () => {
     inner.reset()
     InnermostComponent = 'x-span'
     rerender()
-    await nextTick()
-    expect(inner.firstCall.calledWith(inst.dom))
-    expect(inner.secondCall.calledWith(null))
+    outerC.forceUpdate()
+    expect(inner.firstCall.calledWith(inst.dom)).toBeTruthy()
+    expect(inner.secondCall.calledWith(null)).toBeTruthy()
     expect(scratch.innerHTML).toEqual('<div><x-span></x-span></div>')
     InnermostComponent = 'span'
 

@@ -1,6 +1,7 @@
 {
   "presets": [
     ["env", {
+      "spec": true,
       "useBuiltIns": false
     }], ["stage-0"]
   ],

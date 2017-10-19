@@ -498,6 +498,10 @@ describe('render()', function () {
     })
     todo.forceUpdate()
     todo.addTodo()
+    // IE8 activeElement would be document itself
+    if (document.documentElement === 8) {
+      return
+    }
     expect(document.activeElement).toEqual(input)
     await delay(100)
     expect(/1/.test(scratch.innerHTML)).toEqual(true)
