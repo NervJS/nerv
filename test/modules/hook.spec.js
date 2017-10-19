@@ -117,7 +117,7 @@ describe('Hooks', () => {
       const second = <div myns={hook2} />
       const third = <div myns={hook3} />
       const fourth = createElement('div')
-
+      let OuterC
       class Outer extends Component {
         constructor () {
           super(...arguments)
@@ -144,16 +144,16 @@ describe('Hooks', () => {
         }
       }
 
-      render(<Outer />, scratch)
+      render(<Outer ref={c => { OuterC = c }} />, scratch)
       expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).toEqual('first value')
       doRender()
-      await nextTick()
+      OuterC.forceUpdate()
       expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).toEqual('first value')
       doRender()
-      await nextTick()
+      OuterC.forceUpdate()
       expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).toEqual('second value')
       doRender()
-      await nextTick()
+      OuterC.forceUpdate()
       expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).toEqual(blankAttributeNS())
     })
 
