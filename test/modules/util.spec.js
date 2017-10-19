@@ -90,7 +90,8 @@ describe('Util', () => {
     })
 
     it('returns a Promise when provided no callback', done => {
-      if (!canUsePromise) {
+      const ua = navigator.userAgent.match(/MSIE (\d+)/)
+      if (!canUsePromise || ua !== null) {
         done()
       }
       nextTick().then(done)
