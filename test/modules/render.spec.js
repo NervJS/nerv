@@ -499,7 +499,7 @@ describe('render()', function () {
     todo.forceUpdate()
     todo.addTodo()
     // IE8 activeElement would be document itself
-    if (document.documentElement === 8) {
+    if (document.documentMode === 8) {
       return
     }
     expect(document.activeElement).toEqual(input)

@@ -109,6 +109,9 @@ describe('Hooks', () => {
   })
   describe('AttributeHook', () => {
     it('sets and removes namespaced attribute', () => {
+      if (document.documentMode === 8) {
+        return
+      }
       let doRender = null
       const namespace = 'http://ns.com/my'
       const hook1 = new AttributeHook(namespace, 'first value')
@@ -159,6 +162,9 @@ describe('Hooks', () => {
     })
 
     it('sets the attribute if previous value was not an AttributeHook', () => {
+      if (document.documentMode === 8) {
+        return
+      }
       let doRender = null
       var namespace = 'http://ns.com/my'
 
@@ -206,6 +212,9 @@ describe('Hooks', () => {
     })
 
     it('removes the attribute if next value is not an AttributeHook', () => {
+      if (document.documentMode === 8) {
+        return
+      }
       let doRender = null
       var namespace = 'http://ns.com/my'
 
@@ -252,6 +261,9 @@ describe('Hooks', () => {
     })
 
     it('sets the attribute if previous value uses a different namespace', () => {
+      if (document.documentMode === 8) {
+        return
+      }
       let doRender = null
       var namespace = 'http://ns.com/my'
 
@@ -293,6 +305,9 @@ describe('Hooks', () => {
     })
 
     it('removes the attribute if next value uses a different namespace', () => {
+      if (document.documentMode === 8) {
+        return
+      }
       let doRender
       var namespace = 'http://ns.com/my'
 

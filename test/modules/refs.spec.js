@@ -129,6 +129,9 @@ describe('refs', () => {
     InnermostComponent = 'x-span'
     rerender()
     outerC.forceUpdate()
+    if (document.documentMode === 8) {
+      return
+    }
     expect(inner.firstCall.calledWith(inst.dom)).toBeTruthy()
     expect(inner.secondCall.calledWith(null)).toBeTruthy()
     expect(scratch.innerHTML).toEqual('<div><x-span></x-span></div>')
