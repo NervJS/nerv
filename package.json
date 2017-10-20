@@ -1,11 +1,8 @@
 {
-  "name": "nervjs",
+  "name": "nerv-build",
+  "private": true,
   "version": "0.2.0",
   "description": "A react-like framework based on virtual-dom",
-  "main": "index.js",
-  "module": "dist/nerv.esm.js",
-  "jsnext:main": "dist/nerv.esm.js",
-  "typings": "./dist/src/index.d.ts",
   "scripts": {
     "precommit": "npm run lint && npm run lint-staged",
     "prebuild": "tsc --target es2017 ./build/build.ts",
@@ -39,15 +36,6 @@
   },
   "keywords": [
     "react-like"
-  ],
-  "files": [
-    "README.md",
-    "LICENSE",
-    "src",
-    "dist",
-    "index.js",
-    "devtools.js",
-    "devtools.js.map"
   ],
   "repository": {
     "type": "git",

@@ -1,5 +1,5 @@
 // tslint:disable-next-line:no-var-requires
-const { options } = require('nervjs')
+import { options } from 'nervjs'
 
 options.debug = true
 

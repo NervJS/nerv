@@ -1,0 +1,10 @@
+.*
+*.log
+*.swp
+*.yml
+
+.rpt2_cache
+
+__tests__
+src
+package-lock.json
