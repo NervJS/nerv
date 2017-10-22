@@ -2,7 +2,7 @@
   "name": "nerv-shared",
   "private": true,
   "version": "0.2.0",
-  "description": "Internal utilitys for Nerv.js",
+  "description": "Internal utilities for Nerv.js",
   "main": "index.js",
   "repository": {
     "type": "git",
