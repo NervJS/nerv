@@ -1,7 +1,7 @@
-import AttributeHook from '../../src/hooks/attribute-hook'
-import HtmlHook from '../../src/hooks/html-hook'
-import { createElement, Component, render } from '../../src'
-import { normalizeHTML } from '../util'
+import AttributeHook from '../src/hooks/attribute-hook'
+import HtmlHook from '../src/hooks/html-hook'
+import { createElement, Component, render } from '../src'
+import { normalizeHTML } from './util'
 
 describe('Hooks', () => {
   let scratch

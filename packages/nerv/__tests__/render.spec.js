@@ -1,7 +1,7 @@
 /** @jsx createElement */
-import { Component, createElement, render } from '../../src'
-import { rerender } from '../../src/render-queue'
-import { getAttributes, normalizeHTML, delay } from '../util'
+import { Component, createElement, render } from '../src'
+import { rerender } from '../src/render-queue'
+import { getAttributes, normalizeHTML, delay } from './util'
 
 describe('render()', function () {
   let scratch

@@ -1,8 +1,8 @@
 /** @jsx createElement */
-import { Component, createElement, render } from '../../src'
-import { rerender } from '../../src/render-queue'
+import { Component, createElement, render } from '../src'
+import { rerender } from '../src/render-queue'
 import sinon from 'sinon'
-import { EMPTY_CHILDREN } from '../util'
+import { EMPTY_CHILDREN } from './util'
 
 describe('Lifecycle methods', () => {
   let scratch

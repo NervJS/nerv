@@ -1,4 +1,4 @@
-import h from '../../src/vdom/h'
+import h from '../src/vdom/h'
 
 describe('test generate virtual dom tree', () => {
   it('test make virtual dom tree simply', () => {

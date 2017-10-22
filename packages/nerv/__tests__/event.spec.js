@@ -1,7 +1,6 @@
 /** @jsx createElement */
-import { Component, createElement, render } from '../../src'
-import { rerender } from '../../src/render-queue'
-import nextTick from '../../src/util/next-tick'
+import { Component, createElement, render, nextTick } from '../src'
+import { rerender } from '../src/render-queue'
 import sinon from 'sinon'
 
 describe('Events', () => {

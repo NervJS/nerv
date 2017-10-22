@@ -1,6 +1,6 @@
 /** @jsx createElement */
-import { Component, createElement, cloneElement, render } from '../../src'
-import { normalizeHTML } from '../util'
+import { Component, createElement, cloneElement, render } from '../src'
+import { normalizeHTML } from './util'
 
 describe('cloneElement()', () => {
   let scratch

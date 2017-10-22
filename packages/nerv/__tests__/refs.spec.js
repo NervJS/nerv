@@ -1,5 +1,5 @@
 /** @jsx createElement */
-import { Component, createElement, render } from '../../src'
+import { Component, createElement, render } from '../src'
 import sinon from 'sinon'
 
 const spy = (name, ...args) => {

@@ -1,6 +1,6 @@
 /** @jsx createElement */
-import { Component, createElement, render } from '../../src/index'
-import { normalizeHTML } from '../util'
+import { Component, createElement, render } from '../src/index'
+import { normalizeHTML } from './util'
 
 describe('patch', () => {
   let scratch

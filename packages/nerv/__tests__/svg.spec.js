@@ -1,7 +1,7 @@
 /** @jsx createElement */
-import { createElement, render } from '../../src'
+import { createElement, render } from '../src'
 
-import { sortAttributes } from '../util'
+import { sortAttributes } from './util'
 
 describe('svg', () => {
   let scratch

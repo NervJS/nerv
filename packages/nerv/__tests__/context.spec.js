@@ -1,9 +1,9 @@
 /** @jsx createElement */
-import { Component, createElement, render } from '../../src/index.ts'
-import createVText from '../../src/vdom/create-vtext'
-import { rerender } from '../../src/render-queue'
+import { Component, createElement, render } from '../src/index.ts'
+import createVText from '../src/vdom/create-vtext'
+import { rerender } from '../src/render-queue'
 import sinon from 'sinon'
-import { CHILDREN_MATCHER, normalizeHTML } from '../util'
+import { CHILDREN_MATCHER, normalizeHTML } from './util'
 
 describe('context', () => {
   let scratch

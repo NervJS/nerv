@@ -1,5 +1,5 @@
 /** @jsx createElement */
-import { Component, createElement, render, unmountComponentAtNode } from '../../src'
+import { Component, createElement, render, unmountComponentAtNode } from '../src'
 
 describe('dom', () => {
   let scratch
