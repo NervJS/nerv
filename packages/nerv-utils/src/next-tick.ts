@@ -1,4 +1,4 @@
-import { isNative } from './index'
+import { isNative } from './is'
 
 let callbacks: Function[] = []
 let pending = false
@@ -12,7 +12,7 @@ function nextHandler () {
 }
 
 const canUsePromise = (() => {
-  return 'Promise' in window && isNative(Promise)
+  return 'Promise' in window && typeof Promise === 'function'
 })()
 
 const canUseMutationObserver = (() => {

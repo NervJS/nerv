@@ -13,8 +13,5 @@
   "bugs": {
     "url": "https://github.com/NervJS/nerv/issues"
   },
-  "homepage": "https://github.com/NervJS/nerv.git",
-  "dependencies": {
-    "nervjs": "0.2.0"
-  }
+  "homepage": "https://github.com/NervJS/nerv.git"
 }

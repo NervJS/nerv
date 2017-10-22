@@ -10,6 +10,23 @@ module.exports = {
   moduleNameMapper: {
     '^nerv(.*?)$': '<rootDir>/packages/nerv$1/src'
   },
+  globals: {
+    'ts-jest': {
+      tsConfigFile: {
+        'target': 'es5',
+        'removeComments': false,
+        'preserveConstEnums': true,
+        'moduleResolution': 'node',
+        'experimentalDecorators': true,
+        'noImplicitAny': false,
+        'allowSyntheticDefaultImports': true,
+        'strictNullChecks': true,
+        'noImplicitThis': true,
+        'inlineSourceMap': true,
+        'module': 'es6'
+      }
+    }
+  },
   rootDir: __dirname,
   testMatch: [
     '<rootDir>/packages/*/__tests__/**/*spec.js?(x)'
