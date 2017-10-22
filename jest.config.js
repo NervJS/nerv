@@ -10,6 +10,7 @@ module.exports = {
   moduleNameMapper: {
     '^nerv(.*?)$': '<rootDir>/packages/nerv$1/src'
   },
+  mapCoverage: true,
   globals: {
     'ts-jest': {
       tsConfigFile: {
@@ -22,8 +23,7 @@ module.exports = {
         'allowSyntheticDefaultImports': true,
         'strictNullChecks': true,
         'noImplicitThis': true,
-        'inlineSourceMap': true,
-        'module': 'es6'
+        'inlineSourceMap': true
       }
     }
   },

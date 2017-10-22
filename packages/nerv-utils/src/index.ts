@@ -3,8 +3,8 @@ export { default as shallowEqual } from './shallow-equal'
 export { default as SimpleMap } from './simple-map'
 export * from './is'
 
-  /* istanbul ignore next */
 export function getPrototype (obj) {
+  /* istanbul ignore next */
   /* eslint-disable */
   if (Object.getPrototypeOf) {
     return Object.getPrototypeOf(obj)
@@ -12,6 +12,7 @@ export function getPrototype (obj) {
     return obj.__proto__
   }
   /* eslint-enable */
+  /* istanbul ignore next */
   return obj.constructor.prototype
 }
 
