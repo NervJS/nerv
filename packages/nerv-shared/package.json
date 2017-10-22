@@ -1,0 +1,25 @@
+{
+  "name": "nerv-shared",
+  "version": "0.2.0",
+  "description": "Internal utilitys for Nerv.js",
+  "main": "dist/index.js",
+  "typings": "./dist/src/index.d.ts",
+  "keywords": [
+    "devtools",
+    "nerv",
+    "nervjs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NervJS/nerv.git"
+  },
+  "author": "yuche",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NervJS/nerv/issues"
+  },
+  "homepage": "https://github.com/NervJS/nerv.git",
+  "dependencies": {
+    "nervjs": "0.2.0"
+  }
+}

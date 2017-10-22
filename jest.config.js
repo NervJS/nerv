@@ -1,36 +1,22 @@
 module.exports = {
-  mapCoverage: true,
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'lcov', 'text'],
-  collectCoverage: true,
-  // collectCoverageFrom: [
-  //   'src/*.ts',
-  //   'src/**/*.ts'
-  // ],
-  globals: {
-    'ts-jest': {
-      tsConfigFile: {
-        'target': 'es5',
-        'removeComments': true,
-        'preserveConstEnums': true,
-        'moduleResolution': 'node',
-        'experimentalDecorators': true,
-        'noImplicitAny': false,
-        'allowSyntheticDefaultImports': true,
-        'strictNullChecks': true,
-        'noImplicitThis': true,
-        'inlineSourceMap': true
-      }
-    }
-  },
+  collectCoverageFrom: [
+    'packages/nerv/src/**/*.ts',
+    'packages/nerv-utils/src/**/*.ts',
+    'packages/nerv-shared/src/**/*.ts'
+  ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
+  moduleNameMapper: {
+    '^nerv(.*?)$': '<rootDir>/packages/nerv$1/src'
+  },
   rootDir: __dirname,
-  // setupFiles: ['<rootDir>/scripts/test/requestAnimationFrame.ts'],
   testMatch: [
-    '<rootDir>/test/spec.js'
+    '<rootDir>/packages/*/__tests__/**/*spec.js?(x)'
   ],
   transform: {
     '^.+\\.jsx?$': 'babel-jest',
     '^.+\\.tsx?$': '<rootDir>/node_modules/ts-jest/preprocessor.js'
-  }
+  },
+  transformIgnorePatterns: ['<rootDir>/node_modules/(?!lodash-es)']
 }

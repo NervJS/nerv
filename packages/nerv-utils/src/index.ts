@@ -1,3 +1,7 @@
+export { default as nextTick } from './next-tick'
+export { default as shallowEqual } from './shallow-equal'
+export { default as SimpleMap } from './simple-map'
+
 export function isNumber (arg): arg is number {
   return typeof arg === 'number'
 }
