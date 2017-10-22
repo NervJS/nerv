@@ -54,17 +54,6 @@ export function extend<S, F> (source: S, from: F): S | F & S {
 export function clone<T> (obj: T): T | {} {
   return extend({}, obj)
 }
-export function isEmptyObject (obj) {
-  if (!obj) {
-    return true
-  }
-  for (const prop in obj) {
-    if (obj.hasOwnProperty(prop)) {
-      return false
-    }
-  }
-  return true
-}
 
 export const supportSVG = (() => {
   const SVG_NS = 'http://www.w3.org/2000/svg'
