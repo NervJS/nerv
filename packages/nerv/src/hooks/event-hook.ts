@@ -1,5 +1,4 @@
-import { isFunction, isNative } from '../util'
-import SimpleMap from '../util/simple-map'
+import { isFunction, isNative, SimpleMap } from 'nerv-utils'
 
 const ONINPUT = 'oninput'
 const ONPROPERTYCHANGE = 'onpropertychange'

@@ -1,4 +1,4 @@
-import { isString, isFunction } from '../../util'
+import { isString, isFunction } from 'nerv-utils'
 import { isWidget, isVNode, isHook } from './types'
 import { IProps } from '../../types'
 export interface IHooks {

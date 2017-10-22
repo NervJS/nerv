@@ -1,14 +1,9 @@
 {
   "name": "nerv-shared",
+  "private": true,
   "version": "0.2.0",
   "description": "Internal utilitys for Nerv.js",
-  "main": "dist/index.js",
-  "typings": "./dist/src/index.d.ts",
-  "keywords": [
-    "devtools",
-    "nerv",
-    "nervjs"
-  ],
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/NervJS/nerv.git"

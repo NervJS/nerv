@@ -1,5 +1,5 @@
 import { isVNode, isVText, isWidget, isHook } from './vnode/types'
-import { isObject, isString, isNumber, isFunction, supportSVG } from '../util'
+import { isObject, isString, isNumber, isFunction, supportSVG } from 'nerv-utils'
 import { VirtualNode, IProps } from '../types'
 import options from '../options'
 

@@ -1,7 +1,7 @@
 import VNode from './vnode/vnode'
 import createVText from './create-vtext'
 import { isVNode, isVText, isWidget } from './vnode/types'
-import { isString, isArray, isNumber } from '../util'
+import { isString, isArray, isNumber } from 'nerv-utils'
 import { IProps, VirtualChildren, VirtualNode } from '../types'
 function h (tagName: string, props: IProps, children?: VirtualChildren) {
   let key

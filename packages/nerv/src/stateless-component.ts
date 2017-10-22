@@ -1,4 +1,4 @@
-import shallowEqual from './util/shallow-equal'
+import { shallowEqual } from 'nerv-utils'
 import { mountStatelessComponent, unmountStatelessComponent, reRenderStatelessComponent } from './lifecycle'
 
 class StateLessComponent {

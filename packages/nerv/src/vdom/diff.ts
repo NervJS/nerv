@@ -2,7 +2,7 @@
 
 import VPatch from './vpatch'
 import { isVNode, isVText, isWidget, isHook } from './vnode/types'
-import { isFunction, isObject, getPrototype } from '../util'
+import { isFunction, isObject, getPrototype } from 'nerv-utils'
 import { VirtualNode, IVNode, IProps, Patch, VirtualChildren } from '../types'
 import Widget from '../full-component'
 import Stateless from '../stateless-component'

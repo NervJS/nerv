@@ -1,5 +1,5 @@
 import { mountVNode, flushMount } from './lifecycle'
-import { isString, isNumber } from './util'
+import { isString, isNumber } from 'nerv-utils'
 import { isWidget, isVNode } from './vdom/vnode/types'
 import { IVNode, VirtualNode } from './types'
 

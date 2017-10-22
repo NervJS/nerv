@@ -1,6 +1,6 @@
 import h from './vdom/h'
 import SVGPropertyConfig from './vdom/svg-property-config'
-import { isFunction, isString, isNumber, isBoolean, isObject, supportSVG } from './util'
+import { isFunction, isString, isNumber, isBoolean, isObject, supportSVG } from 'nerv-utils'
 import FullComponent from './full-component'
 import StatelessComponent from './stateless-component'
 import CurrentOwner from './current-owner'

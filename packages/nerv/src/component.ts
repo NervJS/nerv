@@ -1,4 +1,4 @@
-import { isFunction, extend, clone } from './util'
+import { isFunction, extend, clone } from 'nerv-utils'
 import { enqueueRender } from './render-queue'
 import { updateComponent } from './lifecycle'
 import { IProps, ComponentLifecycle } from './types'

@@ -2,7 +2,7 @@
 /* tslint:disable: no-empty*/
 
 import VPatch from './vpatch'
-import { isFunction, isString, isObject, getPrototype } from '../util'
+import { isFunction, isString, isObject, getPrototype } from 'nerv-utils'
 import domIndex from './dom-index'
 import { isWidget, isHook, isVNode } from './vnode/types'
 import createElement from './create-element'

@@ -3,7 +3,7 @@ import PureComponent from './pure-component'
 import { render } from './render'
 import createElement from './create-element'
 import cloneElement from './clone-element'
-import nextTick from './util/next-tick'
+import { nextTick } from 'nerv-utils'
 import options from './options'
 import { unmountComponentAtNode, findDOMNode } from './dom'
 

@@ -2,7 +2,7 @@
   "name": "nerv-devtools",
   "version": "0.2.0",
   "description": "Devtools for Nerv.js",
-  "main": "dist/index.js",
+  "main": "index.js",
   "typings": "./dist/src/index.d.ts",
   "keywords": [
     "devtools",

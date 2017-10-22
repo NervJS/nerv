@@ -1,5 +1,5 @@
 import Component from './component'
-import shallowEqual from './util/shallow-equal'
+import { shallowEqual } from 'nerv-utils'
 
 class PureComponent<P, S> extends Component<P, S> {
   isPureComponent = true

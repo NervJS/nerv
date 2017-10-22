@@ -1,4 +1,4 @@
-import nextTick from './util/next-tick'
+import { nextTick } from 'nerv-utils'
 import { updateComponent } from './lifecycle'
 
 let items: any[] = []

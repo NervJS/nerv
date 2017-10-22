@@ -1,4 +1,4 @@
-import { extend, isFunction, isNumber, isString, isObject } from './util'
+import { extend, isFunction, isNumber, isString, isObject } from 'nerv-utils'
 import CurrentOwner from './current-owner'
 import createElement from './vdom/create-element'
 import createVText from './vdom/create-vtext'

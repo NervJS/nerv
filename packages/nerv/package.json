@@ -9,15 +9,6 @@
   "keywords": [
     "react-like"
   ],
-  "files": [
-    "README.md",
-    "LICENSE",
-    "src",
-    "dist",
-    "index.js",
-    "devtools.js",
-    "devtools.js.map"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/NervJS/nerv.git"
@@ -27,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/NervJS/nerv/issues"
   },
-  "homepage": "https://github.com/NervJS/nerv.git"
+  "homepage": "https://github.com/NervJS/nerv.git",
+  "dependencies": {
+    "nerv-utils": "0.2.0"
+  }
 }
