@@ -3,6 +3,7 @@ import { Component, createElement, render, nextTick } from '../src'
 import { rerender } from '../src/render-queue'
 import sinon from 'sinon'
 
+// @TODO: figure out why run component.spec before event.spec will occurs error
 describe('Events', () => {
   let scratch
   beforeAll(() => {
@@ -13,10 +14,10 @@ describe('Events', () => {
   beforeEach(() => {
     scratch.innerHTML = ''
     const { addEventListener, removeEventListener } = document.constructor.prototype
-    if (addEventListener.isSinonProxy) {
+    if (addEventListener.restore) {
       addEventListener.restore()
     }
-    if (removeEventListener.isSinonProxy) {
+    if (removeEventListener.restore) {
       removeEventListener.restore()
     }
   })

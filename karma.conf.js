@@ -1,11 +1,7 @@
-// Karma configuration
-// Generated on Tue Jul 18 2017 18:01:48 GMT+0800 (CST)
-
 const webpack = require('webpack')
 const path = require('path')
 const resolve = (pkg) =>
   path.join(__dirname, './packages', pkg, 'src')
-console.log(resolve('nerv-utils'))
 const coverage = String(process.env.COVERAGE) !== 'false'
 const ci = String(process.env.CI).match(/^(1|true)$/gi)
 const realBrowser = String(process.env.BROWSER).match(/^(1|true)$/gi)
@@ -88,9 +84,10 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
-      // './node_modules/es5-polyfill/dist/polyfill.js',
-      // 'browsers/ie8.js',
-      // 'browsers/polyfill.js',
+      './node_modules/es5-polyfill/dist/polyfill.js',
+      'browsers/ie8.js',
+      'browsers/polyfill.js',
+      'packages/nerv/__tests__/event.spec.js',
       'packages/*/__tests__/**/*spec.js?(x)'
     ],
 
