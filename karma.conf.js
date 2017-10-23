@@ -2,6 +2,10 @@
 // Generated on Tue Jul 18 2017 18:01:48 GMT+0800 (CST)
 
 const webpack = require('webpack')
+const path = require('path')
+const resolve = (pkg) =>
+  path.join(__dirname, './packages', pkg, 'src')
+console.log(resolve('nerv-utils'))
 const coverage = String(process.env.COVERAGE) !== 'false'
 const ci = String(process.env.CI).match(/^(1|true)$/gi)
 const realBrowser = String(process.env.BROWSER).match(/^(1|true)$/gi)
@@ -76,7 +80,7 @@ module.exports = function (config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+    basePath: '.',
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -84,10 +88,10 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
-      './node_modules/es5-polyfill/dist/polyfill.js',
-      // 'test/util/ie8.js',
-      // 'test/util/polyfill.js',
-      'test/spec.js'
+      // './node_modules/es5-polyfill/dist/polyfill.js',
+      // 'browsers/ie8.js',
+      // 'browsers/polyfill.js',
+      'packages/*/__tests__/**/*spec.js?(x)'
     ],
 
     specReporter: {
@@ -103,7 +107,7 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'test/**/*.js': ['webpack', 'sourcemap']
+      'packages/*/__tests__/**/*spec.js?(x)': ['webpack', 'sourcemap']
     },
 
     // test results reporter to use
@@ -155,7 +159,14 @@ module.exports = function (config) {
     webpack: {
       devtool: 'inline-source-map',
       resolve: {
-        extensions: ['.ts', '.js']
+        alias: {
+          nervjs: resolve('nerv'),
+          'nerv-devtools': resolve('nerv-devtools'),
+          'nerv-shared': resolve('nerv-shared'),
+          'nerv-utils': resolve('nerv-utils')
+        },
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        mainFields: ['module', 'main']
       },
       module: {
         rules: [
@@ -182,29 +193,6 @@ module.exports = function (config) {
             loader: 'es3ify-loader'
           }
         ]
-        // loaders: [
-        //   {
-        //     test: /\.js$/,
-        //     loader: 'babel-loader',
-        //     exclude: /node_modules/
-        //   },
-        //   {
-        //     test: /\.ts?$/,
-        //     loader: 'ts-loader?' + JSON.stringify({
-        //       transpileOnly: true,
-        //       compilerOptions: {
-        //         target: 'es3',
-        //         module: 'commonjs'
-        //       }
-        //     })
-        //   }
-        // ],
-        // postLoaders: [
-        //   {
-        //     test: /.js$/,
-        //     loader: 'es3ify-loader'
-        //   }
-        // ]
       },
       plugins: [
         new webpack.DefinePlugin({
@@ -214,7 +202,7 @@ module.exports = function (config) {
         })
       ]
     },
-
+    stats: 'errors-only',
     webpackMiddleware: {
       noInfo: true,
       stats: {

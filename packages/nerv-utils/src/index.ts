@@ -5,13 +5,11 @@ export * from './is'
 
 export function getPrototype (obj) {
   /* istanbul ignore next */
-  /* eslint-disable */
   if (Object.getPrototypeOf) {
     return Object.getPrototypeOf(obj)
   } else if (obj.__proto__) {
     return obj.__proto__
   }
-  /* eslint-enable */
   /* istanbul ignore next */
   return obj.constructor.prototype
 }
