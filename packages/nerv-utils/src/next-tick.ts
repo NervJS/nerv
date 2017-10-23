@@ -66,7 +66,7 @@ function nextTick (cb: Function, ctx?) {
       try {
         cb.call(ctx)
       } catch (err) {
-        console.error(err)
+        console.error('Error occured in nextTick: ', err)
       }
     } else if (_resolve) {
       _resolve(ctx)

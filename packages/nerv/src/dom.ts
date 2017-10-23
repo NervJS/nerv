@@ -1,4 +1,4 @@
-import { isWidget } from './vdom/vnode/types'
+import { isWidget } from 'nerv-shared'
 
 export function unmountComponentAtNode (dom) {
   const component = dom._component

@@ -1,6 +1,5 @@
-import { isVNode, isVText, isWidget, isHook } from './vnode/types'
 import { isObject, isString, isNumber, isFunction, supportSVG } from 'nerv-utils'
-import { VirtualNode, IProps } from '../types'
+import { isVNode, isVText, isWidget, isHook, VirtualNode, Props } from 'nerv-shared'
 import options from '../options'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
@@ -73,7 +72,7 @@ function createElement (vnode: VirtualNode, isSvg?: boolean): Element | Text | C
   return null
 }
 
-function setProps (domNode: Element, props: IProps, isSvg?: boolean) {
+function setProps (domNode: Element, props: Props, isSvg?: boolean) {
   for (const p in props) {
     if (p === 'children') {
       continue

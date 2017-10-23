@@ -1,9 +1,9 @@
 import VNode from './vnode/vnode'
 import createVText from './create-vtext'
-import { isVNode, isVText, isWidget } from './vnode/types'
+import { isVNode, isVText, isWidget, Props, VirtualChildren, VirtualNode } from 'nerv-shared'
 import { isString, isArray, isNumber } from 'nerv-utils'
-import { IProps, VirtualChildren, VirtualNode } from '../types'
-function h (tagName: string, props: IProps, children?: VirtualChildren) {
+// import { Props, VirtualChildren, VirtualNode } from '../types'
+function h (tagName: string, props: Props, children?: VirtualChildren) {
   let key
   let namespace
   let owner
@@ -40,7 +40,7 @@ function h (tagName: string, props: IProps, children?: VirtualChildren) {
 function addChildren (childNodes: VirtualNode[], children: VirtualNode, tagName: string) {
   if (isString(children) || isNumber(children)) {
     children = String(children)
-    childNodes.push(createVText(children))
+    childNodes.push(createVText(children) as any)
   } else if (isChild(children)) {
     childNodes.push(children)
   } else if (isArray(children)) {

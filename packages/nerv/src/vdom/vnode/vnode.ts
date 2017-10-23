@@ -1,6 +1,5 @@
 import { isString, isFunction } from 'nerv-utils'
-import { isWidget, isVNode, isHook } from './types'
-import { IProps } from '../../types'
+import { isWidget, isVNode, isHook, Props } from 'nerv-shared'
 export interface IHooks {
   [props: string]: any
 }
@@ -8,7 +7,7 @@ export interface IHooks {
 class VNode {
   type = 'VirtualNode'
   tagName: string | undefined
-  props: IProps
+  props: Props
   children: Array<string | number | VNode>
   key: string | number | undefined
   namespace: string | null | undefined

@@ -1,9 +1,8 @@
 import { mountVNode, flushMount } from './lifecycle'
 import { isString, isNumber } from 'nerv-utils'
-import { isWidget, isVNode } from './vdom/vnode/types'
-import { IVNode, VirtualNode } from './types'
+import { isWidget, isVNode, VNode, VirtualNode } from 'nerv-shared'
 
-function isVChild (vnode): vnode is string | number | IVNode {
+function isVChild (vnode): vnode is string | number | VNode {
   return isVNode(vnode) || isString(vnode) || isNumber(vnode)
 }
 

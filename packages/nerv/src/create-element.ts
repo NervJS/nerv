@@ -8,16 +8,14 @@ import RefHook from './hooks/ref-hook'
 import HtmlHook from './hooks/html-hook'
 import EventHook from './hooks/event-hook'
 import AttributeHook from './hooks/attribute-hook'
-import { IProps, VirtualChildren } from './types'
-import Component from './component'
-import VNode from './vdom/vnode/vnode'
+import { Props, VirtualChildren, Component, VNode } from 'nerv-shared'
 
 const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i
 
 const EMPTY_CHILDREN = []
 const isSupportSVG = supportSVG()
 
-function transformPropsForRealTag (tagName: string, props: IProps) {
+function transformPropsForRealTag (tagName: string, props: Props) {
   const newProps: any = {}
   const DOMAttributeNamespaces = SVGPropertyConfig.DOMAttributeNamespaces
   for (let propName in props) {
@@ -84,7 +82,7 @@ function transformPropsForRealTag (tagName: string, props: IProps) {
  * defaultProps should respect null but ignore undefined
  * @see: https://facebook.github.io/react/docs/react-component.html#defaultprops
  */
-function transformPropsForComponent (props: IProps, defaultProps?: IProps) {
+function transformPropsForComponent (props: Props, defaultProps?: Props) {
   const newProps: any = {}
   for (const propName in props) {
     const propValue = props[propName]
@@ -102,7 +100,7 @@ function transformPropsForComponent (props: IProps, defaultProps?: IProps) {
 
 function createElement<T> (
   tagName: string | Function | Component<any, any>,
-  properties?: T & IProps | null,
+  properties?: T & Props | null,
   ..._children: Array<VirtualChildren | null>
 ) {
   let children: any[] = EMPTY_CHILDREN
@@ -124,7 +122,7 @@ function createElement<T> (
   }
   let props
   if (isString(tagName)) {
-    props = transformPropsForRealTag(tagName, properties as IProps)
+    props = transformPropsForRealTag(tagName, properties as Props)
     props.owner = CurrentOwner.current
     return h(tagName, props, children as any) as VNode
   } else if (isFunction(tagName)) {

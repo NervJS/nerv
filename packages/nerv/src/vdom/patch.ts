@@ -4,11 +4,10 @@
 import VPatch from './vpatch'
 import { isFunction, isString, isObject, getPrototype } from 'nerv-utils'
 import domIndex from './dom-index'
-import { isWidget, isHook, isVNode } from './vnode/types'
 import createElement from './create-element'
 import VText from './vnode/vtext'
-import { IProps, VirtualNode, IVNode, PatchOrder } from '../types'
-import Widget from '../full-component'
+import { Props, VirtualNode, VNode, PatchOrder, isWidget, isHook, isVNode, CompositeComponent } from 'nerv-shared'
+// import CompositeComponent from '../full-component'
 
 function patch (rootNode: Element, patches, parentContext?: any) {
   const patchIndices = getPatchIndices(patches)
@@ -47,19 +46,19 @@ function patchSingle (domNode: Element, vpatch: VPatch, parentContext?: any) {
 
   switch (type) {
     case VPatch.VTEXT:
-      return patchVText(domNode as any, patchObj as VText)
+      return patchVText(domNode as any, patchObj as any)
     case VPatch.VNODE:
-      return patchVNode(domNode, patchObj as IVNode, parentContext)
+      return patchVNode(domNode, patchObj as VNode, parentContext)
     case VPatch.INSERT:
       return patchInsert(domNode, patchObj as VirtualNode, parentContext)
     case VPatch.WIDGET:
-      return patchWidget(domNode, oldVNode as Widget, patchObj as Widget)
+      return patchWidget(domNode, oldVNode as CompositeComponent, patchObj as CompositeComponent)
     case VPatch.PROPS:
-      return patchProps(domNode, patchObj as IProps, (oldVNode as IVNode).props, (oldVNode as IVNode).isSvg)
+      return patchProps(domNode, patchObj as Props, (oldVNode as VNode).props, (oldVNode as VNode).isSvg)
     case VPatch.ORDER:
       return patchOrder(domNode, patchObj as PatchOrder)
     case VPatch.REMOVE:
-      return patchRemove(domNode, oldVNode)
+      return patchRemove(domNode, oldVNode as any)
     default:
       return domNode
   }
@@ -107,17 +106,17 @@ function patchInsert (parentNode: Element, vnode: VirtualNode, parentContext?: a
   return parentNode
 }
 
-function patchWidget (domNode: Element, vnode: Widget, patch: Widget) {
+function patchWidget (domNode: Element, vnode: CompositeComponent, patch: CompositeComponent) {
   const isUpdate = isUpdateWidget(vnode, patch)
   if (vnode) {
     patch.parentContext = vnode.parentContext
   }
   const newNode = isUpdate
-    ? (patch as Widget).update(vnode, patch, domNode) || domNode
+    ? (patch as CompositeComponent).update(vnode, patch, domNode) || domNode
     : createElement(patch)
   const parentNode = domNode.parentNode
   if (parentNode && domNode !== newNode) {
-    parentNode.replaceChild(newNode, domNode)
+    parentNode.replaceChild(newNode as Node, domNode)
   }
   if (!isUpdate && vnode) {
     destroyWidget(domNode, vnode)
@@ -131,7 +130,7 @@ function destroyWidget (domNode: Element, widget) {
   }
 }
 
-function patchProps (domNode: Element, patch: IProps, previousProps: IProps, isSvg?: boolean) {
+function patchProps (domNode: Element, patch: Props, previousProps: Props, isSvg?: boolean) {
   for (const propName in patch) {
     if (propName === 'children') {
       continue

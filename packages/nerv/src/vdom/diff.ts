@@ -1,11 +1,22 @@
 /* tslint:disable: no-shadowed-variable*/
 
 import VPatch from './vpatch'
-import { isVNode, isVText, isWidget, isHook } from './vnode/types'
 import { isFunction, isObject, getPrototype } from 'nerv-utils'
-import { VirtualNode, IVNode, IProps, Patch, VirtualChildren } from '../types'
-import Widget from '../full-component'
-import Stateless from '../stateless-component'
+import {
+  VirtualNode,
+  VNode,
+  Props,
+  Patch,
+  VirtualChildren,
+  isVNode,
+  isVText,
+  isWidget,
+  isHook,
+  CompositeComponent,
+  StatelessComponent
+} from 'nerv-shared'
+// import CompositeComponent from '../full-component'
+// import StatelessComponent from '../stateless-component'
 
 type Patches = Patch[] & {
   old: VirtualNode
@@ -70,7 +81,7 @@ function walk (a: VirtualNode, b: VirtualNode, patches: Patches, index: number) 
   }
 }
 
-function diffProps (propsA: IProps, propsB: IProps) {
+function diffProps (propsA: Props, propsB: Props) {
   let diff: any = null
   for (const key in propsA) {
     if (key === 'children') {
@@ -112,7 +123,7 @@ function diffProps (propsA: IProps, propsB: IProps) {
   return diff
 }
 
-function diffChildren (a: IVNode, b: IVNode, apply, patches: Patches, index: number) {
+function diffChildren (a: VNode, b: VNode, apply, patches: Patches, index: number) {
   const aChildren = a.children
   const diffSet = diffList(aChildren, b.children, 'key')
   const bChildren = diffSet.list
@@ -274,8 +285,8 @@ function clearState (vnode: VirtualNode, patch: VirtualNode, index: number) {
 function unhook (vnode: VirtualNode, patch: VirtualNode, index: number) {
   if (isVNode(vnode)) {
     if (vnode.hooks) {
-      (patch as IVNode)[index] = appendPatch(
-        (patch as IVNode)[index],
+      (patch as VNode)[index] = appendPatch(
+        (patch as VNode)[index],
         new VPatch(
           VPatch.PROPS,
           vnode,
@@ -302,8 +313,8 @@ function unhook (vnode: VirtualNode, patch: VirtualNode, index: number) {
 function destroyWidgets (vnode: VirtualNode, patch: VirtualNode, index: number) {
   if (isWidget(vnode)) {
     if (isFunction(vnode.destroy)) {
-      (patch as Widget | Stateless)[index] =
-        appendPatch((patch as Widget | Stateless)[index], new VPatch(VPatch.REMOVE, vnode, null))
+      (patch as CompositeComponent | StatelessComponent)[index] =
+        appendPatch((patch as CompositeComponent | StatelessComponent)[index], new VPatch(VPatch.REMOVE, vnode, null))
     }
   } else if (isVNode(vnode) && vnode.hasWidgets) {
     vnode.children.forEach((child) => {

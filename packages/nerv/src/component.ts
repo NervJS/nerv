@@ -1,7 +1,7 @@
 import { isFunction, extend, clone } from 'nerv-utils'
 import { enqueueRender } from './render-queue'
 import { updateComponent } from './lifecycle'
-import { IProps, ComponentLifecycle } from './types'
+import { Props, ComponentLifecycle } from 'nerv-shared'
 
 interface Component<P = {}, S = {}> extends ComponentLifecycle<P, S > {
   _rendered: any,
@@ -11,7 +11,7 @@ interface Component<P = {}, S = {}> extends ComponentLifecycle<P, S > {
 class Component<P, S> implements ComponentLifecycle<P, S> {
   public static defaultProps: {}
   state: Readonly<S>
-  props: Readonly<P> & Readonly<IProps>
+  props: Readonly<P> & Readonly<Props>
   context: any
   _dirty = true
   _disable = true
