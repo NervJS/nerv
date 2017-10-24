@@ -8,13 +8,10 @@ module.exports = {
   output: {
     sourcemap: true,
     name: 'nerv-devtools',
-    format: 'umd',
+    format: 'es',
     file: resolver('dist/index.js')
   },
-  external: ['nervjs'],
-  globals: {
-    nervjs: 'Nerv'
-  },
+  external: ['nerv-shared'],
   plugins: [
     typescript({
       typescript: require('typescript')

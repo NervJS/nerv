@@ -18,9 +18,8 @@
     "test:karma": "karma start karma.conf.js --single-run",
     "test:karma:watch": "npm run test:karma -- no-single-run",
     "build": "npm run clean && lerna exec -- rollup -c && node afterbuild.js",
-    "build:esm": "rollup -c ./build/build.js --environment TARGET:esm",
-    "build:umd": "rollup -c ./build/build.js --environment TARGET:umd",
-    "build:devtools": "rollup -c ./build/build.js --environment TARGET:devtools",
+    "build:esm": "lerna exec -- rollup -c --environment TARGET:esm",
+    "build:umd": "lerna exec -- rollup -c --environment TARGET:umd",
     "release": "npm run build && release-it -n -p"
   },
   "lint-staged": {
@@ -91,6 +90,7 @@
     "release-it": "^2.8.2",
     "rimraf": "^2.6.1",
     "rollup": "^0.50.0",
+    "rollup-plugin-alias": "^1.4.0",
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-buble": "^0.15.0",
     "rollup-plugin-commonjs": "^8.2.1",

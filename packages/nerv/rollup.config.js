@@ -5,6 +5,7 @@ const uglify = require('rollup-plugin-uglify')
 const optimizeJs = require('optimize-js')
 const babel = require('rollup-plugin-babel')
 const es3 = require('rollup-plugin-es3')
+const alias = require('rollup-plugin-alias')
 const { join } = require('path')
 const cwd = __dirname
 
@@ -48,6 +49,10 @@ const baseConfig = {
     sourcemap: true
   },
   plugins: [
+    alias({
+      'nerv-shared': join(cwd, '../nerv-shared/dist/index'),
+      'nerv-utils': join(cwd, '../nerv-utils/dist/index')
+    }),
     resolve(),
     typescript({
       typescript: require('typescript')
@@ -82,4 +87,4 @@ function rollup () {
     return [baseConfig, esmConfig, productionConfig]
   }
 }
-export default rollup()
+module.exports = rollup()

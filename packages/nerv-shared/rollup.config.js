@@ -7,13 +7,8 @@ module.exports = {
   input: resolver('src/index.ts'),
   output: {
     sourcemap: true,
-    name: 'nerv-devtools',
-    format: 'umd',
+    format: 'es',
     file: resolver('dist/index.js')
-  },
-  external: ['nervjs'],
-  globals: {
-    nervjs: 'Nerv'
   },
   plugins: [
     typescript({
