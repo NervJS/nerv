@@ -4,9 +4,9 @@
   "description": "Server-side rendering for Nerv.js",
   "author": "yuche",
   "license": "MIT",
-  "main": "dist/nerv.ssr.js",
-  "module": "dist/nerv.ssr.esm.js",
-  "jsnext:main": "dist/nerv.ssr.esm.js",
+  "main": "dist/index.js",
+  "module": "dist/nerv.ssr.js",
+  "jsnext:main": "dist/nerv.ssr.js",
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",

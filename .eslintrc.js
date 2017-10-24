@@ -20,7 +20,8 @@ module.exports = {
     afterEach: true,
     afterAll: true,
     expect: true,
-    jasmine: true
+    jasmine: true,
+    jest: true
   },
   parser: 'babel-eslint'
 }
