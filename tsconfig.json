@@ -12,8 +12,7 @@
     "noUnusedLocals": true,
     "strictNullChecks": true,
     "sourceMap": true,
-    "declaration": true,
-    "declarationDir": "dist",
+    "declaration": false,
     "baseUrl": ".",
     "paths": {
       "nervjs": ["packages/nerv/src"],
