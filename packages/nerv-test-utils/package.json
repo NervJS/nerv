@@ -1,0 +1,20 @@
+{
+  "name": "nerv-test-utils",
+  "version": "0.2.0",
+  "description": "Nerv test utils",
+  "main": "index.js",
+  "author": "yuche",
+  "license": "MIT",
+  "dependencies": {
+    "nervjs": "^0.1.10",
+    "simulate-event": "^1.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NervJS/nerv.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NervJS/nerv/issues"
+  },
+  "homepage": "https://github.com/NervJS/nerv.git"
+}
