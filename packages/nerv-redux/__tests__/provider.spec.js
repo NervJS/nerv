@@ -1,0 +1,98 @@
+/** @jsx createElement */
+import sinon from 'sinon'
+import { connect, Provider } from '../dist/nerv-redux'
+import { createElement, Component, render } from 'nervjs'
+import { createStore } from 'redux'
+import { renderIntoDocument } from './util'
+
+const Empty = () => null
+
+describe('nerv-redux', () => {
+  const Child = <div />
+  let container
+  function renderToContainer (vnode) {
+    return render(vnode, container)
+  }
+  beforeAll(() => {
+    container = document.createElement('div')
+    document.body.appendChild(container)
+  })
+
+  beforeEach(() => {
+    const c = container.firstElementChild
+    if (c) {
+      render(<Empty />, container)
+    }
+    container.innerHTML = ''
+  })
+
+  afterAll(() => {
+    container.parentNode.removeChild(container)
+    container = null
+  })
+
+  it('Provider and connect should be exported', () => {
+    expect(Provider).toBeDefined()
+    expect(connect).toBeDefined()
+  })
+
+  it('should enforce only one child', () => {
+    const store = createStore(() => ({}))
+
+    expect(() =>
+      render(
+        <Provider store={store}>
+          <Child />
+        </Provider>, container)
+    ).not.toThrow()
+
+    expect(() =>
+      renderToContainer(
+        <Provider store={store}>
+          <Child />
+          <Child />
+        </Provider>
+      )
+    ).toThrow(/only one child/)
+
+    expect(() =>
+      renderToContainer(
+        <Provider store={store} />
+      )
+    ).toThrow(/only one child/)
+  })
+
+  it('store should be in the context', () => {
+    const store = createStore(() => ({}))
+    const instance = renderToContainer(
+      <Provider store={store}>
+        <Child />
+      </Provider>
+    )
+    expect(instance.context.store).toEqual(store)
+  })
+
+  it('should pass state consistently to mapState', async () => {
+    const store = createStore((state = 0, action) => {
+      return action.type === '+' ? state + 1 : state - 1
+    })
+    const mapState = sinon.spy((state) => ({ count: state }))
+    @connect(mapState)
+    class App extends Component {
+      render () {
+        return (
+          <div>{this.props.count}</div>
+        )
+      }
+    }
+    renderIntoDocument(
+      <Provider store={store}>
+        <App />
+      </Provider>
+    )
+    expect(mapState.called).toBeTruthy()
+    store.dispatch({ type: '+' })
+    expect(mapState.callCount).toBe(2)
+    expect(store.getState()).toEqual(0)
+  })
+})
