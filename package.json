@@ -6,10 +6,9 @@
   "scripts": {
     "precommit": "npm run lint && npm run lint-staged",
     "prepush": "npm run test",
+    "postinstall": "lerna bootstrap",        
     "prepublish": "npm run build",
     "clean": "lerna exec -- rimraf dist",
-    "eslint:fix": "eslint --fix src test",
-    "eslint": "eslint src test",
     "lint": "tslint -p tsconfig.json --type-check",
     "lint-staged": "lint-staged",
     "test": "jest",
