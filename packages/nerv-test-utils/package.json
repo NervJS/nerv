@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "description": "Nerv test utils",
   "main": "index.js",
+  "module": "dist/index.esm.js",    
   "author": "yuche",
   "license": "MIT",
   "dependencies": {
