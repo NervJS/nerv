@@ -4,7 +4,7 @@
   "description": "Server-side rendering for Nerv.js",
   "author": "yuche",
   "license": "MIT",
-  "main": "dist/index.js",
+  "main": "index.js",
   "module": "dist/nerv.ssr.js",
   "jsnext:main": "dist/nerv.ssr.js",
   "types": "dist/index.d.ts",

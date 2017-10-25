@@ -42,12 +42,19 @@ const uglifyPlugin = uglify({
 })
 const baseConfig = {
   input: join(cwd, 'src/index.ts'),
-  output: {
-    file: join(cwd, 'dist/nerv.js'),
-    format: 'umd',
-    name: 'Nerv',
-    sourcemap: true
-  },
+  output: [
+    {
+      file: join(cwd, 'dist/index.js'),
+      format: 'cjs',
+      sourcemap: true
+    },
+    {
+      file: join(cwd, 'dist/nerv.js'),
+      format: 'umd',
+      name: 'Nerv',
+      sourcemap: true
+    }
+  ],
   plugins: [
     alias({
       'nerv-shared': join(cwd, '../nerv-shared/dist/index'),
@@ -65,14 +72,16 @@ const baseConfig = {
 const esmConfig = Object.assign({}, baseConfig, {
   output: Object.assign({}, baseConfig.output, {
     format: 'es',
-    file: join(cwd, 'dist/nerv.esm.js')
+    file: join(cwd, 'dist/index.esm.js')
   })
 })
 const productionConfig = Object.assign({}, baseConfig, {
-  output: Object.assign({}, baseConfig.output, {
+  output: {
+    format: 'umd',
     file: join(cwd, 'dist/nerv.min.js'),
+    name: 'Nerv',
     sourcemap: false
-  }),
+  },
   plugins: baseConfig.plugins.concat([uglifyPlugin, optJSPlugin])
 })
 

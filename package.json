@@ -2,6 +2,9 @@
   "name": "nerv-build",
   "private": true,
   "version": "0.2.0",
+  "workspaces": [
+    "packages/*"
+  ],
   "description": "A react-like framework based on virtual-dom",
   "scripts": {
     "precommit": "npm run lint && npm run lint-staged",

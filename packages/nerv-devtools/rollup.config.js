@@ -5,12 +5,18 @@ function resolver (path) {
 }
 module.exports = {
   input: resolver('src/index.ts'),
-  output: {
-    sourcemap: true,
-    name: 'nerv-devtools',
-    format: 'umd',
-    file: resolver('dist/index.js')
-  },
+  output: [
+    {
+      sourcemap: true,
+      format: 'cjs',
+      file: resolver('dist/index.js')
+    },
+    {
+      sourcemap: true,
+      format: 'es',
+      file: resolver('dist/index.esm.js')
+    }
+  ],
   external: ['nervjs'],
   globals: {
     nervjs: 'Nerv'

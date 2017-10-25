@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "description": "Devtools for Nerv.js",
   "main": "index.js",
+  "module": "dist/index.esm.js",    
   "typings": "./dist/src/index.d.ts",
   "keywords": [
     "devtools",

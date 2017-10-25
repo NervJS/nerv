@@ -7,19 +7,28 @@ import commonjs from 'rollup-plugin-commonjs'
 import replace from 'rollup-plugin-replace'
 import es3 from 'rollup-plugin-es3'
 import { join } from 'path'
-const babelRc = JSON.parse(fs.readFileSync('.babelrc'))
-const pkg = JSON.parse(fs.readFileSync('./package.json'))
 
-const format = process.env.TARGET === 'es' ? 'es' : 'umd'
+function resolver (path) {
+  return join(__dirname, path)
+}
 
-const umd = {
-  input: 'src/index.js',
-  output: {
-    sourcemap: true,
-    name: 'NervRedux',
-    format: 'umd',
-    file: pkg.main
-  },
+const babelrc = JSON.parse(fs.readFileSync('../../.babelrc'))
+
+const modules = {
+  input: resolver('src/index.js'),
+  output: [
+    {
+      sourcemap: true,
+      name: 'NervRedux',
+      format: 'es',
+      file: resolver('dist/index.esm.js')
+    },
+    {
+      sourcemap: true,
+      format: 'cjs',
+      file: resolver('dist/index.js')
+    }
+  ],
   exports: 'default',
   external: ['nervjs', 'redux'],
   useStrict: false,
@@ -28,11 +37,6 @@ const umd = {
     redux: 'Redux'
   },
   plugins: [
-    format === 'umd' &&
-      memory({
-        path: 'src/index.js',
-        contents: "export { default } from './index';"
-      }),
     {
       // This insane thing transforms Lodash CommonJS modules to ESModules. Doing so shaves 500b (20%) off the library size.
       load: function (id) {
@@ -48,7 +52,7 @@ const umd = {
       }
     },
     alias({
-      'react-redux': 'node_modules/react-redux/src/index.js',
+      'react-redux': join(__dirname, 'node_modules/react-redux/src/index.js'),
       react: join(__dirname, '/src/compat.js'),
       invariant: join(__dirname, '/src/invariant.js'),
       'prop-types': join(__dirname, '/src/invariant.js')
@@ -57,14 +61,16 @@ const umd = {
       babelrc: false,
       presets: [
         [
-          'es2015',
+          'env',
           {
-            loose: true,
-            modules: false
+            spec: true,
+            modules: false,
+            useBuiltIns: false
           }
-        ]
-      ].concat(babelRc.presets.slice(1)),
-      plugins: babelRc.plugins
+        ],
+        ['stage-0']
+      ],
+      plugins: babelrc.plugins
     }),
     nodeResolve({
       jsnext: true,
@@ -77,12 +83,18 @@ const umd = {
     }),
     replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
     es3()
-  ].filter(Boolean)
+  ]
 }
 
-const esm = Object.assign({}, umd)
+const umd = Object.assign({}, modules)
 
-esm.output.format = 'es'
-esm.output.file = pkg.modules
+umd.output.format = 'umd'
+umd.plugins = [
+  memory({
+    path: 'src/index.js',
+    contents: "export { default } from './index';"
+  })
+].concat(modules.plugins)
+umd.output.file = resolver('dist/nerv-redux.js')
 
-export default [umd, esm]
+export default [modules, umd]

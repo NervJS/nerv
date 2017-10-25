@@ -6,7 +6,7 @@ function isValidElement (instance) {
   return false
 }
 
-function isFunction (x): x is Function {
+function isFunction (x) {
   return typeof x === 'function'
 }
 
