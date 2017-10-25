@@ -71,6 +71,7 @@ const baseConfig = {
 }
 const esmConfig = Object.assign({}, baseConfig, {
   output: Object.assign({}, baseConfig.output, {
+    sourcemap: true,
     format: 'es',
     file: join(cwd, 'dist/index.esm.js')
   })

@@ -9,7 +9,7 @@
   "scripts": {
     "precommit": "npm run lint && npm run lint-staged",
     "prepush": "npm run test",
-    "postinstall": "lerna bootstrap",        
+    "postinstall": "lerna bootstrap",
     "prepublish": "npm run build",
     "clean": "lerna exec -- rimraf dist",
     "lint": "tslint -p tsconfig.json --type-check",
@@ -55,6 +55,7 @@
     "babel-eslint": "^7.2.3",
     "babel-jest": "^21.2.0",
     "babel-loader": "^7.1.2",
+    "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-react-jsx": "^6.23.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.0",

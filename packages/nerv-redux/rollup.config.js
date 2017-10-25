@@ -70,7 +70,7 @@ const modules = {
         ],
         ['stage-0']
       ],
-      plugins: babelrc.plugins
+      plugins: babelrc.plugins.concat(['external-helpers'])
     }),
     nodeResolve({
       jsnext: true,
@@ -88,13 +88,17 @@ const modules = {
 
 const umd = Object.assign({}, modules)
 
-umd.output.format = 'umd'
+umd.output = {
+  format: 'umd',
+  sourcemap: true,
+  file: resolver('dist/nerv-redux.js'),
+  name: 'NervRedux'
+}
 umd.plugins = [
   memory({
     path: 'src/index.js',
     contents: "export { default } from './index';"
   })
 ].concat(modules.plugins)
-umd.output.file = resolver('dist/nerv-redux.js')
 
 export default [modules, umd]
