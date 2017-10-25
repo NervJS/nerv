@@ -8,6 +8,7 @@ module.exports = {
   ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   moduleNameMapper: {
+    'nervjs': '<rootDir>/packages/nerv/src',
     '^nerv(.*?)$': '<rootDir>/packages/nerv$1/src'
   },
   mapCoverage: true,

@@ -55,7 +55,7 @@ const modules = {
       'react-redux': join(__dirname, 'node_modules/react-redux/src/index.js'),
       react: join(__dirname, '/src/compat.js'),
       invariant: join(__dirname, '/src/invariant.js'),
-      'prop-types': join(__dirname, '/src/invariant.js')
+      'prop-types': join(__dirname, '/src/prop-types.js')
     }),
     babel({
       babelrc: false,
@@ -63,9 +63,10 @@ const modules = {
         [
           'env',
           {
-            spec: true,
+            // spec: true,
             modules: false,
-            useBuiltIns: false
+            useBuiltIns: false,
+            loose: true
           }
         ],
         ['stage-0']

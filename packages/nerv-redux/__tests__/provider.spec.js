@@ -1,6 +1,6 @@
 /** @jsx createElement */
 import sinon from 'sinon'
-import { connect, Provider } from '../dist/nerv-redux'
+import { connect, Provider } from '../dist/index.esm'
 import { createElement, Component, render } from 'nervjs'
 import { createStore } from 'redux'
 import { renderIntoDocument } from './util'
@@ -77,14 +77,14 @@ describe('nerv-redux', () => {
       return action.type === '+' ? state + 1 : state - 1
     })
     const mapState = sinon.spy((state) => ({ count: state }))
-    @connect(mapState)
-    class App extends Component {
+    class Outer extends Component {
       render () {
         return (
           <div>{this.props.count}</div>
         )
       }
     }
+    const App = connect(mapState)(Outer)
     renderIntoDocument(
       <Provider store={store}>
         <App />
