@@ -1,4 +1,5 @@
 import { VirtualNode, Patch } from 'nerv-shared'
+
 class VPatch {
   static NODE = 'NODE'
   static VTEXT = 'VTEXT'

@@ -1,6 +1,7 @@
 /** @jsx createElement */
 import { createElement, Component } from '../src/index'
 import createVText from '../src/vdom/create-vtext'
+import { VType } from 'nerv-shared'
 
 describe('vtypes', () => {
   let scratch
@@ -21,12 +22,12 @@ describe('vtypes', () => {
 
   it('vnode type', () => {
     const div = <div />
-    expect(div.type).toBe('VirtualNode')
+    expect(div.vtype).toBe(VType.Node)
   })
 
   it('vtext type', () => {
     const div = createVText('hhh')
-    expect(div.type).toBe('VirtualText')
+    expect(div.vtype).toBe(VType.Text)
   })
 
   it('widget type', () => {
@@ -36,12 +37,12 @@ describe('vtypes', () => {
       }
     }
     const t = <T />
-    expect(t.type).toBe('Widget')
+    expect(t.vtype).toBe(VType.Composite)
   })
 
   it('stateless type', () => {
     const T = () => <div />
     const t = <T />
-    expect(t.type).toBe('Widget')
+    expect(t.vtype).toBe(VType.Stateless)
   })
 })

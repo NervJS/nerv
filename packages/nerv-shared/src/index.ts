@@ -1,5 +1,5 @@
 export interface Widget {
-  type: 'Widget'
+  vtype: VType
   name: string
   _owner: any
   props: any
@@ -21,7 +21,7 @@ export interface StatelessComponent extends Widget {
 }
 
 export interface VText {
-  type: 'VirtualText',
+  vtype: VType
   text: string | number
 }
 
@@ -33,7 +33,7 @@ export interface PatchOrder {
 export type Patch = PatchOrder | VirtualNode
 
 export interface VNode {
-  type: string
+  vtype: VType
   tagName: string
   props: Props
   children: VirtualChildren
@@ -45,12 +45,13 @@ export interface VNode {
   hooks: {
     [k: string]: any
   }
-  descendantHooks: boolean,
-  isSvg?: boolean,
+  descendantHooks: boolean
+  isSvg?: boolean
   parentContext?: any
 }
 
-export type VirtualNode = VNode
+export type VirtualNode =
+  | VNode
   | VText
   | CompositeComponent
   | StatelessComponent
@@ -77,9 +78,21 @@ export interface ComponentLifecycle<P, S> {
   componentWillMount? (): void
   componentDidMount? (): void
   componentWillReceiveProps? (nextProps: Readonly<P>, nextContext: any): void
-  shouldComponentUpdate? (nextProps: Readonly<P>, nextState: Readonly<S>, nextContext: any): boolean
-  componentWillUpdate? (nextProps: Readonly<P>, nextState: Readonly<S>, nextContext: any): void
-  componentDidUpdate? (prevProps: Readonly<P>, prevState: Readonly<S>, prevContext: any): void
+  shouldComponentUpdate? (
+    nextProps: Readonly<P>,
+    nextState: Readonly<S>,
+    nextContext: any
+  ): boolean
+  componentWillUpdate? (
+    nextProps: Readonly<P>,
+    nextState: Readonly<S>,
+    nextContext: any
+  ): void
+  componentDidUpdate? (
+    prevProps: Readonly<P>,
+    prevState: Readonly<S>,
+    prevContext: any
+  ): void
   componentWillUnmount? (): void
 }
 
@@ -95,21 +108,37 @@ export interface Component<P, S> extends ComponentLifecycle<P, S> {
 }
 
 export function isVNode (node): node is VNode {
-  return node && node.type === 'VirtualNode'
+  return node && node.vtype === VType.Node
 }
 
 export function isVText (node): node is VText {
-  return node && node.type === 'VirtualText'
+  return node && node.vtype === VType.Text
 }
 
-export function isWidget (node): node is CompositeComponent {
-  return node && node.type === 'Widget'
+export function isWidget (node): node is CompositeComponent | StatelessComponent {
+  return node && node.vtype > 3
+}
+
+export function isComposite (node): node is CompositeComponent {
+  return node && node.vtype === VType.Composite
 }
 
 export function isHook (arg) {
-  if ((arg && (typeof arg.hook === 'function' && !arg.hasOwnProperty('hook'))) ||
-    (arg && (typeof arg.unhook === 'function' && !arg.hasOwnProperty('unhook')))) {
+  if (
+    (arg && (typeof arg.hook === 'function' && !arg.hasOwnProperty('hook'))) ||
+    (arg && (typeof arg.unhook === 'function' && !arg.hasOwnProperty('unhook')))
+  ) {
     return true
   }
   return false
+}
+
+// typescript will compile the enum's value for us.
+// eg.
+// Composite = 1 << 2  => Composite = 4
+export enum VType {
+  Text = 1,
+  Node = 1 << 1,
+  Composite = 1 << 2,
+  Stateless = 1 << 3
 }

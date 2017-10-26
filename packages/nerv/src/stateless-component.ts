@@ -1,8 +1,9 @@
 import { shallowEqual } from 'nerv-utils'
+import { VType } from 'nerv-shared'
 import { mountStatelessComponent, unmountStatelessComponent, reRenderStatelessComponent } from './lifecycle'
 
 class StateLessComponent {
-  type = 'Widget'
+  vtype = VType.Stateless
   tagName: Function
   name: string
   _owner: any

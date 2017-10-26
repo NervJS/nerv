@@ -1,8 +1,13 @@
-import { mountComponent, reRenderComponent, unmountComponent } from './lifecycle'
+import { VType } from 'nerv-shared'
+import {
+  mountComponent,
+  reRenderComponent,
+  unmountComponent
+} from './lifecycle'
 import Component from './component'
 
 class ComponentWrapper {
-  type = 'Widget'
+  vtype = VType.Composite
   tagName: any
   name: string
   _owner: any
