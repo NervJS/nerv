@@ -1,5 +1,6 @@
 /** @jsx createElement */
 import { Component, createElement } from 'nervjs'
+import sinon from 'sinon'
 import { renderToString } from '../src'
 const render = renderToString
 describe('render', () => {
@@ -51,7 +52,7 @@ describe('render', () => {
         <input>
           <p>Hello World</p>
         </input>
-        )
+      )
       const expected = `<input/>`
 
       expect(rendered).toEqual(expected)
@@ -92,17 +93,19 @@ describe('render', () => {
 
   describe('Functional component', () => {
     it('should render functional components', () => {
-      const Test = jest.fn(({ foo, children }) => (
+      const Test = sinon.spy(({ foo, children }) => (
         <div foo={foo}>{children}</div>
       ))
       const rendered = render(<Test foo='test'>content</Test>)
       expect(rendered).toEqual(`<div foo="test">content</div>`)
-      expect(Test).toBeCalled()
-      expect(Test).toBeCalledWith({ children: ['content'], foo: 'test' }, {})
+      expect(Test.called).toBeTruthy()
+      expect(
+        Test.calledWith({ children: ['content'], foo: 'test' }, {})
+      ).toBeTruthy()
     })
 
     it('should render functional components within JSX', () => {
-      const Test = jest.fn(({ foo, children }) => (
+      const Test = sinon.spy(({ foo, children }) => (
         <div foo={foo}>{children}</div>
       ))
       const rendered = render(
@@ -115,14 +118,16 @@ describe('render', () => {
       expect(rendered).toEqual(
         `<section><div foo="1"><span>asdf</span></div></section>`
       )
-      expect(Test).toHaveBeenCalled()
-      expect(Test).toHaveBeenCalledWith(
-        {
-          foo: 1,
-          children: [<span>asdf</span>]
-        },
-        {}
-      )
+      expect(Test.called).toBeTruthy()
+      expect(
+        Test.calledWith(
+          {
+            foo: 1,
+            children: [<span>asdf</span>]
+          },
+          {}
+        )
+      ).toBeTruthy()
     })
   })
 
@@ -135,11 +140,11 @@ describe('render', () => {
         }
       }
 
-      const spy = jest.spyOn(Test.prototype, 'render')
+      const spy = sinon.spy(Test.prototype, 'render')
       const widget = <Test foo='test'>content</Test>
       const rendered = render(widget)
       expect(rendered).toEqual(`<div foo="test">content</div>`)
-      expect(spy).toHaveBeenCalledTimes(1)
+      expect(spy.callCount).toBe(1)
     })
 
     it('should render classical components within JSX', () => {
@@ -149,7 +154,7 @@ describe('render', () => {
           return <div foo={foo}>{children}</div>
         }
       }
-      const spy = jest.spyOn(Test.prototype, 'render')
+      const spy = sinon.spy(Test.prototype, 'render')
       const rendered = render(
         <section>
           <Test foo={1}>
@@ -160,7 +165,7 @@ describe('render', () => {
       expect(rendered).toEqual(
         `<section><div foo="1"><span>asdf</span></div></section>`
       )
-      expect(spy).toHaveBeenCalledTimes(1)
+      expect(spy.callCount).toBe(1)
     })
 
     it('should apply defaultProps', () => {
@@ -193,9 +198,9 @@ describe('render', () => {
           return <div {...this.props} />
         }
       }
-      const spy = jest.spyOn(Test.prototype, 'componentWillMount')
+      const spy = sinon.spy(Test.prototype, 'componentWillMount')
       render(<Test />)
-      expect(spy).toHaveBeenCalledTimes(1)
+      expect(spy.calledOnce).toBeTruthy()
     })
 
     it('should pass context to direct child', () => {
@@ -212,7 +217,7 @@ describe('render', () => {
           )
         }
       }
-      const outerContextSpy = jest.spyOn(Outer.prototype, 'getChildContext')
+      const outerContextSpy = sinon.spy(Outer.prototype, 'getChildContext')
 
       class Inner extends Component {
         render () {
@@ -223,7 +228,7 @@ describe('render', () => {
       const rendered = render(<Outer />)
 
       expect(rendered).toEqual(`<div><div>a</div></div>`)
-      expect(outerContextSpy).toHaveBeenCalledTimes(1)
+      expect(outerContextSpy.calledOnce).toBeTruthy()
     })
 
     it('should pass context to grandchildren', () => {
@@ -240,7 +245,7 @@ describe('render', () => {
           )
         }
       }
-      const outerContextSpy = jest.spyOn(Outer.prototype, 'getChildContext')
+      const outerContextSpy = sinon.spy(Outer.prototype, 'getChildContext')
 
       class Inner extends Component {
         render () {
@@ -261,7 +266,7 @@ describe('render', () => {
       const rendered = render(<Outer />)
 
       expect(rendered).toEqual(`<div><div><div>a</div></div></div>`)
-      expect(outerContextSpy).toHaveBeenCalledTimes(1)
+      expect(outerContextSpy.calledOnce).toBeTruthy()
     })
   })
 })

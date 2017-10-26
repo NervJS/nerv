@@ -43,7 +43,9 @@ describe('nerv-redux', () => {
       render(
         <Provider store={store}>
           <Child />
-        </Provider>, container)
+        </Provider>,
+        container
+      )
     ).not.toThrow()
 
     expect(() =>
@@ -53,13 +55,11 @@ describe('nerv-redux', () => {
           <Child />
         </Provider>
       )
-    ).toThrow(/only one child/)
+    ).toThrowError(/Provider expects only one child/)
 
-    expect(() =>
-      renderToContainer(
-        <Provider store={store} />
-      )
-    ).toThrow(/only one child/)
+    expect(() => renderToContainer(<Provider store={store} />)).toThrowError(
+      /Provider expects only one child/
+    )
   })
 
   it('store should be in the context', () => {
@@ -76,12 +76,10 @@ describe('nerv-redux', () => {
     const store = createStore((state = 0, action) => {
       return action.type === '+' ? state + 1 : state - 1
     })
-    const mapState = sinon.spy((state) => ({ count: state }))
+    const mapState = sinon.spy(state => ({ count: state }))
     class Outer extends Component {
       render () {
-        return (
-          <div>{this.props.count}</div>
-        )
+        return <div>{this.props.count}</div>
       }
     }
     const App = connect(mapState)(Outer)

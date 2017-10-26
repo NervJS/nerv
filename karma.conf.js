@@ -160,7 +160,9 @@ module.exports = function (config) {
           nervjs: resolve('nerv'),
           'nerv-devtools': resolve('nerv-devtools'),
           'nerv-shared': resolve('nerv-shared'),
-          'nerv-utils': resolve('nerv-utils')
+          'nerv-utils': resolve('nerv-utils'),
+          'nerv-server': resolve('nerv-server'),
+          'nerv-redux': resolve('nerv-redux')
         },
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
         mainFields: ['module', 'main']

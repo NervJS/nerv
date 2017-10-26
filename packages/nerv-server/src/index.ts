@@ -74,7 +74,9 @@ function renderVNodeToString (vnode, parent, context, firstChild) {
         } else if (prop === 'style') {
           renderedString += ` style="${renderStylesToString(value)}"`
         } else if (prop === 'class' || prop === 'className') {
-          renderedString += ` class="${isString(value) ? value : hashToClassName(value)}"`
+          renderedString += ` class="${isString(value)
+            ? value
+            : hashToClassName(value)}"`
         } else if (prop === 'defaultValue') {
           if (!props.value) {
             renderedString += ` value="${escapeText(value)}"`
@@ -131,22 +133,29 @@ function renderVNodeToString (vnode, parent, context, firstChild) {
     }
     return renderedString
   } else if (isWidget(vnode)) {
-    const { ComponentType: type } = vnode
+    const { tagName: type } = vnode
     const instance = new type(props, context)
-    instance._disable = true
-    if (isFunction(instance.getChildContext)) {
-      context = assign(assign({}, context), instance.getChildContext())
-    }
-    instance.context = context
-    if (isFunction(instance.componentWillMount)) {
-      instance.componentWillMount()
-    }
-    const nextVnode = instance.render(props, instance.state, context)
+    if (instance.render) {
+      instance._disable = true
+      if (isFunction(instance.getChildContext)) {
+        context = assign(assign({}, context), instance.getChildContext())
+      }
+      instance.context = context
+      if (isFunction(instance.componentWillMount)) {
+        instance.componentWillMount()
+      }
+      const nextVnode = instance.render(props, instance.state, context)
 
-    if (isInvalid(nextVnode)) {
-      return '<!--!-->'
+      if (isInvalid(nextVnode)) {
+        return '<!--!-->'
+      }
+      return renderVNodeToString(nextVnode, vnode, context, true)
+    } else {
+      if (isInvalid(instance)) {
+        return '<!--!-->'
+      }
+      return renderVNodeToString(instance, vnode, context, true)
     }
-    return renderVNodeToString(nextVnode, vnode, context, true)
   } else if (isStateLess(vnode)) {
     const nextVnode = tagName(props, context)
 
