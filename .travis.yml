@@ -21,10 +21,10 @@ install:
   - npm install
 
 script:
+  - npm run build
   - npm run test:coverage
   - BROWSER=true COVERAGE=false FLAKEY=false npm run test:karma
   - ./node_modules/coveralls/bin/coveralls.js < ./coverage/lcov.info
-  - npm run build
 
 env:
   - CXX=g++-4.8
