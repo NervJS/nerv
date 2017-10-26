@@ -5,6 +5,7 @@ import createElement from './create-element'
 import cloneElement from './clone-element'
 import nextTick from './util/next-tick'
 import options from './options'
+import { unmountComponentAtNode, findDOMNode } from './dom'
 
 export {
   Component,
@@ -13,7 +14,8 @@ export {
   cloneElement,
   render,
   nextTick,
-  options
+  options,
+  unmountComponentAtNode
 }
 
 export default {
@@ -23,7 +25,8 @@ export default {
   cloneElement,
   render,
   nextTick,
-  options
+  options,
+  findDOMNode
 } as {
   Component,
   PureComponent,

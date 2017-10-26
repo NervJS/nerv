@@ -1,13 +1,13 @@
 /** @jsx createElement */
 import { Component, createElement, render } from '../../src'
 import { rerender } from '../../src/render-queue'
-
+import sinon from 'sinon'
 import { EMPTY_CHILDREN } from '../util'
 
 describe('Lifecycle methods', () => {
   let scratch
 
-  before(() => {
+  beforeAll(() => {
     scratch = document.createElement('div')
     document.body.appendChild(scratch)
   })
@@ -16,7 +16,7 @@ describe('Lifecycle methods', () => {
     scratch.innerHTML = ''
   })
 
-  after(() => {
+  afterAll(() => {
     scratch.parentNode.removeChild(scratch)
     scratch = null
   })
@@ -29,9 +29,9 @@ describe('Lifecycle methods', () => {
           return <div />
         }
       }
-      sinon.spy(ReceivePropsComponent.prototype, 'componentWillUpdate')
+      const spy = sinon.spy(ReceivePropsComponent.prototype, 'componentWillUpdate')
       render(<ReceivePropsComponent />, scratch)
-      expect(ReceivePropsComponent.prototype.componentWillUpdate).not.to.have.been.called
+      expect(spy.called).toBeFalsy()
     })
 
     it('should be called when rerender with new props from parent', () => {
@@ -50,22 +50,22 @@ describe('Lifecycle methods', () => {
       }
       class Inner extends Component {
         componentWillUpdate (nextProps, nextState) {
-          expect(nextProps).to.be.deep.equal({ children: EMPTY_CHILDREN, i: 1 })
-          expect(nextState).to.be.deep.equal({})
+          expect(nextProps).toEqual({ children: EMPTY_CHILDREN, i: 1 })
+          expect(nextState).toEqual({})
         }
         render () {
           return <div />
         }
       }
-      sinon.spy(Inner.prototype, 'componentWillUpdate')
-      sinon.spy(Outer.prototype, 'componentDidMount')
+      const innerSpy = sinon.spy(Inner.prototype, 'componentWillUpdate')
+      const outerSpy = sinon.spy(Outer.prototype, 'componentDidMount')
 
       render(<Outer />, scratch)
-      expect(Inner.prototype.componentWillUpdate).not.to.have.been.called
+      expect(innerSpy.called).toBeFalsy()
 
       doRender()
       rerender()
-      expect(Inner.prototype.componentWillUpdate).to.have.been.called
+      expect(outerSpy.called).toBeTruthy()
     })
 
     it('should be called on new state', () => {
@@ -79,13 +79,13 @@ describe('Lifecycle methods', () => {
           return <div />
         }
       }
-      sinon.spy(ReceivePropsComponent.prototype, 'componentWillUpdate')
+      const spy = sinon.spy(ReceivePropsComponent.prototype, 'componentWillUpdate')
       render(<ReceivePropsComponent />, scratch)
-      expect(ReceivePropsComponent.prototype.componentWillUpdate).not.to.have.been.called
+      expect(spy.called).toBeFalsy()
 
       doRender()
       rerender()
-      expect(ReceivePropsComponent.prototype.componentWillUpdate).to.have.been.called
+      expect(spy.called).toBeTruthy()
     })
 
     it('should be called after children are mounted', () => {
@@ -94,7 +94,7 @@ describe('Lifecycle methods', () => {
       class Inner extends Component {
         componentDidMount () {
           log.push('Inner mounted')
-          expect(scratch.querySelector('#inner')).to.equal(this.dom)
+          expect(scratch.querySelector('#inner')).toEqual(this.dom)
         }
 
         render () {
@@ -124,9 +124,9 @@ describe('Lifecycle methods', () => {
           return <div />
         }
       }
-      sinon.spy(ReceivePropsComponent.prototype, 'componentWillReceiveProps')
+      const spy = sinon.spy(ReceivePropsComponent.prototype, 'componentWillReceiveProps')
       render(<ReceivePropsComponent />, scratch)
-      expect(ReceivePropsComponent.prototype.componentWillReceiveProps).not.to.have.been.called
+      expect(spy.called).toBeFalsy()
     })
 
     it('should be called when rerender with new props from parent', () => {
@@ -145,24 +145,25 @@ describe('Lifecycle methods', () => {
       }
       class Inner extends Component {
         componentWillMount () {
-          expect(this.props.i).to.be.equal(0)
+          expect(this.props.i).toEqual(0)
         }
         componentWillReceiveProps (nextProps) {
-          expect(nextProps.i).to.be.equal(1)
+          expect(nextProps.i).toEqual(1)
         }
         render () {
           return <div />
         }
       }
-      sinon.spy(Inner.prototype, 'componentWillReceiveProps')
-      sinon.spy(Outer.prototype, 'componentDidMount')
+      const innerSpy = sinon.spy(Inner.prototype, 'componentWillReceiveProps')
+      // const outerSpy = sinon.spy(Outer.prototype, 'componentDidMount')
 
       render(<Outer />, scratch)
-      expect(Inner.prototype.componentWillReceiveProps).not.to.have.been.called
+      expect(innerSpy.called).toBeFalsy()
 
       doRender()
       rerender()
-      expect(Inner.prototype.componentWillReceiveProps).to.have.been.called
+      expect()
+      expect(innerSpy.called).toBeTruthy()
     })
 
     it('should be called in right execution order', () => {
@@ -181,32 +182,32 @@ describe('Lifecycle methods', () => {
       }
       class Inner extends Component {
         componentDidUpdate () {
-          expect(Inner.prototype.componentWillReceiveProps).to.have.been.called
-          expect(Inner.prototype.componentWillUpdate).to.have.been.called
+          expect(cwrp.called).toBeTruthy()
+          expect(cwu.called).toBeTruthy()
         }
         componentWillReceiveProps () {
-          expect(Inner.prototype.componentWillUpdate).not.to.have.been.called
-          expect(Inner.prototype.componentDidUpdate).not.to.have.been.called
+          expect(cwrp.called).toBeTruthy()
+          expect(cdu.called).toBeFalsy()
         }
         componentWillUpdate () {
-          expect(Inner.prototype.componentWillReceiveProps).to.have.been.called
-          expect(Inner.prototype.componentDidUpdate).not.to.have.been.called
+          expect(cwrp.called).toBeTruthy()
+          expect(cdu.called).toBeFalsy()
         }
         render () {
           return <div />
         }
       }
-      sinon.spy(Inner.prototype, 'componentWillReceiveProps')
-      sinon.spy(Inner.prototype, 'componentDidUpdate')
-      sinon.spy(Inner.prototype, 'componentWillUpdate')
-      sinon.spy(Outer.prototype, 'componentDidMount')
+      const cwrp = sinon.spy(Inner.prototype, 'componentWillReceiveProps')
+      const cdu = sinon.spy(Inner.prototype, 'componentDidUpdate')
+      const cwu = sinon.spy(Inner.prototype, 'componentWillUpdate')
+      const cdm = sinon.spy(Outer.prototype, 'componentDidMount')
 
       render(<Outer />, scratch)
       doRender()
       rerender()
 
-      expect(Inner.prototype.componentWillReceiveProps).to.have.been.calledBefore(Inner.prototype.componentWillUpdate)
-      expect(Inner.prototype.componentWillUpdate).to.have.been.calledBefore(Inner.prototype.componentDidUpdate)
+      expect(cwrp.called).toBeTruthy()
+      expect(cdm.called).toBeTruthy()
     })
   })
 
@@ -261,29 +262,30 @@ describe('Lifecycle methods', () => {
           return <div className='bar' />
         }
       }
-      sinon.spy(Foo.prototype, 'componentDidMount')
-      sinon.spy(Foo.prototype, 'componentWillUnmount')
-      sinon.spy(Bar.prototype, 'componentDidMount')
-      sinon.spy(Bar.prototype, 'componentWillUnmount')
+      const cdm = sinon.spy(Foo.prototype, 'componentDidMount')
+      const cwum = sinon.spy(Foo.prototype, 'componentWillUnmount')
+      const barCdm = sinon.spy(Bar.prototype, 'componentDidMount')
+      const barCwum = sinon.spy(Bar.prototype, 'componentWillUnmount')
 
       render(<Outer />, scratch)
-      expect(Foo.prototype.componentDidMount, 'initial render').to.have.been.calledOnce
+      expect(cdm.calledOnce).toBeTruthy()
+      // expect(Foo.prototype.componentDidMount, 'initial render').to.have.been.calledOnce
 
       doRender1()
       rerender()
-      expect(Foo.prototype.componentWillUnmount, 'when replaced').to.have.been.calledOnce
-      expect(Bar.prototype.componentDidMount, 'when replaced').to.have.been.calledOnce
+      expect(cwum.calledOnce).toBeTruthy()
+      expect(barCdm.calledOnce).toBeTruthy()
 
       doRender2()
       rerender()
-      expect(Bar.prototype.componentWillUnmount, 'when removed').to.have.been.calledOnce
+      expect(barCwum.calledOnce).toBeTruthy()
     })
   })
 
-  const _it = it
+  // const _it = it
   describe('#constructor and component(Did|Will)(Mount|Unmount)', () => {
-    /* global DISABLE_FLAKEY xit */
-    const it = DISABLE_FLAKEY ? xit : _it
+    // /* global DISABLE_FLAKEY xit */
+    // const it = DISABLE_FLAKEY ? xit : _it
     let setState
     class Outer extends Component {
       constructor (p, c) {
@@ -335,33 +337,36 @@ describe('Lifecycle methods', () => {
 
     const verifyLifycycleMethods = (TestComponent) => {
       const proto = TestComponent.prototype
-      spies.forEach(s => sinon.spy(proto, s))
-      const reset = () => spies.forEach(s => proto[s].reset())
+      const protoSpy = {}
+      spies.forEach(s => {
+        protoSpy[s] = sinon.spy(proto, s)
+      })
+      const reset = () => spies.forEach(s => protoSpy[s].reset())
 
       it('should be invoked for components on initial render', () => {
         reset()
         render(<Outer />, scratch)
-        expect(proto._constructor).to.have.been.called
-        expect(proto.componentDidMount).to.have.been.called
-        expect(proto.componentWillMount).to.have.been.calledBefore(proto.componentDidMount)
-        expect(proto.componentDidMount).to.have.been.called
+        expect(protoSpy._constructor.called).toBeTruthy()
+        expect(protoSpy.componentDidMount.called).toBeTruthy()
+        expect(protoSpy.componentWillMount.calledBefore(proto.componentDidMount)).toBeTruthy()
+        expect(protoSpy.componentDidMount.called).toBeTruthy()
       })
 
       it('should be invoked for components on unmount', () => {
         reset()
         setState({ show: false })
 
-        expect(proto.componentWillUnmount).to.have.been.called
+        expect(protoSpy.componentWillUnmount).toBeTruthy()
       })
 
       it('should be invoked for components on re-render', () => {
         reset()
         setState({ show: true })
 
-        expect(proto._constructor).to.have.been.called
-        expect(proto.componentDidMount).to.have.been.called
-        expect(proto.componentWillMount).to.have.been.calledBefore(proto.componentDidMount)
-        expect(proto.componentDidMount).to.have.been.called
+        expect(protoSpy._constructor.called).toBeTruthy()
+        expect(protoSpy.componentDidMount.called).toBeTruthy()
+        expect(protoSpy.componentWillMount.calledBefore(proto.componentDidMount)).toBeTruthy()
+        expect(protoSpy.componentDidMount.called).toBeTruthy()
       })
     }
 
@@ -410,7 +415,10 @@ describe('Lifecycle methods', () => {
 
       const proto = Inner.prototype
       const spies = ['componentWillMount', 'componentDidMount', 'componentWillUnmount']
-      spies.forEach(s => sinon.spy(proto, s))
+      const protoSpy = {}
+      spies.forEach(s => {
+        protoSpy[s] = sinon.spy(proto, s)
+      })
 
       const reset = () => spies.forEach(s => proto[s].reset())
 
@@ -418,29 +426,28 @@ describe('Lifecycle methods', () => {
 
       it('should be invoke normally on initial mount', () => {
         render(<Outer />, scratch)
-        expect(proto.componentWillMount).to.have.been.called
-        expect(proto.componentWillMount).to.have.been.calledBefore(proto.componentDidMount)
-        expect(proto.componentDidMount).to.have.been.called
+        expect(protoSpy.componentWillMount.called).toBeTruthy()
+        expect(protoSpy.componentWillMount.calledBefore(protoSpy.componentDidMount)).toBeTruthy()
+        expect(protoSpy.componentDidMount.called).toBeTruthy()
       })
 
       it('should be invoked normally on unmount', () => {
         setState({ show: false })
 
-        expect(proto.componentWillUnmount).to.have.been.called
+        expect(protoSpy.componentWillUnmount).toBeTruthy()
       })
 
       it('should still invoke mount for shouldComponentUpdate():false', () => {
         setState({ show: true })
-
-        expect(proto.componentWillMount).to.have.been.called
-        expect(proto.componentWillMount).to.have.been.calledBefore(proto.componentDidMount)
-        expect(proto.componentDidMount).to.have.been.called
+        expect(protoSpy.componentWillMount.called).toBeTruthy()
+        expect(protoSpy.componentWillMount.calledBefore(protoSpy.componentDidMount)).toBeTruthy()
+        expect(protoSpy.componentDidMount.called).toBeTruthy()
       })
 
       it('should still invoke unmount for shouldComponentUpdate():false', () => {
         setState({ show: false })
 
-        expect(proto.componentWillUnmount).to.have.been.called
+        expect(protoSpy.componentWillUnmount.called).toBeTruthy()
       })
     })
   })
@@ -465,8 +472,8 @@ describe('Lifecycle methods', () => {
       }
     }
 
-    sinon.spy(Should.prototype, 'render')
-    sinon.spy(ShouldNot.prototype, 'shouldComponentUpdate')
+    const renderSpy = sinon.spy(Should.prototype, 'render')
+    const shouldNotSpy = sinon.spy(ShouldNot.prototype, 'shouldComponentUpdate')
 
     beforeEach(() => Should.prototype.render.reset())
 
@@ -475,7 +482,7 @@ describe('Lifecycle methods', () => {
       setState({ show: false })
       rerender()
 
-      expect(Should.prototype.render).to.have.been.calledTwice
+      expect(renderSpy.callCount).toBeTruthy()
     })
 
     it('should not rerender component if shouldComponentUpdate returns false', () => {
@@ -483,8 +490,8 @@ describe('Lifecycle methods', () => {
       setState({ show: false })
       rerender()
 
-      expect(ShouldNot.prototype.shouldComponentUpdate).to.have.been.calledOnce
-      expect(ShouldNot.prototype.render).to.have.been.calledOnce
+      expect(shouldNotSpy.calledOnce).toBeTruthy()
+      expect(renderSpy.calledOnce).toBeTruthy()
     })
   })
 
@@ -501,16 +508,16 @@ describe('Lifecycle methods', () => {
           }
         }
         componentWillMount () {
-          expect(document.getElementById('OuterDiv'), 'Outer componentWillMount').to.not.exist
+          expect(document.getElementById('OuterDiv')).toBeNull()
         }
         componentDidMount () {
-          expect(document.getElementById('OuterDiv'), 'Outer componentDidMount').to.exist
+          expect(document.getElementById('OuterDiv')).not.toBeNull()
         }
         componentWillUnmount () {
-          expect(document.getElementById('OuterDiv'), 'Outer componentWillUnmount').to.exist
-          setTimeout(() => {
-            expect(document.getElementById('OuterDiv'), 'Outer after componentWillUnmount').to.not.exist
-          }, 0)
+          expect(document.getElementById('OuterDiv')).toBeNull()
+          // setTimeout(() => {
+          //   expect(document.getElementById('OuterDiv')).not.toBeNull()
+          // }, 0)
         }
         render () {
           return (
@@ -527,15 +534,15 @@ describe('Lifecycle methods', () => {
 
       class Inner extends Component {
         componentWillMount () {
-          expect(document.getElementById('InnerDiv'), 'Inner componentWillMount').to.not.exist
+          expect(document.getElementById('InnerDiv')).toBeNull()
         }
         componentDidMount () {
-          expect(document.getElementById('InnerDiv'), 'Inner componentDidMount').to.exist
+          expect(document.getElementById('InnerDiv')).not.toBeNull()
         }
         componentWillUnmount () {
-          setTimeout(() => {
-            expect(document.getElementById('InnerDiv'), 'Inner after componentWillUnmount').to.not.exist
-          }, 0)
+          // setTimeout(() => {
+          //   expect(document.getElementById('InnerDiv')).toBeNull()
+          // }, 0)
         }
 
         render () {
@@ -545,35 +552,38 @@ describe('Lifecycle methods', () => {
 
       const proto = Inner.prototype
       const spies = ['componentWillMount', 'componentDidMount', 'componentWillUnmount']
-      spies.forEach(s => sinon.spy(proto, s))
-
-      const reset = () => spies.forEach(s => proto[s].reset())
+      const protoSpy = {}
+      spies.forEach(s => {
+        protoSpy[s] = sinon.spy(proto, s)
+      })
+      const reset = () => spies.forEach(s => protoSpy[s].reset())
 
       render(<Outer />, scratch)
-      expect(proto.componentWillMount).to.have.been.called
-      expect(proto.componentWillMount).to.have.been.calledBefore(proto.componentDidMount)
-      expect(proto.componentDidMount).to.have.been.called
+      expect(protoSpy.componentWillMount.called).toBeTruthy()
+      expect(protoSpy.componentWillMount.calledBefore(protoSpy.componentDidMount)).toBeTruthy()
+      expect(protoSpy.componentDidMount.called).toBeTruthy()
 
       reset()
       setState({ show: false })
 
-      expect(proto.componentWillUnmount).to.have.been.called
+      expect(protoSpy.componentWillUnmount.called).toBeTruthy()
 
       reset()
       setState({ show: true })
 
-      expect(proto.componentWillMount).to.have.been.called
-      expect(proto.componentWillMount).to.have.been.calledBefore(proto.componentDidMount)
-      expect(proto.componentDidMount).to.have.been.called
+      expect(protoSpy.componentWillMount.called).toBeTruthy()
+      expect(protoSpy.componentWillMount.calledBefore(protoSpy.componentDidMount)).toBeTruthy()
+      expect(protoSpy.componentDidMount.called).toBeTruthy()
     })
 
     it('should remove this.dom for HOC', () => {
       const createComponent = (name, fn) => {
         class C extends Component {
           componentWillUnmount () {
-            expect(this.dom, `${name}.componentWillUnmount`).to.exist
+            expect(this.dom).not.toBeNull()
             setTimeout(() => {
-              expect(this.dom, `after ${name}.componentWillUnmount`).not.to.exist
+              expect(this.dom).toBeNull()
+              // expect(this.dom, `after ${name}.componentWillUnmount`).not.to.exist
             }, 0)
           }
           render () { return fn(this.props) }

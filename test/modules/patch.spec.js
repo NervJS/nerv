@@ -1,10 +1,11 @@
 /** @jsx createElement */
 import { Component, createElement, render } from '../../src/index'
+import { normalizeHTML } from '../util'
 
 describe('patch', () => {
   let scratch
 
-  before(() => {
+  beforeAll(() => {
     scratch = document.createElement('div')
     document.body.appendChild(scratch)
   })
@@ -13,7 +14,7 @@ describe('patch', () => {
     scratch.innerHTML = ''
   })
 
-  after(() => {
+  afterAll(() => {
     scratch.parentNode.removeChild(scratch)
     scratch = null
   })
@@ -62,7 +63,7 @@ describe('patch', () => {
     })
     inst.forceUpdate()
     const style = getComputedStyle(scratch.firstChild.firstChild)
-    expect(style.color).to.be.includes('128')
+    expect(style.color.indexOf('123')).not.toBe('-1')
   })
 
   it('should handle order', () => {
@@ -97,6 +98,6 @@ describe('patch', () => {
       )
     })
     inst.forceUpdate()
-    expect(scratch.innerHTML).to.equal('<div><div>1</div><li>b</li><li>a</li></div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div><div>1</div><li>b</li><li>a</li></div>'))
   })
 })

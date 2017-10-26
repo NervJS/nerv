@@ -1,18 +1,25 @@
 {
   "presets": [
-    [
-      "env"
-    ]
+    ["env", {
+      "spec": true,
+      "useBuiltIns": false
+    }], ["stage-0"]
   ],
   "plugins": [
-    "transform-es3-member-expression-literals",
-    "transform-es3-property-literals",
     [
       "transform-react-jsx",
       {
         "pragma": "createElement"
       }
+    ],
+    [
+      "transform-runtime",
+      {
+        "helpers": false,
+        "polyfill": false,
+        "regenerator": true,
+        "moduleName": "babel-runtime"
+      }
     ]
-  ],
-  "comments": false
+  ]
 }

@@ -1,9 +1,27 @@
 module.exports = {
+  mapCoverage: true,
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'lcov', 'text'],
+  collectCoverage: true,
+  // collectCoverageFrom: [
+  //   'src/*.ts',
+  //   'src/**/*.ts'
+  // ],
   globals: {
-    usingJSDOM: true,
-    usingJest: true
+    'ts-jest': {
+      tsConfigFile: {
+        'target': 'es5',
+        'removeComments': true,
+        'preserveConstEnums': true,
+        'moduleResolution': 'node',
+        'experimentalDecorators': true,
+        'noImplicitAny': false,
+        'allowSyntheticDefaultImports': true,
+        'strictNullChecks': true,
+        'noImplicitThis': true,
+        'inlineSourceMap': true
+      }
+    }
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   rootDir: __dirname,

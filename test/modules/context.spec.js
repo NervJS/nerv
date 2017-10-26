@@ -2,13 +2,13 @@
 import { Component, createElement, render } from '../../src/index.ts'
 import createVText from '../../src/vdom/create-vtext'
 import { rerender } from '../../src/render-queue'
-
-import { CHILDREN_MATCHER } from '../util'
+import sinon from 'sinon'
+import { CHILDREN_MATCHER, normalizeHTML } from '../util'
 
 describe('context', () => {
   let scratch
 
-  before(() => {
+  beforeAll(() => {
     scratch = document.createElement('div')
     document.body.appendChild(scratch)
   })
@@ -17,7 +17,7 @@ describe('context', () => {
     scratch.innerHTML = ''
   })
 
-  after(() => {
+  afterAll(() => {
     scratch.parentNode.removeChild(scratch)
     scratch = null
   })
@@ -44,7 +44,7 @@ describe('context', () => {
         return <div><Inner {...this.state} /></div>
       }
     }
-    sinon.spy(Outer.prototype, 'getChildContext')
+    const getChildContextSpy = sinon.spy(Outer.prototype, 'getChildContext')
 
     class Inner extends Component {
       shouldComponentUpdate () { return true }
@@ -55,27 +55,26 @@ describe('context', () => {
         return <div>{this.context && this.context.a}</div>
       }
     }
-    sinon.spy(Inner.prototype, 'shouldComponentUpdate')
-    sinon.spy(Inner.prototype, 'componentWillReceiveProps')
-    sinon.spy(Inner.prototype, 'componentWillUpdate')
-    sinon.spy(Inner.prototype, 'componentDidUpdate')
-    sinon.spy(Inner.prototype, 'render')
+    const scu = sinon.spy(Inner.prototype, 'shouldComponentUpdate')
+    const cwrp = sinon.spy(Inner.prototype, 'componentWillReceiveProps')
+    const cwu = sinon.spy(Inner.prototype, 'componentWillUpdate')
+    const cdu = sinon.spy(Inner.prototype, 'componentDidUpdate')
 
     render(<Outer />, scratch)
 
-    expect(Outer.prototype.getChildContext).to.have.been.calledOnce
+    expect(getChildContextSpy.callCount).toBe(1)
 
     CONTEXT.foo = 'bar'
     doRender()
     rerender()
 
-    expect(Outer.prototype.getChildContext).to.have.been.calledTwice
+    expect(getChildContextSpy.callCount).toBe(2)
 
     const props = { children: CHILDREN_MATCHER, ...PROPS }
-    expect(Inner.prototype.shouldComponentUpdate).to.have.been.calledOnce.and.calledWith(props, {}, CONTEXT)
-    expect(Inner.prototype.componentWillReceiveProps).to.have.been.calledWith(props, CONTEXT)
-    expect(Inner.prototype.componentWillUpdate).to.have.been.calledWith(props, {})
-    expect(Inner.prototype.componentDidUpdate).to.have.been.calledWith(props, {})
+    expect(scu.calledWith(props, {}, CONTEXT)).toBeTruthy()
+    expect(cwrp.calledWith(props, CONTEXT)).toBeTruthy()
+    expect(cwu.calledWith(props, {})).toBeTruthy()
+    expect(cdu.calledWith(props, {})).toBeTruthy()
   })
 
   it('should pass context to direct children', () => {
@@ -101,7 +100,7 @@ describe('context', () => {
         return <Inner {...this.state} />
       }
     }
-    sinon.spy(Outer.prototype, 'getChildContext')
+    const getChildContextSpy = sinon.spy(Outer.prototype, 'getChildContext')
 
     class Inner extends Component {
       shouldComponentUpdate () { return true }
@@ -112,28 +111,28 @@ describe('context', () => {
         return <div>{this.context && this.context.a}</div>
       }
     }
-    sinon.spy(Inner.prototype, 'shouldComponentUpdate')
-    sinon.spy(Inner.prototype, 'componentWillReceiveProps')
-    sinon.spy(Inner.prototype, 'componentWillUpdate')
-    sinon.spy(Inner.prototype, 'componentDidUpdate')
-    sinon.spy(Inner.prototype, 'render')
+    const scu = sinon.spy(Inner.prototype, 'shouldComponentUpdate')
+    const cwrp = sinon.spy(Inner.prototype, 'componentWillReceiveProps')
+    const cwu = sinon.spy(Inner.prototype, 'componentWillUpdate')
+    const cdu = sinon.spy(Inner.prototype, 'componentDidUpdate')
+    const innerRender = sinon.spy(Inner.prototype, 'render')
 
     render(<Outer />, scratch)
 
-    expect(Outer.prototype.getChildContext).to.have.been.calledOnce
+    expect(getChildContextSpy.callCount).toBe(1)
 
     CONTEXT.foo = 'bar'
     doRender()
     rerender()
 
-    expect(Outer.prototype.getChildContext).to.have.been.calledTwice
+    expect(getChildContextSpy.callCount).toBe(2)
 
     const props = { children: CHILDREN_MATCHER, ...PROPS }
-    expect(Inner.prototype.shouldComponentUpdate).to.have.been.calledOnce.and.calledWith(props, {}, CONTEXT)
-    expect(Inner.prototype.componentWillReceiveProps).to.have.been.calledWith(props, CONTEXT)
-    expect(Inner.prototype.componentWillUpdate).to.have.been.calledWith(props, {})
-    expect(Inner.prototype.componentDidUpdate).to.have.been.calledWith(props, {})
-    expect(Inner.prototype.render).to.have.returned(sinon.match({ children: [createVText('a')] }))
+    expect(scu.calledWith(props, {}, CONTEXT)).toBeTruthy()
+    expect(cwrp.calledWith(props, CONTEXT)).toBeTruthy()
+    expect(cwu.calledWith(props, {})).toBeTruthy()
+    expect(cdu.calledWith(props, {})).toBeTruthy()
+    expect(innerRender.returned(sinon.match({ children: [createVText('a')] })))
   })
 
   it('should preserve existing context properties when creating child contexts', () => {
@@ -165,7 +164,7 @@ describe('context', () => {
     }
 
     render(<Outer />, scratch)
-    expect(scratch.innerHTML).to.equal('<div><strong>12</strong></div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div><strong>12</strong></div>'))
   })
 
   it('Should child component constructor access context', () => {
@@ -183,7 +182,7 @@ describe('context', () => {
     class Inner extends Component {
       constructor (props, context) {
         super(props, context)
-        expect(context.info).to.be.equal(CONTEXT.info)
+        expect(context.info).toEqual(CONTEXT.info)
         this.state = {
           s: null
         }
