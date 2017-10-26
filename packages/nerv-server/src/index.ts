@@ -2,22 +2,19 @@
 import {
   isVNode,
   isVText,
-  isWidget,
-  isStateLess,
-  isString,
-  isNumber,
-  isFunction,
+  isStateless,
   isNullOrUndef,
-  isArray,
-  isInvalid
+  isInvalid,
+  isComposite
 } from './is'
+import { isString, isNumber, isFunction, isArray } from 'nerv-utils'
 import {
   encodeEntities,
   isVoidElements,
   escapeText,
   getCssPropertyName,
   isUnitlessNumber,
-  assign
+  extend
 } from './utils'
 
 const skipAttributes = {
@@ -132,31 +129,23 @@ function renderVNodeToString (vnode, parent, context, firstChild) {
       }
     }
     return renderedString
-  } else if (isWidget(vnode)) {
-    const { tagName: type } = vnode
-    const instance = new type(props, context)
-    if (instance.render) {
-      instance._disable = true
-      if (isFunction(instance.getChildContext)) {
-        context = assign(assign({}, context), instance.getChildContext())
-      }
-      instance.context = context
-      if (isFunction(instance.componentWillMount)) {
-        instance.componentWillMount()
-      }
-      const nextVnode = instance.render(props, instance.state, context)
-
-      if (isInvalid(nextVnode)) {
-        return '<!--!-->'
-      }
-      return renderVNodeToString(nextVnode, vnode, context, true)
-    } else {
-      if (isInvalid(instance)) {
-        return '<!--!-->'
-      }
-      return renderVNodeToString(instance, vnode, context, true)
+  } else if (isComposite(vnode)) {
+    const instance = new tagName(props, context)
+    instance._disable = true
+    if (isFunction(instance.getChildContext)) {
+      context = extend(extend({}, context), instance.getChildContext())
     }
-  } else if (isStateLess(vnode)) {
+    instance.context = context
+    if (isFunction(instance.componentWillMount)) {
+      instance.componentWillMount()
+    }
+    const nextVnode = instance.render(props, instance.state, context)
+
+    if (isInvalid(nextVnode)) {
+      return '<!--!-->'
+    }
+    return renderVNodeToString(nextVnode, vnode, context, true)
+  } else if (isStateless(vnode)) {
     const nextVnode = tagName(props, context)
 
     if (isInvalid(nextVnode)) {

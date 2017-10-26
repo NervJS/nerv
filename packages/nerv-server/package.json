@@ -13,7 +13,8 @@
     "url": "git+https://github.com/NervJS/nerv.git"
   },
   "dependencies": {
-    "nervjs": "^0.2.0"
+    "nerv-utils": "0.2.0",
+    "nerv-shared": "0.2.0"
   },
   "bugs": {
     "url": "https://github.com/NervJS/nerv/issues"

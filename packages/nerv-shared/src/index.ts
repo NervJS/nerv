@@ -123,6 +123,10 @@ export function isComposite (node): node is CompositeComponent {
   return node && node.vtype === VType.Composite
 }
 
+export function isStateless (node): node is StatelessComponent {
+  return node && node.vtype === VType.Stateless
+}
+
 export function isHook (arg) {
   if (
     (arg && (typeof arg.hook === 'function' && !arg.hasOwnProperty('hook'))) ||

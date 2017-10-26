@@ -1,30 +1,4 @@
-export function isVNode (node) {
-  return node && node.type === 'VirtualNode'
-}
-
-export function isVText (node) {
-  return node && node.type === 'VirtualText'
-}
-
-export function isWidget (node) {
-  return node && node.type === 'Widget'
-}
-
-export function isStateLess (node) {
-  return node && node.type === 'StateLess'
-}
-
-export function isNumber (arg): arg is number {
-  return typeof arg === 'number'
-}
-
-export function isString (arg): arg is string {
-  return typeof arg === 'string'
-}
-
-export function isFunction (arg): arg is Function {
-  return typeof arg === 'function'
-}
+export * from 'nerv-shared'
 
 export function isBoolean (arg): arg is true | false {
   return arg === true || arg === false
@@ -45,5 +19,3 @@ export function isNull (o: any): o is null {
 export function isInvalid (o: any): o is null | false | true | undefined {
   return isNull(o) || o === false || o === true || isUndefined(o)
 }
-
-export const isArray = Array.isArray
