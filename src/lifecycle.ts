@@ -126,6 +126,7 @@ export function updateComponent (component, isForce = false) {
   const state = component.getState()
   const context = component.context
   const prevProps = component.prevProps || props
+  const prevState = component.prevState || state
   const prevContext = component.prevContext || context
   component.props = prevProps
   component.context = prevContext
@@ -147,7 +148,7 @@ export function updateComponent (component, isForce = false) {
     component._rendered = rendered
     component.dom = updateVNode(rendered, lastRendered, lastDom, childContext)
     if (component.componentDidUpdate) {
-      component.componentDidUpdate(props, state, context)
+      component.componentDidUpdate(prevProps, prevState, context)
     }
   }
   component.prevProps = component.props

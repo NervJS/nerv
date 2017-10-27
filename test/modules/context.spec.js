@@ -74,7 +74,7 @@ describe('context', () => {
     expect(scu.calledWith(props, {}, CONTEXT)).toBeTruthy()
     expect(cwrp.calledWith(props, CONTEXT)).toBeTruthy()
     expect(cwu.calledWith(props, {})).toBeTruthy()
-    expect(cdu.calledWith(props, {})).toBeTruthy()
+    expect(cdu.calledWith({ children: CHILDREN_MATCHER }, {})).toBeTruthy()
   })
 
   it('should pass context to direct children', () => {
@@ -131,7 +131,7 @@ describe('context', () => {
     expect(scu.calledWith(props, {}, CONTEXT)).toBeTruthy()
     expect(cwrp.calledWith(props, CONTEXT)).toBeTruthy()
     expect(cwu.calledWith(props, {})).toBeTruthy()
-    expect(cdu.calledWith(props, {})).toBeTruthy()
+    expect(cdu.calledWith({ children: CHILDREN_MATCHER }, {})).toBeTruthy()
     expect(innerRender.returned(sinon.match({ children: [createVText('a')] })))
   })
 
