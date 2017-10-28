@@ -1,4 +1,6 @@
-(function () {
+'use strict'
+
+;(function () {
   var ua = navigator.userAgent.match(/MSIE (\d+)/)
   if (ua === null) {
     return
@@ -8,20 +10,23 @@
     return
   }
 
-  var innerText = Object.getOwnPropertyDescriptor(Element.prototype, 'innerText')
+  var innerText = Object.getOwnPropertyDescriptor(
+    Element.prototype,
+    'innerText'
+  )
   var nodeName = Object.getOwnPropertyDescriptor(Element.prototype, 'nodeName')
 
   Object.defineProperties(Element.prototype, {
-    'textContent': {
-      get: function () {
+    textContent: {
+      get: function get () {
         return innerText.get.call(this)
       },
-      set: function (x) {
+      set: function set (x) {
         return innerText.set.call(this, x)
       }
     },
-    'nodeName': {
-      get () {
+    nodeName: {
+      get: function get () {
         return nodeName.get.call(this).toUpperCase()
       }
     }
@@ -30,16 +35,20 @@
   // Overwrites native 'firstElementChild' prototype.
   // Adds Document & DocumentFragment support for IE9 & Safari.
   // Returns array instead of HTMLCollection.
-  ; (function (constructor) {
-    if (constructor &&
+  ;(function (constructor) {
+    if (
+      constructor &&
       constructor.prototype &&
-      constructor.prototype.firstElementChild == null) {
+      constructor.prototype.firstElementChild == null
+    ) {
       Object.defineProperty(constructor.prototype, 'firstElementChild', {
-        get: function () {
+        get: function get () {
           // eslint-disable-next-line
-          var node, nodes = this.childNodes, i = 0
+          var node,
+            nodes = this.childNodes,
+            i = 0
           // eslint-disable-next-line
-          while (node = nodes[i++]) {
+          while ((node = nodes[i++])) {
             if (node.nodeType === 1) {
               return node
             }
@@ -49,4 +58,4 @@
       })
     }
   })(window.Node || window.Element)
-}())
+})()
