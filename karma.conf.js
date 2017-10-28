@@ -1,7 +1,6 @@
 const webpack = require('webpack')
 const path = require('path')
-const resolve = (pkg) =>
-  path.join(__dirname, './packages', pkg, 'src')
+const resolve = pkg => path.join(__dirname, './packages', pkg, 'src')
 const coverage = String(process.env.COVERAGE) !== 'false'
 const ci = String(process.env.CI).match(/^(1|true)$/gi)
 const realBrowser = String(process.env.BROWSER).match(/^(1|true)$/gi)
@@ -74,7 +73,6 @@ const localBrowsers = realBrowser ? Object.keys(travisLaunchers) : ['Chrome']
 
 module.exports = function (config) {
   config.set({
-
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '.',
 
@@ -92,14 +90,13 @@ module.exports = function (config) {
     ],
 
     specReporter: {
-      suppressFailed: false,      // do not print information about failed tests
-      suppressPassed: true,      // do not print information about passed tests
-      suppressSkipped: false      // do not print information about skipped tests
+      suppressFailed: false, // do not print information about failed tests
+      suppressPassed: true, // do not print information about passed tests
+      suppressSkipped: false // do not print information about skipped tests
     },
 
     // list of files to exclude
-    exclude: [
-    ],
+    exclude: [],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
@@ -165,7 +162,7 @@ module.exports = function (config) {
           'nerv-redux': resolve('nerv-redux')
         },
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        mainFields: ['module', 'main']
+        mainFields: ['main', 'module']
       },
       module: {
         rules: [

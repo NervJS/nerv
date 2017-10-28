@@ -114,7 +114,7 @@ function patchWidget (domNode: Element, vnode: CompositeComponent, patch: Compos
   const newNode = isUpdate
     ? (patch as CompositeComponent).update(vnode, patch, domNode) || domNode
     : createElement(patch)
-  const parentNode = domNode.parentNode
+  const parentNode = domNode.parentNode // @TODO: perf
   if (parentNode && domNode !== newNode) {
     parentNode.replaceChild(newNode as Node, domNode)
   }
@@ -253,6 +253,7 @@ function isUpdateWidget (a: VirtualNode, b: VirtualNode) {
   return false
 }
 
+// @todo: perf
 function getPatchIndices (patches) {
   const indices: number[] = []
   if (patches) {

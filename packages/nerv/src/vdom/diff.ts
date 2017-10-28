@@ -327,6 +327,7 @@ function destroyWidgets (vnode: VirtualNode, patch: VirtualNode, index: number) 
   }
 }
 
+// @TODO: perf
 function mapListKeyIndex (list: any[], key: string) {
   const keyMap = {}
   const free: number[] = []

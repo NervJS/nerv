@@ -22,6 +22,7 @@ export function mountVNode (vnode, parentContext: any) {
 export function mountComponent (vnode: FullComponent) {
   const parentContext = vnode.parentContext
   const componentPrototype = vnode.tagName.prototype
+  // @TODO: is unnessceily check?
   if (componentPrototype && isFunction(componentPrototype.render)) {
     vnode.component = new vnode.tagName(vnode.props, parentContext)
   }
@@ -81,6 +82,7 @@ export function flushMount () {
   if (!readyComponents.length) {
     return
   }
+  // @TODO: perf
   const queue = readyComponents.slice(0)
   readyComponents.length = 0
   queue.forEach((item) => {
@@ -93,7 +95,7 @@ export function flushMount () {
 }
 
 export function reRenderComponent (prev, current) {
-  const component = current.component = prev.component
+  const component = (current.component = prev.component)
   const nextProps = current.props
   const nextContext = component.context
   component._disable = true
@@ -130,8 +132,11 @@ export function updateComponent (component, isForce = false) {
   component.props = prevProps
   component.context = prevContext
   let skip = false
-  if (!isForce && isFunction(component.shouldComponentUpdate) &&
-    component.shouldComponentUpdate(props, state, context) === false) {
+  if (
+    !isForce &&
+    isFunction(component.shouldComponentUpdate) &&
+    component.shouldComponentUpdate(props, state, context) === false
+  ) {
     skip = true
   } else if (isFunction(component.componentWillUpdate)) {
     component.componentWillUpdate(props, state, context)
