@@ -1,15 +1,15 @@
 (function () {
-  const ua = navigator.userAgent.match(/MSIE (\d+)/)
+  var ua = navigator.userAgent.match(/MSIE (\d+)/)
   if (ua === null) {
     return
   }
-  const ieVersion = ua[1]
+  var ieVersion = ua[1]
   if (ieVersion >= 9) {
     return
   }
 
-  const innerText = Object.getOwnPropertyDescriptor(Element.prototype, 'innerText')
-  const nodeName = Object.getOwnPropertyDescriptor(Element.prototype, 'nodeName')
+  var innerText = Object.getOwnPropertyDescriptor(Element.prototype, 'innerText')
+  var nodeName = Object.getOwnPropertyDescriptor(Element.prototype, 'nodeName')
 
   Object.defineProperties(Element.prototype, {
     'textContent': {
