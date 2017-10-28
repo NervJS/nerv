@@ -1,13 +1,14 @@
+import { noop } from 'nerv-shared'
 const options: {
-  afterMount: null | Function
-  afterUpdate: null | Function
-  beforeUnmount: null | Function
+  afterMount: Function
+  afterUpdate: Function
+  beforeUnmount: Function
   roots: Object,
   debug: boolean
 } = {
-    afterMount: null,
-    afterUpdate: null,
-    beforeUnmount: null,
+    afterMount: noop,
+    afterUpdate: noop,
+    beforeUnmount: noop,
     roots: {},
     debug: false
   }

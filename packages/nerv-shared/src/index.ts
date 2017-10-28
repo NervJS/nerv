@@ -137,6 +137,9 @@ export function isHook (arg) {
   return false
 }
 
+// tslint:disable-next-line:no-empty
+export function noop () {}
+
 // typescript will compile the enum's value for us.
 // eg.
 // Composite = 1 << 2  => Composite = 4
