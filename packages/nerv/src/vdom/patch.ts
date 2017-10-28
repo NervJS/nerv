@@ -74,7 +74,7 @@ function patchVText (domNode: Text, patch: VirtualNode) {
   }
   const parentNode = domNode.parentNode
   const newNode = createElement(patch)
-  if (parentNode) {
+  if (parentNode !== null) {
     parentNode.replaceChild(newNode as Element, domNode)
   }
   return newNode
@@ -89,7 +89,7 @@ function patchVNode (domNode: Element, patch: VirtualNode, parentContext) {
   }
   const parentNode = domNode.parentNode
   const newNode = createElement(patch)
-  if (parentNode && newNode !== domNode) {
+  if (parentNode !== null && newNode !== domNode) {
     parentNode.replaceChild(newNode as Element, domNode)
   }
   return newNode
@@ -100,7 +100,7 @@ function patchInsert (parentNode: Element, vnode: VirtualNode, parentContext?: a
     vnode.parentContext = parentContext
   }
   const newNode = createElement(vnode)
-  if (parentNode && newNode) {
+  if (parentNode !== null && newNode !== null) {
     parentNode.appendChild(newNode)
   }
   return parentNode
@@ -115,7 +115,7 @@ function patchWidget (domNode: Element, vnode: CompositeComponent, patch: Compos
     ? (patch as CompositeComponent).update(vnode, patch, domNode) || domNode
     : createElement(patch)
   const parentNode = domNode.parentNode // @TODO: perf
-  if (parentNode && domNode !== newNode) {
+  if (parentNode !== null && domNode !== newNode) {
     parentNode.replaceChild(newNode as Node, domNode)
   }
   if (!isUpdate && vnode) {
@@ -232,11 +232,11 @@ function patchOrder (domNode: Element, patch: PatchOrder) {
 
 function patchRemove (domNode: Element, vnode: VirtualNode) {
   const parentNode = domNode.parentNode
-  if (parentNode) {
+  if (parentNode !== null) {
     parentNode.removeChild(domNode)
   }
   if (isWidget(vnode)) {
-    destroyWidget(domNode, vnode)
+    vnode.destroy(domNode)
   }
   return null
 }
