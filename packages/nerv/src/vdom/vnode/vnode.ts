@@ -1,4 +1,4 @@
-import { isString, isFunction } from 'nerv-utils'
+import { isString } from 'nerv-utils'
 import { isWidget, isVNode, isHook, Props, VType } from 'nerv-shared'
 export interface IHooks {
   [props: string]: any
@@ -21,7 +21,7 @@ class VNode {
     this.props = props || {}
     this.children = children || []
     this.key = key || null
-    this.namespace = (isString(namespace)) ? namespace : null
+    this.namespace = isString(namespace) ? namespace : null
     this._owner = owner
     const count = this.children.length || 0
     let descendants = 0
@@ -50,11 +50,7 @@ class VNode {
             descendantHooks = true
           }
         } else if (!hasWidgets && isWidget(child)) {
-          // TODO: figure out is function check really necessarily
-          // there are so many widght function check
-          if (isFunction((child as any).destroy)) {
-            hasWidgets = true
-          }
+          hasWidgets = true
         }
       })
     }

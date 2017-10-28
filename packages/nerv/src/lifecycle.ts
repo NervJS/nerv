@@ -21,11 +21,7 @@ export function mountVNode (vnode, parentContext: any) {
 
 export function mountComponent (vnode: FullComponent) {
   const parentContext = vnode.parentContext
-  const componentPrototype = vnode.tagName.prototype
-  // @TODO: is unnessceily check?
-  if (componentPrototype && isFunction(componentPrototype.render)) {
-    vnode.component = new vnode.tagName(vnode.props, parentContext)
-  }
+  vnode.component = new vnode.tagName(vnode.props, parentContext)
   const component = vnode.component
   if (isFunction(component.componentWillMount)) {
     component.componentWillMount()

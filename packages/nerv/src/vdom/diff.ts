@@ -1,7 +1,7 @@
 /* tslint:disable: no-shadowed-variable*/
 
 import VPatch from './vpatch'
-import { isFunction, isObject, getPrototype } from 'nerv-utils'
+import { isObject, getPrototype } from 'nerv-utils'
 import {
   VirtualNode,
   VNode,
@@ -312,10 +312,8 @@ function unhook (vnode: VirtualNode, patch: VirtualNode, index: number) {
 
 function destroyWidgets (vnode: VirtualNode, patch: VirtualNode, index: number) {
   if (isWidget(vnode)) {
-    if (isFunction(vnode.destroy)) {
-      (patch as CompositeComponent | StatelessComponent)[index] =
-        appendPatch((patch as CompositeComponent | StatelessComponent)[index], new VPatch(VPatch.REMOVE, vnode, null))
-    }
+    (patch as CompositeComponent | StatelessComponent)[index] =
+      appendPatch((patch as CompositeComponent | StatelessComponent)[index], new VPatch(VPatch.REMOVE, vnode, null))
   } else if (isVNode(vnode) && vnode.hasWidgets) {
     vnode.children.forEach((child) => {
       index += 1

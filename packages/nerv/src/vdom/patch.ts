@@ -125,7 +125,7 @@ function patchWidget (domNode: Element, vnode: CompositeComponent, patch: Compos
 }
 
 function destroyWidget (domNode: Element, widget) {
-  if (isFunction(widget.destroy) && isWidget(widget)) {
+  if (isWidget(widget)) {
     widget.destroy(domNode)
   }
 }

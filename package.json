@@ -1,7 +1,7 @@
 {
   "name": "nerv-build",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.2.0-alpha.1",
   "workspaces": [
     "packages/*"
   ],
@@ -22,7 +22,7 @@
     "build": "npm run clean && lerna exec -- rollup -c && node afterbuild.js",
     "build:esm": "lerna exec -- rollup -c --environment TARGET:esm",
     "build:umd": "lerna exec -- rollup -c --environment TARGET:umd",
-    "release": "npm run build && release-it -n -p"
+    "release": "lerna publish --exact --conventional-commits"
   },
   "lint-staged": {
     "*.{js,jsx}": [
