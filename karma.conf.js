@@ -83,8 +83,8 @@ module.exports = function (config) {
     // list of files / patterns to load in the browser
     files: [
       './node_modules/es5-polyfill/dist/polyfill.js',
-      'browsers/ie8.js',
-      'browsers/polyfill.js',
+      // 'browsers/ie8.js',
+      // 'browsers/polyfill.js',
       'packages/nerv/__tests__/event.spec.js',
       'packages/*/__tests__/**/*spec.js?(x)'
     ],
