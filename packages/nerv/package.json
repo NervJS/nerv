@@ -1,6 +1,6 @@
 {
   "name": "nervjs",
-  "version": "0.2.0",
+  "version": "0.2.0-alpha.1",
   "description": "A react-like framework based on virtual-dom",
   "main": "index.js",
   "module": "dist/nerv.esm.js",
@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/NervJS/nerv.git",
   "dependencies": {
-    "nerv-utils": "0.2.0",
-    "nerv-shared": "0.2.0"
+    "nerv-shared": "0.2.0-alpha.1",
+    "nerv-utils": "0.2.0-alpha.1"
   }
 }
