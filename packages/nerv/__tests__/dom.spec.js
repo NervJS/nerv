@@ -1,5 +1,10 @@
 /** @jsx createElement */
-import { Component, createElement, render, unmountComponentAtNode } from '../src'
+import {
+  Component,
+  createElement,
+  render,
+  unmountComponentAtNode
+} from '../src'
 
 describe('dom', () => {
   let scratch
@@ -42,16 +47,21 @@ describe('dom', () => {
 
       render(<Comp />, scratch)
       expect(unmountComponentAtNode(scratch)).toBe(true)
-      expect(scratch.innerHTML).toBe('')
+      expect(scratch.textContent).toBe('')
+    })
+
+    it('returns true on node has a vnode', () => {
+      render(<b>hellooo</b>, scratch)
+      expect(scratch.textContent).toBe('hellooo')
+      expect(unmountComponentAtNode(scratch)).toBe(true)
+      expect(scratch.textContent).toBe('')
     })
 
     it('returns true on node has a stateless', () => {
       const Comp = () => <span>test</span>
-
       render(<Comp />, scratch)
       expect(unmountComponentAtNode(scratch)).toBe(true)
-      // @TODO: fix potential memory leak in stateless component
-      expect(document.getElementById('test')).toBeNull()
+      expect(scratch.textContent).toBe('')
     })
   })
 })

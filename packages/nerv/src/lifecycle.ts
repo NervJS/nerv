@@ -165,7 +165,7 @@ export function updateComponent (component, isForce = false) {
   flushMount()
 }
 
-function updateVNode (vnode, lastVNode, lastDom, childContext) {
+export function updateVNode (vnode, lastVNode, lastDom, childContext) {
   if (isObject(vnode)) {
     vnode.parentContext = childContext
   }
