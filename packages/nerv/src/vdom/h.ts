@@ -2,7 +2,7 @@ import VNode from './vnode/vnode'
 import createVText from './create-vtext'
 import { isVNode, isVText, isWidget, Props, VirtualChildren, VirtualNode } from 'nerv-shared'
 import { isString, isArray, isNumber } from 'nerv-utils'
-// import { Props, VirtualChildren, VirtualNode } from '../types'
+
 function h (tagName: string, props: Props, children?: VirtualChildren) {
   let key
   let namespace

@@ -1,4 +1,6 @@
+import { VHook } from './vhook'
 class RefHook {
+  vhook = VHook.Ref
   callback: Function
   constructor (callback: Function) {
     this.callback = callback

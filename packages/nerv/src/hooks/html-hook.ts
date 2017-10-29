@@ -1,12 +1,13 @@
+import { VHook } from './vhook'
 class HtmlHook {
-  type = 'HtmlHook'
+  vhook = VHook.HTML
   value: any
   constructor (value) {
     this.value = value
   }
 
-  hook (node: Element, prop?, prev?) {
-    if (prev && prev.type === 'HtmlHook' &&
+  hook (node: Element, prop?: this, prev?: this) {
+    if (prev && prev.vhook === VHook.HTML &&
       prev.value.__html === this.value.__html) {
       return
     }

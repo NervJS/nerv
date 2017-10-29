@@ -1,12 +1,12 @@
 import { isFunction, isNative, SimpleMap } from 'nerv-utils'
-
+import { VHook } from './vhook'
 const ONINPUT = 'oninput'
 const ONPROPERTYCHANGE = 'onpropertychange'
 
 const canUseNativeMap = (() => {
   return 'Map' in window && isNative(Map)
 })()
-  /* istanbul ignore next */
+/* istanbul ignore next */
 const MapClass: MapConstructor = canUseNativeMap ? Map : SimpleMap as any
 
 const delegatedEvents = new MapClass()
@@ -59,7 +59,7 @@ const unbubbleEvents = {
 let bindFocus = false
 
 class EventHook {
-  type = 'EventHook'
+  vhook = VHook.Event
   eventName: string
   handler: Function
   constructor (eventName: string, handler) {
@@ -68,9 +68,12 @@ class EventHook {
   }
 
   hook (node, prop, prev) {
-    if (prev && prev.type === 'EventHook' &&
+    if (
+      prev &&
+      prev.vhook === VHook.Event &&
       prev.handler === this.handler &&
-      prev.eventName === this.eventName) {
+      prev.eventName === this.eventName
+    ) {
       return
     }
     const eventName = fixEvent(node, this.eventName)
@@ -97,7 +100,11 @@ class EventHook {
         delegatedRoots = {
           items: new MapClass()
         }
-        delegatedRoots.event = attachEventToDocument(document, eventName, delegatedRoots)
+        delegatedRoots.event = attachEventToDocument(
+          document,
+          eventName,
+          delegatedRoots
+        )
         delegatedEvents.set(eventName, delegatedRoots)
       }
       if (isFunction(this.handler)) {
@@ -107,9 +114,12 @@ class EventHook {
   }
 
   unhook (node, prop, next) {
-    if (next && next.type === 'EventHook' &&
+    if (
+      next &&
+      next.vhook === VHook.Event &&
       next.handler === this.handler &&
-      next.eventName === next.eventName) {
+      next.eventName === next.eventName
+    ) {
       return
     }
     const eventName = fixEvent(node, this.eventName)
@@ -128,7 +138,11 @@ class EventHook {
     } else if (delegatedRoots && delegatedRoots.items) {
       const items = delegatedRoots.items
       if (items.delete(node) && items.size === 0) {
-        document.removeEventListener(parseEventName(eventName), delegatedRoots.event, false)
+        document.removeEventListener(
+          parseEventName(eventName),
+          delegatedRoots.event,
+          false
+        )
         delegatedEvents.delete(eventName)
       }
     }
@@ -168,10 +182,14 @@ function processOnPropertyChangeEvent (node, handler) {
   propertyChangeActiveHandler = handler
   if (!bindFocus) {
     bindFocus = true
-    document.addEventListener('focusin', () => {
-      unbindOnPropertyChange()
-      bindOnPropertyChange(node)
-    }, false)
+    document.addEventListener(
+      'focusin',
+      () => {
+        unbindOnPropertyChange()
+        bindOnPropertyChange(node)
+      },
+      false
+    )
     document.addEventListener('focusout', unbindOnPropertyChange, false)
   }
 }
@@ -179,7 +197,10 @@ function processOnPropertyChangeEvent (node, handler) {
 function bindOnPropertyChange (node) {
   propertyChangeActiveElement = node
   propertyChangeActiveElementValue = node.value
-  propertyChangeActiveElementValueProp = Object.getOwnPropertyDescriptor(node.constructor.prototype, 'value')
+  propertyChangeActiveElementValueProp = Object.getOwnPropertyDescriptor(
+    node.constructor.prototype,
+    'value'
+  )
   Object.defineProperty(propertyChangeActiveElement, 'value', {
     get () {
       return propertyChangeActiveElementValueProp.get.call(this)
@@ -189,7 +210,11 @@ function bindOnPropertyChange (node) {
       propertyChangeActiveElementValueProp.set.call(this, val)
     }
   })
-  propertyChangeActiveElement.addEventListener('propertychange', propertyChangeHandler, false)
+  propertyChangeActiveElement.addEventListener(
+    'propertychange',
+    propertyChangeHandler,
+    false
+  )
 }
 
 function unbindOnPropertyChange () {
@@ -197,7 +222,11 @@ function unbindOnPropertyChange () {
     return
   }
   delete propertyChangeActiveElement.value
-  propertyChangeActiveElement.removeEventListener('propertychange', propertyChangeHandler, false)
+  propertyChangeActiveElement.removeEventListener(
+    'propertychange',
+    propertyChangeHandler,
+    false
+  )
 
   propertyChangeActiveElement = null
   propertyChangeActiveElementValue = null
@@ -207,7 +236,10 @@ function unbindOnPropertyChange () {
 function detectCanUseOnInputNode (node) {
   const nodeName = node.nodeName && node.nodeName.toLowerCase()
   const type = node.type
-  return (nodeName === 'input' && /text|password/.test(type)) || nodeName === 'textarea'
+  return (
+    (nodeName === 'input' && /text|password/.test(type)) ||
+    nodeName === 'textarea'
+  )
 }
 
 function fixEvent (node, eventName) {
@@ -222,7 +254,7 @@ function fixEvent (node, eventName) {
 function parseEventName (name) {
   return name.substr(2)
 }
-  /* istanbul ignore next */
+/* istanbul ignore next */
 function stopPropagation () {
   this.cancelBubble = true
   this.stopImmediatePropagation()
@@ -240,7 +272,10 @@ function dispatchEvent (event, target, items, count, eventData) {
   }
   if (count > 0) {
     const parentDom = target.parentNode
-    if (parentDom === null || (event.type === 'click' && parentDom.nodeType === 1 && parentDom.disabled)) {
+    if (
+      parentDom === null ||
+      (event.type === 'click' && parentDom.nodeType === 1 && parentDom.disabled)
+    ) {
       return
     }
     dispatchEvent(event, parentDom, items, count, eventData)

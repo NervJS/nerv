@@ -1,6 +1,13 @@
 import h from './vdom/h'
 import SVGPropertyConfig from './vdom/svg-property-config'
-import { isFunction, isString, isNumber, isBoolean, isObject, supportSVG } from 'nerv-utils'
+import {
+  isFunction,
+  isString,
+  isNumber,
+  isBoolean,
+  isObject,
+  supportSVG
+} from 'nerv-utils'
 import FullComponent from './full-component'
 import StatelessComponent from './stateless-component'
 import CurrentOwner from './current-owner'
@@ -23,30 +30,41 @@ function transformPropsForRealTag (tagName: string, props: Props) {
     const originalPropName = propName
     const domAttributeName = SVGPropertyConfig.DOMAttributeNames[propName]
     propName = domAttributeName || propName
-    if ((propName === 'id' || propName === 'className' || propName === 'namespace') &&
-      propValue !== undefined) {
+    if (
+      (propName === 'id' ||
+        propName === 'className' ||
+        propName === 'namespace') &&
+      propValue !== undefined
+    ) {
       newProps[propName] = propValue
       continue
     }
     if (propName === 'ref') {
-      newProps[propName] = !(propValue instanceof RefHook) ? new RefHook(propValue) : propValue
+      newProps[propName] = !(propValue instanceof RefHook)
+        ? new RefHook(propValue)
+        : propValue
       continue
     }
     if (propName === 'dangerouslySetInnerHTML') {
-      newProps[propName] = !(propValue instanceof HtmlHook) ? new HtmlHook(propValue) : propValue
+      newProps[propName] = !(propValue instanceof HtmlHook)
+        ? new HtmlHook(propValue)
+        : propValue
       continue
     }
     // 收集事件
     if (propName.charAt(0) === 'o' && propName.charAt(1) === 'n') {
-      newProps[propName] = !(propValue instanceof EventHook) ? new EventHook(propName, propValue) : propValue
+      newProps[propName] = !(propValue instanceof EventHook)
+        ? new EventHook(propName, propValue)
+        : propValue
       continue
     }
-    if (isSupportSVG && DOMAttributeNamespaces.hasOwnProperty(originalPropName) &&
-      (isString(propValue) || isNumber(propValue) || isBoolean(propValue))) {
+    if (
+      isSupportSVG &&
+      DOMAttributeNamespaces.hasOwnProperty(originalPropName) &&
+      (isString(propValue) || isNumber(propValue) || isBoolean(propValue))
+    ) {
       const namespace = DOMAttributeNamespaces[originalPropName]
-      newProps[propName] = !((propValue as any) instanceof AttributeHook)
-        ? new AttributeHook(namespace, propValue)
-        : propValue
+      newProps[propName] = new AttributeHook(namespace, propValue)
       continue
     }
     if (propName === 'defaultValue') {
@@ -59,10 +77,15 @@ function transformPropsForRealTag (tagName: string, props: Props) {
       } else if (isObject(propValue)) {
         for (const styleName in propValue) {
           let styleValue = propValue[styleName]
-          if (styleValue !== undefined && (isString(styleValue) || !isNaN(styleValue))) {
-            styleValue = isNumber(styleValue) && IS_NON_DIMENSIONAL.test(styleName) === false
-              ? (styleValue + 'px')
-              : styleValue
+          if (
+            styleValue !== undefined &&
+            (isString(styleValue) || !isNaN(styleValue))
+          ) {
+            styleValue =
+              isNumber(styleValue) &&
+              IS_NON_DIMENSIONAL.test(styleName) === false
+                ? styleValue + 'px'
+                : styleValue
             newProps[propName] = newProps[propName] || {}
             newProps[propName][styleName] = styleValue
           }
@@ -126,7 +149,10 @@ function createElement<T> (
     props.owner = CurrentOwner.current
     return h(tagName, props, children as any) as VNode
   } else if (isFunction(tagName)) {
-    props = transformPropsForComponent(properties as any, (tagName as any).defaultProps)
+    props = transformPropsForComponent(
+      properties as any,
+      (tagName as any).defaultProps
+    )
     if (props.children) {
       if (!Array.isArray(props.children)) {
         props.children = [props.children]
@@ -135,7 +161,7 @@ function createElement<T> (
       props.children = children
     }
     props.owner = CurrentOwner.current
-    return (tagName.prototype && tagName.prototype.render)
+    return tagName.prototype && tagName.prototype.render
       ? new FullComponent(tagName, props)
       : new StatelessComponent(tagName, props)
   }

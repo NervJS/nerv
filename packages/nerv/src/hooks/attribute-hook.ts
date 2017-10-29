@@ -1,5 +1,6 @@
+import { VHook } from './vhook'
 class AttributeHook {
-  type = 'AttributeHook'
+  vhook = VHook.Attribute
   namespace: string
   value: string | number | boolean
   constructor (namespace: string, value: string | number | boolean) {
@@ -8,17 +9,23 @@ class AttributeHook {
   }
 
   hook (node: Element, prop: string, prev: this) {
-    if (prev && prev.type === 'AttributeHook' &&
+    if (
+      prev &&
+      prev.vhook === VHook.Attribute &&
       prev.value === this.value &&
-      prev.namespace === this.namespace) {
+      prev.namespace === this.namespace
+    ) {
       return
     }
     node.setAttributeNS(this.namespace, prop, this.value as string)
   }
 
   unhook (node: Element, prop: string, next: this) {
-    if (next && next.type === 'AttributeHook' &&
-      next.namespace === this.namespace) {
+    if (
+      next &&
+      next.vhook === VHook.Attribute &&
+      next.namespace === this.namespace
+    ) {
       return
     }
     const colonPosition = prop.indexOf(':')
