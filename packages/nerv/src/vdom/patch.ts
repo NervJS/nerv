@@ -6,7 +6,16 @@ import { isFunction, isString, isObject, getPrototype } from 'nerv-utils'
 import domIndex from './dom-index'
 import createElement from './create-element'
 import VText from './vnode/vtext'
-import { Props, VirtualNode, VNode, PatchOrder, isWidget, isHook, isVNode, CompositeComponent } from 'nerv-shared'
+import {
+  Props,
+  VirtualNode,
+  VNode,
+  PatchOrder,
+  isWidget,
+  isHook,
+  isVNode,
+  CompositeComponent
+} from 'nerv-shared'
 // import CompositeComponent from '../full-component'
 
 function patch (rootNode: Element, patches, parentContext?: any) {
@@ -22,7 +31,12 @@ function patch (rootNode: Element, patches, parentContext?: any) {
   return rootNode
 }
 
-function applyPatch (rootNode: Element, domNode: Element, patch: VirtualNode | VirtualNode[], parentContext?: any) {
+function applyPatch (
+  rootNode: Element,
+  domNode: Element,
+  patch: VirtualNode | VirtualNode[],
+  parentContext?: any
+) {
   if (!domNode) {
     return rootNode
   }
@@ -52,9 +66,18 @@ function patchSingle (domNode: Element, vpatch: VPatch, parentContext?: any) {
     case VPatch.INSERT:
       return patchInsert(domNode, patchObj as VirtualNode, parentContext)
     case VPatch.WIDGET:
-      return patchWidget(domNode, oldVNode as CompositeComponent, patchObj as CompositeComponent)
+      return patchWidget(
+        domNode,
+        oldVNode as CompositeComponent,
+        patchObj as CompositeComponent
+      )
     case VPatch.PROPS:
-      return patchProps(domNode, patchObj as Props, (oldVNode as VNode).props, (oldVNode as VNode).isSvg)
+      return patchProps(
+        domNode,
+        patchObj as Props,
+        (oldVNode as VNode).props,
+        (oldVNode as VNode).isSvg
+      )
     case VPatch.ORDER:
       return patchOrder(domNode, patchObj as PatchOrder)
     case VPatch.REMOVE:
@@ -95,7 +118,11 @@ function patchVNode (domNode: Element, patch: VirtualNode, parentContext) {
   return newNode
 }
 
-function patchInsert (parentNode: Element, vnode: VirtualNode, parentContext?: any) {
+function patchInsert (
+  parentNode: Element,
+  vnode: VirtualNode,
+  parentContext?: any
+) {
   if (isWidget(vnode) || isVNode(vnode)) {
     vnode.parentContext = parentContext
   }
@@ -106,7 +133,11 @@ function patchInsert (parentNode: Element, vnode: VirtualNode, parentContext?: a
   return parentNode
 }
 
-function patchWidget (domNode: Element, vnode: CompositeComponent, patch: CompositeComponent) {
+function patchWidget (
+  domNode: Element,
+  vnode: CompositeComponent,
+  patch: CompositeComponent
+) {
   const isUpdate = isUpdateWidget(vnode, patch)
   if (vnode) {
     patch.parentContext = vnode.parentContext
@@ -130,7 +161,12 @@ function destroyWidget (domNode: Element, widget) {
   }
 }
 
-function patchProps (domNode: Element, patch: Props, previousProps: Props, isSvg?: boolean) {
+function patchProps (
+  domNode: Element,
+  patch: Props,
+  previousProps: Props,
+  isSvg?: boolean
+) {
   for (const propName in patch) {
     if (propName === 'children') {
       continue
@@ -138,7 +174,7 @@ function patchProps (domNode: Element, patch: Props, previousProps: Props, isSvg
     const propValue = patch[propName]
     const previousValue = previousProps[propName]
     if (propValue == null || propValue === false) {
-      if (isHook(previousValue) && previousValue.unhook) {
+      if (isHook(previousValue)) {
         previousValue.unhook(domNode, propName, propValue)
         continue
       } else if (propName === 'style') {
@@ -160,12 +196,10 @@ function patchProps (domNode: Element, patch: Props, previousProps: Props, isSvg
       }
     } else {
       if (isHook(propValue)) {
-        if (isHook(previousValue) && previousValue.unhook) {
+        if (isHook(previousValue)) {
           previousValue.unhook(domNode, propName, propValue)
         }
-        if (propValue && propValue.hook) {
-          propValue.hook(domNode, propName, previousValue)
-        }
+        propValue.hook(domNode, propName, previousValue)
         continue
       } else if (propName === 'style') {
         if (isString(propValue)) {
@@ -183,8 +217,11 @@ function patchProps (domNode: Element, patch: Props, previousProps: Props, isSvg
         }
         continue
       } else if (isObject(propValue)) {
-        if (previousValue && isObject(previousValue) &&
-          getPrototype(previousValue) !== getPrototype(propValue)) {
+        if (
+          previousValue &&
+          isObject(previousValue) &&
+          getPrototype(previousValue) !== getPrototype(propValue)
+        ) {
           if (propName in domNode) {
             try {
               domNode[propName] = propValue
@@ -194,7 +231,12 @@ function patchProps (domNode: Element, patch: Props, previousProps: Props, isSvg
           }
         }
         continue
-      } else if (propName !== 'list' && propName !== 'type' && !isSvg && propName in domNode) {
+      } else if (
+        propName !== 'list' &&
+        propName !== 'type' &&
+        !isSvg &&
+        propName in domNode
+      ) {
         try {
           domNode[propName] = propValue
         } catch (err) {}
@@ -225,7 +267,10 @@ function patchOrder (domNode: Element, patch: PatchOrder) {
   for (let j = 0; j < inserts.length; j++) {
     insert = inserts[j]
     node = keyMap[insert.key]
-    domNode.insertBefore(node, insert.to >= length++ ? null : childNodes[insert.to])
+    domNode.insertBefore(
+      node,
+      insert.to >= length++ ? null : childNodes[insert.to]
+    )
   }
   return domNode
 }

@@ -107,34 +107,34 @@ export interface Component<P, S> extends ComponentLifecycle<P, S> {
   getState (): S
 }
 
+export function isNullOrUndef (o: any): o is undefined | null {
+  return o === undefined || o === null
+}
+
 export function isVNode (node): node is VNode {
-  return node && node.vtype === VType.Node
+  return !isNullOrUndef(node) && node.vtype === VType.Node
 }
 
 export function isVText (node): node is VText {
-  return node && node.vtype === VType.Text
+  return !isNullOrUndef(node) && node.vtype === VType.Text
 }
 
-export function isWidget (node): node is CompositeComponent | StatelessComponent {
-  return node && node.vtype > 3
+export function isWidget (
+  node
+): node is CompositeComponent | StatelessComponent {
+  return !isNullOrUndef(node) && node.vtype > 3
 }
 
 export function isComposite (node): node is CompositeComponent {
-  return node && node.vtype === VType.Composite
+  return !isNullOrUndef(node) && node.vtype === VType.Composite
 }
 
 export function isStateless (node): node is StatelessComponent {
-  return node && node.vtype === VType.Stateless
+  return !isNullOrUndef(node) && node.vtype === VType.Stateless
 }
 
 export function isHook (arg) {
-  if (
-    (arg && (typeof arg.hook === 'function' && !arg.hasOwnProperty('hook'))) ||
-    (arg && (typeof arg.unhook === 'function' && !arg.hasOwnProperty('unhook')))
-  ) {
-    return true
-  }
-  return false
+  return !isNullOrUndef(arg) && typeof arg.vhook === 'number'
 }
 
 // tslint:disable-next-line:no-empty

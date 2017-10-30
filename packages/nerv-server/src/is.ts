@@ -4,10 +4,6 @@ export function isBoolean (arg): arg is true | false {
   return arg === true || arg === false
 }
 
-export function isNullOrUndef (o: any): o is undefined | null {
-  return isUndefined(o) || isNull(o)
-}
-
 export function isUndefined (o: any): o is undefined {
   return o === void 0
 }

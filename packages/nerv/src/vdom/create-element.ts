@@ -1,12 +1,28 @@
-import { isObject, isString, isNumber, isFunction, supportSVG } from 'nerv-utils'
-import { isVNode, isVText, isWidget, isHook, VirtualNode, Props } from 'nerv-shared'
+import {
+  isObject,
+  isString,
+  isNumber,
+  isFunction,
+  supportSVG
+} from 'nerv-utils'
+import {
+  isVNode,
+  isVText,
+  isWidget,
+  isHook,
+  VirtualNode,
+  Props
+} from 'nerv-shared'
 import options from '../options'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
 const doc = document
 const isSupportSVG = supportSVG()
-function createElement (vnode: VirtualNode, isSvg?: boolean): Element | Text | Comment | DocumentFragment | null {
+function createElement (
+  vnode: VirtualNode,
+  isSvg?: boolean
+): Element | Text | Comment | DocumentFragment | null {
   if (isWidget(vnode)) {
     return vnode.init()
   }
@@ -34,16 +50,26 @@ function createElement (vnode: VirtualNode, isSvg?: boolean): Element | Text | C
       vnode.namespace = SVG_NAMESPACE
       vnode.isSvg = isSvg
     }
-    const domNode = (vnode.namespace === null) ? doc.createElement(vnode.tagName)
-      : isSupportSVG ? doc.createElementNS(vnode.namespace, vnode.tagName) : doc.createElement(vnode.tagName)
+    const domNode =
+      vnode.namespace === null
+        ? doc.createElement(vnode.tagName)
+        : isSupportSVG
+          ? doc.createElementNS(vnode.namespace, vnode.tagName)
+          : doc.createElement(vnode.tagName)
     setProps(domNode, vnode.props, isSvg)
-    if (options.debug) { // for devtools
+    if (options.debug) {
+      // for devtools
       (domNode as any)._props = vnode.props
     }
     const children = vnode.children
     if (children.length) {
       children.forEach((child) => {
-        if (child !== undefined && child !== null && (child as any) !== false && domNode.appendChild) {
+        if (
+          child !== undefined &&
+          child !== null &&
+          (child as any) !== false &&
+          domNode.appendChild
+        ) {
           if (isWidget(child) || isVNode(child)) {
             child.parentContext = vnode.parentContext || {}
           }
@@ -59,7 +85,12 @@ function createElement (vnode: VirtualNode, isSvg?: boolean): Element | Text | C
   if (Array.isArray(vnode)) {
     const domNode = doc.createDocumentFragment()
     vnode.forEach((child) => {
-      if (child !== undefined && child !== null && (child as any) !== false && domNode.appendChild) {
+      if (
+        child !== undefined &&
+        child !== null &&
+        (child as any) !== false &&
+        domNode.appendChild
+      ) {
         const childNode = createElement(child, isSvg)
         if (childNode) {
           domNode.appendChild(childNode)
@@ -79,9 +110,7 @@ function setProps (domNode: Element, props: Props, isSvg?: boolean) {
     }
     const propValue = props[p]
     if (isHook(propValue)) {
-      if (propValue.hook) {
-        propValue.hook(domNode, p)
-      }
+      propValue.hook(domNode, p)
       continue
     } else if (p === 'style') {
       if (isString(propValue)) {

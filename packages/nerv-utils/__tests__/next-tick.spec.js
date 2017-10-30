@@ -1,4 +1,5 @@
 import { nextTick } from '../src'
+import sinon from 'sinon'
 
 describe('nextTick', () => {
   // const canUsePromise = (() => {
@@ -20,10 +21,15 @@ describe('nextTick', () => {
   //   nextTick().then(done)
   // })X
 
-  it('throw error in callback can carry on', done => {
+  it('throw error in callback can carry on', async () => {
+    const consoleErr = console.error
+    console.error = function () {}
+    const spy = sinon.spy(console, 'error')
     nextTick(() => {
       throw new Error('e')
     })
-    done()
+    await nextTick()
+    expect(spy.called).toBeTruthy()
+    console.error = consoleErr
   })
 })

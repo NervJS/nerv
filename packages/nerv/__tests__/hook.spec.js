@@ -46,17 +46,12 @@ describe('Hooks', () => {
         }
 
         render () {
-          return ([
-            first,
-            second,
-            third,
-            fourth
-          ][this.state.count])
+          return [first, second, third, fourth][this.state.count]
         }
       }
 
       let OuterC
-      render(<Outer ref={(comp) => (OuterC = comp)} />, scratch)
+      render(<Outer ref={comp => (OuterC = comp)} />, scratch)
       expect(scratch.childNodes[0].innerHTML).toEqual(normalizeHTML(html))
       doRender()
       OuterC.forceUpdate()
@@ -92,15 +87,19 @@ describe('Hooks', () => {
         }
 
         render () {
-          return ([
-            first,
-            second
-          ][this.state.count])
+          return [first, second][this.state.count]
         }
       }
 
       let OuterC
-      render(<Outer ref={c => { OuterC = c }} />, scratch)
+      render(
+        <Outer
+          ref={c => {
+            OuterC = c
+          }}
+        />,
+        scratch
+      )
       expect(scratch.childNodes[0].innerHTML).toEqual(normalizeHTML(html))
       doRender()
       OuterC.forceUpdate()
@@ -139,26 +138,36 @@ describe('Hooks', () => {
         }
 
         render () {
-          return ([
-            first,
-            second,
-            third,
-            fourth
-          ][this.state.count])
+          return [first, second, third, fourth][this.state.count]
         }
       }
 
-      render(<Outer ref={c => { OuterC = c }} />, scratch)
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).toEqual('first value')
+      render(
+        <Outer
+          ref={c => {
+            OuterC = c
+          }}
+        />,
+        scratch
+      )
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).toEqual(
+        'first value'
+      )
       doRender()
       OuterC.forceUpdate()
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).toEqual('first value')
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).toEqual(
+        'first value'
+      )
       doRender()
       OuterC.forceUpdate()
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).toEqual('second value')
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).toEqual(
+        'second value'
+      )
       doRender()
       OuterC.forceUpdate()
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).toEqual(blankAttributeNS())
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myns')).toEqual(
+        blankAttributeNS()
+      )
     })
 
     it('sets the attribute if previous value was not an AttributeHook', () => {
@@ -172,7 +181,7 @@ describe('Hooks', () => {
         this.namespace = namespace
         this.value = value
       }
-      OtherHook.prototype.hook = function () { }
+      OtherHook.prototype.hook = function () {}
 
       var hook1 = new OtherHook(namespace, 'the value')
       var hook2 = new AttributeHook(namespace, 'the value')
@@ -197,18 +206,26 @@ describe('Hooks', () => {
         }
 
         render () {
-          return ([
-            first,
-            second
-          ][this.state.count])
+          return [first, second][this.state.count]
         }
       }
       let OuterC
-      render(<Outer ref={c => { OuterC = c }} />, scratch)
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual(blankAttributeNS())
+      render(
+        <Outer
+          ref={c => {
+            OuterC = c
+          }}
+        />,
+        scratch
+      )
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual(
+        blankAttributeNS()
+      )
       doRender()
       OuterC.forceUpdate()
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual('the value')
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual(
+        'the value'
+      )
     })
 
     it('removes the attribute if next value is not an AttributeHook', () => {
@@ -221,8 +238,9 @@ describe('Hooks', () => {
       var OtherHook = function (namespace, value) {
         this.namespace = namespace
         this.value = value
+        this.vhook = 3
       }
-      OtherHook.prototype.hook = function () { }
+      OtherHook.prototype.hook = function () {}
 
       var hook1 = new AttributeHook(namespace, 'the value')
       var hook2 = new OtherHook(namespace, 'the value')
@@ -246,18 +264,26 @@ describe('Hooks', () => {
         }
 
         render () {
-          return ([
-            first,
-            second
-          ][this.state.count])
+          return [first, second][this.state.count]
         }
       }
       let OuterC
-      render(<Outer ref={c => { OuterC = c }} />, scratch)
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual('the value')
+      render(
+        <Outer
+          ref={c => {
+            OuterC = c
+          }}
+        />,
+        scratch
+      )
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual(
+        'the value'
+      )
       doRender()
       OuterC.forceUpdate()
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual(blankAttributeNS())
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual(
+        blankAttributeNS()
+      )
     })
 
     it('sets the attribute if previous value uses a different namespace', () => {
@@ -290,18 +316,26 @@ describe('Hooks', () => {
         }
 
         render () {
-          return ([
-            first,
-            second
-          ][this.state.count])
+          return [first, second][this.state.count]
         }
       }
       let OuterC
-      render(<Outer ref={c => { OuterC = c }} />, scratch)
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual(blankAttributeNS())
+      render(
+        <Outer
+          ref={c => {
+            OuterC = c
+          }}
+        />,
+        scratch
+      )
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual(
+        blankAttributeNS()
+      )
       doRender()
       OuterC.forceUpdate()
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual('the value')
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual(
+        'the value'
+      )
     })
 
     it('removes the attribute if next value uses a different namespace', () => {
@@ -334,19 +368,27 @@ describe('Hooks', () => {
         }
 
         render () {
-          return ([
-            first,
-            second
-          ][this.state.count])
+          return [first, second][this.state.count]
         }
       }
 
       let OuterC
-      render(<Outer ref={c => { OuterC = c }} />, scratch)
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual('the value')
+      render(
+        <Outer
+          ref={c => {
+            OuterC = c
+          }}
+        />,
+        scratch
+      )
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual(
+        'the value'
+      )
       doRender()
       OuterC.forceUpdate()
-      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual(blankAttributeNS())
+      expect(scratch.childNodes[0].getAttributeNS(namespace, 'myattr')).toEqual(
+        blankAttributeNS()
+      )
     })
   })
 })
