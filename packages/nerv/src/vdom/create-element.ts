@@ -22,10 +22,11 @@ const doc = document
 const isSupportSVG = supportSVG()
 function createElement (
   vnode: VirtualNode,
-  isSvg?: boolean
+  isSvg?: boolean,
+  parentComponent?
 ): Element | Text | Comment | DocumentFragment | null {
   if (isWidget(vnode)) {
-    return vnode.init()
+    return vnode.init(parentComponent)
   }
   if (isString(vnode) || isNumber(vnode)) {
     return doc.createTextNode(vnode as string)
@@ -92,7 +93,7 @@ function createElement (
         (child as any) !== false &&
         domNode.appendChild
       ) {
-        const childNode = createElement(child, isSvg)
+        const childNode = createElement(child, isSvg, parentComponent)
         if (childNode) {
           domNode.appendChild(childNode)
         }

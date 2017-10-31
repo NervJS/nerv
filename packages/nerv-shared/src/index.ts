@@ -6,7 +6,7 @@ export interface Widget {
   _rendered: any
   parentContext: any
   context: any
-  init (): Element | null
+  init (parentVnode?): Element | null
   update (previous: this, current: this, dom?: Element): Element | null
   destroy (dom?: Element): Element | null
 }
@@ -104,6 +104,7 @@ export interface Component<P, S> extends ComponentLifecycle<P, S> {
   _dirty: boolean
   _disable: boolean
   _rendered: any
+  _parentComponent: Component<any, any>
   dom: any
   getState (): S
 }

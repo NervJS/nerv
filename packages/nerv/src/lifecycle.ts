@@ -21,21 +21,35 @@ function errorCatcher (fn: Function, component: Component<any, any>) {
 }
 
 function errorHandler (component: Component<any, any>, error) {
-  if (isFunction(component.componentDidCatch)) {
-    component.componentDidCatch(error)
+  let boundary
+
+  while (component) {
+    if (isFunction(component.componentDidCatch)) {
+      boundary = component
+      break
+    } else if (component._parentComponent) {
+      boundary = component._parentComponent
+      break
+    } else {
+      break
+    }
+  }
+
+  if (boundary) {
+    boundary.componentDidCatch(error)
   } else {
     throw error
   }
 }
 
-export function mountVNode (vnode, parentContext: any) {
+export function mountVNode (vnode, parentContext: any, parentVNode?) {
   if (isObject(vnode)) {
     vnode.parentContext = parentContext
   }
-  return createElement(vnode)
+  return createElement(vnode, false, parentVNode)
 }
 
-export function mountComponent (vnode: FullComponent) {
+export function mountComponent (vnode: FullComponent, parentComponent?) {
   const parentContext = vnode.parentContext
   vnode.component = new vnode.tagName(vnode.props, parentContext)
   const component = vnode.component
@@ -52,7 +66,14 @@ export function mountComponent (vnode: FullComponent) {
   if (isFunction(vnode.props.ref)) {
     readyComponents.push(() => vnode.props.ref(component))
   }
-  const dom = mountVNode(rendered, getChildContext(component, parentContext))
+  if (parentComponent) {
+    component._parentComponent = parentComponent
+  }
+  const dom = mountVNode(
+    rendered,
+    getChildContext(component, parentContext),
+    component
+  )
   component.dom = dom
   component._disable = false
   options.afterMount(vnode)
@@ -102,7 +123,9 @@ export function flushMount () {
     if (isFunction(item)) {
       item()
     } else if (item.componentDidMount) {
-      item.componentDidMount()
+      errorCatcher(() => {
+        item.componentDidMount()
+      }, item)
     }
   })
 }

@@ -1,10 +1,9 @@
-import { VType } from 'nerv-shared'
+import { VType, Component } from 'nerv-shared'
 import {
   mountComponent,
   reRenderComponent,
   unmountComponent
 } from './lifecycle'
-import Component from './component'
 
 class ComponentWrapper {
   vtype = VType.Composite
@@ -18,15 +17,16 @@ class ComponentWrapper {
 
   constructor (tagName, props) {
     this.tagName = tagName
-    this.name = tagName.name || tagName.toString().match(/^function\s*([^\s(]+)/)[1]
+    this.name =
+      tagName.name || tagName.toString().match(/^function\s*([^\s(]+)/)[1]
     tagName.displayName = this.name
     this._owner = props.owner
     delete props.owner
     this.props = props
   }
 
-  init () {
-    return mountComponent(this)
+  init (parentComponent?) {
+    return mountComponent(this, parentComponent)
   }
 
   update (previous, current?, domNode?) {
