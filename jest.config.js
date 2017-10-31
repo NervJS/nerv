@@ -8,30 +8,28 @@ module.exports = {
   ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   moduleNameMapper: {
-    'nervjs': '<rootDir>/packages/nerv/src',
+    nervjs: '<rootDir>/packages/nerv/src',
     '^nerv(.*?)$': '<rootDir>/packages/nerv$1/src'
   },
   mapCoverage: true,
   globals: {
     'ts-jest': {
       tsConfigFile: {
-        'target': 'es5',
-        'removeComments': false,
-        'preserveConstEnums': true,
-        'moduleResolution': 'node',
-        'experimentalDecorators': true,
-        'noImplicitAny': false,
-        'allowSyntheticDefaultImports': true,
-        'strictNullChecks': true,
-        'noImplicitThis': true,
-        'inlineSourceMap': true
+        target: 'es5',
+        removeComments: false,
+        preserveConstEnums: true,
+        moduleResolution: 'node',
+        experimentalDecorators: true,
+        noImplicitAny: false,
+        allowSyntheticDefaultImports: true,
+        strictNullChecks: true,
+        noImplicitThis: true,
+        inlineSourceMap: true
       }
     }
   },
   rootDir: __dirname,
-  testMatch: [
-    '<rootDir>/packages/*/__tests__/**/*spec.js?(x)'
-  ],
+  testMatch: ['<rootDir>/packages/nerv/__tests__/componentDidCatch.spec.js'],
   transform: {
     '^.+\\.jsx?$': 'babel-jest',
     '^.+\\.tsx?$': '<rootDir>/node_modules/ts-jest/preprocessor.js'

@@ -5,12 +5,28 @@ import createVText from './vdom/create-vtext'
 import diff from './vdom/diff'
 import patch from './vdom/patch'
 import RefHook from './hooks/ref-hook'
-import { isVNode } from 'nerv-shared'
+import { isVNode, Component } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
 import options from './options'
 
 const readyComponents: any[] = []
+
+function errorCatcher (fn: Function, component: Component<any, any>) {
+  try {
+    return fn()
+  } catch (error) {
+    errorHandler(component, error)
+  }
+}
+
+function errorHandler (component: Component<any, any>, error) {
+  if (isFunction(component.componentDidCatch)) {
+    component.componentDidCatch(error)
+  } else {
+    throw error
+  }
+}
 
 export function mountVNode (vnode, parentContext: any) {
   if (isObject(vnode)) {
@@ -64,7 +80,10 @@ export function getChildContext (component, context) {
 
 export function renderComponent (component) {
   CurrentOwner.current = component
-  let rendered = component.render()
+  let rendered
+  errorCatcher(() => {
+    rendered = component.render()
+  }, component)
   if (isNumber(rendered) || isString(rendered)) {
     rendered = createVText(rendered)
   }

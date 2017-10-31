@@ -94,6 +94,7 @@ export interface ComponentLifecycle<P, S> {
     prevContext: any
   ): void
   componentWillUnmount? (): void
+  componentDidCatch? (error?): void
 }
 
 export interface Component<P, S> extends ComponentLifecycle<P, S> {

@@ -16,7 +16,6 @@ import {
   isVNode,
   CompositeComponent
 } from 'nerv-shared'
-// import CompositeComponent from '../full-component'
 
 function patch (rootNode: Element, patches, parentContext?: any) {
   const patchIndices = getPatchIndices(patches)
