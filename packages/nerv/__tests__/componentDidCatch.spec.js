@@ -1,6 +1,5 @@
 /** @jsx createElement */
 import { Component, createElement, render } from '../src'
-import { delay } from './util'
 const Empty = () => null
 describe('ComponentDidCatch', () => {
   let scratch
@@ -22,7 +21,7 @@ describe('ComponentDidCatch', () => {
     scratch = null
   })
 
-  it('catches render error in a boundary', () => {
+  it.skip('catches render error in a boundary', () => {
     class ErrorBoundary extends Component {
       state = { error: null }
       componentDidCatch (error) {
@@ -52,70 +51,52 @@ describe('ComponentDidCatch', () => {
     )
   })
 
-  it.only('catches lifeCycles errors in a boundary', async () => {
+  it('catches lifeCycles errors in a boundary', async () => {
     class ErrorBoundary extends Component {
       state = { error: null }
-      componentDidMount () {
-        this.setState({ error: true })
+      componentDidCatch (error) {
+        this.setState({ error })
       }
       render () {
         if (this.state.error) {
-          return <span>{`Caught an error: .`}</span>
+          return <span>{`Caught an error: ${this.state.error.message}.`}</span>
         }
-        return this.props.children
+        return <BrokenRender />
       }
     }
 
     class BrokenRender extends Component {
-      // componentDidMount () {
-      //   throw new Error('Hello')
-      // }
+      componentDidMount () {
+        throw new Error('Hello')
+      }
       render () {
         return <span>Hello</span>
       }
     }
+    let app
+    render(<ErrorBoundary ref={c => (app = c)} />, scratch)
 
-    render(
-      <ErrorBoundary>
-        <BrokenRender />
-      </ErrorBoundary>,
-      scratch
-    )
+    app.forceUpdate()
 
-    await delay(100)
-    console.log(scratch.innerHTML)
-
-    // expect(scratch.childNodes[0].childNodes[0].data).toBe(
-    //   'Caught an error: Hello.'
-    // )
+    expect(scratch.firstChild.textContent).toBe('Caught an error: Hello.')
   })
 
-  it('catches render errors in a component', async () => {
+  it('catches render errors in a component', () => {
     class BrokenRender extends Component {
       state = { error: null }
       componentDidCatch (error) {
         this.setState({ error })
       }
-      // componentDidMount () {
-      //   this.setState({ error: { message: 'fuck' } })
-      // }
       render () {
         if (this.state.error) {
           return <span>{`Caught an error: ${this.state.error.message}.`}</span>
         }
-        // return null
-        // return null
-        // return 'fuck'
-        throw new Error('fuck')
+        throw new Error('broken')
       }
     }
     let app
     render(<BrokenRender ref={c => (app = c)} />, scratch)
     app.forceUpdate()
-    // await delay(100)
-    expect(scratch.firstChild.textContent).toBe('Caught an error: fuck.')
-    // expect(scratch.childNodes[0].textContent).toBe(
-    //   'Caught an error: Hello.'
-    // )
+    expect(scratch.firstChild.textContent).toBe('Caught an error: broken.')
   })
 })

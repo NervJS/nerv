@@ -28,8 +28,7 @@ function errorHandler (component: Component<any, any>, error) {
       boundary = component
       break
     } else if (component._parentComponent) {
-      boundary = component._parentComponent
-      break
+      component = component._parentComponent
     } else {
       break
     }
