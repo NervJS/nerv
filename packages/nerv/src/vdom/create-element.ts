@@ -10,6 +10,7 @@ import {
   isVText,
   isWidget,
   isHook,
+  isNullOrUndef,
   VirtualNode,
   Props
 } from 'nerv-shared'
@@ -32,7 +33,7 @@ function createElement (
   if (isVText(vnode)) {
     return doc.createTextNode(vnode.text as string)
   }
-  if (vnode === null || (vnode as any) === false) {
+  if (isNullOrUndef(vnode) || (vnode as any) === false) {
     return doc.createComment('Empty dom node')
   }
   if (isVNode(vnode)) {

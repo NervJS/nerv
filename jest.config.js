@@ -29,7 +29,10 @@ module.exports = {
     }
   },
   rootDir: __dirname,
-  testMatch: ['<rootDir>/packages/nerv/__tests__/componentDidCatch.spec.js'],
+  testMatch: [
+    // '<rootDir>/packages/nerv/__tests__/componentDidCatch.spec.js',
+    '<rootDir>/packages/**/__tests__/**/*spec.js'
+  ],
   transform: {
     '^.+\\.jsx?$': 'babel-jest',
     '^.+\\.tsx?$': '<rootDir>/node_modules/ts-jest/preprocessor.js'

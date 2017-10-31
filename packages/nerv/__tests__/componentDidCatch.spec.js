@@ -92,23 +92,24 @@ describe('ComponentDidCatch', () => {
       componentDidCatch (error) {
         this.setState({ error })
       }
-      componentDidMount () {
-        this.setState({ error: { message: 'fuck' } })
-      }
+      // componentDidMount () {
+      //   this.setState({ error: { message: 'fuck' } })
+      // }
       render () {
         if (this.state.error) {
           return <span>{`Caught an error: ${this.state.error.message}.`}</span>
         }
-        return ''
+        // return null
+        // return null
         // return 'fuck'
-        // throw new Error('fuck')
+        throw new Error('fuck')
       }
     }
     let app
     render(<BrokenRender ref={c => (app = c)} />, scratch)
     app.forceUpdate()
     // await delay(100)
-    console.log(scratch.innerHTML)
+    expect(scratch.firstChild.textContent).toBe('Caught an error: fuck.')
     // expect(scratch.childNodes[0].textContent).toBe(
     //   'Caught an error: Hello.'
     // )
