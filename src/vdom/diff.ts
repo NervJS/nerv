@@ -267,11 +267,11 @@ function remove (arr: any[], index: number, key: any) {
 }
 
 function clearState (vnode: VirtualNode, patch: VirtualNode, index: number) {
-  unhook(vnode, patch, index)
+  unhookAll(vnode, patch, index)
   destroyWidgets(vnode, patch, index)
 }
 
-function unhook (vnode: VirtualNode, patch: VirtualNode, index: number) {
+function unhookAll (vnode: VirtualNode, patch: VirtualNode, index: number) {
   if (isVNode(vnode)) {
     if (vnode.hooks) {
       (patch as IVNode)[index] = appendPatch(
@@ -290,7 +290,7 @@ function unhook (vnode: VirtualNode, patch: VirtualNode, index: number) {
       for (let i = 0; i < len; i++) {
         const child = children[i]
         index += 1
-        unhook(child, patch, index)
+        unhookAll(child, patch, index)
         if (isVNode(child) && child.count) {
           index += child.count
         }
