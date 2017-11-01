@@ -52,6 +52,9 @@ export function mountComponent (vnode: FullComponent, parentComponent?) {
   const parentContext = vnode.parentContext
   vnode.component = new vnode.tagName(vnode.props, parentContext)
   const component = vnode.component
+  if (parentComponent) {
+    component._parentComponent = parentComponent
+  }
   if (isFunction(component.componentWillMount)) {
     component.componentWillMount()
     component.state = component.getState()
@@ -64,9 +67,6 @@ export function mountComponent (vnode: FullComponent, parentComponent?) {
   }
   if (isFunction(vnode.props.ref)) {
     readyComponents.push(() => vnode.props.ref(component))
-  }
-  if (parentComponent) {
-    component._parentComponent = parentComponent
   }
   const dom = mountVNode(
     rendered,

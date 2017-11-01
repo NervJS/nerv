@@ -21,34 +21,30 @@ describe('ComponentDidCatch', () => {
     scratch = null
   })
 
-  it.skip('catches render error in a boundary', () => {
+  it('catches render error in Grand son', () => {
+    const grandsonError = new Error('error')
     class ErrorBoundary extends Component {
-      state = { error: null }
       componentDidCatch (error) {
-        this.setState({ error })
+        expect(error).toBe(grandsonError)
       }
       render () {
-        if (this.state.error) {
-          return <span>{`Caught an error: ${this.state.error.message}.`}</span>
-        }
-        return this.props.children
+        return <Inner />
       }
     }
 
-    function BrokenRender (props) {
-      throw new Error('Hello')
+    class Inner extends Component {
+      render () {
+        return <GrandSon />
+      }
     }
 
-    render(
-      <ErrorBoundary>
-        <BrokenRender />
-      </ErrorBoundary>,
-      scratch
-    )
+    class GrandSon extends Component {
+      render () {
+        throw grandsonError
+      }
+    }
 
-    expect(scratch.childNodes[0].childNodes[0].data).toBe(
-      'Caught an error: Hello.'
-    )
+    render(<ErrorBoundary />, scratch)
   })
 
   it('catches lifeCycles errors in a boundary', async () => {
