@@ -3,6 +3,7 @@ import Component from './component'
 
 class ComponentWrapper {
   type = 'Widget'
+  key: any
   tagName: any
   name: string
   _owner: any
@@ -17,6 +18,7 @@ class ComponentWrapper {
     tagName.displayName = this.name
     this._owner = props.owner
     delete props.owner
+    this.key = props.key
     this.props = props
   }
 
