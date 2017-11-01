@@ -27,7 +27,7 @@ class ComponentWrapper {
   }
 
   update (previous, current?, domNode?) {
-    return reRenderComponent(previous, this)
+    return reRenderComponent(previous, this, domNode)
   }
 
   destroy (dom?: Element) {

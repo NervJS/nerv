@@ -1,6 +1,6 @@
 import createElement from './create-element'
 import { extend, clone } from './util'
-export default function cloneElement (vnode, props, ...children): any {
+export default function cloneElement (vnode, props): any {
   const properties = extend(clone(vnode.props), props)
   if (vnode.namespace) {
     properties.namespace = vnode.namespace
@@ -8,6 +8,6 @@ export default function cloneElement (vnode, props, ...children): any {
   return createElement(
     vnode.tagName,
     properties,
-    children.length === 0 ? vnode.children : children
+    arguments.length > 2 ? [].slice.call(arguments, 2) : vnode.children
   )
 }

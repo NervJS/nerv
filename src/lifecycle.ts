@@ -92,7 +92,7 @@ export function flushMount () {
   })
 }
 
-export function reRenderComponent (prev, current) {
+export function reRenderComponent (prev, current, domNode) {
   const component = current.component = prev.component
   const nextProps = current.props
   const nextContext = component.context
@@ -106,6 +106,7 @@ export function reRenderComponent (prev, current) {
   component.prevContext = component.context
   component.props = nextProps
   component.context = nextContext
+  component.dom = domNode
   if (isFunction(current.props.ref)) {
     current.props.ref(component)
   }
