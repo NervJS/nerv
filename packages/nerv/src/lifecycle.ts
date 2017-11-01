@@ -5,7 +5,7 @@ import createVText from './vdom/create-vtext'
 import diff from './vdom/diff'
 import patch from './vdom/patch'
 import RefHook from './hooks/ref-hook'
-import { isVNode, Component } from 'nerv-shared'
+import { isVNode, Component, isNullOrUndef } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
 import options from './options'
@@ -23,7 +23,7 @@ function errorCatcher (fn: Function, component: Component<any, any>) {
 function errorHandler (component: Component<any, any>, error) {
   let boundary
 
-  while (component) {
+  while (true) {
     if (isFunction(component.componentDidCatch)) {
       boundary = component
       break
@@ -52,11 +52,13 @@ export function mountComponent (vnode: FullComponent, parentComponent?) {
   const parentContext = vnode.parentContext
   vnode.component = new vnode.tagName(vnode.props, parentContext)
   const component = vnode.component
-  if (parentComponent) {
+  if (!isNullOrUndef(parentComponent) && isFunction(parentComponent.getState)) {
     component._parentComponent = parentComponent
   }
   if (isFunction(component.componentWillMount)) {
-    component.componentWillMount()
+    errorCatcher(() => {
+      (component as any).componentWillMount()
+    }, component)
     component.state = component.getState()
   }
   component._dirty = false
@@ -135,7 +137,9 @@ export function reRenderComponent (prev, current) {
   const nextContext = component.context
   component._disable = true
   if (isFunction(component.componentWillReceiveProps)) {
-    component.componentWillReceiveProps(nextProps, nextContext)
+    errorCatcher(() => {
+      component.componentWillReceiveProps(nextProps, nextContext)
+    }, component)
   }
   component._disable = false
   component.prevProps = component.props
@@ -174,7 +178,9 @@ export function updateComponent (component, isForce = false) {
   ) {
     skip = true
   } else if (isFunction(component.componentWillUpdate)) {
-    component.componentWillUpdate(props, state, context)
+    errorCatcher(() => {
+      component.componentWillUpdate(props, state, context)
+    }, component)
   }
   component.props = props
   component.state = state
@@ -186,8 +192,10 @@ export function updateComponent (component, isForce = false) {
     const childContext = getChildContext(component, context)
     component._rendered = rendered
     component.dom = updateVNode(rendered, lastRendered, lastDom, childContext)
-    if (component.componentDidUpdate) {
-      component.componentDidUpdate(props, state, context)
+    if (isFunction(component.componentDidUpdate)) {
+      errorCatcher(() => {
+        component.componentDidUpdate(props, state, context)
+      }, component)
     }
   }
   component.prevProps = component.props
@@ -215,7 +223,9 @@ export function unmountComponent (vnode: FullComponent) {
   const component = vnode.component
   options.beforeUnmount(component)
   if (isFunction(component.componentWillUnmount)) {
-    component.componentWillUnmount()
+    errorCatcher(() => {
+      (component as any).componentWillUnmount()
+    }, component)
   }
   const lastRendered = component._rendered
   updateVNode(null, lastRendered, component.dom, component.context)
