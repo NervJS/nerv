@@ -82,6 +82,7 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'browsers/karma.js',
       './node_modules/es5-polyfill/dist/polyfill.js',
       // 'browsers/ie8.js',
       // 'browsers/polyfill.js',

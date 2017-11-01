@@ -35,7 +35,10 @@ function errorHandler (component: Component<any, any>, error) {
   }
 
   if (boundary) {
+    const _disable = boundary._disable
+    boundary._disable = false
     boundary.componentDidCatch(error)
+    boundary._disable = _disable
   } else {
     throw error
   }

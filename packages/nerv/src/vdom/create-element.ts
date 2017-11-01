@@ -34,6 +34,7 @@ function createElement (
   if (isVText(vnode)) {
     return doc.createTextNode(vnode.text as string)
   }
+  // @todo: perf: unmount a component
   if (isNullOrUndef(vnode) || (vnode as any) === false) {
     return doc.createComment('Empty dom node')
   }
@@ -75,7 +76,7 @@ function createElement (
           if (isWidget(child) || isVNode(child)) {
             child.parentContext = vnode.parentContext || {}
           }
-          const childNode = createElement(child, isSvg)
+          const childNode = createElement(child, isSvg, parentComponent)
           if (childNode) {
             domNode.appendChild(childNode)
           }
