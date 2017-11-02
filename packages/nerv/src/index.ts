@@ -29,7 +29,8 @@ export default {
   nextTick,
   options,
   findDOMNode,
-  isValidElement
+  isValidElement,
+  unmountComponentAtNode
 } as {
   Component
   PureComponent
