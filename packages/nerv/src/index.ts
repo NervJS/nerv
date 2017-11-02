@@ -31,12 +31,4 @@ export default {
   findDOMNode,
   isValidElement,
   unmountComponentAtNode
-} as {
-  Component
-  PureComponent
-  createElement
-  cloneElement
-  render
-  nextTick
-  options
 }
