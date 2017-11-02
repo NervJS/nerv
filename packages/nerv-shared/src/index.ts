@@ -121,7 +121,9 @@ export function isVText (node): node is VText {
   return !isNullOrUndef(node) && node.vtype === VType.Text
 }
 
-export function isWidget (node): node is CompositeComponent | StatelessComponent {
+export function isWidget (
+  node
+): node is CompositeComponent | StatelessComponent {
   return !isNullOrUndef(node) && node.vtype > 3
 }
 
@@ -131,6 +133,10 @@ export function isComposite (node): node is CompositeComponent {
 
 export function isStateless (node): node is StatelessComponent {
   return !isNullOrUndef(node) && node.vtype === VType.Stateless
+}
+
+export function isValidElement (node) {
+  return !isNullOrUndef(node) && node.vtype
 }
 
 export function isHook (arg) {

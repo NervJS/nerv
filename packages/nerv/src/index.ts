@@ -4,6 +4,7 @@ import { render } from './render'
 import createElement from './create-element'
 import cloneElement from './clone-element'
 import { nextTick } from 'nerv-utils'
+import { isValidElement } from 'nerv-shared'
 import options from './options'
 import { unmountComponentAtNode, findDOMNode } from './dom'
 
@@ -15,7 +16,8 @@ export {
   render,
   nextTick,
   options,
-  unmountComponentAtNode
+  unmountComponentAtNode,
+  isValidElement
 }
 
 export default {
@@ -26,13 +28,14 @@ export default {
   render,
   nextTick,
   options,
-  findDOMNode
+  findDOMNode,
+  isValidElement
 } as {
-  Component,
-  PureComponent,
-  createElement,
-  cloneElement,
-  render,
-  nextTick,
+  Component
+  PureComponent
+  createElement
+  cloneElement
+  render
+  nextTick
   options
 }
