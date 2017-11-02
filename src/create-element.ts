@@ -123,6 +123,9 @@ function createElement<T> (
     }
   }
   let props
+  if (tagName == null) {
+    tagName = ''
+  }
   if (isString(tagName)) {
     props = transformPropsForRealTag(tagName, properties as IProps)
     props.owner = CurrentOwner.current
