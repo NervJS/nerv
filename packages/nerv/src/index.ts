@@ -16,8 +16,9 @@ export {
   render,
   nextTick,
   options,
-  unmountComponentAtNode,
-  isValidElement
+  findDOMNode,
+  isValidElement,
+  unmountComponentAtNode
 }
 
 export default {

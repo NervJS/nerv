@@ -1,5 +1,6 @@
 import { isVNode, isWidget } from 'nerv-shared'
 import { updateVNode } from './lifecycle'
+import { render } from './render'
 
 export function unmountComponentAtNode (dom) {
   const component = dom._component
@@ -17,4 +18,10 @@ export function unmountComponentAtNode (dom) {
 
 export function findDOMNode (component) {
   return component || (component.dom && component)
+}
+
+export function createPortal (vnode, container: Element) {
+  // mountVNode can handle array of vnodes for us
+  render(vnode, container)
+  return null
 }
