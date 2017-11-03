@@ -20,6 +20,47 @@ function clearAll(...doms) {
   doms.forEach(clearRender)
 }
 describe('ComponentDidCatch', () => {
+  it.only('test', async () => {
+    const div = document.createElement('div')
+    class Inner extends Component {
+      state = { array: false }
+      constructor(props) {
+        super(props)
+      }
+      componentDidMount() {
+        this.setState({
+          array: true
+        })
+      }
+
+      render() {
+        if (this.state.array) {
+          debugger
+          return (
+            <div>
+              <span>span1</span>, <span>span2</span>, <span>span3</span>
+            </div>
+          )
+        }
+        return null
+      }
+    }
+
+    class Outer extends Component {
+      render() {
+        return <Inner />
+      }
+    }
+
+    render(
+      <Outer>
+        <Inner />
+      </Outer>,
+      div
+    )
+    await delay()
+    console.log(div.innerHTML)
+  })
   let scratch
 
   let log
