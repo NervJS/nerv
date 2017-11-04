@@ -5,7 +5,7 @@ import createVText from './vdom/create-vtext'
 import diff from './vdom/diff'
 import patch from './vdom/patch'
 import RefHook from './hooks/ref-hook'
-import { isVNode, Component, isNullOrUndef } from 'nerv-shared'
+import { isVNode, Component, isNullOrUndef, isInvalid } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
 import options from './options'
@@ -217,6 +217,18 @@ export function updateVNode (vnode, lastVNode, lastDom, childContext) {
   if (isObject(vnode)) {
     vnode.parentContext = childContext
   }
+  // optimization: old vnode and new vnode is the same
+  // return the old dom
+  // we don't need to go through whole diff and patch thing
+  if (lastVNode === vnode) {
+    return lastDom
+  // optimization: old vnode is invalid:
+  // could be null, boolean, or throw error but catched by componentDidCatch
+  // just mount the VNode will do the trick
+  } else if (isInvalid(lastVNode)) {
+    return createElement(vnode)
+  }
+  // now we start diff
   const patches = diff(lastVNode, vnode)
   const domNode = patch(lastDom, patches, childContext)
   return domNode

@@ -113,6 +113,10 @@ export function isNullOrUndef (o: any): o is undefined | null {
   return o === undefined || o === null
 }
 
+export function isInvalid (o: any) {
+  return isNullOrUndef(o) || o === true || o === false
+}
+
 export function isVNode (node): node is VNode {
   return !isNullOrUndef(node) && node.vtype === VType.Node
 }

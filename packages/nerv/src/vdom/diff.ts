@@ -29,9 +29,6 @@ function diff (a: VirtualNode, b: VirtualNode) {
 }
 
 function walk (a: VirtualNode, b: VirtualNode, patches: Patches, index: number) {
-  if (a === b) {
-    return
-  }
   let apply = patches[index]
   let applyClear = false
   if (!b) {
