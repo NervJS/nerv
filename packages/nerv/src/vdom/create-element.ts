@@ -13,7 +13,8 @@ import {
   isHook,
   isNullOrUndef,
   VirtualNode,
-  Props
+  Props,
+  isInvalid
 } from 'nerv-shared'
 import options from '../options'
 
@@ -37,7 +38,7 @@ function createElement (
   }
   // @todo: perf: unmount a component
   if (isNullOrUndef(vnode) || (vnode as any) === false) {
-    return doc.createComment('Empty dom node')
+    return doc.createTextNode('')
   }
   if (isVNode(vnode)) {
     if (vnode.isSvg) {
@@ -66,14 +67,9 @@ function createElement (
       (domNode as any)._props = vnode.props
     }
     const children = vnode.children
-    if (children.length) {
+    if (children.length && isFunction(domNode.appendChild)) {
       children.forEach((child) => {
-        if (
-          child !== undefined &&
-          child !== null &&
-          (child as any) !== false &&
-          domNode.appendChild
-        ) {
+        if (!isInvalid(child)) {
           if (isWidget(child) || isVNode(child)) {
             child.parentContext = vnode.parentContext || {}
           }
@@ -89,12 +85,7 @@ function createElement (
   if (isArray(vnode)) {
     const domNode = doc.createDocumentFragment()
     vnode.forEach((child) => {
-      if (
-        child !== undefined &&
-        child !== null &&
-        (child as any) !== false &&
-        domNode.appendChild
-      ) {
+      if (!isInvalid(child)) {
         const childNode = createElement(child, isSvg, parentComponent)
         if (childNode) {
           domNode.appendChild(childNode)

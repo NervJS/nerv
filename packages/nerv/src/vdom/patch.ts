@@ -5,7 +5,6 @@ import VPatch from './vpatch'
 import { isFunction, isString, isObject, getPrototype, isArray } from 'nerv-utils'
 import domIndex from './dom-index'
 import createElement from './create-element'
-import VText from './vnode/vtext'
 import {
   Props,
   VirtualNode,
@@ -14,7 +13,8 @@ import {
   isWidget,
   isHook,
   isVNode,
-  CompositeComponent
+  CompositeComponent,
+  VText
 } from 'nerv-shared'
 
 function patch (rootNode: Element, patches, parentContext?: any) {

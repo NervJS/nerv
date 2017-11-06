@@ -1,6 +1,13 @@
-import VNode from './vnode/vnode'
+import createVNode from './create-vnode'
 import createVText from './create-vtext'
-import { isVNode, isVText, isWidget, Props, VirtualChildren, VirtualNode } from 'nerv-shared'
+import {
+  isVNode,
+  isVText,
+  isWidget,
+  Props,
+  VirtualChildren,
+  VirtualNode
+} from 'nerv-shared'
 import { isString, isArray, isNumber } from 'nerv-utils'
 
 function h (tagName: string, props: Props, children?: VirtualChildren) {
@@ -34,17 +41,23 @@ function h (tagName: string, props: Props, children?: VirtualChildren) {
   if (children) {
     addChildren(childNodes, children, tagName)
   }
-  return new VNode(tagName, props, childNodes, key, namespace, owner)
+  return createVNode(tagName, props, childNodes, key, namespace, owner)
 }
 
-function addChildren (childNodes: VirtualNode[], children: VirtualNode, tagName: string) {
+function addChildren (
+  childNodes: VirtualNode[],
+  children: VirtualNode,
+  tagName: string
+) {
   if (isString(children) || isNumber(children)) {
     children = String(children)
     childNodes.push(createVText(children) as any)
   } else if (isChild(children)) {
     childNodes.push(children)
   } else if (isArray(children)) {
-    (children as any[]).forEach((child) => addChildren(childNodes, child, tagName))
+    (children as any[]).forEach((child) =>
+      addChildren(childNodes, child, tagName)
+    )
   }
 }
 

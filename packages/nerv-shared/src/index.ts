@@ -48,6 +48,7 @@ export interface VNode {
   descendantHooks: boolean
   isSvg?: boolean
   parentContext?: any
+  dom: Element | null
 }
 
 export type VirtualNode =
@@ -113,7 +114,7 @@ export function isNullOrUndef (o: any): o is undefined | null {
   return o === undefined || o === null
 }
 
-export function isInvalid (o: any) {
+export function isInvalid (o: any): o is undefined | null | true | false {
   return isNullOrUndef(o) || o === true || o === false
 }
 

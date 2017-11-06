@@ -1,5 +1,8 @@
-import VText from './vnode/vtext'
+import { VType, VText } from 'nerv-shared'
 
-export default function createVText (text: string | number) {
-  return new VText(text)
+export default function createVText (text: string | number): VText {
+  return {
+    text,
+    vtype: VType.Text
+  }
 }

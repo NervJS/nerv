@@ -11,7 +11,3 @@ export function isUndefined (o: any): o is undefined {
 export function isNull (o: any): o is null {
   return o === null
 }
-
-export function isInvalid (o: any): o is null | false | true | undefined {
-  return isNull(o) || o === false || o === true || isUndefined(o)
-}
