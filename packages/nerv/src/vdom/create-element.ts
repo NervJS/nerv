@@ -3,7 +3,8 @@ import {
   isString,
   isNumber,
   isFunction,
-  supportSVG
+  supportSVG,
+  isArray
 } from 'nerv-utils'
 import {
   isVNode,
@@ -85,7 +86,7 @@ function createElement (
     }
     return domNode
   }
-  if (Array.isArray(vnode)) {
+  if (isArray(vnode)) {
     const domNode = doc.createDocumentFragment()
     vnode.forEach((child) => {
       if (

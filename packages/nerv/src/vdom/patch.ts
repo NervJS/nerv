@@ -2,7 +2,7 @@
 /* tslint:disable: no-empty*/
 
 import VPatch from './vpatch'
-import { isFunction, isString, isObject, getPrototype } from 'nerv-utils'
+import { isFunction, isString, isObject, getPrototype, isArray } from 'nerv-utils'
 import domIndex from './dom-index'
 import createElement from './create-element'
 import VText from './vnode/vtext'
@@ -40,7 +40,7 @@ function applyPatch (
     return rootNode
   }
   let newNode
-  if (!Array.isArray(patch)) {
+  if (!isArray(patch)) {
     patch = [patch]
   }
   (patch as VirtualNode[]).forEach((patchItem) => {

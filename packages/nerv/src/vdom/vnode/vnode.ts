@@ -27,14 +27,11 @@ class VNode {
     let descendants = 0
     let hasWidgets = false
     let descendantHooks = false
-    let hooks
+    const hooks = Object.create(null)
     for (const propName in props) {
       if (props.hasOwnProperty(propName)) {
         const property = props[propName]
-        if (isHook(property) && property.unhook) {
-          if (!hooks) {
-            hooks = {}
-          }
+        if (isHook(property)) {
           hooks[propName] = property
         }
       }

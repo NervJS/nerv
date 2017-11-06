@@ -1,7 +1,7 @@
 /* tslint:disable: no-shadowed-variable*/
 
 import VPatch from './vpatch'
-import { isObject, getPrototype } from 'nerv-utils'
+import { isObject, getPrototype, isArray } from 'nerv-utils'
 import {
   VirtualNode,
   VNode,
@@ -63,7 +63,7 @@ function walk (a: VirtualNode, b: VirtualNode, patches: Patches, index: number) 
       applyClear = true
     }
     apply = appendPatch(apply, new VPatch(VPatch.WIDGET, a, b))
-  } else if (Array.isArray(b)) {
+  } else if (isArray(b)) {
     applyClear = true
     b.forEach((item) => {
       walk(null, item, patches, index)
@@ -351,7 +351,7 @@ function undefinedKeys (obj: Object) {
 
 function appendPatch (apply, patch: VPatch) {
   if (apply) {
-    if (Array.isArray(apply)) {
+    if (isArray(apply)) {
       apply.push(patch)
     } else {
       apply = [apply, patch]

@@ -6,7 +6,8 @@ import {
   isNumber,
   isBoolean,
   isObject,
-  supportSVG
+  supportSVG,
+  isArray
 } from 'nerv-utils'
 import FullComponent from './full-component'
 import StatelessComponent from './stateless-component'
@@ -129,7 +130,7 @@ function createElement<T> (
   let children: any[] = EMPTY_CHILDREN
   for (let i = 2, len = arguments.length; i < len; i++) {
     const argumentsItem = arguments[i]
-    if (Array.isArray(argumentsItem)) {
+    if (isArray(argumentsItem)) {
       argumentsItem.forEach((item) => {
         if (children === EMPTY_CHILDREN) {
           children = [item]
@@ -154,7 +155,7 @@ function createElement<T> (
       (tagName as any).defaultProps
     )
     if (props.children) {
-      if (!Array.isArray(props.children)) {
+      if (!isArray(props.children)) {
         props.children = [props.children]
       }
     } else {
