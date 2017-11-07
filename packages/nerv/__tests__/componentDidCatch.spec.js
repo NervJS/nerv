@@ -35,10 +35,10 @@ describe('ComponentDidCatch', () => {
 
       render() {
         if (this.state.array) {
-          debugger
           return (
             <div>
-              <span>span1</span>, <span>span2</span>, <span>span3</span>
+              <span>span1</span>
+              <span>span3</span>
             </div>
           )
         }
@@ -52,12 +52,7 @@ describe('ComponentDidCatch', () => {
       }
     }
 
-    render(
-      <Outer>
-        <Inner />
-      </Outer>,
-      div
-    )
+    render(<Outer />, div)
     await delay()
     console.log(div.innerHTML)
   })

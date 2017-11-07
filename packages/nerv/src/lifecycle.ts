@@ -213,7 +213,7 @@ export function updateComponent (component, isForce = false) {
   flushMount()
 }
 
-export function updateVNode (vnode, lastVNode, lastDom, childContext) {
+export function updateVNode (vnode, lastVNode, lastDom: Element, childContext) {
   if (isObject(vnode)) {
     vnode.parentContext = childContext
   }
@@ -222,11 +222,16 @@ export function updateVNode (vnode, lastVNode, lastDom, childContext) {
   // we don't need to go through whole diff and patch thing
   if (lastVNode === vnode) {
     return lastDom
-  // optimization: old vnode is invalid:
-  // could be null, boolean, or throw error but catched by componentDidCatch
-  // just mount the VNode will do the trick
+    // optimization: old vnode is invalid:
+    // could be null, boolean, or throw error but catched by componentDidCatch
+    // just mount the VNode will do the trick
   } else if (isInvalid(lastVNode)) {
-    return createElement(vnode)
+    const dom = createElement(vnode)
+    const parentDom = lastDom.parentElement
+    if (parentDom !== null && dom !== null) {
+      parentDom.appendChild(dom)
+    }
+    return dom
   }
   // now we start diff
   const patches = diff(lastVNode, vnode)
