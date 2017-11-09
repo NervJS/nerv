@@ -26,26 +26,25 @@ import {
 } from 'nerv-shared'
 import { VHook } from '../hooks/vhook'
 
-export function patch2 (lastVnode, nextVnode, context, isSVG: boolean) {
-  const oldDom: Element = lastVnode.dom
-
+export function patch2 (lastVnode, nextVnode, lastDom, context, isSVG: boolean) {
   if (lastVnode === nextVnode) {
-    return oldDom
+    return lastDom
   }
 
   if (isSameVNode(lastVnode, nextVnode)) {
-    let newDom: Element | null
+    let newDom
     if (isVText(nextVnode)) {
-      patchVText(lastVnode, nextVnode)
+      newDom = patchVText(lastVnode, nextVnode)
     } else if (isVNode(nextVnode)) {
-      newDom = patchProps(oldDom, nextVnode.props, lastVnode.props, isSVG)
+      newDom = patchProps(lastDom, nextVnode.props, lastVnode.props, isSVG)
     } else if (isWidget(nextVnode)) {
-      newDom = nextVnode.update(lastVnode, nextVnode, oldDom)
+      newDom = nextVnode.update(lastVnode, nextVnode, lastDom)
     }
+    (nextVnode as any).dom = newDom
   } else {
-    const parentNode = oldDom.parentNode
-    const nextSibling = oldDom.nextSibling
-    unmount(lastVnode)
+    const parentNode = lastDom.parentNode
+    const nextSibling = lastDom.nextSibling
+    unmount(lastVnode, parentNode)
     const newDom = createElement(nextVnode)
     if (parentNode !== null) {
       parentNode.insertBefore(newDom as Node, nextSibling)
@@ -57,6 +56,7 @@ export function patch2 (lastVnode, nextVnode, context, isSVG: boolean) {
 
 export function unmount (vnode, parentDom?) {
   const dom = vnode.dom
+
   if (isWidget(vnode)) {
     vnode.destroy(parentDom)
   } else if (isVNode(vnode)) {
@@ -170,6 +170,7 @@ function patchVText (lastVNode: VText, nextVNode: VText) {
   if (lastVNode.text !== nextText) {
     dom.nodeValue = nextText as string
   }
+  return dom
 }
 
 function patchVNode (domNode: Element, patch: VirtualNode, parentContext) {
