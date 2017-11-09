@@ -7,9 +7,15 @@ export interface Widget {
   parentContext: any
   context: any
   init (parentVnode?): Element | null
-  update (previous: this, current: this, dom?: Element): Element | null
+  update (
+    previous: ComponentInstance,
+    current: ComponentInstance,
+    dom?: Element
+  ): Element | null
   destroy (dom?: Element): Element | null
 }
+
+export type ComponentInstance = CompositeComponent | StatelessComponent
 
 export interface CompositeComponent extends Widget {
   tagName: any
@@ -22,7 +28,8 @@ export interface StatelessComponent extends Widget {
 
 export interface VText {
   vtype: VType
-  text: string | number
+  text: string | number,
+  dom: Text | null
 }
 
 export interface PatchOrder {
@@ -31,6 +38,11 @@ export interface PatchOrder {
 }
 
 export type Patch = PatchOrder | VirtualNode
+
+export interface VVoid {
+  dom: Text,
+  vtype: VType
+}
 
 export interface VNode {
   vtype: VType
@@ -154,9 +166,10 @@ export function noop () {}
 // typescript will compile the enum's value for us.
 // eg.
 // Composite = 1 << 2  => Composite = 4
-export enum VType {
+export const enum VType {
   Text = 1,
   Node = 1 << 1,
   Composite = 1 << 2,
-  Stateless = 1 << 3
+  Stateless = 1 << 3,
+  Void = 1 << 4
 }

@@ -34,7 +34,9 @@ function createElement (
     return doc.createTextNode(vnode as string)
   }
   if (isVText(vnode)) {
-    return doc.createTextNode(vnode.text as string)
+    const domNode = doc.createTextNode(vnode.text as string)
+    vnode.dom = domNode
+    return domNode
   }
   // @todo: perf: unmount a component
   if (isNullOrUndef(vnode) || (vnode as any) === false) {

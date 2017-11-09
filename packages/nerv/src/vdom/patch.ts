@@ -1,9 +1,15 @@
 /* tslint:disable: no-shadowed-variable*/
 /* tslint:disable: no-empty*/
-
-import VPatch from './vpatch'
-import { isFunction, isString, isObject, getPrototype, isArray } from 'nerv-utils'
 import domIndex from './dom-index'
+import VPatch from './vpatch'
+import {
+  isFunction,
+  isString,
+  isObject,
+  getPrototype,
+  isArray,
+  isNumber
+} from 'nerv-utils'
 import createElement from './create-element'
 import {
   Props,
@@ -14,8 +20,75 @@ import {
   isHook,
   isVNode,
   CompositeComponent,
-  VText
+  VText,
+  isVText,
+  isInvalid
 } from 'nerv-shared'
+import { VHook } from '../hooks/vhook'
+
+export function patch2 (lastVnode, nextVnode, context, isSVG: boolean) {
+  const oldDom: Element = lastVnode.dom
+
+  if (lastVnode === nextVnode) {
+    return oldDom
+  }
+
+  if (isSameVNode(lastVnode, nextVnode)) {
+    let newDom: Element | null
+    if (isVText(nextVnode)) {
+      patchVText(lastVnode, nextVnode)
+    } else if (isVNode(nextVnode)) {
+      newDom = patchProps(oldDom, nextVnode.props, lastVnode.props, isSVG)
+    } else if (isWidget(nextVnode)) {
+      newDom = nextVnode.update(lastVnode, nextVnode, oldDom)
+    }
+  } else {
+    const parentNode = oldDom.parentNode
+    const nextSibling = oldDom.nextSibling
+    unmount(lastVnode)
+    const newDom = createElement(nextVnode)
+    if (parentNode !== null) {
+      parentNode.insertBefore(newDom as Node, nextSibling)
+    }
+    nextVnode.dom = newDom
+    return newDom
+  }
+}
+
+export function unmount (vnode, parentDom?) {
+  const dom = vnode.dom
+  if (isWidget(vnode)) {
+    vnode.destroy(parentDom)
+  } else if (isVNode(vnode)) {
+    const { hooks, children } = vnode
+    children.forEach((child) => {
+      if (!isInvalid(child)) {
+        unmount(vnode)
+      }
+    })
+    for (const name in hooks) {
+      const hook = hooks[name]
+      if (hook.vhook === VHook.Event) {
+        hook.unhook()
+      }
+    }
+  }
+
+  if (parentDom !== null && !isNumber(parentDom)) {
+    parentDom.removeChild(dom)
+  }
+}
+
+function isSameVNode (a, b) {
+  if (isInvalid(a) || isInvalid(b)) {
+    return false
+  }
+  return a.tagName === b.tagName && getKey(a) === getKey(b)
+}
+
+function getKey (vnode) {
+  return vnode.key
+}
 
 function patch (rootNode: Element, patches, parentContext?: any) {
   const patchIndices = getPatchIndices(patches)
@@ -86,20 +159,17 @@ function patchSingle (domNode: Element, vpatch: VPatch, parentContext?: any) {
   }
 }
 
-function patchVText (domNode: Text, patch: VirtualNode) {
-  if (domNode === null) {
-    return createElement(patch)
+function patchVText (lastVNode: VText, nextVNode: VText) {
+  const dom = lastVNode.dom
+  if (dom === null) {
+    return
   }
-  if (domNode.splitText !== undefined) {
-    domNode.nodeValue = (patch as VText).text as string
-    return domNode
+  const nextText = nextVNode.text
+  nextVNode.dom = dom
+
+  if (lastVNode.text !== nextText) {
+    dom.nodeValue = nextText as string
   }
-  const parentNode = domNode.parentNode
-  const newNode = createElement(patch)
-  if (parentNode !== null) {
-    parentNode.replaceChild(newNode as Element, domNode)
-  }
-  return newNode
 }
 
 function patchVNode (domNode: Element, patch: VirtualNode, parentContext) {
