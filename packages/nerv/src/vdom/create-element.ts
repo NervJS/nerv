@@ -43,7 +43,6 @@ function createElement (
     return doc.createTextNode('')
   }
   if (isVNode(vnode)) {
-    // console.log(vnode)
     if (vnode.isSvg) {
       isSvg = true
     } else if (vnode.tagName === 'svg') {

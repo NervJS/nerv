@@ -7,8 +7,7 @@ import {
   isString,
   isObject,
   getPrototype,
-  isArray,
-  isNumber
+  isArray
 } from 'nerv-utils'
 import createElement from './create-element'
 import {
@@ -22,7 +21,8 @@ import {
   CompositeComponent,
   VText,
   isVText,
-  isInvalid
+  isInvalid,
+  isNullOrUndef
 } from 'nerv-shared'
 import { VHook } from '../hooks/vhook'
 
@@ -36,7 +36,7 @@ export function patch2 (lastVnode, nextVnode, lastDom, context, isSVG: boolean) 
     if (isVText(nextVnode)) {
       newDom = patchVText(lastVnode, nextVnode)
     } else if (isVNode(nextVnode)) {
-      newDom = patchProps(lastDom, nextVnode.props, lastVnode.props, isSVG)
+      patchProps(lastDom, nextVnode.props, lastVnode.props, isSVG)
     } else if (isWidget(nextVnode)) {
       newDom = nextVnode.update(lastVnode, nextVnode, lastDom)
     }
@@ -54,6 +54,72 @@ export function patch2 (lastVnode, nextVnode, lastDom, context, isSVG: boolean) 
   }
 }
 
+export function patchChildren (
+  parentDom,
+  lastChildren,
+  nextChildren,
+  context,
+  isSVG
+) {
+  const lastLength = lastChildren.length
+  const nextLength = nextChildren.length
+  if (lastLength === 0) {
+    if (nextLength > 0) {
+      const dom = createElement(nextChildren, isSVG)
+      parentDom.appendChild(dom)
+    }
+  } else if (nextLength === 0) {
+    unmountChildren(lastChildren, parentDom)
+  } else {
+    if (isKeyed(lastChildren, nextChildren)) {
+    } else {
+      patchNonKeyedChildren(parentDom, lastChildren, nextChildren, context, isSVG, lastLength, nextLength)
+    }
+  }
+}
+
+function patchNonKeyedChildren (
+  parentDom,
+  lastChildren,
+  nextChildren,
+  context,
+  isSVG: boolean,
+  lastLength: number,
+  nextLength: number
+) {
+  const minLength = Math.min(lastLength, nextLength)
+  let i = 0
+  while (i < minLength) {
+    patch2(lastChildren[i], nextChildren[i], parentDom, context, isSVG)
+    i++
+  }
+  if (lastLength < nextLength) {
+    for (i = minLength; i < lastLength; i++) {
+      if (parentDom !== null) {
+        parentDom.appendChild(createElement(nextChildren[i], isSVG))
+      }
+    }
+  } else if (lastLength > nextLength) {
+    for (i = minLength; i < lastLength; i++) {
+      unmount(lastChildren[i], parentDom)
+    }
+  }
+}
+
+function isKeyed (a, b) {
+  return !isInvalid(a) && !isInvalid(b) && a.key !== null && b.key !== null
+}
+
+export function unmountChildren (children, parentDom?) {
+  const len = children.length
+  if (len === 0) {
+    return
+  }
+  for (let i = 0; i < len; i++) {
+    unmount(children[i])
+  }
+}
+
 export function unmount (vnode, parentDom?) {
   const dom = vnode.dom
 
@@ -61,11 +127,7 @@ export function unmount (vnode, parentDom?) {
     vnode.destroy(parentDom)
   } else if (isVNode(vnode)) {
     const { hooks, children } = vnode
-    children.forEach((child) => {
-      if (!isInvalid(child)) {
-        unmount(vnode)
-      }
-    })
+    unmountChildren(children)
     for (const name in hooks) {
       const hook = hooks[name]
       if (hook.vhook === VHook.Event) {
@@ -74,7 +136,7 @@ export function unmount (vnode, parentDom?) {
     }
   }
 
-  if (parentDom !== null && !isNumber(parentDom)) {
+  if (!isNullOrUndef(parentDom)) {
     parentDom.removeChild(dom)
   }
 }
@@ -87,7 +149,7 @@ function isSameVNode (a, b) {
 }
 
 function getKey (vnode) {
-  return vnode.key
+  return vnode.key || vnode.props.key
 }
 
 function patch (rootNode: Element, patches, parentContext?: any) {

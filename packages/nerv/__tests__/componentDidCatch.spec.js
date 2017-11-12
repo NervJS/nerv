@@ -34,14 +34,14 @@ describe('ComponentDidCatch', () => {
       }
 
       render() {
-        if (this.state.array) {
-          return (
-            <div>
-              <span>span1</span>
-              <span>span3</span>
-            </div>
-          )
-        }
+        // if (this.state.array) {
+        //   return (
+        //     <div>
+        //       <span>span1</span>
+        //       <span>span3</span>
+        //     </div>
+        //   )
+        // }
         return null
       }
     }
@@ -51,10 +51,11 @@ describe('ComponentDidCatch', () => {
         return <Inner />
       }
     }
+    const a = <Inner />
 
-    render(<Outer />, div)
+    render(a, div)
     await delay()
-    console.log(div.innerHTML)
+    console.log(a)
   })
   let scratch
 
