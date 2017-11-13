@@ -1,11 +1,6 @@
 /* tslint:disable: no-shadowed-variable*/
 /* tslint:disable: no-empty*/
-import {
-  isFunction,
-  isString,
-  isObject,
-  getPrototype
-} from 'nerv-utils'
+import { isFunction, isString, isObject, getPrototype } from 'nerv-utils'
 import createElement from './create-element'
 import {
   Props,
@@ -23,13 +18,21 @@ export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) 
   if (lastVnode === nextVnode) {
     return lastDom
   }
-
+  if (isVText(nextVnode) && isVText(lastVnode)) {
+    return patchVText(lastVnode, nextVnode)
+  }
+  let newDom
   if (isSameVNode(lastVnode, nextVnode)) {
-    let newDom
-    if (isVText(nextVnode)) {
-      newDom = patchVText(lastVnode, nextVnode)
-    } else if (isVNode(nextVnode)) {
+    if (isVNode(nextVnode)) {
       patchProps(lastDom, nextVnode.props, lastVnode.props, isSVG)
+      patchChildren(
+        lastDom,
+        lastVnode.children,
+        nextVnode.children,
+        context,
+        isSVG
+      )
+      newDom = lastDom
     } else if (isWidget(nextVnode)) {
       newDom = nextVnode.update(lastVnode, nextVnode, lastDom)
     }
@@ -38,13 +41,15 @@ export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) 
     const parentNode = lastDom.parentNode
     const nextSibling = lastDom.nextSibling
     unmount(lastVnode, parentNode)
-    const newDom = createElement(nextVnode)
+    newDom = createElement(nextVnode)
+    if (nextVnode !== null) {
+      nextVnode.dom = newDom
+    }
     if (parentNode !== null) {
       parentNode.insertBefore(newDom as Node, nextSibling)
     }
-    nextVnode.dom = newDom
-    return newDom
   }
+  return newDom
 }
 
 export function patchChildren (
@@ -64,18 +69,27 @@ export function patchChildren (
   } else if (nextLength === 0) {
     unmountChildren(lastChildren, parentDom)
   } else {
-    if (isKeyed(lastChildren, nextChildren)) {
-    } else {
-      patchNonKeyedChildren(
-        parentDom,
-        lastChildren,
-        nextChildren,
-        context,
-        isSVG,
-        lastLength,
-        nextLength
-      )
-    }
+    patchNonKeyedChildren(
+      parentDom,
+      lastChildren,
+      nextChildren,
+      context,
+      isSVG,
+      lastLength,
+      nextLength
+    )
+    // if (isKeyed(lastChildren, nextChildren)) {
+    // } else {
+    //   patchNonKeyedChildren(
+    //     parentDom,
+    //     lastChildren,
+    //     nextChildren,
+    //     context,
+    //     isSVG,
+    //     lastLength,
+    //     nextLength
+    //   )
+    // }
   }
 }
 
@@ -107,7 +121,7 @@ function patchNonKeyedChildren (
   }
 }
 
-function isKeyed (a, b) {
+export function isKeyed (a, b) {
   return !isInvalid(a) && !isInvalid(b) && a.key !== null && b.key !== null
 }
 
@@ -118,7 +132,9 @@ export function unmountChildren (children, parentDom?) {
 }
 
 export function unmount (vnode, parentDom?) {
-  const dom = vnode.dom
+  if (vnode === null) {
+    return
+  }
 
   if (isWidget(vnode)) {
     vnode.destroy(parentDom)
@@ -133,8 +149,8 @@ export function unmount (vnode, parentDom?) {
     }
   }
 
-  if (!isNullOrUndef(parentDom)) {
-    parentDom.removeChild(dom)
+  if (!isNullOrUndef(parentDom) && !isNullOrUndef(vnode.dom)) {
+    parentDom.removeChild(vnode.dom)
   }
 }
 
@@ -149,18 +165,6 @@ function getKey (vnode) {
   return vnode.key || vnode.props.key
 }
 
-// function patch (rootNode: Element, patches, parentContext?: any) {
-//   const patchIndices = getPatchIndices(patches)
-//   if (patchIndices.length === 0) {
-//     return rootNode
-//   }
-//   const oldTree = patches.old
-//   const nodes = domIndex(rootNode, oldTree, patchIndices)
-//   patchIndices.forEach((index) => {
-//     rootNode = applyPatch(rootNode, nodes[index], patches[index], parentContext)
-//   })
-//   return rootNode
-// }
 function patchVText (lastVNode: VText, nextVNode: VText) {
   const dom = lastVNode.dom
   if (dom === null) {

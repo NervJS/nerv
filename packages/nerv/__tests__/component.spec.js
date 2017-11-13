@@ -143,7 +143,6 @@ describe('Component', function () {
     }
 
     render(<Comp ref={c => { comp = c }} />, scratch)
-
     comp.setState({ alt: true })
     comp.forceUpdate()
     expect(scratch.innerHTML).toEqual('asdf')
