@@ -16,7 +16,6 @@ import {
   Props,
   isInvalid
 } from 'nerv-shared'
-import options from '../options'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
@@ -64,10 +63,6 @@ function createElement (
           ? doc.createElementNS(vnode.namespace, vnode.tagName)
           : doc.createElement(vnode.tagName)
     setProps(domNode, vnode.props, isSvg)
-    if (options.debug) {
-      // for devtools
-      (domNode as any)._props = vnode.props
-    }
     const children = vnode.children
     if (children.length && isFunction(domNode.appendChild)) {
       children.forEach((child) => {

@@ -2,10 +2,9 @@ import { extend, isFunction, isNumber, isString, isObject } from 'nerv-utils'
 import CurrentOwner from './current-owner'
 import createElement from './vdom/create-element'
 import createVText from './vdom/create-vtext'
-import diff from './vdom/diff'
 import patch from './vdom/patch'
 import RefHook from './hooks/ref-hook'
-import { isVNode, Component, isNullOrUndef, isInvalid } from 'nerv-shared'
+import { isVNode, Component, isNullOrUndef } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
 import options from './options'
@@ -217,25 +216,7 @@ export function updateVNode (vnode, lastVNode, lastDom: Element, childContext) {
   if (isObject(vnode)) {
     vnode.parentContext = childContext
   }
-  // optimization: old vnode and new vnode is the same
-  // return the old dom
-  // we don't need to go through whole diff and patch thing
-  if (lastVNode === vnode) {
-    return lastDom
-    // optimization: old vnode is invalid:
-    // could be null, boolean, or throw error but catched by componentDidCatch
-    // just mount the VNode will do the trick
-  } else if (isInvalid(lastVNode)) {
-    const dom = createElement(vnode)
-    const parentDom = lastDom.parentElement
-    if (parentDom !== null && dom !== null) {
-      parentDom.appendChild(dom)
-    }
-    return dom
-  }
-  // now we start diff
-  const patches = diff(lastVNode, vnode)
-  const domNode = patch(lastDom, patches, childContext)
+  const domNode = patch(lastVNode, vnode, lastDom, childContext)
   return domNode
 }
 

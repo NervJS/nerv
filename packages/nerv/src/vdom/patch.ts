@@ -1,24 +1,17 @@
 /* tslint:disable: no-shadowed-variable*/
 /* tslint:disable: no-empty*/
-import domIndex from './dom-index'
-import VPatch from './vpatch'
 import {
   isFunction,
   isString,
   isObject,
-  getPrototype,
-  isArray
+  getPrototype
 } from 'nerv-utils'
 import createElement from './create-element'
 import {
   Props,
-  VirtualNode,
-  VNode,
-  PatchOrder,
   isWidget,
   isHook,
   isVNode,
-  CompositeComponent,
   VText,
   isVText,
   isInvalid,
@@ -26,7 +19,7 @@ import {
 } from 'nerv-shared'
 import { VHook } from '../hooks/vhook'
 
-export function patch2 (lastVnode, nextVnode, lastDom, context, isSVG: boolean) {
+export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) {
   if (lastVnode === nextVnode) {
     return lastDom
   }
@@ -73,7 +66,15 @@ export function patchChildren (
   } else {
     if (isKeyed(lastChildren, nextChildren)) {
     } else {
-      patchNonKeyedChildren(parentDom, lastChildren, nextChildren, context, isSVG, lastLength, nextLength)
+      patchNonKeyedChildren(
+        parentDom,
+        lastChildren,
+        nextChildren,
+        context,
+        isSVG,
+        lastLength,
+        nextLength
+      )
     }
   }
 }
@@ -90,7 +91,7 @@ function patchNonKeyedChildren (
   const minLength = Math.min(lastLength, nextLength)
   let i = 0
   while (i < minLength) {
-    patch2(lastChildren[i], nextChildren[i], parentDom, context, isSVG)
+    patch(lastChildren[i], nextChildren[i], parentDom, context, isSVG)
     i++
   }
   if (lastLength < nextLength) {
@@ -111,11 +112,7 @@ function isKeyed (a, b) {
 }
 
 export function unmountChildren (children, parentDom?) {
-  const len = children.length
-  if (len === 0) {
-    return
-  }
-  for (let i = 0; i < len; i++) {
+  for (let i = 0, len = children.length; i < len; i++) {
     unmount(children[i])
   }
 }
@@ -152,75 +149,18 @@ function getKey (vnode) {
   return vnode.key || vnode.props.key
 }
 
-function patch (rootNode: Element, patches, parentContext?: any) {
-  const patchIndices = getPatchIndices(patches)
-  if (patchIndices.length === 0) {
-    return rootNode
-  }
-  const oldTree = patches.old
-  const nodes = domIndex(rootNode, oldTree, patchIndices)
-  patchIndices.forEach((index) => {
-    rootNode = applyPatch(rootNode, nodes[index], patches[index], parentContext)
-  })
-  return rootNode
-}
-
-function applyPatch (
-  rootNode: Element,
-  domNode: Element,
-  patch: VirtualNode | VirtualNode[],
-  parentContext?: any
-) {
-  if (!domNode) {
-    return rootNode
-  }
-  let newNode
-  if (!isArray(patch)) {
-    patch = [patch]
-  }
-  (patch as VirtualNode[]).forEach((patchItem) => {
-    newNode = patchSingle(domNode, patchItem as any, parentContext)
-    if (domNode === rootNode) {
-      rootNode = newNode
-    }
-  })
-  return rootNode
-}
-
-function patchSingle (domNode: Element, vpatch: VPatch, parentContext?: any) {
-  const type = vpatch.type
-  const oldVNode = vpatch.vnode
-  const patchObj = vpatch.patch
-
-  switch (type) {
-    case VPatch.VTEXT:
-      return patchVText(domNode as any, patchObj as any)
-    case VPatch.VNODE:
-      return patchVNode(domNode, patchObj as VNode, parentContext)
-    case VPatch.INSERT:
-      return patchInsert(domNode, patchObj as VirtualNode, parentContext)
-    case VPatch.WIDGET:
-      return patchWidget(
-        domNode,
-        oldVNode as CompositeComponent,
-        patchObj as CompositeComponent
-      )
-    case VPatch.PROPS:
-      return patchProps(
-        domNode,
-        patchObj as Props,
-        (oldVNode as VNode).props,
-        (oldVNode as VNode).isSvg
-      )
-    case VPatch.ORDER:
-      return patchOrder(domNode, patchObj as PatchOrder)
-    case VPatch.REMOVE:
-      return patchRemove(domNode, oldVNode as any)
-    default:
-      return domNode
-  }
-}
-
+// function patch (rootNode: Element, patches, parentContext?: any) {
+//   const patchIndices = getPatchIndices(patches)
+//   if (patchIndices.length === 0) {
+//     return rootNode
+//   }
+//   const oldTree = patches.old
+//   const nodes = domIndex(rootNode, oldTree, patchIndices)
+//   patchIndices.forEach((index) => {
+//     rootNode = applyPatch(rootNode, nodes[index], patches[index], parentContext)
+//   })
+//   return rootNode
+// }
 function patchVText (lastVNode: VText, nextVNode: VText) {
   const dom = lastVNode.dom
   if (dom === null) {
@@ -233,64 +173,6 @@ function patchVText (lastVNode: VText, nextVNode: VText) {
     dom.nodeValue = nextText as string
   }
   return dom
-}
-
-function patchVNode (domNode: Element, patch: VirtualNode, parentContext) {
-  if (isWidget(patch) || isVNode(patch)) {
-    patch.parentContext = parentContext
-  }
-  if (domNode === null) {
-    return createElement(patch)
-  }
-  const parentNode = domNode.parentNode
-  const newNode = createElement(patch)
-  if (parentNode !== null && newNode !== domNode) {
-    parentNode.replaceChild(newNode as Element, domNode)
-  }
-  return newNode
-}
-
-function patchInsert (
-  parentNode: Element,
-  vnode: VirtualNode,
-  parentContext?: any
-) {
-  if (isWidget(vnode) || isVNode(vnode)) {
-    vnode.parentContext = parentContext
-  }
-  const newNode = createElement(vnode)
-  if (parentNode !== null && newNode !== null) {
-    parentNode.appendChild(newNode)
-  }
-  return parentNode
-}
-
-function patchWidget (
-  domNode: Element,
-  vnode: CompositeComponent,
-  patch: CompositeComponent
-) {
-  const isUpdate = isUpdateWidget(vnode, patch)
-  if (vnode) {
-    patch.parentContext = vnode.parentContext
-  }
-  const newNode = isUpdate
-    ? (patch as CompositeComponent).update(vnode, patch, domNode) || domNode
-    : createElement(patch)
-  const parentNode = domNode.parentNode // @TODO: perf
-  if (parentNode !== null && domNode !== newNode) {
-    parentNode.replaceChild(newNode as Node, domNode)
-  }
-  if (!isUpdate && vnode) {
-    destroyWidget(domNode, vnode)
-  }
-  return newNode
-}
-
-function destroyWidget (domNode: Element, widget) {
-  if (isWidget(widget)) {
-    widget.destroy(domNode)
-  }
 }
 
 function patchProps (
@@ -379,68 +261,6 @@ function patchProps (
     }
   }
   return domNode
-}
-
-function patchOrder (domNode: Element, patch: PatchOrder) {
-  const { removes, inserts } = patch
-  const childNodes = domNode.childNodes
-  const keyMap = {}
-  let node, remove, insert
-  for (let i = 0; i < removes.length; i++) {
-    remove = removes[i]
-    node = childNodes[remove.from]
-    if (remove.key) {
-      keyMap[remove.key] = node
-    }
-    domNode.removeChild(node)
-  }
-
-  let length = childNodes.length
-  for (let j = 0; j < inserts.length; j++) {
-    insert = inserts[j]
-    node = keyMap[insert.key]
-    domNode.insertBefore(
-      node,
-      insert.to >= length++ ? null : childNodes[insert.to]
-    )
-  }
-  return domNode
-}
-
-function patchRemove (domNode: Element, vnode: VirtualNode) {
-  const parentNode = domNode.parentNode
-  if (parentNode !== null) {
-    parentNode.removeChild(domNode)
-  }
-  if (isWidget(vnode)) {
-    vnode.destroy(domNode)
-  }
-  return null
-}
-
-function isUpdateWidget (a: VirtualNode, b: VirtualNode) {
-  if (isWidget(a) && isWidget(b)) {
-    const keyA = a.props.key
-    const keyB = b.props.key
-    if ('name' in a && 'name' in b) {
-      return a.name === b.name && keyA === keyB
-    }
-    return a.init === b.init && keyA === keyB
-  }
-  return false
-}
-
-// @todo: perf
-function getPatchIndices (patches) {
-  const indices: number[] = []
-  if (patches) {
-    for (const i in patches) {
-      if (i !== 'old' && patches.hasOwnProperty(i)) {
-        indices.push(Number(i))
-      }
-    }
-  }
-  return indices
 }
 
 export default patch
