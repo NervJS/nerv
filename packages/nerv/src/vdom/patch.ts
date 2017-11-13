@@ -14,6 +14,18 @@ import {
 } from 'nerv-shared'
 import { VHook } from '../hooks/vhook'
 
+export const enum SyncFlags {
+  /**
+   * Tree is attached to the document.
+   */
+  Attached = 1,
+  /**
+   * Tree should be disposed.
+   *
+   */
+  Dispose = 1 << 2
+}
+
 export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) {
   if (lastVnode === nextVnode) {
     return lastDom
@@ -137,7 +149,7 @@ export function unmount (vnode, parentDom?) {
   }
 
   if (isWidget(vnode)) {
-    vnode.destroy(parentDom)
+    vnode.destroy()
   } else if (isVNode(vnode)) {
     const { hooks, children } = vnode
     unmountChildren(children)

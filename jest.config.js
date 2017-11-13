@@ -14,7 +14,6 @@ module.exports = {
   mapCoverage: true,
   globals: {
     'ts-jest': {
-      'skipBabel': true,
       tsConfigFile: {
         target: 'es5',
         removeComments: false,
@@ -25,7 +24,6 @@ module.exports = {
         allowSyntheticDefaultImports: true,
         strictNullChecks: true,
         noImplicitThis: true,
-        inlineSourceMap: true,
         sourceMap: true
       }
     }
@@ -33,7 +31,9 @@ module.exports = {
   rootDir: __dirname,
   testMatch: [
     // '<rootDir>/packages/nerv/__tests__/componentDidCatch.spec.js'
-    '<rootDir>/packages/nerv/__tests__/lifecycle.spec.js'
+    // '<rootDir>/packages/nerv/__tests__/render.spec.js'
+    '<rootDir>/packages/nerv/__tests__/component.spec.js'
+    // '<rootDir>/packages/nerv/__tests__/lifecycle.spec.js'
     // '<rootDir>/packages/**/__tests__/**/*spec.js'
   ],
   transform: {

@@ -1,9 +1,20 @@
 /** @jsx createElement */
-import { Component, createElement, render, cloneElement, PureComponent } from '../src'
-import createVText from '../src/vdom/create-vtext'
+import {
+  Component,
+  createElement,
+  render,
+  cloneElement,
+  PureComponent
+} from '../src'
+// import createVText from '../src/vdom/create-vtext'
 import { rerender } from '../src/render-queue'
 import sinon from 'sinon'
-import { EMPTY_CHILDREN, getAttributes, sortAttributes, normalizeHTML } from './util'
+import {
+  EMPTY_CHILDREN,
+  getAttributes,
+  sortAttributes,
+  normalizeHTML
+} from './util'
 
 function fireEvent (on, type) {
   const e = document.createEvent('Event')
@@ -53,9 +64,13 @@ describe('Component', function () {
     render(<C {...props} />, scratch)
     expect(C.calledOnce).toBeTruthy()
     expect(C.calledWithMatch(props)).toBeTruthy()
-    expect(C.returned(sinon.match({
-      tagName: 'div'
-    }))).toBeTruthy()
+    expect(
+      C.returned(
+        sinon.match({
+          tagName: 'div'
+        })
+      )
+    ).toBeTruthy()
     expect(scratch.innerHTML).toEqual(normalizeHTML('<div foo="bar"></div>'))
   })
 
@@ -79,11 +94,7 @@ describe('Component', function () {
       }
 
       render () {
-        return (
-          <div>
-            {this.state.show ? <A /> : <B />}
-          </div>
-        )
+        return <div>{this.state.show ? <A /> : <B />}</div>
       }
     }
     let c
@@ -98,7 +109,7 @@ describe('Component', function () {
   })
 
   it('should render components with props', () => {
-    const props = { foo: 'bar', onBaz: () => { } }
+    const props = { foo: 'bar', onBaz: () => {} }
     let constructorProps
     class C extends Component {
       constructor () {
@@ -115,20 +126,24 @@ describe('Component', function () {
 
     expect(spy.calledOnce).toBeTruthy()
     expect(spy.calledWithMatch()).toBeTruthy()
-    expect(spy.returned(sinon.match({
-      tagName: 'div'
-    }))).toBeTruthy()
-      // .to.have.been.calledOnce
-      // .and.to.have.been.calledWithMatch()
-      // .and.to.have.returned(sinon.match({
-      //   tagName: 'div'
-      // }))
+    expect(
+      spy.returned(
+        sinon.match({
+          tagName: 'div'
+        })
+      )
+    ).toBeTruthy()
+    // .to.have.been.calledOnce
+    // .and.to.have.been.calledWithMatch()
+    // .and.to.have.returned(sinon.match({
+    //   tagName: 'div'
+    // }))
 
     expect(scratch.innerHTML).toEqual(normalizeHTML('<div foo="bar">C</div>'))
   })
 
   it('should clone components', () => {
-    function Comp () { }
+    function Comp () {}
     const instance = <Comp />
     const clone = cloneElement(instance)
     expect(clone.prototype).toEqual(instance.prototype)
@@ -142,7 +157,14 @@ describe('Component', function () {
       }
     }
 
-    render(<Comp ref={c => { comp = c }} />, scratch)
+    render(
+      <Comp
+        ref={c => {
+          comp = c
+        }}
+      />,
+      scratch
+    )
     comp.setState({ alt: true })
     comp.forceUpdate()
     expect(scratch.innerHTML).toEqual('asdf')
@@ -162,7 +184,7 @@ describe('Component', function () {
 
     class Comp extends Component {
       componentWillMount () {
-        this.innerMsg = msgs[(idx++ % 8)]
+        this.innerMsg = msgs[idx++ % 8]
         sideEffect()
       }
 
@@ -182,9 +204,9 @@ describe('Component', function () {
         const { alt } = this.state
         return (
           <div>
-            {alt ? null : (<Comp key={1} alt={alt} />)}
-            {alt ? null : (<Comp key={2} alt={alt} />)}
-            {alt ? (<Comp key={3} alt={alt} />) : null}
+            {alt ? null : <Comp key={1} alt={alt} />}
+            {alt ? null : <Comp key={2} alt={alt} />}
+            {alt ? <Comp key={3} alt={alt} /> : null}
           </div>
         )
       }
@@ -200,9 +222,9 @@ describe('Component', function () {
         const { alt } = this.state
         return (
           <div>
-            {alt ? null : (<Comp alt={alt} />)}
-            {alt ? null : (<Comp alt={alt} />)}
-            {alt ? (<Comp alt={alt} />) : null}
+            {alt ? null : <Comp alt={alt} />}
+            {alt ? null : <Comp alt={alt} />}
+            {alt ? <Comp alt={alt} /> : null}
           </div>
         )
       }
@@ -271,7 +293,13 @@ describe('Component', function () {
           doRender = () => this.setState({ i: 2 })
         }
         render () {
-          return <WithDefaultProps fieldA={1} fieldB={this.state.i} fieldD={this.state.i} />
+          return (
+            <WithDefaultProps
+              fieldA={1}
+              fieldB={this.state.i}
+              fieldD={this.state.i}
+            />
+          )
         }
       }
       class WithDefaultProps extends Component {
@@ -343,26 +371,32 @@ describe('Component', function () {
         fieldC: 1,
         fieldD: 1
       }
-      render((
+      render(
         <div>
           <WithDefaultProps fieldB={2} fieldD={2} fieldX={10} />
           <WithDefaultProps fieldB={2} fieldD={2} fieldX={10} />
           <WithDefaultProps fieldB={2} fieldD={2} fieldX={10} />
-        </div>
-      ), scratch)
+        </div>,
+        scratch
+      )
     })
 
     it('(Component) defaultProps should respect null but ignore undefined', () => {
       class Text extends Component {
         render () {
           const { text } = this.props
-          return <div>{ text === null ? 'null' : text }</div>
+          return <div>{text === null ? 'null' : text}</div>
         }
       }
       Text.defaultProps = {
         text: 'aaa'
       }
-      const dom = render(<div><Text text={null} /> <Text /></div>, scratch)
+      const dom = render(
+        <div>
+          <Text text={null} /> <Text />
+        </div>,
+        scratch
+      )
       expect(dom.firstChild.textContent).toEqual('null')
       expect(dom.lastChild.textContent).toEqual('aaa')
     })
@@ -372,7 +406,12 @@ describe('Component', function () {
       Text.defaultProps = {
         text: 'aaa'
       }
-      const dom = render(<div><Text text={null} /> <Text /></div>, scratch)
+      const dom = render(
+        <div>
+          <Text text={null} /> <Text />
+        </div>,
+        scratch
+      )
       expect(dom.firstChild.textContent).toEqual('null')
       expect(dom.lastChild.textContent).toEqual('aaa')
     })
@@ -426,17 +465,23 @@ describe('Component', function () {
           return false
         }
         click () {
-          this.setState((s) => {
-            s.count++
-          }, () => {
-            a++
-          })
+          this.setState(
+            s => {
+              s.count++
+            },
+            () => {
+              a++
+            }
+          )
 
-          this.setState((s) => {
-            s.count++
-          }, () => {
-            a++
-          })
+          this.setState(
+            s => {
+              s.count++
+            },
+            () => {
+              a++
+            }
+          )
         }
         render () {
           return <div onClick={this.click.bind(this)}>{this.state.count}</div>
@@ -465,8 +510,14 @@ describe('Component', function () {
           return <div />
         }
       }
-      const willUpdate = sinon.spy(ForceUpdateComponent.prototype, 'componentWillUpdate')
-      const forceUpdateSpy = sinon.spy(ForceUpdateComponent.prototype, 'forceUpdate')
+      const willUpdate = sinon.spy(
+        ForceUpdateComponent.prototype,
+        'componentWillUpdate'
+      )
+      const forceUpdateSpy = sinon.spy(
+        ForceUpdateComponent.prototype,
+        'forceUpdate'
+      )
       render(<ForceUpdateComponent />, scratch)
       expect(willUpdate.called).toBeFalsy()
 
@@ -503,13 +554,13 @@ describe('Component', function () {
       const Foo = props => <div {...props} />
 
       render(
-        <Foo a='b' children={[
-          <span class='bar'>bar</span>,
-          '123',
-          456
-        ]} />, scratch)
+        <Foo a='b' children={[<span class='bar'>bar</span>, '123', 456]} />,
+        scratch
+      )
 
-      expect(scratch.innerHTML).toEqual(normalizeHTML('<div a="b"><span class="bar">bar</span>123456</div>'))
+      expect(scratch.innerHTML).toEqual(
+        normalizeHTML('<div a="b"><span class="bar">bar</span>123456</div>')
+      )
     })
 
     it('should be ignored when explicit children exist', () => {
@@ -584,40 +635,37 @@ describe('Component', function () {
     it('should render nested functional components', () => {
       const PROPS = { foo: 'bar', onBaz: () => {} }
 
-      const Outer = sinon.spy(
-        props => <Inner {...props} />
-      )
+      const Outer = sinon.spy(props => <Inner {...props} />)
 
-      const Inner = sinon.spy(
-        props => <div {...props}>inner</div>
-      )
+      const Inner = sinon.spy(props => <div {...props}>inner</div>)
 
       render(<Outer {...PROPS} />, scratch)
 
       expect(Outer.calledOnce).toBeTruthy()
       expect(Outer.calledWithMatch(PROPS)).toBeTruthy()
-      expect(Outer.returned(sinon.match({
-        tagName: Inner,
-        props: PROPS
-      }))).toBeTruthy()
-
-      // expect(Outer)
-      // .to.have.been.calledOnce
-      // .and.to.have.been.calledWithMatch(PROPS)
-      // .and.to.have.returned(sinon.match({
-      //   tagName: Inner,
-      //   props: PROPS
-      // }))
-
+      expect(
+        Outer.returned(
+          sinon.match({
+            tagName: Inner,
+            props: PROPS
+          })
+        )
+      ).toBeTruthy()
       expect(Inner.calledOnce).toBeTruthy()
       expect(Inner.calledWithMatch(PROPS)).toBeTruthy()
-      expect(Inner.returned(sinon.match({
-        tagName: 'div',
-        children: [createVText('inner')],
-        props: sinon.match.has('foo')
-      }))).toBeTruthy()
+      expect(
+        Inner.returned(
+          sinon.match({
+            tagName: 'div',
+            // children: [createVText('inner')],
+            props: sinon.match.has('foo')
+          })
+        )
+      ).toBeTruthy()
 
-      expect(scratch.innerHTML).toEqual(normalizeHTML('<div foo="bar">inner</div>'))
+      expect(scratch.innerHTML).toEqual(
+        normalizeHTML('<div foo="bar">inner</div>')
+      )
     })
 
     it('should re-render nested functional components', () => {
@@ -636,9 +684,11 @@ describe('Component', function () {
       const willMount = sinon.spy(Outer.prototype, 'componentWillUnmount')
 
       let j = 0
-      const Inner = sinon.spy(
-        props => <div j={++j} {...props}>inner</div>
-      )
+      const Inner = sinon.spy(props => (
+        <div j={++j} {...props}>
+          inner
+        </div>
+      ))
 
       render(<Outer foo='bar' />, scratch)
 
@@ -649,14 +699,20 @@ describe('Component', function () {
       expect(Inner.calledTwice).toBeTruthy()
 
       expect(Inner.calledTwice).toBeTruthy()
-      expect(Inner.secondCall.calledWithMatch({ foo: 'bar', i: 2 })).toBeTruthy()
-      expect(Inner.secondCall.returned(sinon.match({
-        props: {
-          j: 2,
-          i: 2,
-          foo: 'bar'
-        }
-      }))).toBeTruthy()
+      expect(
+        Inner.secondCall.calledWithMatch({ foo: 'bar', i: 2 })
+      ).toBeTruthy()
+      expect(
+        Inner.secondCall.returned(
+          sinon.match({
+            props: {
+              j: 2,
+              i: 2,
+              foo: 'bar'
+            }
+          })
+        )
+      ).toBeTruthy()
 
       expect(getAttributes(scratch.firstElementChild)).toEqual({
         j: '2',
@@ -670,13 +726,17 @@ describe('Component', function () {
       expect(Inner.callCount).toBe(3)
 
       expect(Inner.thirdCall.calledWithMatch({ foo: 'bar', i: 3 })).toBeTruthy()
-      expect(Inner.thirdCall.returned(sinon.match({
-        props: {
-          j: 3,
-          i: 3,
-          foo: 'bar'
-        }
-      }))).toBeTruthy()
+      expect(
+        Inner.thirdCall.returned(
+          sinon.match({
+            props: {
+              j: 3,
+              i: 3,
+              foo: 'bar'
+            }
+          })
+        )
+      ).toBeTruthy()
 
       expect(getAttributes(scratch.firstElementChild)).toEqual({
         j: '3',
@@ -702,7 +762,10 @@ describe('Component', function () {
       }
       // const outerRender = sinon.spy(Outer.prototype, 'render')
       const outterDidMount = sinon.spy(Outer.prototype, 'componentDidMount')
-      const outerWillUnmount = sinon.spy(Outer.prototype, 'componentWillUnmount')
+      const outerWillUnmount = sinon.spy(
+        Outer.prototype,
+        'componentWillUnmount'
+      )
 
       let j = 0
       class Inner extends Component {
@@ -715,14 +778,21 @@ describe('Component', function () {
         componentDidMount () {}
         componentWillUnmount () {}
         render () {
-          return <div j={++j} {...this.props}>inner</div>
+          return (
+            <div j={++j} {...this.props}>
+              inner
+            </div>
+          )
         }
       }
       const innerCtor = sinon.spy(Inner.prototype, '_constructor')
       const innerRender = sinon.spy(Inner.prototype, 'render')
       const innerWillMount = sinon.spy(Inner.prototype, 'componentWillMount')
       const innerDidMount = sinon.spy(Inner.prototype, 'componentDidMount')
-      const innerWillUnmount = sinon.spy(Inner.prototype, 'componentWillUnmount')
+      const innerWillUnmount = sinon.spy(
+        Inner.prototype,
+        'componentWillUnmount'
+      )
 
       render(<Outer foo='bar' />, scratch)
 
@@ -739,20 +809,24 @@ describe('Component', function () {
       expect(innerDidMount.calledOnce).toBeTruthy()
       expect(innerRender.calledTwice).toBeTruthy()
 
-      expect(innerRender.secondCall.returned(sinon.match({
-        props: {
-          j: 2,
-          i: 2,
-          foo: 'bar'
-        }
-      })))
-        // .and.to.have.returned(sinon.match({
-        //   props: {
-        //     j: 2,
-        //     i: 2,
-        //     foo: 'bar'
-        //   }
-        // }))
+      expect(
+        innerRender.secondCall.returned(
+          sinon.match({
+            props: {
+              j: 2,
+              i: 2,
+              foo: 'bar'
+            }
+          })
+        )
+      )
+      // .and.to.have.returned(sinon.match({
+      //   props: {
+      //     j: 2,
+      //     i: 2,
+      //     foo: 'bar'
+      //   }
+      // }))
 
       expect(getAttributes(scratch.firstElementChild)).toEqual({
         j: '2',
@@ -760,7 +834,9 @@ describe('Component', function () {
         foo: 'bar'
       })
 
-      expect(sortAttributes(scratch.innerHTML).toLowerCase()).toEqual(sortAttributes('<div foo="bar" j="2" i="2">inner</div>'))
+      expect(sortAttributes(scratch.innerHTML).toLowerCase()).toEqual(
+        sortAttributes('<div foo="bar" j="2" i="2">inner</div>')
+      )
 
       doRender()
       rerender()
@@ -770,20 +846,24 @@ describe('Component', function () {
       expect(innerDidMount.calledOnce).toBeTruthy()
       expect(innerRender.calledThrice).toBeTruthy()
 
-      expect(innerRender.thirdCall.returned(sinon.match({
-        props: {
-          j: 3,
-          i: 3,
-          foo: 'bar'
-        }
-      }))).toBeTruthy()
-        // .and.to.have.returned(sinon.match({
-        //   props: {
-        //     j: 3,
-        //     i: 3,
-        //     foo: 'bar'
-        //   }
-        // }))
+      expect(
+        innerRender.thirdCall.returned(
+          sinon.match({
+            props: {
+              j: 3,
+              i: 3,
+              foo: 'bar'
+            }
+          })
+        )
+      ).toBeTruthy()
+      // .and.to.have.returned(sinon.match({
+      //   props: {
+      //     j: 3,
+      //     i: 3,
+      //     foo: 'bar'
+      //   }
+      // }))
 
       expect(getAttributes(scratch.firstElementChild)).toEqual({
         j: '3',
@@ -797,13 +877,17 @@ describe('Component', function () {
 
       expect(innerWillUnmount.calledOnce).toBeTruthy()
 
-      expect(scratch.innerHTML).toEqual(normalizeHTML('<div is-alt="true"></div>'))
+      expect(scratch.innerHTML).toEqual(
+        normalizeHTML('<div is-alt="true"></div>')
+      )
 
       alt = false
       doRender()
       rerender()
 
-      expect(sortAttributes(scratch.innerHTML).toLowerCase()).toEqual(sortAttributes('<div foo="bar" j="4" i="5">inner</div>'))
+      expect(sortAttributes(scratch.innerHTML).toLowerCase()).toEqual(
+        sortAttributes('<div foo="bar" j="4" i="5">inner</div>')
+      )
     })
 
     it('should resolve intermediary functional component', () => {
@@ -846,9 +930,9 @@ describe('Component', function () {
             child: this.props.child
           }
         }
-        componentWillUnmount () { }
-        componentWillMount () { }
-        componentDidMount () { }
+        componentWillUnmount () {}
+        componentWillMount () {}
+        componentDidMount () {}
         render () {
           const C = this.state.child
           return <C />
@@ -858,21 +942,27 @@ describe('Component', function () {
       // const outerRender = sinon.spy(Outer.prototype, 'render')
       const outerWillMount = sinon.spy(Outer.prototype, 'componentWillMount')
       const outerDidMount = sinon.spy(Outer.prototype, 'componentDidMount')
-      const outerWillUnmount = sinon.spy(Outer.prototype, 'componentWillUnmount')
+      const outerWillUnmount = sinon.spy(
+        Outer.prototype,
+        'componentWillUnmount'
+      )
 
       class Inner extends Component {
         componentWillUnmount () {}
         componentWillMount () {}
         componentDidMount () {}
         render () {
-          return createElement('element' + (++counter))
+          return createElement('element' + ++counter)
         }
       }
 
       // const innerRender = sinon.spy(Inner.prototype, 'render')
       const innerWillMount = sinon.spy(Inner.prototype, 'componentWillMount')
       const innerDidMount = sinon.spy(Inner.prototype, 'componentDidMount')
-      const innerWillUnmount = sinon.spy(Inner.prototype, 'componentWillUnmount')
+      const innerWillUnmount = sinon.spy(
+        Inner.prototype,
+        'componentWillUnmount'
+      )
 
       class Inner2 extends Component {
         constructor (props, context) {
@@ -883,14 +973,17 @@ describe('Component', function () {
         componentWillMount () {}
         componentDidMount () {}
         render () {
-          return createElement('element' + (++counter))
+          return createElement('element' + ++counter)
         }
       }
 
       const inner2Render = sinon.spy(Inner2.prototype, 'render')
       const inner2WillMount = sinon.spy(Inner2.prototype, 'componentWillMount')
       const inner2DidMount = sinon.spy(Inner2.prototype, 'componentDidMount')
-      const inner2WillUnmount = sinon.spy(Inner2.prototype, 'componentWillUnmount')
+      const inner2WillUnmount = sinon.spy(
+        Inner2.prototype,
+        'componentWillUnmount'
+      )
 
       render(<Outer child={Inner} />, scratch)
 
@@ -935,9 +1028,10 @@ describe('Component', function () {
         }
 
         componentDidMount () {
-          doRender = () => this.setState({
-            child: <InnerFunc />
-          })
+          doRender = () =>
+            this.setState({
+              child: <InnerFunc />
+            })
         }
 
         render () {
@@ -958,9 +1052,7 @@ describe('Component', function () {
       const willMount = sinon.spy(Inner.prototype, 'componentWillMount')
       const willUnmount = sinon.spy(Inner.prototype, 'componentWillUnmount')
 
-      const InnerFunc = () => (
-        <div class='inner-func'>bar</div>
-      )
+      const InnerFunc = () => <div class='inner-func'>bar</div>
 
       render(<Outer child={Inner} />, scratch)
 

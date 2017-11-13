@@ -10,6 +10,7 @@ class StateLessComponent {
   props: any
   _rendered: any
   parentContext: any
+  dom: Element | null
   constructor (tagName, props) {
     this.tagName = tagName
     this._owner = props.owner
