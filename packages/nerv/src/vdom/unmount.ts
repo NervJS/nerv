@@ -11,7 +11,7 @@ export function unmountChildren (children, parentDom?) {
 }
 
 export function unmount (vnode, parentDom?) {
-  if (vnode === null) {
+  if (isInvalid(vnode)) {
     return
   }
 

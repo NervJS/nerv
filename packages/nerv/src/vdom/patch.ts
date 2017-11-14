@@ -14,10 +14,7 @@ import {
 import { unmount, unmountChildren } from './unmount'
 
 export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) {
-  lastDom = lastVnode.dom || lastDom
-  if (isInvalid(lastVnode)) {
-    throw new Error('lastdom is invalid')
-  }
+  lastDom = (lastVnode && lastVnode.dom) || lastDom
   if (lastVnode === nextVnode) {
     return lastDom
   }
@@ -41,14 +38,7 @@ export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) 
     }
     (nextVnode as any).dom = newDom
   } else {
-    let parentNode
-    try {
-      parentNode = lastDom.parentNode
-    } catch (error) {
-      console.log('lastDom is', lastVnode)
-      console.log('nextVnode is', nextVnode)
-    }
-    // const parentNode = lastDom.parentNode
+    const parentNode = lastDom.parentNode
     const nextSibling = lastDom.nextSibling
     unmount(lastVnode, parentNode)
     newDom = createElement(nextVnode)
