@@ -9,22 +9,9 @@ import {
   isVNode,
   VText,
   isVText,
-  isInvalid,
-  isNullOrUndef
+  isInvalid
 } from 'nerv-shared'
-import { VHook } from '../hooks/vhook'
-
-export const enum SyncFlags {
-  /**
-   * Tree is attached to the document.
-   */
-  Attached = 1,
-  /**
-   * Tree should be disposed.
-   *
-   */
-  Dispose = 1 << 2
-}
+import { unmount, unmountChildren } from './unmount'
 
 export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) {
   if (lastVnode === nextVnode) {
@@ -135,35 +122,6 @@ function patchNonKeyedChildren (
 
 export function isKeyed (a, b) {
   return !isInvalid(a) && !isInvalid(b) && a.key !== null && b.key !== null
-}
-
-export function unmountChildren (children, parentDom?) {
-  for (let i = 0, len = children.length; i < len; i++) {
-    unmount(children[i])
-  }
-}
-
-export function unmount (vnode, parentDom?) {
-  if (vnode === null) {
-    return
-  }
-
-  if (isWidget(vnode)) {
-    vnode.destroy()
-  } else if (isVNode(vnode)) {
-    const { hooks, children } = vnode
-    unmountChildren(children)
-    for (const name in hooks) {
-      const hook = hooks[name]
-      if (hook.vhook === VHook.Event) {
-        hook.unhook()
-      }
-    }
-  }
-
-  if (!isNullOrUndef(parentDom) && !isNullOrUndef(vnode.dom)) {
-    parentDom.removeChild(vnode.dom)
-  }
 }
 
 function isSameVNode (a, b) {

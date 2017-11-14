@@ -8,6 +8,7 @@ import { isVNode, Component, isNullOrUndef } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
 import options from './options'
+import { unmount } from './vdom/unmount'
 
 const readyComponents: any[] = []
 
@@ -92,7 +93,7 @@ export function mountStatelessComponent (vnode: Stateless) {
     ref = new RefHook(ref)
     rendered.props.ref = ref
   }
-  return vnode.dom = mountVNode(rendered, vnode.parentContext) as Element
+  return (vnode.dom = mountVNode(rendered, vnode.parentContext) as Element)
 }
 
 export function getChildContext (component, context) {
@@ -160,7 +161,12 @@ export function reRenderStatelessComponent (prev, current, domNode) {
   const lastRendered = prev._rendered
   const rendered = current.tagName(current.props, current.parentContext)
   current._rendered = rendered
-  return current.dom = updateVNode(rendered, lastRendered, domNode, prev.parentContext)
+  return (current.dom = updateVNode(
+    rendered,
+    lastRendered,
+    domNode,
+    prev.parentContext
+  ))
 }
 
 export function updateComponent (component, isForce = false) {
@@ -216,6 +222,7 @@ export function updateVNode (vnode, lastVNode, lastDom: Element, childContext) {
   if (isObject(vnode)) {
     vnode.parentContext = childContext
   }
+  // const parentDom = (lastDom && lastDom.parentNode) || (lastVNode.dom = vnode.dom)
   const domNode = patch(lastVNode, vnode, lastDom, childContext)
   return domNode
 }
@@ -228,8 +235,8 @@ export function unmountComponent (vnode: FullComponent) {
       (component as any).componentWillUnmount()
     }, component)
   }
-  const lastRendered = component._rendered
-  updateVNode(null, lastRendered, component.dom, component.context)
+  unmount(component._rendered)
+  // updateVNode(null, lastRendered, component.dom, component.context)
   component.dom = component._rendered = null
   if (isFunction(vnode.props.ref)) {
     vnode.props.ref(null)
@@ -237,7 +244,8 @@ export function unmountComponent (vnode: FullComponent) {
 }
 
 export function unmountStatelessComponent (vnode: Stateless, dom) {
-  updateVNode(null, vnode._rendered, dom, vnode.parentContext)
+  unmount(vnode._rendered)
+  // updateVNode(null, vnode._rendered, dom, vnode.parentContext)
   vnode.dom = vnode._rendered = null
   if (isFunction(vnode.props.ref)) {
     vnode.props.ref(null)
