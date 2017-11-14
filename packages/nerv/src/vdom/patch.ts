@@ -13,8 +13,8 @@ import {
 } from 'nerv-shared'
 import { unmount, unmountChildren } from './unmount'
 
-export function patch (lastVnode, nextVnode, lastDoms, context, isSVG?: boolean) {
-  const lastDom = lastVnode.dom || lastDoms
+export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) {
+  lastDom = lastVnode.dom || lastDom
   if (isInvalid(lastVnode)) {
     throw new Error('lastdom is invalid')
   }
