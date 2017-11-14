@@ -13,7 +13,11 @@ import {
 } from 'nerv-shared'
 import { unmount, unmountChildren } from './unmount'
 
-export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) {
+export function patch (lastVnode, nextVnode, lastDoms, context, isSVG?: boolean) {
+  const lastDom = lastVnode.dom || lastDoms
+  if (isInvalid(lastVnode)) {
+    throw new Error('lastdom is invalid')
+  }
   if (lastVnode === nextVnode) {
     return lastDom
   }
@@ -37,7 +41,14 @@ export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) 
     }
     (nextVnode as any).dom = newDom
   } else {
-    const parentNode = lastDom.parentNode
+    let parentNode
+    try {
+      parentNode = lastDom.parentNode
+    } catch (error) {
+      console.log('lastDom is', lastVnode)
+      console.log('nextVnode is', nextVnode)
+    }
+    // const parentNode = lastDom.parentNode
     const nextSibling = lastDom.nextSibling
     unmount(lastVnode, parentNode)
     newDom = createElement(nextVnode)
