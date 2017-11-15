@@ -23,7 +23,7 @@ export function unmount (vnode, parentDom?) {
     for (const name in hooks) {
       const hook = hooks[name]
       if (hook.vhook === VHook.Event) {
-        hook.unhook()
+        hook.unhook(vnode.dom, name, null)
       }
     }
   }
