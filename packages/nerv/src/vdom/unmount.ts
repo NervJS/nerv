@@ -1,5 +1,5 @@
 import { isWidget, isVNode, isNullOrUndef, isInvalid } from 'nerv-shared'
-import { VHook } from '../hooks/vhook'
+import { isAttrAnEvent } from 'nerv-utils'
 
 export function unmountChildren (children, parentDom?) {
   for (let i = 0, len = children.length; i < len; i++) {
@@ -18,12 +18,12 @@ export function unmount (vnode, parentDom?) {
   if (isWidget(vnode)) {
     vnode.destroy()
   } else if (isVNode(vnode)) {
-    const { hooks, children } = vnode
+    const { props, children } = vnode
     unmountChildren(children)
-    for (const name in hooks) {
-      const hook = hooks[name]
-      if (hook.vhook === VHook.Event) {
-        hook.unhook(vnode.dom, name, null)
+    for (const propName in props) {
+      const property = props[propName]
+      if (isAttrAnEvent(propName)) {
+        property.unhook(vnode.dom, propName, null)
       }
     }
   }

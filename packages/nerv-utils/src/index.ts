@@ -14,6 +14,10 @@ export function getPrototype (obj) {
   return obj.constructor.prototype
 }
 
+export function isAttrAnEvent (attr: string): boolean {
+  return attr[0] === 'o' && attr[1] === 'n'
+}
+
 export function extend<S, F> (source: S, from: F): S | F & S {
   if (!from) {
     return source
@@ -34,6 +38,9 @@ export const supportSVG = (() => {
   const SVG_NS = 'http://www.w3.org/2000/svg'
   const doc = document
   return () => {
-    return !!doc.createElementNS && !!doc.createElementNS(SVG_NS, 'svg').createSVGRect
+    return (
+      !!doc.createElementNS &&
+      !!doc.createElementNS(SVG_NS, 'svg').createSVGRect
+    )
   }
 })()

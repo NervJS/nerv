@@ -7,7 +7,8 @@ import {
   isBoolean,
   isObject,
   supportSVG,
-  isArray
+  isArray,
+  isAttrAnEvent
 } from 'nerv-utils'
 import FullComponent from './full-component'
 import StatelessComponent from './stateless-component'
@@ -16,7 +17,7 @@ import RefHook from './hooks/ref-hook'
 import HtmlHook from './hooks/html-hook'
 import EventHook from './hooks/event-hook'
 import AttributeHook from './hooks/attribute-hook'
-import { Props, VirtualChildren, Component, VNode } from 'nerv-shared'
+import { Props, Component, VNode, VirtualChildren } from 'nerv-shared'
 
 const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i
 
@@ -52,8 +53,7 @@ function transformPropsForRealTag (tagName: string, props: Props) {
         : propValue
       continue
     }
-    // 收集事件
-    if (propName.charAt(0) === 'o' && propName.charAt(1) === 'n') {
+    if (isAttrAnEvent(propName)) {
       newProps[propName] = !(propValue instanceof EventHook)
         ? new EventHook(propName, propValue)
         : propValue
@@ -126,6 +126,10 @@ function createElement<T> (
   tagName: string | Function | Component<any, any>,
   properties?: T & Props | null,
   ..._children: Array<VirtualChildren | null>
+)
+function createElement<T> (
+  tagName: string | Function | Component<any, any>,
+  properties?: T & Props | null
 ) {
   let children: any[] = EMPTY_CHILDREN
   for (let i = 2, len = arguments.length; i < len; i++) {

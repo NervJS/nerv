@@ -52,12 +52,6 @@ export interface VNode {
   key: string | number | undefined
   namespace: string | null
   _owner: any // TODO: this is a component
-  count: number
-  hasWidgets: boolean
-  hooks: {
-    [k: string]: any
-  }
-  descendantHooks: boolean
   isSvg?: boolean
   parentContext?: any
   dom: Element | null
