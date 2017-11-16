@@ -23,7 +23,7 @@ function walk (a: VirtualNode, b: VirtualNode, patches: Patches, index: number) 
   }
   let apply = patches[index]
   let applyClear = false
-  if (!b) {
+  if (b == null) {
     if (!isWidget(a)) {
       clearState(a, patches as VirtualNode, index)
       apply = patches[index]
@@ -168,6 +168,7 @@ function diffList (oldList: VirtualChildren, newList: VirtualChildren, key: stri
     }
   }
   let freeIndex = 0
+  let newListFreeCount = newListFree.length
   let deletedItems = 0
   const listChange = oldList.map((item) => {
     const itemKey = item[key]
@@ -178,13 +179,11 @@ function diffList (oldList: VirtualChildren, newList: VirtualChildren, key: stri
       deletedItems++
       return null
     }
-    const itemIndex = newListFree[freeIndex++]
-    const freeItem = newList[itemIndex]
-    if (!freeItem) {
-      deletedItems++
-      return null
+    if (freeIndex < newListFreeCount) {
+      return newList[newListFree[freeIndex++]]
     }
-    return freeItem
+    deletedItems++
+    return null
   })
   const lastFreeIndex = freeIndex >= newListFree.length ? newList.length : newListFree[freeIndex]
   newList.forEach((newItem, index) => {
@@ -198,40 +197,39 @@ function diffList (oldList: VirtualChildren, newList: VirtualChildren, key: stri
     }
   })
 
-  const simulate = listChange.slice(0)
+  const simulate = listChange.slice()
   let simulateIndex = 0
   const removes: IRemove[] = []
   const inserts: IInsert[] = []
   let simulateItem
   for (let k = 0; k < newList.length;) {
+    const newItem = newList[k]
     simulateItem = simulate[simulateIndex]
     while (simulateItem === null && simulate.length) {
       removes.push(remove(simulate, simulateIndex, null))
       simulateItem = simulate[simulateIndex]
     }
-    const newItem = newList[k]
     const newItemKey = newItem[key]
-    const simulateItemKey = simulateItem[key]
-    if (!simulateItem || simulateItemKey !== newItemKey) {
-      if (newItem[key]) {
-        if (simulateItem && simulateItemKey) {
-          if (newListkeyMap[simulateItemKey] !== k + 1) {
-            removes.push(remove(simulate, simulateIndex, simulateItemKey))
+    if (!simulateItem || simulateItem[key] !== newItemKey) {
+      if (newItemKey) {
+        if (simulateItem && simulateItem[key]) {
+          if (newListkeyMap[simulateItem[key]] !== k + 1) {
+            removes.push(remove(simulate, simulateIndex, simulateItem[key]))
             simulateItem = simulate[simulateIndex]
-            if (!simulateItem || simulateItemKey !== newItemKey) {
-              inserts.push({key: newItemKey, to: k})
+            if (!simulateItem || simulateItem[key] !== newItemKey) {
+              inserts.push({ key: newItemKey, to: k})
             } else {
               simulateIndex++
             }
           } else {
-            inserts.push({key: newItemKey, to: k})
+            inserts.push({ key: newItemKey, to: k})
           }
         } else {
-          inserts.push({key: newItemKey, to: k})
+          inserts.push({ key: newItemKey, to: k})
         }
         k++
-      } else if (simulateItem && simulateItemKey) {
-        removes.push(remove(simulate, simulateIndex, simulateItemKey))
+      } else if (simulateItem && simulateItem[key]) {
+        removes.push(remove(simulate, simulateIndex, simulateItem[key]))
       }
     } else {
       simulateIndex++
