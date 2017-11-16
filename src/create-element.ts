@@ -66,7 +66,12 @@ function transformPropsForRealTag (tagName: string, props: IProps) {
               ? (styleValue + 'px')
               : styleValue
             newProps[propName] = newProps[propName] || {}
-            newProps[propName][styleName] = styleValue
+            if (styleName === 'float') {
+              newProps[propName]['cssFloat'] = styleValue
+              newProps[propName]['styleFloat'] = styleValue
+            } else {
+              newProps[propName][styleName] = styleValue
+            }
           }
         }
       }
