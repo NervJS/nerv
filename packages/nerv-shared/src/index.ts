@@ -6,6 +6,7 @@ export interface Widget {
   _rendered: any
   parentContext: any
   context: any
+  dom: Element | null
   init (parentVnode?): Element | null
   update (
     previous: ComponentInstance,

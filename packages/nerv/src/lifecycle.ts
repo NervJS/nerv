@@ -78,7 +78,7 @@ export function mountComponent (vnode: FullComponent, parentComponent?) {
     getChildContext(component, parentContext),
     component
   )
-  component.dom = dom
+  vnode.dom = component.dom = dom as Element
   component._disable = false
   options.afterMount(vnode)
   return dom
@@ -154,7 +154,7 @@ export function reRenderComponent (prev, current) {
     current.props.ref(component)
   }
   updateComponent(component)
-  return component.dom
+  return current.dom = component.dom
 }
 
 export function reRenderStatelessComponent (prev, current, domNode) {
@@ -222,12 +222,11 @@ export function updateVNode (vnode, lastVNode, lastDom: Element, childContext) {
   if (isObject(vnode)) {
     vnode.parentContext = childContext
   }
-  // const parentDom = (lastDom && lastDom.parentNode) || (lastVNode.dom = vnode.dom)
   const domNode = patch(lastVNode, vnode, lastDom, childContext)
   return domNode
 }
 
-export function unmountComponent (vnode: FullComponent) {
+export function unmountComponent (vnode: FullComponent, dom?) {
   const component = vnode.component
   options.beforeUnmount(component)
   if (isFunction(component.componentWillUnmount)) {
@@ -236,7 +235,6 @@ export function unmountComponent (vnode: FullComponent) {
     }, component)
   }
   unmount(component._rendered)
-  // updateVNode(null, lastRendered, component.dom, component.context)
   component.dom = component._rendered = null
   if (isFunction(vnode.props.ref)) {
     vnode.props.ref(null)
@@ -245,7 +243,6 @@ export function unmountComponent (vnode: FullComponent) {
 
 export function unmountStatelessComponent (vnode: Stateless, dom) {
   unmount(vnode._rendered)
-  // updateVNode(null, vnode._rendered, dom, vnode.parentContext)
   vnode.dom = vnode._rendered = null
   if (isFunction(vnode.props.ref)) {
     vnode.props.ref(null)

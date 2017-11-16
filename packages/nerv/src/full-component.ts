@@ -15,6 +15,7 @@ class ComponentWrapper {
   component: Component<any, any>
   context: any
   key: any
+  dom: Element | null
 
   constructor (tagName, props) {
     this.tagName = tagName
@@ -25,6 +26,7 @@ class ComponentWrapper {
     delete props.owner
     this.props = props
     this.key = props.key
+    this.dom = null
   }
 
   init (parentComponent?) {
