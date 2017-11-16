@@ -14,6 +14,7 @@ class ComponentWrapper {
   parentContext: any
   component: Component<any, any>
   context: any
+  key: any
 
   constructor (tagName, props) {
     this.tagName = tagName
@@ -23,6 +24,7 @@ class ComponentWrapper {
     this._owner = props.owner
     delete props.owner
     this.props = props
+    this.key = props.key
   }
 
   init (parentComponent?) {
