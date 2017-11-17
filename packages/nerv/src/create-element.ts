@@ -24,7 +24,7 @@ const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^or
 const EMPTY_CHILDREN = []
 const isSupportSVG = supportSVG()
 
-function transformPropsForRealTag (tagName: string, props: Props) {
+function transformPropsForRealTag (type: string, props: Props) {
   const newProps: any = {}
   const DOMAttributeNamespaces = SVGPropertyConfig.DOMAttributeNamespaces
   for (let propName in props) {
@@ -123,12 +123,12 @@ function transformPropsForComponent (props: Props, defaultProps?: Props) {
 }
 
 function createElement<T> (
-  tagName: string | Function | Component<any, any>,
+  type: string | Function | Component<any, any>,
   properties?: T & Props | null,
   ..._children: Array<VirtualChildren | null>
 )
 function createElement<T> (
-  tagName: string | Function | Component<any, any>,
+  type: string | Function | Component<any, any>,
   properties?: T & Props | null
 ) {
   let children: any[] = EMPTY_CHILDREN
@@ -149,14 +149,14 @@ function createElement<T> (
     }
   }
   let props
-  if (isString(tagName)) {
-    props = transformPropsForRealTag(tagName, properties as Props)
+  if (isString(type)) {
+    props = transformPropsForRealTag(type, properties as Props)
     props.owner = CurrentOwner.current
-    return h(tagName, props, children as any) as VNode
-  } else if (isFunction(tagName)) {
+    return h(type, props, children as any) as VNode
+  } else if (isFunction(type)) {
     props = transformPropsForComponent(
       properties as any,
-      (tagName as any).defaultProps
+      (type as any).defaultProps
     )
     if (props.children) {
       if (!isArray(props.children)) {
@@ -166,11 +166,11 @@ function createElement<T> (
       props.children = children
     }
     props.owner = CurrentOwner.current
-    return tagName.prototype && tagName.prototype.render
-      ? new FullComponent(tagName, props)
-      : new StatelessComponent(tagName, props)
+    return type.prototype && type.prototype.render
+      ? new FullComponent(type, props)
+      : new StatelessComponent(type, props)
   }
-  return tagName
+  return type
 }
 
 export default createElement

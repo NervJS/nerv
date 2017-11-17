@@ -23,7 +23,7 @@ describe('cloneElement()', () => {
       <div className='hh' style={{ width: '800px' }} />
     )
     const cloneVNode = cloneElement(vnode)
-    expect(cloneVNode.tagName).toEqual('div')
+    expect(cloneVNode.type).toEqual('div')
     expect(cloneVNode.hasOwnProperty('props')).toBeTruthy()
     const { style } = cloneVNode.props
     expect(style.width).toBe('800px')

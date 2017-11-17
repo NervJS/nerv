@@ -10,7 +10,7 @@ import {
 } from 'nerv-shared'
 import { isString, isArray, isNumber } from 'nerv-utils'
 
-function h (tagName: string, props: Props, children?: VirtualChildren) {
+function h (type: string, props: Props, children?: VirtualChildren) {
   let key
   let namespace
   let owner
@@ -39,15 +39,15 @@ function h (tagName: string, props: Props, children?: VirtualChildren) {
     delete props.children
   }
   if (children) {
-    addChildren(childNodes, children, tagName)
+    addChildren(childNodes, children, type)
   }
-  return createVNode(tagName, props, childNodes, key, namespace, owner)
+  return createVNode(type, props, childNodes, key, namespace, owner)
 }
 
 function addChildren (
   childNodes: VirtualNode[],
   children: VirtualNode,
-  tagName: string
+  type: string
 ) {
   if (isString(children) || isNumber(children)) {
     children = String(children)
@@ -56,7 +56,7 @@ function addChildren (
     childNodes.push(children)
   } else if (isArray(children)) {
     (children as any[]).forEach((child) =>
-      addChildren(childNodes, child, tagName)
+      addChildren(childNodes, child, type)
     )
   }
 }

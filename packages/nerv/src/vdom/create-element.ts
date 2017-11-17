@@ -40,9 +40,9 @@ function createElement (
   } else if (isVNode(vnode)) {
     if (vnode.isSvg) {
       isSvg = true
-    } else if (vnode.tagName === 'svg') {
+    } else if (vnode.type === 'svg') {
       isSvg = true
-    } else if (vnode.tagName === 'foreignObject') {
+    } else if (vnode.type === 'foreignObject') {
       isSvg = false
     }
     if (!isSupportSVG) {
@@ -54,10 +54,10 @@ function createElement (
     }
     domNode =
       vnode.namespace === null
-        ? doc.createElement(vnode.tagName)
+        ? doc.createElement(vnode.type)
         : isSupportSVG
-          ? doc.createElementNS(vnode.namespace, vnode.tagName)
-          : doc.createElement(vnode.tagName)
+          ? doc.createElementNS(vnode.namespace, vnode.type)
+          : doc.createElement(vnode.type)
     setProps(domNode, vnode.props, isSvg)
     const children = vnode.children
     if (children.length && isFunction(domNode.appendChild)) {

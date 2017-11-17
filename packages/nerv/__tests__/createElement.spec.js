@@ -11,7 +11,7 @@ describe('test create real dom tree from virtual dom tree', () => {
       h('p', { key: '4', className: 'test_p' }, '4')
     ])
     const dom = createElement(tree)
-    expect(dom.tagName).toBe('DIV')
+    expect(dom.type).toBe('DIV')
     expect(dom.childNodes.length).toBe(4)
     expect(dom.style.width).toBe('10px')
   })

@@ -19,12 +19,12 @@ export interface Widget {
 export type ComponentInstance = CompositeComponent | StatelessComponent
 
 export interface CompositeComponent extends Widget {
-  tagName: any
+  type: any
   component: Component<any, any>
 }
 
 export interface StatelessComponent extends Widget {
-  tagName: Function
+  type: Function
 }
 
 export interface VText {
@@ -47,7 +47,7 @@ export interface VVoid {
 
 export interface VNode {
   vtype: VType
-  tagName: string
+  type: string
   props: Props
   children: VirtualChildren
   key: string | number | undefined

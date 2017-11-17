@@ -2,7 +2,7 @@ import { isString } from 'nerv-utils'
 import { Props, VType, VNode } from 'nerv-shared'
 
 function createVNode (
-  tagName: string,
+  type: string,
   props: Props,
   children: any,
   key,
@@ -10,7 +10,7 @@ function createVNode (
   owner
 ): VNode {
   return {
-    tagName,
+    type,
     key: key || null,
     vtype: VType.Node,
     props: props || {},

@@ -7,7 +7,7 @@ import {
 
 class ComponentWrapper {
   vtype = VType.Composite
-  tagName: any
+  type: any
   name: string
   _owner: any
   props: any
@@ -17,11 +17,11 @@ class ComponentWrapper {
   key: any
   dom: Element | null
 
-  constructor (tagName, props) {
-    this.tagName = tagName
+  constructor (type, props) {
+    this.type = type
     this.name =
-      tagName.name || tagName.toString().match(/^function\s*([^\s(]+)/)[1]
-    tagName.displayName = this.name
+      type.name || type.toString().match(/^function\s*([^\s(]+)/)[1]
+    type.displayName = this.name
     this._owner = props.owner
     delete props.owner
     this.props = props

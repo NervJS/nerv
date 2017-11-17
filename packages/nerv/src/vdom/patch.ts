@@ -398,7 +398,7 @@ function isSameVNode (a, b) {
   if (isInvalid(a) || isInvalid(b)) {
     return false
   }
-  return a.tagName === b.tagName && getKey(a) === getKey(b)
+  return a.type === b.type && getKey(a) === getKey(b)
 }
 
 function getKey (vnode) {

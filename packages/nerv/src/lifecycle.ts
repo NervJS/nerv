@@ -53,7 +53,7 @@ export function mountVNode (vnode, parentContext: any, parentVNode?) {
 
 export function mountComponent (vnode: FullComponent, parentComponent?) {
   const parentContext = vnode.parentContext
-  vnode.component = new vnode.tagName(vnode.props, parentContext)
+  vnode.component = new vnode.type(vnode.props, parentContext)
   const component = vnode.component
   if (!isNullOrUndef(parentComponent) && isFunction(parentComponent.getState)) {
     component._parentComponent = parentComponent
@@ -87,7 +87,7 @@ export function mountComponent (vnode: FullComponent, parentComponent?) {
 export function mountStatelessComponent (vnode: Stateless) {
   let ref = vnode.props.ref
   delete vnode.props.ref
-  vnode._rendered = vnode.tagName(vnode.props, vnode.parentContext)
+  vnode._rendered = vnode.type(vnode.props, vnode.parentContext)
   const rendered = vnode._rendered
   if (isVNode(rendered) && isFunction(ref)) {
     ref = new RefHook(ref)
@@ -159,7 +159,7 @@ export function reRenderComponent (prev, current) {
 
 export function reRenderStatelessComponent (prev, current, domNode) {
   const lastRendered = prev._rendered
-  const rendered = current.tagName(current.props, current.parentContext)
+  const rendered = current.type(current.props, current.parentContext)
   current._rendered = rendered
   return (current.dom = updateVNode(
     rendered,

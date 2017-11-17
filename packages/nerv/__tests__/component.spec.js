@@ -53,7 +53,7 @@ describe('Component', function () {
     render(<C />, scratch)
 
     expect(spy.calledOnce).toBeTruthy()
-    expect(spy.returned(sinon.match({ tagName: 'div' }))).toBeTruthy()
+    expect(spy.returned(sinon.match({ type: 'div' }))).toBeTruthy()
 
     expect(scratch.innerHTML).toEqual(normalizeHTML('<div>C</div>'))
   })
@@ -67,7 +67,7 @@ describe('Component', function () {
     expect(
       C.returned(
         sinon.match({
-          tagName: 'div'
+          type: 'div'
         })
       )
     ).toBeTruthy()
@@ -129,14 +129,14 @@ describe('Component', function () {
     expect(
       spy.returned(
         sinon.match({
-          tagName: 'div'
+          type: 'div'
         })
       )
     ).toBeTruthy()
     // .to.have.been.calledOnce
     // .and.to.have.been.calledWithMatch()
     // .and.to.have.returned(sinon.match({
-    //   tagName: 'div'
+    //   type: 'div'
     // }))
 
     expect(scratch.innerHTML).toEqual(normalizeHTML('<div foo="bar">C</div>'))
@@ -646,7 +646,7 @@ describe('Component', function () {
       expect(
         Outer.returned(
           sinon.match({
-            tagName: Inner,
+            type: Inner,
             props: PROPS
           })
         )
@@ -656,7 +656,7 @@ describe('Component', function () {
       expect(
         Inner.returned(
           sinon.match({
-            tagName: 'div',
+            type: 'div',
             // children: [createVText('inner')],
             props: sinon.match.has('foo')
           })

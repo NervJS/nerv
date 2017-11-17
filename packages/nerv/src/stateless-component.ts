@@ -4,15 +4,15 @@ import { mountStatelessComponent, unmountStatelessComponent, reRenderStatelessCo
 
 class StateLessComponent {
   vtype = VType.Stateless
-  tagName: Function
+  type: Function
   name: string
   _owner: any
   props: any
   _rendered: any
   parentContext: any
   dom: Element | null
-  constructor (tagName, props) {
-    this.tagName = tagName
+  constructor (type, props) {
+    this.type = type
     this._owner = props.owner
     delete props.owner
     this.props = props
@@ -25,7 +25,7 @@ class StateLessComponent {
   update (previous, current?, domNode?) {
     const oldProps = previous.props
     const newProps = current.props
-    if (previous.tagName === current.tagName && shallowEqual(oldProps, newProps)) {
+    if (previous.type === current.type && shallowEqual(oldProps, newProps)) {
       return domNode
     }
     return reRenderStatelessComponent(previous, this, domNode)

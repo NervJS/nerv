@@ -8,7 +8,7 @@ export default function cloneElement (vnode, props, ...children): any {
     properties.namespace = vnode.namespace
   }
   return createElement(
-    vnode.tagName,
+    vnode.type,
     properties,
     children.length === 0 ? vnode.children : children
   )

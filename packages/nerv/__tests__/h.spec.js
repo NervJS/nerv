@@ -4,7 +4,7 @@ import { VType } from 'nerv-shared'
 describe('test generate virtual dom tree', () => {
   it('test make virtual dom tree simply', () => {
     const tree = h('div', { id: 'test', key: '0' }, 'test')
-    expect(tree.tagName).toBe('div')
+    expect(tree.type).toBe('div')
     expect(tree.children.length).toBe(1)
     expect(tree.children[0].text).toBe('test')
   })
@@ -27,7 +27,7 @@ describe('test generate virtual dom tree', () => {
         h('span', { key: '6', className: 'list_item_text' }, '3')
       )
     ])
-    expect(tree.tagName).toBe('ul')
+    expect(tree.type).toBe('ul')
     expect(tree.key).toBe('0')
     expect(tree.props.id).toBe('test')
     expect(tree.props.className).toBe('list')
