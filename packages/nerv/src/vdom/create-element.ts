@@ -26,22 +26,18 @@ function createElement (
   isSvg?: boolean,
   parentComponent?
 ): Element | Text | Comment | DocumentFragment | null {
+  let domNode
   if (isWidget(vnode)) {
-    return vnode.init(parentComponent)
-  }
-  if (isString(vnode) || isNumber(vnode)) {
-    return doc.createTextNode(vnode as string)
-  }
-  if (isVText(vnode)) {
-    const domNode = doc.createTextNode(vnode.text as string)
+    domNode = vnode.init(parentComponent)
     vnode.dom = domNode
-    return domNode
-  }
-  // @todo: perf: unmount a component
-  if (isNullOrUndef(vnode) || (vnode as any) === false) {
-    return doc.createTextNode('')
-  }
-  if (isVNode(vnode)) {
+  } else if (isString(vnode) || isNumber(vnode)) {
+    domNode = doc.createTextNode(vnode as string)
+  } else if (isVText(vnode)) {
+    domNode = doc.createTextNode(vnode.text as string)
+    vnode.dom = domNode
+  } else if (isNullOrUndef(vnode) || (vnode as any) === false) {
+    domNode = doc.createTextNode('')
+  } else if (isVNode(vnode)) {
     if (vnode.isSvg) {
       isSvg = true
     } else if (vnode.tagName === 'svg') {
@@ -56,7 +52,7 @@ function createElement (
       vnode.namespace = SVG_NAMESPACE
       vnode.isSvg = isSvg
     }
-    const domNode =
+    domNode =
       vnode.namespace === null
         ? doc.createElement(vnode.tagName)
         : isSupportSVG
@@ -78,22 +74,20 @@ function createElement (
       })
     }
     vnode.dom = domNode
-    return domNode
-  }
-  if (isArray(vnode)) {
-    const domNode = doc.createDocumentFragment()
+  } else if (isArray(vnode)) {
+    domNode = doc.createDocumentFragment()
     vnode.forEach((child) => {
       if (!isInvalid(child)) {
         const childNode = createElement(child, isSvg, parentComponent)
         if (childNode) {
           domNode.appendChild(childNode)
         }
-        return domNode.appendChild(childNode as Element)
       }
     })
-    return domNode
+  } else {
+    throw new Error('Unsupported VNode.')
   }
-  return null
+  return domNode
 }
 
 function setProps (domNode: Element, props: Props, isSvg?: boolean) {

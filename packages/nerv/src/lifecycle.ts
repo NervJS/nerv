@@ -78,7 +78,7 @@ export function mountComponent (vnode: FullComponent, parentComponent?) {
     getChildContext(component, parentContext),
     component
   )
-  vnode.dom = component.dom = dom as Element
+  component.dom = dom as Element
   component._disable = false
   options.afterMount(vnode)
   return dom
