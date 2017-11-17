@@ -14,6 +14,7 @@ export function unmount (vnode, parentDom?) {
   if (isInvalid(vnode)) {
     return
   }
+  const dom = vnode.dom
 
   if (isWidget(vnode)) {
     vnode.destroy()
@@ -23,13 +24,13 @@ export function unmount (vnode, parentDom?) {
     for (const propName in props) {
       const property = props[propName]
       if (isAttrAnEvent(propName)) {
-        property.unhook(vnode.dom, propName, null)
+        property.unhook(dom, propName, null)
       }
     }
   }
 
-  if (!isNullOrUndef(parentDom) && !isNullOrUndef(vnode.dom)) {
-    parentDom.removeChild(vnode.dom)
+  if (!isNullOrUndef(parentDom) && !isNullOrUndef(dom)) {
+    parentDom.removeChild(dom)
   }
   // vnode.dom = null
 }

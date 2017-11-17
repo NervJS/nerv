@@ -4,7 +4,7 @@ import createElement from './vdom/create-element'
 import createVText from './vdom/create-vtext'
 import patch from './vdom/patch'
 import RefHook from './hooks/ref-hook'
-import { isVNode, Component, isNullOrUndef } from 'nerv-shared'
+import { isVNode, Component, isNullOrUndef, isValidElement } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
 import options from './options'
@@ -45,7 +45,7 @@ function errorHandler (component: Component<any, any>, error) {
 }
 
 export function mountVNode (vnode, parentContext: any, parentVNode?) {
-  if (isObject(vnode)) {
+  if (isValidElement(vnode)) {
     vnode.parentContext = parentContext
   }
   return createElement(vnode, false, parentVNode)

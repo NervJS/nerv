@@ -1,15 +1,11 @@
-import { isVNode, isWidget } from 'nerv-shared'
-import { updateVNode } from './lifecycle'
+import { isValidElement } from 'nerv-shared'
 import { render } from './render'
+import { unmount } from './vdom/unmount'
 
 export function unmountComponentAtNode (dom) {
   const component = dom._component
-  if (isWidget(component)) {
-    component.destroy(dom.firstChild)
-    delete dom._component
-    return true
-  } else if (isVNode(component)) {
-    updateVNode(null, component, dom.firstChild, {})
+  if (isValidElement(component)) {
+    unmount(component, dom)
     delete dom._component
     return true
   }
