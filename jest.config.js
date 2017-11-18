@@ -31,7 +31,7 @@ module.exports = {
   rootDir: __dirname,
   testMatch: [
     // '<rootDir>/packages/nerv/__tests__/componentDidCatch.spec.js'
-    '<rootDir>/packages/nerv/__tests__/dom.spec.js'
+    '<rootDir>/packages/nerv/__tests__/refs.spec.js'
     // '<rootDir>/packages/**/__tests__/**/*spec.js'
   ],
   transform: {
