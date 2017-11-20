@@ -1,10 +1,5 @@
 import h from './vdom/h'
-import {
-  isFunction,
-  isString,
-  isArray,
-  isAttrAnEvent
-} from 'nerv-utils'
+import { isFunction, isString, isArray, isAttrAnEvent } from 'nerv-utils'
 import FullComponent from './full-component'
 import StatelessComponent from './stateless-component'
 import CurrentOwner from './current-owner'
@@ -69,13 +64,14 @@ function createElement<T> (
   for (let i = 2, len = arguments.length; i < len; i++) {
     const argumentsItem = arguments[i]
     if (isArray(argumentsItem)) {
-      argumentsItem.forEach((item) => {
+      for (let j = 0; j < argumentsItem.length; j++) {
+        const item = argumentsItem[j]
         if (children === EMPTY_CHILDREN) {
           children = [item]
         } else {
           children.push(item)
         }
-      })
+      }
     } else if (children === EMPTY_CHILDREN) {
       children = [argumentsItem]
     } else {

@@ -1,10 +1,4 @@
-import {
-  isString,
-  isNumber,
-  isFunction,
-  supportSVG,
-  isArray
-} from 'nerv-utils'
+import { isString, isNumber, supportSVG, isArray } from 'nerv-utils'
 import {
   isVNode,
   isVText,
@@ -59,18 +53,17 @@ function createElement (
           : doc.createElement(vnode.type)
     setProps(domNode, vnode, isSvg)
     const children = vnode.children
-    if (children.length && isFunction(domNode.appendChild)) {
-      children.forEach((child) => {
-        if (!isInvalid(child)) {
-          if (isWidget(child) || isVNode(child)) {
-            child.parentContext = vnode.parentContext || {}
-          }
-          const childNode = createElement(child, isSvg, parentComponent)
-          if (childNode) {
-            domNode.appendChild(childNode)
-          }
+    if (children.length) {
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i]
+        if (isWidget(child) || isVNode(child)) {
+          child.parentContext = vnode.parentContext || {}
         }
-      })
+        const childNode = createElement(child, isSvg, parentComponent)
+        if (childNode) {
+          domNode.appendChild(childNode)
+        }
+      }
     }
     vnode.dom = domNode
   } else if (isArray(vnode)) {

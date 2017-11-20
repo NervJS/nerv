@@ -427,7 +427,8 @@ function patchVText (lastVNode: VText, nextVNode: VText) {
 const skipProps = {
   children: 1,
   key: 1,
-  ref: 1
+  ref: 1,
+  owner: 1
 }
 
 const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i
