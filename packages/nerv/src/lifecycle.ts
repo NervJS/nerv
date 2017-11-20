@@ -1,14 +1,14 @@
-import { extend, isFunction, isNumber, isString, isObject } from 'nerv-utils'
+import { extend, isFunction, isNumber, isString } from 'nerv-utils'
 import CurrentOwner from './current-owner'
 import createElement from './vdom/create-element'
 import createVText from './vdom/create-vtext'
 import patch from './vdom/patch'
-import RefHook from './hooks/ref-hook'
 import { isVNode, Component, isNullOrUndef, isValidElement } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
 import options from './options'
 import { unmount } from './vdom/unmount'
+import Ref from './vdom/ref'
 
 const readyComponents: any[] = []
 
@@ -53,6 +53,7 @@ export function mountVNode (vnode, parentContext: any, parentVNode?) {
 
 export function mountComponent (vnode: FullComponent, parentComponent?) {
   const parentContext = vnode.parentContext
+  const ref = vnode.props.ref
   vnode.component = new vnode.type(vnode.props, parentContext)
   const component = vnode.component
   if (!isNullOrUndef(parentComponent) && isFunction(parentComponent.getState)) {
@@ -70,8 +71,8 @@ export function mountComponent (vnode: FullComponent, parentComponent?) {
   if (isFunction(component.componentDidMount)) {
     readyComponents.push(component)
   }
-  if (isFunction(vnode.props.ref)) {
-    readyComponents.push(() => vnode.props.ref(component))
+  if (!isNullOrUndef(ref)) {
+    readyComponents.push(() => Ref.attach(vnode, ref))
   }
   const dom = mountVNode(
     rendered,
@@ -85,13 +86,12 @@ export function mountComponent (vnode: FullComponent, parentComponent?) {
 }
 
 export function mountStatelessComponent (vnode: Stateless) {
-  let ref = vnode.props.ref
+  const ref = vnode.props.ref
   delete vnode.props.ref
   vnode._rendered = vnode.type(vnode.props, vnode.parentContext)
   const rendered = vnode._rendered
-  if (isVNode(rendered) && isFunction(ref)) {
-    ref = new RefHook(ref)
-    rendered.props.ref = ref
+  if (isVNode(rendered) && isNullOrUndef(ref)) {
+    rendered.props.ref = ref as any
   }
   return (vnode.dom = mountVNode(rendered, vnode.parentContext) as Element)
 }
@@ -150,11 +150,11 @@ export function reRenderComponent (prev, current) {
   component.prevContext = component.context
   component.props = nextProps
   component.context = nextContext
-  if (isFunction(current.props.ref)) {
-    current.props.ref(component)
+  if (!isNullOrUndef(nextProps.ref)) {
+    Ref.update(prev, current)
   }
   updateComponent(component)
-  return current.dom = component.dom
+  return (current.dom = component.dom)
 }
 
 export function reRenderStatelessComponent (prev, current, domNode) {
@@ -219,7 +219,7 @@ export function updateComponent (component, isForce = false) {
 }
 
 export function updateVNode (vnode, lastVNode, lastDom: Element, childContext) {
-  if (isObject(vnode)) {
+  if (isValidElement(vnode)) {
     vnode.parentContext = childContext
   }
   const domNode = patch(lastVNode, vnode, lastDom, childContext)
@@ -236,15 +236,15 @@ export function unmountComponent (vnode: FullComponent, dom?) {
   }
   unmount(component._rendered)
   component.dom = component._rendered = null
-  if (isFunction(vnode.props.ref)) {
-    vnode.props.ref(null)
+  if (isNullOrUndef(vnode.props.ref)) {
+    Ref.detach(vnode.props.ref)
   }
 }
 
 export function unmountStatelessComponent (vnode: Stateless, dom) {
   unmount(vnode._rendered)
   vnode.dom = vnode._rendered = null
-  if (isFunction(vnode.props.ref)) {
-    vnode.props.ref(null)
+  if (isNullOrUndef(vnode.props.ref)) {
+    Ref.detach(vnode.props.ref)
   }
 }

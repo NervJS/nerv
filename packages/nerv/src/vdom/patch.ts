@@ -14,6 +14,7 @@ import {
   isNullOrUndef
 } from 'nerv-shared'
 import { unmount, unmountChildren } from './unmount'
+import Ref from './ref'
 
 export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) {
   lastDom = (lastVnode && lastVnode.dom) || lastDom
@@ -27,6 +28,7 @@ export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) 
   if (isSameVNode(lastVnode, nextVnode)) {
     if (isVNode(nextVnode)) {
       patchProps(lastDom, nextVnode.props, lastVnode.props, isSVG)
+      Ref.update(lastVnode, nextVnode)
       patchChildren(
         lastDom,
         lastVnode.children,

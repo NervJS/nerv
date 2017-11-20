@@ -29,7 +29,7 @@ export interface StatelessComponent extends Widget {
 
 export interface VText {
   vtype: VType
-  text: string | number,
+  text: string | number
   dom: Text | null
 }
 
@@ -41,7 +41,7 @@ export interface PatchOrder {
 export type Patch = PatchOrder | VirtualNode
 
 export interface VVoid {
-  dom: Text,
+  dom: Text
   vtype: VType
 }
 
@@ -105,6 +105,10 @@ export interface ComponentLifecycle<P, S> {
   componentDidCatch? (error?): void
 }
 
+interface Refs {
+  [k: string]: any
+}
+
 export interface Component<P, S> extends ComponentLifecycle<P, S> {
   state: Readonly<S>
   props: Readonly<P> & Readonly<any>
@@ -115,6 +119,8 @@ export interface Component<P, S> extends ComponentLifecycle<P, S> {
   _parentComponent: Component<any, any>
   dom: any
   getState (): S
+  // tslint:disable-next-line:member-ordering
+  refs: Refs
 }
 
 export function isNullOrUndef (o: any): o is undefined | null {
