@@ -1,11 +1,14 @@
 /* tslint:disable: no-shadowed-variable*/
 /* tslint:disable: no-empty*/
-import { isFunction, isString, isObject, getPrototype } from 'nerv-utils'
+import {
+  isString,
+  isAttrAnEvent,
+  isNumber
+} from 'nerv-utils'
 import createElement from './create-element'
 import {
   Props,
   isWidget,
-  isHook,
   isVNode,
   VText,
   isVText,
@@ -421,92 +424,129 @@ function patchVText (lastVNode: VText, nextVNode: VText) {
   return dom
 }
 
-function patchProps (
-  domNode: Element,
-  patch: Props,
-  previousProps: Props,
-  isSvg?: boolean
-) {
-  for (const propName in patch) {
-    if (propName === 'children') {
-      continue
-    }
-    const propValue = patch[propName]
-    const previousValue = previousProps[propName]
-    if (propValue == null || propValue === false) {
-      if (isHook(previousValue)) {
-        previousValue.unhook(domNode, propName, propValue)
-        continue
-      } else if (propName === 'style') {
-        if (isString(previousValue)) {
-          // tslint:disable-next-line:forin
-          // FIX: previousValue is not iterable
-          // for (const styleName in previousValue) {
-          //   domNode.style[styleName] = ''
-          // }
-        } else {
-          domNode.removeAttribute(propName)
-        }
-        continue
-      } else if (propName in domNode) {
-        domNode[propName] = isString(previousValue) ? '' : null
-        domNode.removeAttribute(propName)
-      } else {
-        domNode.removeAttribute(propName)
+const skipProps = {
+  children: 1,
+  key: 1,
+  ref: 1
+}
+
+const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i
+
+function patchStyle (lastAttrValue, nextAttrValue, dom) {
+  const domStyle = dom.style
+  let style
+  let value
+
+  if (isString(nextAttrValue)) {
+    domStyle.cssText = nextAttrValue
+    return
+  }
+
+  if (!isNullOrUndef(lastAttrValue) && !isString(lastAttrValue)) {
+    for (style in nextAttrValue) {
+      value = nextAttrValue[style]
+      if (value !== lastAttrValue[style]) {
+        domStyle[style] =
+          !isNumber(value) || !IS_NON_DIMENSIONAL.test(style)
+            ? value
+            : value + 'px'
       }
+    }
+
+    for (style in lastAttrValue) {
+      if (isNullOrUndef(nextAttrValue[style])) {
+        domStyle[style] = ''
+      }
+    }
+  } else {
+    for (style in nextAttrValue) {
+      value = nextAttrValue[style]
+      domStyle[style] =
+        !isNumber(value) || !IS_NON_DIMENSIONAL.test(style)
+          ? value
+          : value + 'px'
+    }
+  }
+}
+
+export function patchProp (
+  domNode: Element,
+  prop: string,
+  lastValue,
+  nextValue,
+  isSVG?: boolean
+) {
+  if (lastValue !== nextValue) {
+    if (prop === 'className') {
+      prop = 'class'
+    }
+    if (skipProps[prop] === 1) {
+      return
+    } else if (prop === 'class' && !isSVG) {
+      domNode.className = nextValue
+    } else if (prop === 'dangerouslySetInnerHTML') {
+      const lastHtml = lastValue && lastValue.__html
+      const nextHtml = nextValue && nextValue.__html
+
+      if (lastHtml !== nextHtml) {
+        if (!isNullOrUndef(nextHtml)) {
+          domNode.innerHTML = nextHtml
+        }
+      }
+    } else if (isAttrAnEvent(prop)) {
+      nextValue.hook(domNode, prop, lastValue)
+    } else if (prop === 'style') {
+      patchStyle(lastValue, nextValue, domNode)
+    } else if (
+      prop !== 'list' &&
+      prop !== 'type' &&
+      !isSVG &&
+      name in domNode
+    ) {
+      setProperty(domNode, prop, nextValue == null ? '' : nextValue)
+      if (nextValue == null || nextValue === false) {
+        domNode.removeAttribute(prop)
+      }
+    } else if (isNullOrUndef(nextValue) || nextValue === false) {
+      domNode.removeAttribute(prop)
     } else {
-      if (isHook(propValue)) {
-        if (isHook(previousValue)) {
-          previousValue.unhook(domNode, propName, propValue)
-        }
-        propValue.hook(domNode, propName, previousValue)
-        continue
-      } else if (propName === 'style') {
-        if (isString(propValue)) {
-          domNode.setAttribute(propName, propValue)
-        } else {
-          // tslint:disable-next-line:forin
-          for (const styleName in propValue) {
-            const styleValue = propValue[styleName]
-            if (styleValue != null && styleValue !== false) {
-              try {
-                domNode[propName][styleName] = styleValue
-              } catch (err) {}
-            }
-          }
-        }
-        continue
-      } else if (isObject(propValue)) {
-        if (
-          previousValue &&
-          isObject(previousValue) &&
-          getPrototype(previousValue) !== getPrototype(propValue)
-        ) {
-          if (propName in domNode) {
-            try {
-              domNode[propName] = propValue
-            } catch (err) {}
-          } else {
-            domNode.setAttribute(propName, propValue)
-          }
-        }
-        continue
-      } else if (
-        propName !== 'list' &&
-        propName !== 'type' &&
-        !isSvg &&
-        propName in domNode
-      ) {
-        try {
-          domNode[propName] = propValue
-        } catch (err) {}
-        continue
-      } else if (!isFunction(propValue)) {
-        domNode.setAttribute(propName, propValue)
+      if (isSVG) {
+      } else {
+        domNode.setAttribute(prop, nextValue)
       }
     }
   }
-  return domNode
+}
+
+function setProperty (node, name, value) {
+  try {
+    node[name] = value
+  } catch (e) {}
+}
+
+function patchProps (
+  domNode: Element,
+  nextProps: Props,
+  previousProps: Props,
+  isSVG?: boolean
+) {
+  // for (const propName in previousProps) {
+  //   const value = previousProps[propName]
+  //   if (isAttrAnEvent(propName)) {
+  //     value.unhook(domNode, propName, value)
+  //   } else {
+  //     domNode.removeAttribute(propName)
+  //   }
+  // }
+  for (const propName in nextProps) {
+    patchProp(
+      domNode,
+      propName,
+      previousProps[propName],
+      nextProps[propName],
+      isSVG
+    )
+  }
 }
 
 export default patch

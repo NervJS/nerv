@@ -1,5 +1,4 @@
 import {
-  isObject,
   isString,
   isNumber,
   isFunction,
@@ -10,12 +9,12 @@ import {
   isVNode,
   isVText,
   isWidget,
-  isHook,
   isNullOrUndef,
   VirtualNode,
-  Props,
   isInvalid
 } from 'nerv-shared'
+import { patchProp } from './patch'
+import Ref from './ref'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
@@ -58,7 +57,7 @@ function createElement (
         : isSupportSVG
           ? doc.createElementNS(vnode.namespace, vnode.type)
           : doc.createElement(vnode.type)
-    setProps(domNode, vnode.props, isSvg)
+    setProps(domNode, vnode, isSvg)
     const children = vnode.children
     if (children.length && isFunction(domNode.appendChild)) {
       children.forEach((child) => {
@@ -90,61 +89,13 @@ function createElement (
   return domNode
 }
 
-function setProps (domNode: Element, props: Props, isSvg?: boolean) {
+function setProps (domNode: Element, vnode, isSvg?: boolean) {
+  const props = vnode.props
   for (const p in props) {
-    if (p === 'children') {
-      continue
-    }
     const propValue = props[p]
-    if (isHook(propValue)) {
-      propValue.hook(domNode, p)
-      continue
-    } else if (p === 'style') {
-      if (isString(propValue)) {
-        domNode.setAttribute(p, propValue)
-      } else if (isObject(propValue)) {
-        // tslint:disable-next-line:forin
-        for (const s in propValue) {
-          const styleValue = propValue[s]
-          if (styleValue !== undefined) {
-            try {
-              domNode[p][s] = styleValue
-            } catch (err) {
-              console.warn(`Can't set empty style`)
-            }
-          }
-        }
-      }
-      continue
-    } else if (isObject(propValue)) {
-      if (p in domNode) {
-        try {
-          domNode[p] = propValue
-        } catch (err) {
-          console.warn('set prop failed, prop value:', propValue)
-        }
-      } else {
-        domNode.setAttribute(p, propValue)
-      }
-      continue
-    } else if (p !== 'list' && p !== 'type' && !isSvg && p in domNode) {
-      try {
-        domNode[p] = propValue == null ? '' : propValue
-      } catch (err) {
-        console.warn('set prop failed, prop value:', propValue)
-      }
-      if (propValue == null || propValue === false) {
-        domNode.removeAttribute(p)
-      }
-      continue
-    } else {
-      if (propValue == null || propValue === false) {
-        domNode.removeAttribute(p)
-      } else {
-        if (!isFunction(propValue)) {
-          domNode.setAttribute(p, propValue)
-        }
-      }
+    patchProp(domNode, p, {}, propValue)
+    if (p === 'ref') {
+      Ref.attach(vnode, propValue)
     }
   }
 }
