@@ -14,6 +14,7 @@ import {
 } from 'nerv-shared'
 import { unmount, unmountChildren } from './unmount'
 import Ref from './ref'
+import { isFunction } from 'util'
 
 export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) {
   lastDom = (lastVnode && lastVnode.dom) || lastDom
@@ -508,7 +509,11 @@ export function patchProp (
     } else {
       if (isSVG) {
       } else {
-        domNode.setAttribute(prop, nextValue)
+        if (!isFunction(nextValue)) {
+          domNode.setAttribute(prop, nextValue)
+        }
+        // WARNING: Non-event attributes with function values:
+        // https://reactjs.org/blog/2017/09/08/dom-attributes-in-react-16.html#changes-in-detail
       }
     }
   }
