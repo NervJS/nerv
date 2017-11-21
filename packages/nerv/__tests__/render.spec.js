@@ -228,8 +228,8 @@ describe('render()', function () {
             background: 'rgb(255, 100, 0)',
             backgroundPosition: '10px 10px',
             // 'background-size': 'cover',
-            padding: '5',
-            top: '100',
+            padding: 5,
+            top: 100,
             left: '100%'
           }
         }

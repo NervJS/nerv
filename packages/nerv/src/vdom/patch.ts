@@ -1,10 +1,6 @@
 /* tslint:disable: no-shadowed-variable*/
 /* tslint:disable: no-empty*/
-import {
-  isString,
-  isAttrAnEvent,
-  isNumber
-} from 'nerv-utils'
+import { isString, isAttrAnEvent, isNumber } from 'nerv-utils'
 import createElement from './create-element'
 import {
   Props,
@@ -442,13 +438,12 @@ function patchStyle (lastAttrValue, nextAttrValue, dom) {
     domStyle.cssText = nextAttrValue
     return
   }
-
   if (!isNullOrUndef(lastAttrValue) && !isString(lastAttrValue)) {
     for (style in nextAttrValue) {
       value = nextAttrValue[style]
       if (value !== lastAttrValue[style]) {
         domStyle[style] =
-          !isNumber(value) || !IS_NON_DIMENSIONAL.test(style)
+          !isNumber(value) || IS_NON_DIMENSIONAL.test(style)
             ? value
             : value + 'px'
       }
