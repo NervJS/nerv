@@ -54,11 +54,11 @@ function renderStylesToString (styles: string | object): string {
 }
 
 function renderVNodeToString (vnode, parent, context, firstChild) {
-  const { tagName, props, children } = vnode
+  const { type, props, children } = vnode
   if (isVText(vnode)) {
     return encodeEntities(vnode.text)
   } else if (isVNode(vnode)) {
-    let renderedString = `<${tagName}`
+    let renderedString = `<${type}`
     let html
     if (!isNullOrUndef(props)) {
       for (const prop in props) {
@@ -69,7 +69,8 @@ function renderVNodeToString (vnode, parent, context, firstChild) {
         if (prop === 'dangerouslySetInnerHTML') {
           html = value.__html
         } else if (prop === 'style') {
-          renderedString += ` style="${renderStylesToString(value)}"`
+          const styleStr = renderStylesToString(value)
+          renderedString += styleStr ? ` style="${renderStylesToString(value)}"` : ''
         } else if (prop === 'class' || prop === 'className') {
           renderedString += ` class="${isString(value)
             ? value
@@ -93,7 +94,7 @@ function renderVNodeToString (vnode, parent, context, firstChild) {
         }
       }
     }
-    if (isVoidElements[tagName]) {
+    if (isVoidElements[type]) {
       renderedString += `/>`
     } else {
       renderedString += `>`
@@ -124,13 +125,13 @@ function renderVNodeToString (vnode, parent, context, firstChild) {
       } else if (html) {
         renderedString += html
       }
-      if (!isVoidElements[tagName]) {
-        renderedString += `</${tagName}>`
+      if (!isVoidElements[type]) {
+        renderedString += `</${type}>`
       }
     }
     return renderedString
   } else if (isComposite(vnode)) {
-    const instance = new tagName(props, context)
+    const instance = new type(props, context)
     instance._disable = true
     if (isFunction(instance.getChildContext)) {
       context = extend(extend({}, context), instance.getChildContext())
@@ -146,7 +147,7 @@ function renderVNodeToString (vnode, parent, context, firstChild) {
     }
     return renderVNodeToString(nextVnode, vnode, context, true)
   } else if (isStateless(vnode)) {
-    const nextVnode = tagName(props, context)
+    const nextVnode = type(props, context)
 
     if (isInvalid(nextVnode)) {
       return '<!--!-->'

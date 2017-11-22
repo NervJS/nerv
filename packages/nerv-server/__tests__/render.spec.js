@@ -23,7 +23,7 @@ describe('render', () => {
 
     it('should collapse collapsible attributes', () => {
       const rendered = render(<div class='' style='' foo bar />)
-      const expected = `<div class="" style="" foo bar></div>`
+      const expected = `<div class="" foo bar></div>`
 
       expect(rendered).toEqual(expected)
     })
@@ -73,22 +73,25 @@ describe('render', () => {
     })
 
     // FIX: SVG problem
-    // it('should render SVG elements', () => {
-    //   const rendered = render((
-    //     <svg>
-    //       <image xlinkHref='#' />
-    //       <foreignObject>
-    //         <div xlinkHref='#' />
-    //       </foreignObject>
-    //       <g>
-    //         <image xlinkHref='#' />
-    //       </g>
-    //     </svg>
-    //   ))
+    it.skip('should render SVG elements', () => {
+      // debugger
+      const rendered = render(
+        <svg>
+          <image xlinkHref='#' />
+          <foreignObject>
+            <div xlinkHref='#' />
+          </foreignObject>
+          <g>
+            <image xlinkHref='#' />
+          </g>
+        </svg>
+      )
 
-    // tslint:disable-next-line:max-line-length
-    //   expect(rendered).toEqual(`<svg><image xlink:href="#"></image><foreignObject><div xlinkHref="#"></div></foreignObject><g><image xlink:href="#"></image></g></svg>`)
-    // })
+      // tslint:disable-next-line:max-line-length
+      expect(rendered).toEqual(
+        `<svg><image xlink:href="#"></image><foreignObject><div xlinkHref="#"></div></foreignObject><g><image xlink:href="#"></image></g></svg>`
+      )
+    })
   })
 
   describe('Functional component', () => {
