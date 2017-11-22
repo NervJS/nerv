@@ -449,6 +449,10 @@ function patchStyle (lastAttrValue, nextAttrValue, dom) {
           !isNumber(value) || IS_NON_DIMENSIONAL.test(style)
             ? value
             : value + 'px'
+        if (style === 'float') {
+          domStyle['cssFloat'] = value
+          domStyle['styleFloat'] = value
+        }
       }
     }
 
