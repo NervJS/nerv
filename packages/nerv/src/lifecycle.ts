@@ -90,8 +90,8 @@ export function mountStatelessComponent (vnode: Stateless) {
   delete vnode.props.ref
   vnode._rendered = vnode.type(vnode.props, vnode.parentContext)
   const rendered = vnode._rendered
-  if (isVNode(rendered) && isNullOrUndef(ref)) {
-    rendered.props.ref = ref as any
+  if (isVNode(rendered) && !isNullOrUndef(ref)) {
+    rendered.ref = ref as any
   }
   return (vnode.dom = mountVNode(rendered, vnode.parentContext) as Element)
 }

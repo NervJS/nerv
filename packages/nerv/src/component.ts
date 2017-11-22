@@ -1,7 +1,7 @@
 import { isFunction, extend, clone } from 'nerv-utils'
 import { enqueueRender } from './render-queue'
 import { updateComponent } from './lifecycle'
-import { Props, ComponentLifecycle } from 'nerv-shared'
+import { Props, ComponentLifecycle, Refs } from 'nerv-shared'
 
 interface Component<P = {}, S = {}> extends ComponentLifecycle<P, S > {
   _rendered: any,
@@ -17,12 +17,14 @@ class Component<P, S> implements ComponentLifecycle<P, S> {
   _disable = true
   _pendingStates: any[] = []
   _pendingCallbacks: Function[]
+  refs: Refs
   constructor (props?: P, context?: any) {
     if (!this.state) {
       this.state = {} as S
     }
     this.props = props || {} as P
     this.context = context || {}
+    this.refs = {}
   }
 
   setState<K extends keyof S> (state: Pick<S, K>, callback?: Function) {

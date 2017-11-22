@@ -106,7 +106,7 @@ export interface ComponentLifecycle<P, S> {
   componentDidCatch? (error?): void
 }
 
-interface Refs {
+export interface Refs {
   [k: string]: any
 }
 

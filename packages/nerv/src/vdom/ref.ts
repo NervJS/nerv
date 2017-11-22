@@ -12,21 +12,23 @@ export default {
     }
   },
   attach (vnode, ref, domNode: Element) {
+    const node = isComposite(vnode) ? vnode.component : domNode
     if (isFunction(ref)) {
-      ref(isComposite(vnode) ? vnode.component : domNode)
+      ref(node)
     } else if (isString(ref)) {
       const inst = vnode._owner
-      if (isComposite(inst)) {
-        inst.component.refs[ref] = domNode
+      if (inst && isFunction(inst.render)) {
+        inst.refs[ref] = node
       }
     }
   },
   detach (vnode, ref, domNode: Element) {
+    const node = isComposite(vnode) ? vnode.component : domNode
     if (isFunction(ref)) {
       ref(null)
     } else if (isString(ref)) {
       const inst = vnode._owner
-      if (inst.component.refs[ref] === domNode && isComposite(inst)) {
+      if (inst.component.refs[ref] === node && isComposite(inst)) {
         delete inst.component.refs[ref]
       }
     }
