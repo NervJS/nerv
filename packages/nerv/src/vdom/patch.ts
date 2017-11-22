@@ -491,6 +491,9 @@ export function patchProp (
         }
       }
     } else if (isAttrAnEvent(prop)) {
+      // if (isFunction(lastValue)) {
+      //   lastValue.unhook(domNode, prop, nextValue)
+      // }
       nextValue.hook(domNode, prop, lastValue)
     } else if (prop === 'style') {
       patchStyle(lastValue, nextValue, domNode)
@@ -531,14 +534,16 @@ function patchProps (
   previousProps: Props,
   isSVG?: boolean
 ) {
-  // for (const propName in previousProps) {
-  //   const value = previousProps[propName]
-  //   if (isAttrAnEvent(propName)) {
-  //     value.unhook(domNode, propName, value)
-  //   } else {
-  //     domNode.removeAttribute(propName)
-  //   }
-  // }
+  for (const propName in previousProps) {
+    const value = previousProps[propName]
+    if (isNullOrUndef(nextProps[propName]) && !isNullOrUndef(value)) {
+      if (isAttrAnEvent(propName)) {
+        value.unhook(domNode, propName, nextProps[propName])
+      } else {
+        domNode.removeAttribute(propName)
+      }
+    }
+  }
   for (const propName in nextProps) {
     patchProp(
       domNode,

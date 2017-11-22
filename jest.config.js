@@ -33,8 +33,8 @@ module.exports = {
     // '<rootDir>/packages/nerv/__tests__/componentDidCatch.spec.js'
     '<rootDir>/packages/nerv/__tests__/component.spec.js',
     '<rootDir>/packages/nerv/__tests__/render.spec.js',
-    '<rootDir>/packages/nerv/__tests__/lifecycle.spec.js'
-    // '<rootDir>/packages/nerv/__tests__/event.spec.js',
+    '<rootDir>/packages/nerv/__tests__/lifecycle.spec.js',
+    '<rootDir>/packages/nerv/__tests__/event.spec.js'
     // '<rootDir>/packages/**/__tests__/**/*spec.js'
   ],
   transform: {
