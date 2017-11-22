@@ -53,19 +53,20 @@ function createElement (
           : doc.createElement(vnode.type)
     setProps(domNode, vnode, isSvg)
     const children = vnode.children
-    if (children.length) {
-      for (let i = 0; i < children.length; i++) {
-        const child = children[i]
-        if (isWidget(child) || isVNode(child)) {
-          child.parentContext = vnode.parentContext || {}
-        }
-        const childNode = createElement(child, isSvg, parentComponent)
-        if (childNode) {
-          domNode.appendChild(childNode)
-        }
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i]
+      if (isWidget(child) || isVNode(child)) {
+        child.parentContext = vnode.parentContext || {}
+      }
+      const childNode = createElement(child, isSvg, parentComponent)
+      if (childNode) {
+        domNode.appendChild(childNode)
       }
     }
     vnode.dom = domNode
+    if (vnode.ref !== null) {
+      Ref.attach(vnode, vnode.ref, domNode)
+    }
   } else if (isArray(vnode)) {
     domNode = doc.createDocumentFragment()
     vnode.forEach((child) => {
@@ -82,14 +83,10 @@ function createElement (
   return domNode
 }
 
-function setProps (domNode: Element, vnode, isSvg?: boolean) {
+function setProps (domNode: Element, vnode, isSvg) {
   const props = vnode.props
   for (const p in props) {
-    const propValue = props[p]
-    patchProp(domNode, p, {}, propValue)
-    if (p === 'ref') {
-      Ref.attach(vnode, propValue)
-    }
+    patchProp(domNode, p, {}, props[p], isSvg)
   }
 }
 

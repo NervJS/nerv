@@ -491,7 +491,6 @@ describe('render()', function () {
     }
     let todo
     render(<TodoList ref={c => (todo = c)} />, scratch)
-    console.log('input is', input)
     input.focus()
     input.value = 1
     todo.setText({

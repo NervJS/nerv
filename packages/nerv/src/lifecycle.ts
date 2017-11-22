@@ -72,7 +72,7 @@ export function mountComponent (vnode: FullComponent, parentComponent?) {
     readyComponents.push(component)
   }
   if (!isNullOrUndef(ref)) {
-    readyComponents.push(() => Ref.attach(vnode, ref))
+    readyComponents.push(() => Ref.attach(vnode, ref, component.dom))
   }
   const dom = mountVNode(
     rendered,
@@ -237,7 +237,7 @@ export function unmountComponent (vnode: FullComponent, dom?) {
   unmount(component._rendered)
   component.dom = component._rendered = null
   if (isNullOrUndef(vnode.props.ref)) {
-    Ref.detach(vnode.props.ref)
+    Ref.detach(vnode, vnode.props.ref, vnode.dom as any)
   }
 }
 
@@ -245,6 +245,6 @@ export function unmountStatelessComponent (vnode: Stateless, dom) {
   unmount(vnode._rendered)
   vnode.dom = vnode._rendered = null
   if (isNullOrUndef(vnode.props.ref)) {
-    Ref.detach(vnode.props.ref)
+    Ref.detach(vnode, vnode.props.ref, vnode.dom as any)
   }
 }

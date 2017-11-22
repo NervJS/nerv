@@ -55,7 +55,8 @@ export interface VNode {
   _owner: any // TODO: this is a component
   isSvg?: boolean
   parentContext?: any
-  dom: Element | null
+  dom: Element | null,
+  ref: Function | string | null
 }
 
 export type VirtualNode =

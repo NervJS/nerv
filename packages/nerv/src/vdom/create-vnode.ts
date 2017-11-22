@@ -7,7 +7,8 @@ function createVNode (
   children: any,
   key,
   namespace,
-  owner
+  owner,
+  ref
 ): VNode {
   return {
     type,
@@ -17,7 +18,8 @@ function createVNode (
     children: children || [],
     namespace: isString(namespace) ? namespace : null,
     _owner: owner,
-    dom: null
+    dom: null,
+    ref: ref || null
   }
 }
 

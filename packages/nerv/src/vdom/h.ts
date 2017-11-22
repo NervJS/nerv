@@ -24,7 +24,7 @@ function h (type: string, props: Props, children?: VirtualChildren) {
   if (children) {
     addChildren(childNodes, children, type)
   }
-  return createVNode(type, props, childNodes, props.key, props.namespace, props.owner)
+  return createVNode(type, props, childNodes, props.key, props.namespace, props.owner, props.ref)
 }
 
 function addChildren (

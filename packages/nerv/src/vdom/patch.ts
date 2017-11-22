@@ -28,7 +28,6 @@ export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) 
   if (isSameVNode(lastVnode, nextVnode)) {
     if (isVNode(nextVnode)) {
       patchProps(lastDom, nextVnode.props, lastVnode.props, isSVG)
-      Ref.update(lastVnode, nextVnode)
       patchChildren(
         lastDom,
         lastVnode.children,
@@ -36,6 +35,9 @@ export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) 
         context,
         isSVG
       )
+      if (nextVnode.ref !== null) {
+        Ref.update(lastVnode, nextVnode, lastDom)
+      }
       newDom = lastDom
     } else if (isWidget(nextVnode)) {
       newDom = nextVnode.update(lastVnode, nextVnode, lastDom)
