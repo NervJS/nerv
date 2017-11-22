@@ -15,6 +15,7 @@ import {
 import { unmount, unmountChildren } from './unmount'
 import Ref from './ref'
 import { isFunction } from 'util'
+import SVGPropertyConfig from './svg-property-config'
 
 export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) {
   lastDom = (lastVnode && lastVnode.dom) || lastDom
@@ -517,6 +518,16 @@ export function patchProp (
       domNode.removeAttribute(prop)
     } else {
       if (isSVG) {
+        const ns = SVGPropertyConfig.DOMAttributeNames[prop]
+        if (ns) {
+          domNode.setAttributeNS(
+            'http://www.w3.org/1999/xlink',
+            ns.toLowerCase(),
+            nextValue
+          )
+        } else {
+          domNode.setAttribute(prop, nextValue)
+        }
       } else {
         if (!isFunction(nextValue)) {
           domNode.setAttribute(prop, nextValue)

@@ -1,4 +1,4 @@
-import { isString, isNumber, supportSVG, isArray } from 'nerv-utils'
+import { isString, isNumber, isIE8, isArray } from 'nerv-utils'
 import {
   isVNode,
   isVText,
@@ -13,7 +13,7 @@ import Ref from './ref'
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
 const doc = document
-const isSupportSVG = supportSVG()
+const isSupportSVG = !isIE8
 function createElement (
   vnode: VirtualNode,
   isSvg?: boolean,
