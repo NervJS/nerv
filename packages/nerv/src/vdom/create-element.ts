@@ -22,7 +22,6 @@ function createElement (
   let domNode
   if (isWidget(vnode)) {
     domNode = vnode.init(parentComponent)
-    vnode.dom = domNode
   } else if (isString(vnode) || isNumber(vnode)) {
     domNode = doc.createTextNode(vnode as string)
   } else if (isVText(vnode)) {

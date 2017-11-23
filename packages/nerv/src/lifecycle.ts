@@ -74,12 +74,11 @@ export function mountComponent (vnode: FullComponent, parentComponent?) {
   if (!isNullOrUndef(ref)) {
     readyComponents.push(() => Ref.attach(vnode, ref, component.dom))
   }
-  const dom = mountVNode(
+  const dom = component.dom = mountVNode(
     rendered,
     getChildContext(component, parentContext),
     component
-  )
-  component.dom = dom as Element
+  ) as Element
   component._disable = false
   options.afterMount(vnode)
   return dom
@@ -154,7 +153,7 @@ export function reRenderComponent (prev, current) {
     Ref.update(prev, current)
   }
   updateComponent(component)
-  return (current.dom = component.dom)
+  return component.dom
 }
 
 export function reRenderStatelessComponent (prev, current, domNode) {
