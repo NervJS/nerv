@@ -15,7 +15,7 @@ function createVNode (
     key: key || null,
     vtype: VType.Node,
     props: props || {},
-    children: children || [],
+    children,
     namespace: isString(namespace) ? namespace : null,
     _owner: owner,
     dom: null,

@@ -24,7 +24,26 @@ function h (type: string, props: Props, children?: VirtualChildren) {
   if (children) {
     addChildren(childNodes, children, type)
   }
-  return createVNode(type, props, childNodes, props.key, props.namespace, props.owner, props.ref)
+  return createVNode(
+    type,
+    props,
+    flattenChildren(children),
+    props.key,
+    props.namespace,
+    props.owner,
+    props.ref
+  )
+}
+
+function flattenChildren (children) {
+  if (isArray(children)) {
+    for (let i = 0; i < children.length; i++) {
+      return flattenChildren(children)
+    }
+  } else if (isString(children) || isNumber(children)) {
+    return createVText(String(children))
+  }
+  return children
 }
 
 function addChildren (

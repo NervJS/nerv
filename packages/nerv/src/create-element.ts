@@ -1,18 +1,22 @@
 import h from './vdom/h'
-import { isFunction, isString, isArray, isAttrAnEvent } from 'nerv-utils'
+import {
+  isFunction,
+  isString,
+  isArray,
+  isAttrAnEvent,
+  isNumber
+} from 'nerv-utils'
 import FullComponent from './full-component'
 import StatelessComponent from './stateless-component'
 import CurrentOwner from './current-owner'
 import EventHook from './hooks/event-hook'
+import createVText from './vdom/create-vtext'
 import { Props, Component, VNode, VirtualChildren } from 'nerv-shared'
 
-const EMPTY_CHILDREN = []
-
 function transformPropsForRealTag (type: string, props: Props) {
-  const newProps: any = {}
-  for (let propName in props) {
+  const newProps: Props = {}
+  for (const propName in props) {
     const propValue = props[propName]
-    propName = propName
     if (isAttrAnEvent(propName)) {
       newProps[propName] = !(propValue instanceof EventHook)
         ? new EventHook(propName, propValue)
@@ -51,31 +55,28 @@ function transformPropsForComponent (props: Props, defaultProps?: Props) {
   return newProps
 }
 
+export function flattenChildren (children) {
+  if (isArray(children)) {
+    for (let i = 0; i < children.length; i++) {
+      return flattenChildren(children.filter(Boolean))
+    }
+  } else if (isString(children) || isNumber(children)) {
+    return createVText(String(children))
+  }
+  return children
+}
+
 function createElement<T> (
   type: string | Function | Component<any, any>,
   properties?: T & Props | null,
   ..._children: Array<VirtualChildren | null>
-)
-function createElement<T> (
-  type: string | Function | Component<any, any>,
-  properties?: T & Props | null
 ) {
-  let children: any[] = EMPTY_CHILDREN
-  for (let i = 2, len = arguments.length; i < len; i++) {
-    const argumentsItem = arguments[i]
-    if (isArray(argumentsItem)) {
-      for (let j = 0; j < argumentsItem.length; j++) {
-        const item = argumentsItem[j]
-        if (children === EMPTY_CHILDREN) {
-          children = [item]
-        } else {
-          children.push(item)
-        }
-      }
-    } else if (children === EMPTY_CHILDREN) {
-      children = [argumentsItem]
-    } else {
-      children.push(argumentsItem)
+  let children: any = _children
+  if (_children) {
+    if (_children.length === 1) {
+      children = _children[0]
+    } else if (_children.length === 0) {
+      children = undefined
     }
   }
   let props
@@ -88,11 +89,7 @@ function createElement<T> (
       properties as any,
       (type as any).defaultProps
     )
-    if (props.children) {
-      if (!isArray(props.children)) {
-        props.children = [props.children]
-      }
-    } else {
+    if (!props.children) {
       props.children = children
     }
     props.owner = CurrentOwner.current
