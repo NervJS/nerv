@@ -74,15 +74,17 @@ function createElement (vnode: VirtualNode, isSvg?: boolean): Element | Text | C
 }
 
 function setProps (domNode: Element, props: IProps, isSvg?: boolean) {
+  const hooks:any = []
   for (const p in props) {
     if (p === 'children') {
       continue
     }
     const propValue = props[p]
     if (isHook(propValue)) {
-      if (propValue.hook) {
-        propValue.hook(domNode, p)
-      }
+      hooks.push({
+        hook: propValue,
+        prop: p
+      })
       continue
     } else if (p === 'style') {
       if (isString(propValue)) {
@@ -131,6 +133,14 @@ function setProps (domNode: Element, props: IProps, isSvg?: boolean) {
         }
       }
     }
+  }
+  if (hooks.length) {
+    hooks.forEach(item => {
+      const hookItem = item.hook
+      if (hookItem.hook) {
+        hookItem.hook(domNode, item.prop)
+      }
+    })
   }
 }
 
