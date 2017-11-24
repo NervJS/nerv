@@ -2,6 +2,7 @@ import { extend, isFunction, isNumber, isString } from 'nerv-utils'
 import CurrentOwner from './current-owner'
 import createElement from './vdom/create-element'
 import createVText from './vdom/create-vtext'
+import { createVoid } from './vdom/create-void'
 import patch from './vdom/patch'
 import { isVNode, Component, isNullOrUndef, isValidElement } from 'nerv-shared'
 import FullComponent from './full-component'
@@ -74,11 +75,11 @@ export function mountComponent (vnode: FullComponent, parentComponent?) {
   if (!isNullOrUndef(ref)) {
     readyComponents.push(() => Ref.attach(vnode, ref, component.dom))
   }
-  const dom = component.dom = mountVNode(
+  const dom = (component.dom = mountVNode(
     rendered,
     getChildContext(component, parentContext),
     component
-  ) as Element
+  ) as Element)
   component._disable = false
   options.afterMount(vnode)
   return dom
@@ -110,6 +111,8 @@ export function renderComponent (component) {
   }, component)
   if (isNumber(rendered) || isString(rendered)) {
     rendered = createVText(rendered)
+  } else if (rendered === undefined) {
+    rendered = createVoid()
   }
   CurrentOwner.current = null
   return rendered

@@ -5,7 +5,8 @@ import {
   isWidget,
   isNullOrUndef,
   VirtualNode,
-  isInvalid
+  isInvalid,
+  VType
 } from 'nerv-shared'
 import { patchProp } from './patch'
 import Ref from './ref'
@@ -76,6 +77,8 @@ function createElement (
         }
       }
     })
+  } else if (!isInvalid(vnode) && vnode.vtype === VType.Void) {
+    domNode = vnode.dom
   } else {
     throw new Error('Unsupported VNode.')
   }

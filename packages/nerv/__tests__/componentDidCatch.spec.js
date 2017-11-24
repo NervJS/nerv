@@ -614,7 +614,6 @@ describe('ComponentDidCatch', () => {
       container
     )
     await delay()
-    console.log(container.innerHTML)
     expect(container.firstChild.textContent).toBe('Caught an error: Hello.')
     // @TODO: React mount after catch a error
     // expect(log).toEqual([

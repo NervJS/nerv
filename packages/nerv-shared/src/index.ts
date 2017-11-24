@@ -69,6 +69,7 @@ export type VirtualNode =
   | number
   | null
   | undefined
+  | VVoid
 
 export type VirtualChildren = Array<string | number | VNode>
 
@@ -142,7 +143,7 @@ export function isVText (node): node is VText {
 export function isWidget (
   node
 ): node is CompositeComponent | StatelessComponent {
-  return !isNullOrUndef(node) && node.vtype > 3
+  return !isNullOrUndef(node) && ((node.vtype & (VType.Composite | VType.Stateless)) > 0)
 }
 
 export function isComposite (node): node is CompositeComponent {
