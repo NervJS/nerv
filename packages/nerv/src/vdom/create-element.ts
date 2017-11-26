@@ -55,10 +55,10 @@ function createElement (
     const children = vnode.children
     if (isArray(children)) {
       for (let i = 0; i < children.length; i++) {
-        mountElement(children[i], domNode, parentComponent, isSvg)
+        mountChild(children[i], domNode, vnode.parentContext, parentComponent, isSvg)
       }
     } else {
-      mountElement(children, domNode, parentComponent, isSvg)
+      mountChild(children, domNode, vnode.parentContext, parentComponent, isSvg)
     }
     vnode.dom = domNode
     if (vnode.ref !== null) {
@@ -82,11 +82,11 @@ function createElement (
   return domNode
 }
 
-function mountElement (vnode, domNode, parentComponent, isSvg) {
-  if (isWidget(vnode) || isVNode(vnode)) {
-    vnode.parentContext = vnode.parentContext || {}
+function mountChild (child, domNode, parentContext, parentComponent, isSvg) {
+  if (isWidget(child) || isVNode(child)) {
+    child.parentContext = parentContext || {}
   }
-  const childNode = createElement(vnode, isSvg, parentComponent)
+  const childNode = createElement(child, isSvg, parentComponent)
   if (childNode) {
     domNode.appendChild(childNode)
   }

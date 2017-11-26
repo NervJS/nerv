@@ -30,7 +30,7 @@ module.exports = {
   },
   rootDir: __dirname,
   testMatch: [
-    // '<rootDir>/packages/nerv/__tests__/keys.spec.js',
+    // '<rootDir>/packages/nerv/__tests__/context.spec.js',
     // '<rootDir>/packages/nerv/__tests__/component.spec.js',
     // '<rootDir>/packages/nerv/__tests__/render.spec.js',
     // '<rootDir>/packages/nerv/__tests__/lifecycle.spec.js',

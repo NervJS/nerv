@@ -504,7 +504,6 @@ describe('render()', function () {
     }
     expect(document.activeElement).toEqual(input)
     await delay(100)
-    console.log(scratch.innerHTML, 'innerHTML')
     expect(/1/.test(scratch.innerHTML)).toEqual(true)
   })
 
