@@ -103,7 +103,7 @@ describe('render', () => {
       expect(rendered).toEqual(`<div foo="test">content</div>`)
       expect(Test.called).toBeTruthy()
       expect(
-        Test.calledWith({ children: ['content'], foo: 'test' }, {})
+        Test.calledWith({ children: 'content', foo: 'test' }, {})
       ).toBeTruthy()
     })
 
@@ -126,7 +126,7 @@ describe('render', () => {
         Test.calledWith(
           {
             foo: 1,
-            children: [<span>asdf</span>]
+            children: <span>asdf</span>
           },
           {}
         )

@@ -1,17 +1,14 @@
-import {
-  isNullOrUndef,
-  isInvalid,
-  VType
-} from 'nerv-shared'
-import { isAttrAnEvent } from 'nerv-utils'
+import { isNullOrUndef, isInvalid, VType } from 'nerv-shared'
+import { isAttrAnEvent, isArray } from 'nerv-utils'
 import Ref from './ref'
 
 export function unmountChildren (children, parentDom?) {
-  for (let i = 0, len = children.length; i < len; i++) {
-    const child = children[i]
-    if (!isInvalid(child)) {
-      unmount(child, parentDom)
+  if (isArray(children)) {
+    for (let i = 0, len = children.length; i < len; i++) {
+      unmount(children[i], parentDom)
     }
+  } else {
+    unmount(children, parentDom)
   }
 }
 

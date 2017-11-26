@@ -2,48 +2,37 @@ import createVNode from './create-vnode'
 import createVText from './create-vtext'
 import {
   Props,
-  VirtualChildren,
+  // VirtualChildren,
   VirtualNode,
-  isValidElement
+  isValidElement,
+  EMPTY_CHILDREN
 } from 'nerv-shared'
 import { isString, isArray, isNumber } from 'nerv-utils'
 
-function h (type: string, props: Props, children?: VirtualChildren) {
+function h (type: string, props: Props, children?) {
   const childNodes = []
-  if (!children && isChildren(props)) {
-    children = props
-    props = {}
-  }
-  props = props || {}
   if (props.children) {
     if (!children || !children.length) {
       children = props.children
     }
     delete props.children
   }
-  if (children) {
+  if (isArray(children)) {
     addChildren(childNodes, children, type)
+  } else if (isString(children) || isNumber(children)) {
+    children = createVText(String(children))
+  } else if (!isValidElement(children)) {
+    children = EMPTY_CHILDREN
   }
   return createVNode(
     type,
     props,
-    flattenChildren(children),
+    childNodes.length ? childNodes : children,
     props.key,
     props.namespace,
     props.owner,
     props.ref
   )
-}
-
-function flattenChildren (children) {
-  if (isArray(children)) {
-    for (let i = 0; i < children.length; i++) {
-      return flattenChildren(children)
-    }
-  } else if (isString(children) || isNumber(children)) {
-    return createVText(String(children))
-  }
-  return children
 }
 
 function addChildren (
@@ -61,10 +50,6 @@ function addChildren (
       addChildren(childNodes, children[i], type)
     }
   }
-}
-
-function isChildren (x): x is VirtualChildren {
-  return isString(x) || isArray(x) || isValidElement(x)
 }
 
 export default h

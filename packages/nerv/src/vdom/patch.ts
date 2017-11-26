@@ -1,6 +1,5 @@
-/* tslint:disable: no-shadowed-variable*/
 /* tslint:disable: no-empty*/
-import { isString, isAttrAnEvent, isNumber } from 'nerv-utils'
+import { isString, isAttrAnEvent, isNumber, isArray } from 'nerv-utils'
 import createElement from './create-element'
 import {
   Props,
@@ -59,12 +58,12 @@ export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) 
   return newDom
 }
 
-export function patchChildren (
+function patchArrayChildren (
   parentDom,
   lastChildren,
   nextChildren,
   context,
-  isSVG
+  isSVG?
 ) {
   const lastLength = lastChildren.length
   const nextLength = nextChildren.length
@@ -97,6 +96,29 @@ export function patchChildren (
         nextLength
       )
     }
+  }
+}
+
+export function patchChildren (
+  parentDom,
+  lastChildren,
+  nextChildren,
+  context,
+  isSVG?
+) {
+  if (lastChildren === nextChildren) {
+    return
+  }
+  const lastChildrenIsArray = isArray(lastChildren)
+  const nextChildrenIsArray = isArray(nextChildren)
+  if (lastChildrenIsArray && nextChildrenIsArray) {
+    patchArrayChildren(parentDom, lastChildren, nextChildren, context, isSVG)
+  } else if (!lastChildrenIsArray && !nextChildrenIsArray) {
+    patch(lastChildren, nextChildren, parentDom, context, isSVG)
+  } else if (lastChildrenIsArray && !nextChildrenIsArray) {
+    patchArrayChildren(parentDom, lastChildren, [nextChildren], context, isSVG)
+  } else if (!lastChildrenIsArray && nextChildrenIsArray) {
+    patchArrayChildren(parentDom, [lastChildren], nextChildren, context, isSVG)
   }
 }
 

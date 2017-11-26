@@ -18,7 +18,7 @@ describe('keys', () => {
     scratch = null
   })
 
-  it('should remove orphaned keyed nodes', () => {
+  it.only('should remove orphaned keyed nodes', () => {
     let inst
     class App extends Component {
       constructor () {

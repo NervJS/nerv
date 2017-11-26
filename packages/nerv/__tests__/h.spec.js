@@ -5,8 +5,8 @@ describe('test generate virtual dom tree', () => {
   it('test make virtual dom tree simply', () => {
     const tree = h('div', { id: 'test', key: '0' }, 'test')
     expect(tree.type).toBe('div')
-    expect(tree.children.length).toBe(1)
-    expect(tree.children[0].text).toBe('test')
+    expect(tree.children.text).toBe('test')
+    // expect(tree.children[0].text).toBe('test')
   })
 
   it('test make virtual dom tree with children', () => {
@@ -33,6 +33,6 @@ describe('test generate virtual dom tree', () => {
     expect(tree.props.className).toBe('list')
     expect(tree.children.length).toBe(3)
     expect(tree.children[0].key).toBe('1')
-    expect(tree.children[0].children[0].children[0].vtype).toBe(VType.Text)
+    expect(tree.children[0].children.children.vtype).toBe(VType.Text)
   })
 })

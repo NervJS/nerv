@@ -53,15 +53,12 @@ function createElement (
           : doc.createElement(vnode.type)
     setProps(domNode, vnode, isSvg)
     const children = vnode.children
-    for (let i = 0; i < children.length; i++) {
-      const child = children[i]
-      if (isWidget(child) || isVNode(child)) {
-        child.parentContext = vnode.parentContext || {}
+    if (isArray(children)) {
+      for (let i = 0; i < children.length; i++) {
+        mountElement(children[i], domNode, parentComponent, isSvg)
       }
-      const childNode = createElement(child, isSvg, parentComponent)
-      if (childNode) {
-        domNode.appendChild(childNode)
-      }
+    } else {
+      mountElement(children, domNode, parentComponent, isSvg)
     }
     vnode.dom = domNode
     if (vnode.ref !== null) {
@@ -83,6 +80,16 @@ function createElement (
     throw new Error('Unsupported VNode.')
   }
   return domNode
+}
+
+function mountElement (vnode, domNode, parentComponent, isSvg) {
+  if (isWidget(vnode) || isVNode(vnode)) {
+    vnode.parentContext = vnode.parentContext || {}
+  }
+  const childNode = createElement(vnode, isSvg, parentComponent)
+  if (childNode) {
+    domNode.appendChild(childNode)
+  }
 }
 
 function setProps (domNode: Element, vnode, isSvg) {

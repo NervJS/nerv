@@ -2,16 +2,19 @@ import h from './vdom/h'
 import {
   isFunction,
   isString,
-  isArray,
-  isAttrAnEvent,
-  isNumber
+  isAttrAnEvent
 } from 'nerv-utils'
 import FullComponent from './full-component'
 import StatelessComponent from './stateless-component'
 import CurrentOwner from './current-owner'
 import EventHook from './hooks/event-hook'
-import createVText from './vdom/create-vtext'
-import { Props, Component, VNode, VirtualChildren } from 'nerv-shared'
+import {
+  Props,
+  Component,
+  VNode,
+  VirtualChildren,
+  EMPTY_CHILDREN
+} from 'nerv-shared'
 
 function transformPropsForRealTag (type: string, props: Props) {
   const newProps: Props = {}
@@ -55,17 +58,6 @@ function transformPropsForComponent (props: Props, defaultProps?: Props) {
   return newProps
 }
 
-export function flattenChildren (children) {
-  if (isArray(children)) {
-    for (let i = 0; i < children.length; i++) {
-      return flattenChildren(children.filter(Boolean))
-    }
-  } else if (isString(children) || isNumber(children)) {
-    return createVText(String(children))
-  }
-  return children
-}
-
 function createElement<T> (
   type: string | Function | Component<any, any>,
   properties?: T & Props | null,
@@ -90,7 +82,7 @@ function createElement<T> (
       (type as any).defaultProps
     )
     if (!props.children) {
-      props.children = children
+      props.children = children || EMPTY_CHILDREN
     }
     props.owner = CurrentOwner.current
     return type.prototype && type.prototype.render

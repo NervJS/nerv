@@ -26,6 +26,8 @@ export interface StatelessComponent extends Widget {
   type: Function
 }
 
+export const EMPTY_CHILDREN = []
+
 export interface VText {
   vtype: VType
   text: string | number
@@ -54,7 +56,7 @@ export interface VNode {
   _owner: any // TODO: this is a component
   isSvg?: boolean
   parentContext?: any
-  dom: Element | null,
+  dom: Element | null
   ref: Function | string | null
 }
 
@@ -143,7 +145,10 @@ export function isVText (node): node is VText {
 export function isWidget (
   node
 ): node is CompositeComponent | StatelessComponent {
-  return !isNullOrUndef(node) && ((node.vtype & (VType.Composite | VType.Stateless)) > 0)
+  return (
+    !isNullOrUndef(node) &&
+    (node.vtype & (VType.Composite | VType.Stateless)) > 0
+  )
 }
 
 export function isComposite (node): node is CompositeComponent {
