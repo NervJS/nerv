@@ -12,7 +12,7 @@ import { isString, isArray, isNumber } from 'nerv-utils'
 function h (type: string, props: Props, children?) {
   const childNodes = []
   if (props.children) {
-    if (!children || !children.length) {
+    if (!children) {
       children = props.children
     }
     delete props.children
