@@ -10,7 +10,7 @@ import {
 import { isString, isArray, isNumber } from 'nerv-utils'
 
 function h (type: string, props: Props, children?) {
-  const childNodes = []
+  let childNodes
   if (props.children) {
     if (!children) {
       children = props.children
@@ -18,7 +18,8 @@ function h (type: string, props: Props, children?) {
     delete props.children
   }
   if (isArray(children)) {
-    addChildren(childNodes, children, type)
+    childNodes = []
+    addChildren(childNodes, children as any, type)
   } else if (isString(children) || isNumber(children)) {
     children = createVText(String(children))
   } else if (!isValidElement(children)) {
@@ -27,7 +28,7 @@ function h (type: string, props: Props, children?) {
   return createVNode(
     type,
     props,
-    childNodes.length ? childNodes : children,
+    childNodes !== undefined ? childNodes : children,
     props.key,
     props.namespace,
     props.owner,
@@ -41,8 +42,7 @@ function addChildren (
   type: string
 ) {
   if (isString(children) || isNumber(children)) {
-    children = String(children)
-    childNodes.push(createVText(children) as any)
+    childNodes.push(createVText(String(children)))
   } else if (isValidElement(children)) {
     childNodes.push(children)
   } else if (isArray(children)) {

@@ -34,13 +34,6 @@ export interface VText {
   dom: Text | null
 }
 
-export interface PatchOrder {
-  removes: any[]
-  inserts: any[]
-}
-
-export type Patch = PatchOrder | VirtualNode
-
 export interface VVoid {
   dom: Text
   vtype: VType
@@ -53,7 +46,7 @@ export interface VNode {
   children: VirtualChildren
   key: string | number | undefined
   namespace: string | null
-  _owner: any // TODO: this is a component
+  _owner: Component<any, any> // TODO: this is a component
   isSvg?: boolean
   parentContext?: any
   dom: Element | null
@@ -65,15 +58,9 @@ export type VirtualNode =
   | VText
   | CompositeComponent
   | StatelessComponent
-  | VirtualChildren
-  | boolean
-  | string
-  | number
-  | null
-  | undefined
   | VVoid
 
-export type VirtualChildren = Array<string | number | VNode>
+export type VirtualChildren = Array<string | number | VirtualNode> | VirtualNode
 
 export type Ref = (node?: Element | null) => void | null
 
