@@ -4,7 +4,8 @@ import {
   VType,
   VNode,
   VirtualChildren,
-  Component
+  Component,
+  EMPTY_OBJ
 } from 'nerv-shared'
 
 function createVNode (
@@ -20,7 +21,7 @@ function createVNode (
     type,
     key: key || null,
     vtype: VType.Node,
-    props: props || {},
+    props: props || EMPTY_OBJ,
     children,
     namespace: isString(namespace) ? namespace : null,
     _owner: owner,

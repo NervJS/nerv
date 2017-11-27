@@ -1,5 +1,5 @@
 /* tslint:disable: no-empty*/
-import { isString, isAttrAnEvent, isNumber, isArray } from 'nerv-utils'
+import { isString, isAttrAnEvent, isNumber, isArray, isFunction } from 'nerv-utils'
 import createElement from './create-element'
 import {
   Props,
@@ -13,7 +13,6 @@ import {
 } from 'nerv-shared'
 import { unmount, unmountChildren } from './unmount'
 import Ref from './ref'
-import { isFunction } from 'util'
 import SVGPropertyConfig from './svg-property-config'
 
 export function patch (lastVnode, nextVnode, lastDom: Element, context: object, isSVG?: boolean) {

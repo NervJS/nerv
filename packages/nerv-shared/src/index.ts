@@ -28,6 +28,8 @@ export interface StatelessComponent extends Widget {
 
 export const EMPTY_CHILDREN = []
 
+export const EMPTY_OBJ = {}
+
 export interface VText {
   vtype: VType
   text: string | number

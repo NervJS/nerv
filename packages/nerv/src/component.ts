@@ -1,10 +1,10 @@
 import { isFunction, extend, clone } from 'nerv-utils'
 import { enqueueRender } from './render-queue'
 import { updateComponent } from './lifecycle'
-import { Props, ComponentLifecycle, Refs } from 'nerv-shared'
+import { Props, ComponentLifecycle, Refs, EMPTY_OBJ } from 'nerv-shared'
 
-interface Component<P = {}, S = {}> extends ComponentLifecycle<P, S > {
-  _rendered: any,
+interface Component<P = {}, S = {}> extends ComponentLifecycle<P, S> {
+  _rendered: any
   dom: any
 }
 
@@ -22,17 +22,17 @@ class Component<P, S> implements ComponentLifecycle<P, S> {
     if (!this.state) {
       this.state = {} as S
     }
-    this.props = props || {} as P
-    this.context = context || {}
+    this.props = props || ({} as P)
+    this.context = context || EMPTY_OBJ
     this.refs = {}
   }
 
   setState<K extends keyof S> (state: Pick<S, K>, callback?: Function) {
     if (state) {
-      (this._pendingStates = (this._pendingStates || [])).push(state)
+      (this._pendingStates = this._pendingStates || []).push(state)
     }
     if (isFunction(callback)) {
-      (this._pendingCallbacks = (this._pendingCallbacks || [])).push(callback)
+      (this._pendingCallbacks = this._pendingCallbacks || []).push(callback)
     }
     if (!this._disable) {
       enqueueRender(this)
@@ -59,13 +59,13 @@ class Component<P, S> implements ComponentLifecycle<P, S> {
 
   forceUpdate (callback?: Function) {
     if (isFunction(callback)) {
-      (this._pendingCallbacks = (this._pendingCallbacks || [])).push(callback)
+      (this._pendingCallbacks = this._pendingCallbacks || []).push(callback)
     }
     updateComponent(this, true)
   }
 
   // tslint:disable-next-line
-  public render (nextProps?: P, nextState?, nextContext?): any { }
+  public render(nextProps?: P, nextState?, nextContext?): any {}
 }
 
 export default Component
