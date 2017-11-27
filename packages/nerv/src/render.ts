@@ -1,12 +1,17 @@
 import { mountVNode, flushMount } from './lifecycle'
 import { isString, isNumber } from 'nerv-utils'
 import { isWidget, isVNode, VNode, VirtualNode } from 'nerv-shared'
+import { patch } from './vdom/patch'
 
 function isVChild (vnode): vnode is string | number | VNode {
   return isVNode(vnode) || isString(vnode) || isNumber(vnode)
 }
 
-export function render (vnode: VirtualNode, container: Element, callback?: Function) {
+export function render (
+  vnode: VirtualNode,
+  container: Element,
+  callback?: Function
+) {
   if (!isVChild(vnode) && !isWidget(vnode)) {
     return null
   }
@@ -14,10 +19,17 @@ export function render (vnode: VirtualNode, container: Element, callback?: Funct
   if (!container || container.nodeType !== 1) {
     throw new Error(`${container} should be a DOM Element`)
   }
-  const dom = mountVNode(vnode, {})
-  if (dom) {
+  const lastVnode = (container as any)._component
+  let dom
+  if (lastVnode !== undefined) {
+    dom = patch(lastVnode, vnode, container, {})
+  } else {
+    dom = mountVNode(vnode, {})
     container.appendChild(dom)
   }
+  // if (dom) {
+  //   container.appendChild(dom)
+  // }
   if (container) {
     (container as any)._component = vnode
   }
