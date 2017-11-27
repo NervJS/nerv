@@ -27,9 +27,7 @@ export function render (
     dom = mountVNode(vnode, {})
     container.appendChild(dom)
   }
-  // if (dom) {
-  //   container.appendChild(dom)
-  // }
+
   if (container) {
     (container as any)._component = vnode
   }
