@@ -2,14 +2,14 @@ import createVNode from './create-vnode'
 import createVText from './create-vtext'
 import {
   Props,
-  // VirtualChildren,
+  VirtualChildren,
   VirtualNode,
   isValidElement,
   EMPTY_CHILDREN
 } from 'nerv-shared'
 import { isString, isArray, isNumber } from 'nerv-utils'
 
-function h (type: string, props: Props, children?) {
+function h (type: string, props: Props, children?: VirtualChildren) {
   let childNodes
   if (props.children) {
     if (!children) {

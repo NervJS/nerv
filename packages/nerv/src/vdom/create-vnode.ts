@@ -1,14 +1,20 @@
 import { isString } from 'nerv-utils'
-import { Props, VType, VNode } from 'nerv-shared'
+import {
+  Props,
+  VType,
+  VNode,
+  VirtualChildren,
+  Component
+} from 'nerv-shared'
 
 function createVNode (
   type: string,
   props: Props,
-  children: any,
+  children: VirtualChildren,
   key,
-  namespace,
-  owner,
-  ref
+  namespace: string,
+  owner: Component<any, any>,
+  ref: Function | string | null | undefined
 ): VNode {
   return {
     type,

@@ -6,10 +6,13 @@ import {
   isNullOrUndef,
   VirtualNode,
   isInvalid,
-  VType
+  VType,
+  VirtualChildren,
+  VNode
 } from 'nerv-shared'
 import { patchProp } from './patch'
 import Ref from './ref'
+import { Component } from 'nervjs'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
@@ -55,7 +58,13 @@ function createElement (
     const children = vnode.children
     if (isArray(children)) {
       for (let i = 0; i < children.length; i++) {
-        mountChild(children[i], domNode, vnode.parentContext, parentComponent, isSvg)
+        mountChild(
+          children[i] as VirtualNode,
+          domNode,
+          vnode.parentContext,
+          parentComponent,
+          isSvg
+        )
       }
     } else {
       mountChild(children, domNode, vnode.parentContext, parentComponent, isSvg)
@@ -82,11 +91,17 @@ function createElement (
   return domNode
 }
 
-function mountChild (child, domNode, parentContext, parentComponent, isSvg) {
+function mountChild (
+  child: VirtualChildren,
+  domNode: Element,
+  parentContext: Object,
+  parentComponent: Component<any, any>,
+  isSvg?: boolean
+) {
   if (isWidget(child) || isVNode(child)) {
     child.parentContext = parentContext || {}
   }
-  const childNode = createElement(child, isSvg, parentComponent)
+  const childNode = createElement(child as VNode, isSvg, parentComponent)
   if (childNode) {
     domNode.appendChild(childNode)
   }

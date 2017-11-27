@@ -16,7 +16,7 @@ import Ref from './ref'
 import { isFunction } from 'util'
 import SVGPropertyConfig from './svg-property-config'
 
-export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) {
+export function patch (lastVnode, nextVnode, lastDom: Element, context: object, isSVG?: boolean) {
   lastDom = (lastVnode && lastVnode.dom) || lastDom
   if (lastVnode === nextVnode) {
     return lastDom
@@ -59,10 +59,10 @@ export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) 
 }
 
 function patchArrayChildren (
-  parentDom,
+  parentDom: Element,
   lastChildren,
   nextChildren,
-  context,
+  context: object,
   isSVG?
 ) {
   const lastLength = lastChildren.length
@@ -70,7 +70,7 @@ function patchArrayChildren (
   if (lastLength === 0) {
     if (nextLength > 0) {
       const dom = createElement(nextChildren, isSVG)
-      parentDom.appendChild(dom)
+      parentDom.appendChild(dom as Node)
     }
   } else if (nextLength === 0) {
     unmountChildren(lastChildren, parentDom)
@@ -100,7 +100,7 @@ function patchArrayChildren (
 }
 
 export function patchChildren (
-  parentDom,
+  parentDom: Element,
   lastChildren,
   nextChildren,
   context,
@@ -123,10 +123,10 @@ export function patchChildren (
 }
 
 function patchNonKeyedChildren (
-  parentDom,
+  parentDom: Element,
   lastChildren,
   nextChildren,
-  context,
+  context: object,
   isSVG: boolean,
   lastLength: number,
   nextLength: number
@@ -140,7 +140,7 @@ function patchNonKeyedChildren (
   if (lastLength < nextLength) {
     for (i = minLength; i < lastLength; i++) {
       if (parentDom !== null) {
-        parentDom.appendChild(createElement(nextChildren[i], isSVG))
+        parentDom.appendChild(createElement(nextChildren[i], isSVG) as Node)
       }
     }
   } else if (lastLength > nextLength) {
@@ -153,7 +153,7 @@ function patchNonKeyedChildren (
 function patchKeyedChildren (
   a: VNode[],
   b: VNode[],
-  dom,
+  dom: Element,
   context,
   isSVG: boolean,
   aLength: number,
