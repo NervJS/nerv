@@ -4,24 +4,13 @@ import { normalizeHTML } from './util'
 
 describe('cloneElement()', () => {
   let scratch
-  beforeAll(() => {
-    scratch = document.createElement('div')
-    document.body.appendChild(scratch)
-  })
 
   beforeEach(() => {
-    scratch.innerHTML = ''
-  })
-
-  afterAll(() => {
-    scratch.parentNode.removeChild(scratch)
-    scratch = null
+    scratch = document.createElement('div')
   })
 
   it('can clone a vnode with props', () => {
-    const vnode = (
-      <div className='hh' style={{ width: '800px' }} />
-    )
+    const vnode = <div className='hh' style={{ width: '800px' }} />
     const cloneVNode = cloneElement(vnode)
     expect(cloneVNode.type).toEqual('div')
     expect(cloneVNode.hasOwnProperty('props')).toBeTruthy()
@@ -41,7 +30,9 @@ describe('cloneElement()', () => {
     )
     const cloneVNode = cloneElement(vnode)
     render(cloneVNode, scratch)
-    expect(scratch.innerHTML).toEqual(normalizeHTML('<div><div>1</div><span>2</span><a href="#">ssd</a></div>'))
+    expect(scratch.innerHTML).toEqual(
+      normalizeHTML('<div><div>1</div><span>2</span><a href="#">ssd</a></div>')
+    )
   })
   it('can clone node with children contains Components', () => {
     class C extends Component {
@@ -59,7 +50,11 @@ describe('cloneElement()', () => {
     )
     const cloneVNode = cloneElement(vnode)
     render(cloneVNode, scratch)
-    expect(scratch.innerHTML).toEqual(normalizeHTML('<div><div class="cc">1</div><div class="ttt"></div><span class="ppp">sd</span></div>'))
+    expect(scratch.innerHTML).toEqual(
+      normalizeHTML(
+        '<div><div class="cc">1</div><div class="ttt"></div><span class="ppp">sd</span></div>'
+      )
+    )
   })
 
   it('can clone node by new props', () => {
@@ -92,6 +87,8 @@ describe('cloneElement()', () => {
     )
     const cloneVNode = cloneElement(vnode, null, <span>1</span>)
     render(cloneVNode, scratch)
-    expect(scratch.innerHTML).toEqual(normalizeHTML('<div><span>1</span></div>'))
+    expect(scratch.innerHTML).toEqual(
+      normalizeHTML('<div><span>1</span></div>')
+    )
   })
 })

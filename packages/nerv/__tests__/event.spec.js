@@ -5,15 +5,11 @@ import sinon from 'sinon'
 
 // @TODO: figure out why run component.spec before event.spec will occurs error
 describe('Events', () => {
-  let scratch
-  beforeAll(() => {
-    scratch = document.createElement('div')
-    document.body.appendChild(scratch)
-  })
-
   beforeEach(() => {
-    scratch.innerHTML = ''
-    const { addEventListener, removeEventListener } = document.constructor.prototype
+    const {
+      addEventListener,
+      removeEventListener
+    } = document.constructor.prototype
     if (addEventListener.restore) {
       addEventListener.restore()
     }
@@ -22,14 +18,11 @@ describe('Events', () => {
     }
   })
 
-  afterAll(() => {
-    scratch.parentNode.removeChild(scratch)
-    scratch = null
-  })
-
   it('should only register on* functions as handlers', () => {
-    const click = () => { }
-    const onclick = () => { }
+    const scratch = document.createElement('div')
+    document.body.appendChild(scratch)
+    const click = () => {}
+    const onclick = () => {}
 
     let doRender = null
     const proto = document.constructor.prototype
@@ -52,9 +45,7 @@ describe('Events', () => {
       }
 
       render () {
-        return (
-          this.state.show ? <div click={click} onClick={onclick} /> : null
-        )
+        return this.state.show ? <div click={click} onClick={onclick} /> : null
       }
     }
 
@@ -62,7 +53,9 @@ describe('Events', () => {
 
     expect(scratch.childNodes[0].attributes.length.toString()).toMatch(/0|1/) // 1 for ie8
     expect(addEventListenerSpy.calledOnce).toBeTruthy()
-    expect(addEventListenerSpy.calledWithExactly('click', sinon.match.func, false)).toBeTruthy()
+    expect(
+      addEventListenerSpy.calledWithExactly('click', sinon.match.func, false)
+    ).toBeTruthy()
 
     addEventListenerSpy.restore()
     doRender()
@@ -70,6 +63,8 @@ describe('Events', () => {
   })
 
   it('should add and remove event handlers', () => {
+    const scratch = document.createElement('div')
+    document.body.appendChild(scratch)
     const click = sinon.spy()
     const mousedown = sinon.spy()
 
@@ -104,11 +99,11 @@ describe('Events', () => {
       }
 
       render () {
-        return ([
+        return [
           <div onClick={this.clickHandler} onMouseDown={mousedown} />,
           <div onClick={this.clickHandler} />,
           <div />
-        ][this.state.count])
+        ][this.state.count]
       }
     }
 
@@ -157,6 +152,8 @@ describe('Events', () => {
   })
 
   it('unbubbleEvents should attach to node instaed of document', async () => {
+    const scratch = document.createElement('div')
+    document.body.appendChild(scratch)
     const focus = sinon.spy()
 
     let doRender = null
@@ -181,10 +178,10 @@ describe('Events', () => {
       }
 
       render () {
-        return ([
+        return [
           <input onFocus={this.focusHandler} id='input' />,
           <input onFocus={() => ({})} />
-        ][this.state.count])
+        ][this.state.count]
       }
     }
 

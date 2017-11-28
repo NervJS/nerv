@@ -1,10 +1,10 @@
-export interface ICache<Key, Value> {
+export interface Cache<Key, Value> {
   k: Key,
   v: Value
 }
 
 class SimpleMap<Key, Value> {
-  cache: Array<ICache<Key, Value>>
+  cache: Array<Cache<Key, Value>>
   size: number
   constructor () {
     this.cache = []

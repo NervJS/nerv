@@ -13,22 +13,13 @@ describe('nerv-redux', () => {
   function renderToContainer (vnode) {
     return render(vnode, container)
   }
-  beforeAll(() => {
-    container = document.createElement('div')
-    document.body.appendChild(container)
-  })
 
   beforeEach(() => {
+    container = document.createElement('div')
     const c = container.firstElementChild
     if (c) {
       render(<Empty />, container)
     }
-    container.innerHTML = ''
-  })
-
-  afterAll(() => {
-    container.parentNode.removeChild(container)
-    container = null
   })
 
   it('Provider and connect should be exported', () => {

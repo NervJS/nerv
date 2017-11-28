@@ -6,47 +6,34 @@ import { getAttributes, normalizeHTML, delay } from './util'
 describe('render()', function () {
   let scratch
 
-  beforeAll(() => {
-    scratch = document.createElement('div')
-    document.body.appendChild(scratch)
-  })
-
   beforeEach(() => {
-    scratch.innerHTML = ''
-  })
-
-  afterAll(() => {
-    scratch.parentNode.removeChild(scratch)
-    scratch = null
+    scratch = document.createElement('div')
   })
 
   it('should create empty nodes (<* />)', () => {
     render(<div />, scratch)
     expect(scratch.childNodes.length).toBe(1)
     expect(scratch.childNodes[0].nodeName).toBe('DIV')
-    scratch.innerHTML = ''
 
     render(<span />, scratch)
     expect(scratch.childNodes.length).toBe(1)
     expect(scratch.childNodes[0].nodeName).toBe('SPAN')
 
-    scratch.innerHTML = ''
-
     render(<foo />, scratch)
     render(<x-bar />, scratch)
-    expect(scratch.childNodes.length).toBe(2)
-    expect(scratch.childNodes[0].nodeName).toBe('FOO')
-    expect(scratch.childNodes[1].nodeName).toBe('X-BAR')
+    expect(scratch.childNodes.length).toBe(1)
+    expect(scratch.childNodes[0].nodeName).toBe('X-BAR')
   })
 
   it('should nest empty nodes', () => {
-    render((
+    render(
       <div>
         <span />
         <foo />
         <x-bar />
-      </div>
-    ), scratch)
+      </div>,
+      scratch
+    )
 
     expect(scratch.childNodes.length).toBe(1)
     expect(scratch.childNodes[0].nodeName).toBe('DIV')
@@ -59,11 +46,12 @@ describe('render()', function () {
   })
 
   it('should not render falsey values', () => {
-    render((
+    render(
       <div>
         {null},{undefined},{false},{0},{NaN}
-      </div>
-    ), scratch)
+      </div>,
+      scratch
+    )
 
     expect(scratch.firstChild.innerHTML).toBe(',,,0,NaN')
   })
@@ -109,20 +97,32 @@ describe('render()', function () {
   })
 
   it('should clear falsey attributes', () => {
-    render((
-      <div anull={null} aundefined={undefined} afalse={false} anan={NaN} a0={0} />
-    ), scratch)
+    render(
+      <div
+        anull={null}
+        aundefined={undefined}
+        afalse={false}
+        anan={NaN}
+        a0={0}
+      />,
+      scratch
+    )
 
     expect(getAttributes(scratch.firstChild)).toEqual({
       a0: '0',
       anan: 'NaN'
     })
 
-    scratch.innerHTML = ''
-
-    render((
-      <div anull={null} aundefined={undefined} afalse={false} anan={NaN} a0={0} />
-    ), scratch)
+    render(
+      <div
+        anull={null}
+        aundefined={undefined}
+        afalse={false}
+        anan={NaN}
+        a0={0}
+      />,
+      scratch
+    )
 
     expect(getAttributes(scratch.firstChild)).toEqual({
       a0: '0',
@@ -131,14 +131,15 @@ describe('render()', function () {
   })
 
   it('should clear falsey input values', () => {
-    const root = render((
+    const root = render(
       <div>
         <input value={0} />
         <input value={false} />
         <input value={null} />
         <input value={undefined} />
-      </div>
-    ), scratch)
+      </div>,
+      scratch
+    )
 
     expect(root.children[0].value).toBe('0')
     // expect(root.children[1].value).toBe('false')
@@ -148,12 +149,12 @@ describe('render()', function () {
 
   it('should clear falsey DOM properties', () => {
     function test (val) {
-      scratch.innerHTML = ''
-      render((
+      render(
         <div>
           <table border={val} />
-        </div>
-      ), scratch)
+        </div>,
+        scratch
+      )
     }
 
     test('2')
@@ -183,14 +184,24 @@ describe('render()', function () {
   })
 
   it('should not serialize function props as attributes', () => {
-    render(<div click={function a () { }} ONCLICK={function b () { }} />, scratch)
+    render(<div click={function a () {}} ONCLICK={function b () {}} />, scratch)
 
     const div = scratch.childNodes[0]
     expect(div.attributes.length.toString()).toMatch(/[01]/) // 1 for ie8
   })
 
   it('should serialize object props as attributes', () => {
-    render(<div foo={{ a: 'b' }} bar={{ toString () { return 'abc' } }} />, scratch)
+    render(
+      <div
+        foo={{ a: 'b' }}
+        bar={{
+          toString () {
+            return 'abc'
+          }
+        }}
+      />,
+      scratch
+    )
 
     const div = scratch.childNodes[0]
     expect(div.attributes[0].name).toBe('foo')
@@ -249,9 +260,7 @@ describe('render()', function () {
       }
 
       render () {
-        return (
-          <div style={this.state.style}>test</div>
-        )
+        return <div style={this.state.style}>test</div>
       }
     }
     render(<Outer />, scratch)
@@ -281,14 +290,18 @@ describe('render()', function () {
   it('should support dangerouslySetInnerHTML', () => {
     const html = '<b>foo &amp; bar</b>'
     render(<div dangerouslySetInnerHTML={{ __html: html }} />, scratch)
-
     expect(scratch.firstChild.innerHTML).toEqual(normalizeHTML(html))
     expect(scratch.innerHTML).toEqual(normalizeHTML('<div>' + html + '</div>'))
-    scratch.innerHTML = ''
-    render(<div>a<strong>b</strong></div>, scratch)
+    render(
+      <div>
+        a<strong>b</strong>
+      </div>,
+      scratch
+    )
 
-    expect(scratch.innerHTML).toEqual(normalizeHTML(`<div>a<strong>b</strong></div>`))
-    scratch.innerHTML = ''
+    expect(scratch.innerHTML).toEqual(
+      normalizeHTML(`<div>a<strong>b</strong></div>`)
+    )
     render(<div dangerouslySetInnerHTML={{ __html: html }} />, scratch)
 
     expect(scratch.innerHTML).toEqual(normalizeHTML('<div>' + html + '</div>'))
@@ -312,7 +325,11 @@ describe('render()', function () {
         this.state.html = this.props.html
       }
       render () {
-        return this.state.html ? <div dangerouslySetInnerHTML={{ __html: this.state.html }} /> : <div />
+        return this.state.html ? (
+          <div dangerouslySetInnerHTML={{ __html: this.state.html }} />
+        ) : (
+          <div />
+        )
       }
     }
 
@@ -320,7 +337,9 @@ describe('render()', function () {
 
     render(<Thing html='<b><i>test</i></b>' />, scratch)
 
-    expect(scratch.innerHTML).toEqual(normalizeHTML('<div><b><i>test</i></b></div>'))
+    expect(scratch.innerHTML).toEqual(
+      normalizeHTML('<div><b><i>test</i></b></div>')
+    )
 
     // thing.setState({ html: false })
     // thing.forceUpdate()
@@ -336,37 +355,38 @@ describe('render()', function () {
   it('should hydrate with dangerouslySetInnerHTML', () => {
     const html = '<b>foo &amp; bar</b>'
     render(<div dangerouslySetInnerHTML={{ __html: html }} />, scratch)
-    expect(scratch.firstChild.innerHTML).toEqual(normalizeHTML('<b>foo &amp; bar</b>'))
+    expect(scratch.firstChild.innerHTML).toEqual(
+      normalizeHTML('<b>foo &amp; bar</b>')
+    )
     expect(scratch.innerHTML).toEqual(normalizeHTML(`<div>${html}</div>`))
   })
 
   it('should reconcile mutated DOM attributes', () => {
     const check = p => {
-      scratch.innerHTML = ''
       render(<input type='checkbox' checked={p} />, scratch)
     }
     const value = () => scratch.lastChild.checked
-    const setValue = p => (scratch.lastChild.checked = p)
+    // const setValue = p => (scratch.lastChild.checked = p)
     check(true)
     expect(value()).toEqual(true)
     check(false)
     expect(value()).toEqual(false)
     check(true)
     expect(value()).toEqual(true)
-    setValue(true)
+    // setValue(true)
     check(false)
     expect(value()).toEqual(false)
-    setValue(false)
+    // setValue(false)
     check(true)
     expect(value()).toEqual(true)
   })
 
   it('should ignore props.children if children are manually specified', () => {
     expect(
-      <div a children={['a', 'b']}>c</div>
-    ).toEqual(
-      <div a>c</div>
-      )
+      <div a children={['a', 'b']}>
+        c
+      </div>
+    ).toEqual(<div a>c</div>)
   })
 
   it('should reorder child pairs', () => {
@@ -379,18 +399,16 @@ describe('render()', function () {
       }
 
       render () {
-        return (
-          this.state.first ? (
-            <div>
-              <a>a</a>
-              <b>b</b>
-            </div>
-          ) : (
-            <div>
-              <b>b</b>
-              <a>a</a>
-            </div>
-          )
+        return this.state.first ? (
+          <div>
+            <a>a</a>
+            <b>b</b>
+          </div>
+        ) : (
+          <div>
+            <b>b</b>
+            <a>a</a>
+          </div>
         )
       }
     }
@@ -415,10 +433,7 @@ describe('render()', function () {
     class Foo extends Component {
       render () {
         const alt = this.props.alt || this.state.alt || this.alt
-        const c = [
-          <a>foo</a>,
-          <b>{alt ? 'alt' : 'bar'}</b>
-        ]
+        const c = [<a>foo</a>, <b>{alt ? 'alt' : 'bar'}</b>]
         if (alt) c.reverse()
         return <div>{c}</div>
       }
@@ -440,25 +455,33 @@ describe('render()', function () {
     comp.forceUpdate()
 
     expect(scratch.firstChild.children.length).toBe(4)
-    expect(normalizeHTML(scratch.innerHTML)).toEqual(normalizeHTML(`<div><a>foo</a><b>bar</b><c>baz</c><b>bat</b></div>`))
+    expect(normalizeHTML(scratch.innerHTML)).toEqual(
+      normalizeHTML(`<div><a>foo</a><b>bar</b><c>baz</c><b>bat</b></div>`)
+    )
 
     comp.alt = true
     comp.forceUpdate()
 
     expect(scratch.firstChild.children.length).toBe(4)
-    expect(normalizeHTML(scratch.innerHTML)).toEqual(normalizeHTML(`<div><b>alt</b><a>foo</a><c>baz</c><b>bat</b></div>`))
+    expect(normalizeHTML(scratch.innerHTML)).toEqual(
+      normalizeHTML(`<div><b>alt</b><a>foo</a><c>baz</c><b>bat</b></div>`)
+    )
 
     comp.alt = false
     comp.forceUpdate()
 
     expect(scratch.firstChild.children.length).toBe(4)
-    expect(normalizeHTML(scratch.innerHTML)).toEqual(normalizeHTML(`<div><a>foo</a><b>bar</b><c>baz</c><b>bat</b></div>`))
+    expect(normalizeHTML(scratch.innerHTML)).toEqual(
+      normalizeHTML(`<div><a>foo</a><b>bar</b><c>baz</c><b>bat</b></div>`)
+    )
 
     comp.alt = true
     comp.forceUpdate()
 
     expect(scratch.firstChild.children.length).toBe(4)
-    expect(normalizeHTML(scratch.innerHTML)).toEqual(normalizeHTML(`<div><b>alt</b><a>foo</a><c>baz</c><b>bat</b></div>`))
+    expect(normalizeHTML(scratch.innerHTML)).toEqual(
+      normalizeHTML(`<div><b>alt</b><a>foo</a><c>baz</c><b>bat</b></div>`)
+    )
   })
 
   it('should not execute append operation when child is at last', async () => {
@@ -483,7 +506,7 @@ describe('render()', function () {
         const { todos, text } = this.state
         return (
           <div onKeyDown={this.addTodo}>
-            {todos.map(todo => (<div>{todo.text}</div>))}
+            {todos.map(todo => <div>{todo.text}</div>)}
             <input value={text} onInput={this.setText} ref={i => (input = i)} />
           </div>
         )
@@ -514,12 +537,7 @@ describe('render()', function () {
       }
 
       render () {
-        return (
-          <input
-            name='test'
-            defaultValue={260}
-          />
-        )
+        return <input name='test' defaultValue={260} />
       }
     }
     render(<TestInputRange />, scratch)

@@ -10,11 +10,11 @@ import {
 import { delay } from './util'
 const Empty = () => null
 function clearRender(dom) {
+  scratch = document.createElement('div')
   const c = dom.firstElementChild
   if (c) {
     render(<Empty />, dom)
   }
-  dom.innerHTML = ''
 }
 function clearAll(...doms) {
   doms.forEach(clearRender)
@@ -46,11 +46,11 @@ describe('ComponentDidCatch', () => {
   })
 
   beforeEach(() => {
+    scratch = document.createElement('div')
     const c = scratch.firstElementChild
     if (c) {
       render(<Empty />, scratch)
     }
-    scratch.innerHTML = ''
 
     log = []
 
@@ -589,7 +589,9 @@ describe('ComponentDidCatch', () => {
     expect(container1.firstChild.textContent).toBe('Before 1')
     expect(container2.firstChild).toBe(null)
     expect(container3.firstChild.textContent).toBe('Caught an error: Hello.')
-    clearAll(container1, container2, container3)
+    container1 = document.createElement('div')
+    container2 = document.createElement('div')
+    container3 = document.createElement('div')
     render(<span>After 1</span>, container1)
     render(<span>After 2</span>, container2)
     render(<ErrorBoundary forceRetry>After 3</ErrorBoundary>, container3)

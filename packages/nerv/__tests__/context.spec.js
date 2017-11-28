@@ -8,18 +8,8 @@ import { CHILDREN_MATCHER, normalizeHTML } from './util'
 describe('context', () => {
   let scratch
 
-  beforeAll(() => {
-    scratch = document.createElement('div')
-    document.body.appendChild(scratch)
-  })
-
   beforeEach(() => {
-    scratch.innerHTML = ''
-  })
-
-  afterAll(() => {
-    scratch.parentNode.removeChild(scratch)
-    scratch = null
+    scratch = document.createElement('div')
   })
 
   it('should pass context to grandchildren', () => {
@@ -41,16 +31,22 @@ describe('context', () => {
         return CONTEXT
       }
       render () {
-        return <div><Inner {...this.state} /></div>
+        return (
+          <div>
+            <Inner {...this.state} />
+          </div>
+        )
       }
     }
     const getChildContextSpy = sinon.spy(Outer.prototype, 'getChildContext')
 
     class Inner extends Component {
-      shouldComponentUpdate () { return true }
-      componentWillReceiveProps () { }
-      componentWillUpdate () { }
-      componentDidUpdate () { }
+      shouldComponentUpdate () {
+        return true
+      }
+      componentWillReceiveProps () {}
+      componentWillUpdate () {}
+      componentDidUpdate () {}
       render () {
         return <div>{this.context && this.context.a}</div>
       }
@@ -103,10 +99,12 @@ describe('context', () => {
     const getChildContextSpy = sinon.spy(Outer.prototype, 'getChildContext')
 
     class Inner extends Component {
-      shouldComponentUpdate () { return true }
-      componentWillReceiveProps () { }
-      componentWillUpdate () { }
-      componentDidUpdate () { }
+      shouldComponentUpdate () {
+        return true
+      }
+      componentWillReceiveProps () {}
+      componentWillUpdate () {}
+      componentDidUpdate () {}
       render () {
         return <div>{this.context && this.context.a}</div>
       }
@@ -143,7 +141,11 @@ describe('context', () => {
         return { ...outerContext }
       }
       render () {
-        return <div><Inner /></div>
+        return (
+          <div>
+            <Inner />
+          </div>
+        )
       }
     }
 
@@ -159,12 +161,19 @@ describe('context', () => {
     class InnerMost extends Component {
       render () {
         const { outer, inner } = this.context
-        return <strong>{outer}{inner}</strong>
+        return (
+          <strong>
+            {outer}
+            {inner}
+          </strong>
+        )
       }
     }
 
     render(<Outer />, scratch)
-    expect(scratch.innerHTML).toEqual(normalizeHTML('<div><strong>12</strong></div>'))
+    expect(scratch.innerHTML).toEqual(
+      normalizeHTML('<div><strong>12</strong></div>')
+    )
   })
 
   it('Should child component constructor access context', () => {
@@ -175,7 +184,11 @@ describe('context', () => {
         return CONTEXT
       }
       render () {
-        return <div><Inner /></div>
+        return (
+          <div>
+            <Inner />
+          </div>
+        )
       }
     }
 

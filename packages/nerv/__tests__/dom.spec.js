@@ -9,19 +9,8 @@ import {
 describe('dom', () => {
   let scratch
 
-  beforeAll(() => {
-    scratch = document.createElement('div')
-    scratch.id = 'test'
-    document.body.appendChild(scratch)
-  })
-
   beforeEach(() => {
-    scratch.innerHTML = ''
-  })
-
-  afterAll(() => {
-    scratch.parentNode.removeChild(scratch)
-    scratch = null
+    scratch = document.createElement('div')
   })
 
   describe('unmountComponentAtNode', () => {

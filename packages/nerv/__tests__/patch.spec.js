@@ -5,18 +5,8 @@ import { normalizeHTML } from './util'
 describe('patch', () => {
   let scratch
 
-  beforeAll(() => {
-    scratch = document.createElement('div')
-    document.body.appendChild(scratch)
-  })
-
   beforeEach(() => {
-    scratch.innerHTML = ''
-  })
-
-  afterAll(() => {
-    scratch.parentNode.removeChild(scratch)
-    scratch = null
+    scratch = document.createElement('div')
   })
 
   it('should hanlde style', () => {
@@ -55,7 +45,9 @@ describe('patch', () => {
             style={{ color: 'green', padding: '10px' }}
             test={[1]}
             accessKey={[]}
-          >1</div>
+          >
+            1
+          </div>
           <li key='a'>a</li>
           <li key='b'>b</li>
         </div>
@@ -98,6 +90,8 @@ describe('patch', () => {
       )
     })
     inst.forceUpdate()
-    expect(scratch.innerHTML).toEqual(normalizeHTML('<div><div>1</div><li>b</li><li>a</li></div>'))
+    expect(scratch.innerHTML).toEqual(
+      normalizeHTML('<div><div>1</div><li>b</li><li>a</li></div>')
+    )
   })
 })

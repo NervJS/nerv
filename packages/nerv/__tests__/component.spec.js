@@ -22,7 +22,6 @@ function fireEvent (on, type) {
   on.dispatchEvent(e)
 }
 
-const Empty = () => null
 describe('Component', function () {
   let scratch
   beforeAll(() => {
@@ -31,11 +30,13 @@ describe('Component', function () {
   })
 
   beforeEach(() => {
-    const c = scratch.firstElementChild
-    if (c) {
-      render(<Empty />, scratch)
-    }
-    scratch.innerHTML = ''
+    scratch = document.createElement('div')
+    document.body.appendChild(scratch)
+    // const c = scratch.firstElementChild
+    // if (c) {
+    //   render(<Empty />, scratch)
+    // }
+    // scratch.innerHTML = ''
   })
 
   afterAll(() => {
@@ -178,6 +179,10 @@ describe('Component', function () {
   })
 
   it('should not recycle common class children with different keys', () => {
+    let scratch = document.createElement('div')
+    const container = document.createElement('div')
+    container.appendChild(scratch)
+    document.body.appendChild(container)
     let idx = 0
     const msgs = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
     const sideEffect = sinon.spy()
@@ -247,7 +252,8 @@ describe('Component', function () {
 
     sideEffect.reset()
     Comp.prototype.componentWillMount.reset()
-    scratch.innerHTML = ''
+    // scratch.innerHTML = ''
+    scratch = document.createElement('div')
     render(<BadContainer ref={c => (bad = c)} />, scratch)
     expect(scratch.textContent).toEqual('DE')
     expect(willMount.calledTwice).toBeTruthy()
@@ -487,7 +493,6 @@ describe('Component', function () {
           return <div onClick={this.click.bind(this)}>{this.state.count}</div>
         }
       }
-
       render(<A />, scratch)
       const firstChild = scratch.childNodes[0]
       expect(firstChild.innerHTML).toEqual('1')

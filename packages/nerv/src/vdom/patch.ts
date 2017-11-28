@@ -1,5 +1,11 @@
 /* tslint:disable: no-empty*/
-import { isString, isAttrAnEvent, isNumber, isArray, isFunction } from 'nerv-utils'
+import {
+  isString,
+  isAttrAnEvent,
+  isNumber,
+  isArray,
+  isFunction
+} from 'nerv-utils'
 import createElement from './create-element'
 import {
   Props,
@@ -15,7 +21,13 @@ import { unmount, unmountChildren } from './unmount'
 import Ref from './ref'
 import SVGPropertyConfig from './svg-property-config'
 
-export function patch (lastVnode, nextVnode, lastDom: Element, context: object, isSVG?: boolean) {
+export function patch (
+  lastVnode,
+  nextVnode,
+  lastDom: Element,
+  context: object,
+  isSVG?: boolean
+) {
   lastDom = (lastVnode && lastVnode.dom) || lastDom
   if (lastVnode === nextVnode) {
     return lastDom
@@ -577,6 +589,10 @@ function patchProps (
     if (isNullOrUndef(nextProps[propName]) && !isNullOrUndef(value)) {
       if (isAttrAnEvent(propName)) {
         value.unhook(domNode, propName, nextProps[propName])
+      } else if (propName === 'dangerouslySetInnerHTML') {
+        if (value && !nextProps[propName]) {
+          domNode.innerHTML = ''
+        }
       } else {
         domNode.removeAttribute(propName)
       }
