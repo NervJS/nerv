@@ -2,9 +2,7 @@ module.exports = {
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'lcov', 'text'],
   collectCoverageFrom: [
-    'packages/nerv/src/**/*.ts',
-    'packages/nerv-utils/src/**/*.ts',
-    'packages/nerv-shared/src/**/*.ts'
+    'packages/nerv/src/**/*.ts'
   ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   moduleNameMapper: {
@@ -30,7 +28,7 @@ module.exports = {
   },
   rootDir: __dirname,
   testMatch: [
-    // '<rootDir>/packages/nerv/__tests__/event.spec.js',
+    // '<rootDir>/packages/nerv/__tests__/keys.spec.js',
     // '<rootDir>/packages/nerv/__tests__/component.spec.js',
     // '<rootDir>/packages/nerv/__tests__/render.spec.js',
     // '<rootDir>/packages/nerv/__tests__/lifecycle.spec.js',
