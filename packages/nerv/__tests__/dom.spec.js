@@ -3,7 +3,8 @@ import {
   Component,
   createElement,
   render,
-  unmountComponentAtNode
+  unmountComponentAtNode,
+  findDOMNode
 } from '../src'
 
 describe('dom', () => {
@@ -51,6 +52,22 @@ describe('dom', () => {
       render(<Comp />, scratch)
       expect(unmountComponentAtNode(scratch)).toBe(true)
       expect(scratch.textContent).toBe('')
+    })
+
+    it('should findDomNode works', () => {
+      const B = <b>hellooo</b>
+      render(B, scratch)
+      expect(findDOMNode(B).firstChild.textContent).toBe('hellooo')
+      // expect(findDOMNode(B)).toBe(B)
+      class Comp extends Component {
+        render () {
+          return <span>test</span>
+        }
+      }
+      const C = <Comp />
+      render(C, scratch)
+      // console.log(findDOMNode(C).innerHTML)
+      // expect(findDOMNode(Comp).firstChild.textContent).toBe('test')
     })
   })
 })

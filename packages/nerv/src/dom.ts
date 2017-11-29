@@ -13,7 +13,7 @@ export function unmountComponentAtNode (dom) {
 }
 
 export function findDOMNode (component) {
-  return component || (component.dom && component)
+  return component && component.dom
 }
 
 export function createPortal (vnode, container: Element) {

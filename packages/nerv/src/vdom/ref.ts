@@ -28,8 +28,8 @@ export default {
       ref(null)
     } else if (isString(ref)) {
       const inst = vnode._owner
-      if (inst.component.refs[ref] === node && isComposite(inst)) {
-        delete inst.component.refs[ref]
+      if (inst.refs[ref] === node && isFunction(inst.render)) {
+        delete inst.refs[ref]
       }
     }
   }

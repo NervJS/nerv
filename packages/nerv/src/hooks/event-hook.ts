@@ -60,6 +60,7 @@ const unbubbleEvents = {
 
 let bindFocus = false
 
+/* istanbul ignore next */
 if (navigator.userAgent.indexOf('MSIE 9') >= 0) {
   doc.addEventListener('selectionchange', () => {
     const el = doc.activeElement
@@ -91,6 +92,7 @@ class EventHook {
     }
     const eventName = fixEvent(node, this.eventName)
     this.eventName = eventName
+    /* istanbul ignore next */
     if (eventName === ONPROPERTYCHANGE) {
       processOnPropertyChangeEvent(node, this.handler)
       return
@@ -125,7 +127,7 @@ class EventHook {
       }
     }
   }
-
+  /* istanbul ignore next */
   unhook (node, prop, next) {
     if (
       next &&
@@ -176,6 +178,7 @@ let propertyChangeActiveElementValue
 let propertyChangeActiveElementValueProp
 let propertyChangeActiveHandler
 
+/* istanbul ignore next */
 function propertyChangeHandler (event) {
   if (event.propertyName !== 'value') {
     return
@@ -191,6 +194,7 @@ function propertyChangeHandler (event) {
   }
 }
 
+/* istanbul ignore next */
 function processOnPropertyChangeEvent (node, handler) {
   propertyChangeActiveHandler = handler
   if (!bindFocus) {
@@ -207,6 +211,7 @@ function processOnPropertyChangeEvent (node, handler) {
   }
 }
 
+/* istanbul ignore next */
 function bindOnPropertyChange (node) {
   propertyChangeActiveElement = node
   propertyChangeActiveElementValue = node.value
@@ -230,6 +235,7 @@ function bindOnPropertyChange (node) {
   )
 }
 
+/* istanbul ignore next */
 function unbindOnPropertyChange () {
   if (!propertyChangeActiveElement) {
     return

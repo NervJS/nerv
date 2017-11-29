@@ -55,7 +55,7 @@ describe('keys', () => {
     )
   })
 
-  it.only('should patch keyed children properly', () => {
+  it('should patch keyed children properly', () => {
     const container = document.createElement('container')
     const arr = [...Array(100).keys()].map(n => ({ n }))
     const List = ({ n }) => <li key={n + ','}>{n + ','}</li>

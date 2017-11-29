@@ -499,7 +499,7 @@ function patchStyle (lastAttrValue, nextAttrValue, dom) {
     for (style in nextAttrValue) {
       value = nextAttrValue[style]
       domStyle[style] =
-        !isNumber(value) || !IS_NON_DIMENSIONAL.test(style)
+        !isNumber(value) || IS_NON_DIMENSIONAL.test(style)
           ? value
           : value + 'px'
     }

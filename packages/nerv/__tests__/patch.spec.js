@@ -9,6 +9,29 @@ describe('patch', () => {
     scratch = document.createElement('div')
   })
 
+  it('should not patch when lastVnode and nextVnode is equal', () => {
+    const App = () => <div />
+    let app
+    render(<App ref={c => (app = c)} />, scratch)
+    render(app, scratch)
+  })
+
+  it('should handle float', () => {
+    const App = () => <div style={{ float: 'left' }} />
+    render(<App />, scratch)
+    expect(scratch.innerHTML).toContain('left')
+    // console.log(scratch.innerHTML)
+  })
+
+  it('should ignore last style when it does not exist', () => {
+    render(<div />, scratch)
+    render(<div style={{ float: 'left' }} />, scratch)
+    render(<div />, scratch)
+    render(<div style={{ 'margin-top': 10 }} />, scratch)
+    expect(scratch.innerHTML).toContain('10px')
+    // console.log(scratch.innerHTML)
+  })
+
   it('should hanlde style', () => {
     let inst
     class App extends Component {

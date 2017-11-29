@@ -296,4 +296,26 @@ describe('refs', () => {
       scratch.querySelector('.contained')
     )
   })
+
+  it('should remove string refs', () => {
+    let innerInst
+    class Foo extends Component {
+      constructor () {
+        super()
+        this.state = {
+          hide: false
+        }
+        innerInst = this
+      }
+      render () {
+        return this.state.hide ? <span /> : <div ref='top' />
+      }
+    }
+    render(<Foo />, scratch)
+    innerInst.setState({
+      hide: true
+    })
+    innerInst.forceUpdate()
+    expect(innerInst.refs['top']).toBe(undefined)
+  })
 })
