@@ -13,7 +13,7 @@ import {
 } from 'nerv-shared'
 import { unmount, unmountChildren } from './unmount'
 import Ref from './ref'
-import { isFunction } from 'util'
+import { isFunction } from 'nerv-utils'
 import SVGPropertyConfig from './svg-property-config'
 
 export function patch (lastVnode, nextVnode, lastDom, context, isSVG?: boolean) {
@@ -455,6 +455,17 @@ const skipProps = {
 
 const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i
 
+function setStyle (domStyle, style, value) {
+  domStyle[style] =
+    !isNumber(value) || IS_NON_DIMENSIONAL.test(style)
+      ? value
+      : value + 'px'
+  if (style === 'float') {
+    domStyle['cssFloat'] = value
+    domStyle['styleFloat'] = value
+  }
+}
+
 function patchStyle (lastAttrValue, nextAttrValue, dom) {
   const domStyle = dom.style
   let style
@@ -468,14 +479,7 @@ function patchStyle (lastAttrValue, nextAttrValue, dom) {
     for (style in nextAttrValue) {
       value = nextAttrValue[style]
       if (value !== lastAttrValue[style]) {
-        domStyle[style] =
-          !isNumber(value) || IS_NON_DIMENSIONAL.test(style)
-            ? value
-            : value + 'px'
-        if (style === 'float') {
-          domStyle['cssFloat'] = value
-          domStyle['styleFloat'] = value
-        }
+        setStyle(domStyle, style, value)
       }
     }
 
@@ -487,10 +491,7 @@ function patchStyle (lastAttrValue, nextAttrValue, dom) {
   } else {
     for (style in nextAttrValue) {
       value = nextAttrValue[style]
-      domStyle[style] =
-        !isNumber(value) || !IS_NON_DIMENSIONAL.test(style)
-          ? value
-          : value + 'px'
+      setStyle(domStyle, style, value)
     }
   }
 }
@@ -520,9 +521,9 @@ export function patchProp (
         }
       }
     } else if (isAttrAnEvent(prop)) {
-      // if (isFunction(lastValue)) {
-      //   lastValue.unhook(domNode, prop, nextValue)
-      // }
+      if (isFunction(lastValue)) {
+        lastValue.unhook(domNode, prop, nextValue)
+      }
       nextValue.hook(domNode, prop, lastValue)
     } else if (prop === 'style') {
       patchStyle(lastValue, nextValue, domNode)
@@ -578,6 +579,9 @@ function patchProps (
     if (isNullOrUndef(nextProps[propName]) && !isNullOrUndef(value)) {
       if (isAttrAnEvent(propName)) {
         value.unhook(domNode, propName, nextProps[propName])
+      } else if (propName in domNode) {
+        domNode[propName] = isString(value) ? '' : null
+        domNode.removeAttribute(propName)
       } else {
         domNode.removeAttribute(propName)
       }
