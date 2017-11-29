@@ -541,7 +541,7 @@ export function patchProp (
       prop !== 'list' &&
       prop !== 'type' &&
       !isSVG &&
-      name in domNode
+      prop in domNode
     ) {
       setProperty(domNode, prop, nextValue == null ? '' : nextValue)
       if (nextValue == null || nextValue === false) {

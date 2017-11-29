@@ -7,9 +7,11 @@ const canUseNativeMap = (() => {
   return 'Map' in window && isNative(Map)
 })()
 /* istanbul ignore next */
-const MapClass: MapConstructor = canUseNativeMap ? Map : SimpleMap as any
+const MapClass: MapConstructor = canUseNativeMap ? Map : (SimpleMap as any)
 
 const delegatedEvents = new MapClass()
+
+const doc = document
 
 const unbubbleEvents = {
   [ONPROPERTYCHANGE]: 1,
@@ -58,6 +60,17 @@ const unbubbleEvents = {
 
 let bindFocus = false
 
+if (navigator.userAgent.indexOf('MSIE 9') >= 0) {
+  doc.addEventListener('selectionchange', () => {
+    const el = doc.activeElement
+    if (detectCanUseOnInputNode(el)) {
+      const ev = doc.createEvent('CustomEvent')
+      ev.initCustomEvent('input', true, true, {})
+      el.dispatchEvent(ev)
+    }
+  })
+}
+
 class EventHook {
   vhook = VHook.Event
   eventName: string
@@ -101,7 +114,7 @@ class EventHook {
           items: new MapClass()
         }
         delegatedRoots.event = attachEventToDocument(
-          document,
+          doc,
           eventName,
           delegatedRoots
         )
@@ -138,7 +151,7 @@ class EventHook {
     } else if (delegatedRoots && delegatedRoots.items) {
       const items = delegatedRoots.items
       if (items.delete(node) && items.size === 0) {
-        document.removeEventListener(
+        doc.removeEventListener(
           parseEventName(eventName),
           delegatedRoots.event,
           false
@@ -182,7 +195,7 @@ function processOnPropertyChangeEvent (node, handler) {
   propertyChangeActiveHandler = handler
   if (!bindFocus) {
     bindFocus = true
-    document.addEventListener(
+    doc.addEventListener(
       'focusin',
       () => {
         unbindOnPropertyChange()
@@ -190,7 +203,7 @@ function processOnPropertyChangeEvent (node, handler) {
       },
       false
     )
-    document.addEventListener('focusout', unbindOnPropertyChange, false)
+    doc.addEventListener('focusout', unbindOnPropertyChange, false)
   }
 }
 
@@ -282,7 +295,7 @@ function dispatchEvent (event, target, items, count, eventData) {
   }
 }
 
-function attachEventToDocument (doc, eventName, delegatedRoots) {
+function attachEventToDocument (d, eventName, delegatedRoots) {
   const eventHandler = (event) => {
     const items = delegatedRoots.items
     const count = items.size
@@ -305,7 +318,7 @@ function attachEventToDocument (doc, eventName, delegatedRoots) {
       dispatchEvent(event, event.target, delegatedRoots.items, count, eventData)
     }
   }
-  doc.addEventListener(parseEventName(eventName), eventHandler, false)
+  d.addEventListener(parseEventName(eventName), eventHandler, false)
   return eventHandler
 }
 
