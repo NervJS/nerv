@@ -149,7 +149,7 @@ function patchNonKeyedChildren (
     i++
   }
   if (lastLength < nextLength) {
-    for (i = minLength; i < lastLength; i++) {
+    for (i = minLength; i < nextLength; i++) {
       if (parentDom !== null) {
         parentDom.appendChild(createElement(nextChildren[i], isSVG) as Node)
       }
