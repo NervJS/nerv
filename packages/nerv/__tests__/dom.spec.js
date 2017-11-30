@@ -6,6 +6,7 @@ import {
   unmountComponentAtNode,
   findDOMNode
 } from '../src'
+import { createPortal } from '../src/dom'
 
 describe('dom', () => {
   let scratch
@@ -59,14 +60,20 @@ describe('dom', () => {
       render(B, scratch)
       expect(findDOMNode(B).firstChild.textContent).toBe('hellooo')
       // expect(findDOMNode(B)).toBe(B)
+      let app
       class Comp extends Component {
+        constructor () {
+          super()
+          app = this
+        }
         render () {
           return <span>test</span>
         }
       }
       const C = <Comp />
       render(C, scratch)
-      // console.log(findDOMNode(C).innerHTML)
+      expect(findDOMNode(app).textContent).toBe('test')
+      createPortal(B, scratch)
       // expect(findDOMNode(Comp).firstChild.textContent).toBe('test')
     })
   })
