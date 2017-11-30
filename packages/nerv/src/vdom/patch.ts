@@ -19,7 +19,6 @@ import {
 } from 'nerv-shared'
 import { unmount, unmountChildren } from './unmount'
 import Ref from './ref'
-import SVGPropertyConfig from './svg-property-config'
 
 export function patch (
   lastVnode,
@@ -468,9 +467,7 @@ const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^or
 
 function setStyle (domStyle, style, value) {
   domStyle[style] =
-    !isNumber(value) || IS_NON_DIMENSIONAL.test(style)
-      ? value
-      : value + 'px'
+    !isNumber(value) || IS_NON_DIMENSIONAL.test(style) ? value : value + 'px'
   if (style === 'float') {
     domStyle['cssFloat'] = value
     domStyle['styleFloat'] = value
@@ -552,11 +549,11 @@ export function patchProp (
       domNode.removeAttribute(prop)
     } else {
       if (isSVG) {
-        const ns = SVGPropertyConfig.DOMAttributeNames[prop]
+        const ns = isSVG && prop !== (prop = prop.replace(/^xlink\:?/, ''))
         if (ns) {
           domNode.setAttributeNS(
             'http://www.w3.org/1999/xlink',
-            ns.toLowerCase(),
+            prop.toLowerCase(),
             nextValue
           )
         } else {
