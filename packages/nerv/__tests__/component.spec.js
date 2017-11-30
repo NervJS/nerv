@@ -407,6 +407,14 @@ describe('Component', function () {
       expect(dom.lastChild.textContent).toEqual('aaa')
     })
 
+    it('should not update when patch the same STC', () => {
+      const App = () => <div />
+      const app = <App />
+      render(app, scratch)
+      render(app, scratch)
+      expect(scratch._component).toBe(app)
+    })
+
     it('(StatelessComponent) defaultProps should respect null but ignore undefined', () => {
       const Text = ({ text }) => <div>{text === null ? 'null' : text}</div>
       Text.defaultProps = {

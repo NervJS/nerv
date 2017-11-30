@@ -1,6 +1,6 @@
 /** @jsx createElement */
 import { createElement, render } from '../src'
-
+import SvgProperies from '../src/vdom/svg-property-config'
 import { sortAttributes } from './util'
 
 describe('svg', () => {
@@ -13,6 +13,7 @@ describe('svg', () => {
   const rsvg = /^\[object SVG\w*Element\]$/
 
   it('circle', () => {
+    expect(!!SvgProperies.DOMAttributeNamespaces).toBe(true)
     render(
       <svg>
         <circle cx='25' cy='25' r='20' fill='green' />
