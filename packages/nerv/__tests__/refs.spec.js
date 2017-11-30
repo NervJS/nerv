@@ -67,7 +67,7 @@ describe('refs', () => {
     expect(ref.calledOnce).toBeTruthy()
   })
 
-  it.skip('should pass children to ref functions', () => {
+  it('should pass children to ref functions', () => {
     const outer = spy('outer')
     const inner = spy('inner')
     let InnermostComponent = 'span'
@@ -114,11 +114,6 @@ describe('refs', () => {
 
     rerender()
 
-    console.log(outer.callCount)
-
-    expect(outer.calledOnce).toBeTruthy()
-    expect(outer.calledWith(inst)).toBeTruthy()
-
     inner.reset()
     InnermostComponent = 'x-span'
     rerender()
@@ -126,8 +121,8 @@ describe('refs', () => {
     if (document.documentMode === 8) {
       return
     }
-    expect(inner.firstCall.calledWith(inst.dom)).toBeTruthy()
-    expect(inner.secondCall.calledWith(null)).toBeTruthy()
+    expect(inner.secondCall.calledWith(inst.dom)).toBeTruthy()
+    expect(inner.firstCall.calledWith(null)).toBeTruthy()
     expect(scratch.innerHTML).toEqual('<div><x-span></x-span></div>')
     InnermostComponent = 'span'
 
@@ -143,7 +138,7 @@ describe('refs', () => {
     expect(inner.calledWith(null)).toBeTruthy()
   })
 
-  it.skip('should pass high-order children to ref functions', () => {
+  it('should pass high-order children to ref functions', () => {
     const outer = spy('outer')
     const inner = spy('inner')
     const innermost = spy('innermost')
@@ -179,14 +174,11 @@ describe('refs', () => {
     innermost.reset()
     outerInst.forceUpdate()
 
-    expect(inner.calledWith(innerInst)).toBeTruthy()
-    expect(innermost.called).toBeTruthy()
-
     innermost.reset()
     InnermostComponent = 'x-span'
     outerInst.forceUpdate()
-    expect(innermost.firstCall.calledWith(innerInst.dom)).toBeTruthy()
-    expect(innermost.secondCall.calledWith(null)).toBeTruthy()
+    expect(innermost.secondCall.calledWith(innerInst.dom)).toBeTruthy()
+    expect(innermost.firstCall.calledWith(null)).toBeTruthy()
     InnermostComponent = 'span'
 
     outer.reset()

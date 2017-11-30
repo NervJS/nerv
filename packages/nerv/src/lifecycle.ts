@@ -238,7 +238,7 @@ export function unmountComponent (vnode: FullComponent, dom?) {
   }
   unmount(component._rendered)
   component.dom = component._rendered = null
-  if (isNullOrUndef(vnode.props.ref)) {
+  if (!isNullOrUndef(vnode.props.ref)) {
     Ref.detach(vnode, vnode.props.ref, vnode.dom as any)
   }
 }
@@ -246,7 +246,7 @@ export function unmountComponent (vnode: FullComponent, dom?) {
 export function unmountStatelessComponent (vnode: Stateless, dom) {
   unmount(vnode._rendered)
   vnode.dom = vnode._rendered = null
-  if (isNullOrUndef(vnode.props.ref)) {
+  if (!isNullOrUndef(vnode.props.ref)) {
     Ref.detach(vnode, vnode.props.ref, vnode.dom as any)
   }
 }
