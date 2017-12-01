@@ -724,7 +724,7 @@ describe('ComponentDidCatch', () => {
 
     log.length = 0
     unmountComponentAtNode(container)
-    expect(log.includes('ErrorBoundary componentWillUnmount')).toBeTruthy()
+    expect(log.indexOf('ErrorBoundary componentWillUnmount') !== -1).toBeTruthy()
   })
 
   it.skip('propagates errors inside boundary while rendering error state', async () => {

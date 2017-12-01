@@ -65,13 +65,13 @@ describe('keys', () => {
     render(<App list={arr} />, container)
     const arr2 = arr.filter(({ n }) => n !== 50)
     render(<App list={arr2} />, container)
-    expect(container.textContent.split(',').includes('50')).toBe(false)
+    expect(container.textContent.split(',').indexOf('50') !== -1).toBe(false)
     const arr3 = arr
       .slice(0, 50)
       .concat([{ n: 101 }])
       .concat(arr.slice(50, 100))
     render(<App list={arr3} />, container)
-    expect(container.textContent.split(',').includes('101')).toBe(true)
+    expect(container.textContent.split(',').indexOf('101') !== -1).toBe(true)
     const arr4 = arr.filter(({ n }) => n % 2)
     render(<App list={arr4} />, container)
     expect(container.textContent.split(',')).toEqual(
