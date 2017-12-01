@@ -9,12 +9,4 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-**Note:** Version bump only for package nerv-devtools
-
-<a name="0.3.0"></a>
-# [0.3.0](https://github.com/NervJS/nerv/compare/v0.2.0-alpha.1...v0.3.0) (2017-10-28)
-
-
-
-
-**Note:** Version bump only for package nerv-devtools
+**Note:** Version bump only for package nerv-test-utils
