@@ -1,13 +1,8 @@
-import { isFunction, isNative, SimpleMap } from 'nerv-utils'
+import { isFunction, MapClass } from 'nerv-utils'
 import { VHook } from './vhook'
+
 const ONINPUT = 'oninput'
 const ONPROPERTYCHANGE = 'onpropertychange'
-
-const canUseNativeMap = (() => {
-  return 'Map' in window && isNative(Map)
-})()
-/* istanbul ignore next */
-const MapClass: MapConstructor = canUseNativeMap ? Map : (SimpleMap as any)
 
 const delegatedEvents = new MapClass()
 

@@ -1,9 +1,9 @@
 export interface Cache<Key, Value> {
-  k: Key,
+  k: Key
   v: Value
 }
 
-class SimpleMap<Key, Value> {
+export class SimpleMap<Key, Value> {
   cache: Array<Cache<Key, Value>>
   size: number
   constructor () {
@@ -13,7 +13,7 @@ class SimpleMap<Key, Value> {
   set (k, v) {
     const len = this.cache.length
     if (!len) {
-      this.cache.push({k, v})
+      this.cache.push({ k, v })
       this.size += 1
       return
     }
@@ -24,7 +24,7 @@ class SimpleMap<Key, Value> {
         return
       }
     }
-    this.cache.push({k, v})
+    this.cache.push({ k, v })
     this.size += 1
   }
 
@@ -81,4 +81,5 @@ class SimpleMap<Key, Value> {
   }
 }
 
-export default SimpleMap
+export const MapClass: MapConstructor =
+  'Map' in window ? Map : (SimpleMap as any)
