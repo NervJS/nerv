@@ -1,11 +1,12 @@
-import { isFunction } from './is'
+const canUsePromise = 'Promise' in window
 
-const resolved = Promise.resolve()
+let resolved
+if (canUsePromise) {
+  resolved = Promise.resolve()
+}
 
-const nextTick: (fn) => void = isFunction(Promise)
+const nextTick: (fn) => void = canUsePromise
   ? (fn) => resolved.then(fn)
-  : isFunction(requestAnimationFrame)
-    ? requestAnimationFrame
-    : setTimeout
+  : 'requestAnimationFrame' in window ? requestAnimationFrame : setTimeout
 
 export default nextTick

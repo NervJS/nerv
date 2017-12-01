@@ -4,7 +4,8 @@ import {
   isAttrAnEvent,
   isNumber,
   isArray,
-  isFunction
+  isFunction,
+  MapClass
 } from 'nerv-utils'
 import createElement from './create-element'
 import {
@@ -264,7 +265,7 @@ function patchKeyedChildren (
         }
       }
     } else {
-      const keyIndex = new Map()
+      const keyIndex = new MapClass()
 
       for (i = bStart; i <= bEnd; i++) {
         keyIndex.set(b[i].key, i)

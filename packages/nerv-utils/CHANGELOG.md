@@ -9,7 +9,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-* server rendering style ([f2bfd1b](https://github.com/NervJS/nerv/commit/f2bfd1b))
+* nextTick support IE ([738eee6](https://github.com/NervJS/nerv/commit/738eee6))
 
 
 ### Features
@@ -19,15 +19,4 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Performance Improvements
 
-* use object-literal to create VNode and VText ([3412be7](https://github.com/NervJS/nerv/commit/3412be7))
-
-
-
-
-<a name="0.3.0"></a>
-# [0.3.0](https://github.com/NervJS/nerv/compare/v0.2.0-alpha.1...v0.3.0) (2017-10-28)
-
-
-
-
-**Note:** Version bump only for package nerv-server
+* nextTick use Promise.then ->  requestAnimationFrame -> setTimeout ([dacc145](https://github.com/NervJS/nerv/commit/dacc145))

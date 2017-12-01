@@ -1,6 +1,6 @@
 export { default as nextTick } from './next-tick'
 export { default as shallowEqual } from './shallow-equal'
-export { default as SimpleMap } from './simple-map'
+export { SimpleMap, MapClass } from './simple-map'
 export * from './is'
 
 export function getPrototype (obj) {

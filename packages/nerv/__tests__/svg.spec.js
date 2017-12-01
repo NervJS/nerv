@@ -3,7 +3,17 @@ import { createElement, render } from '../src'
 import SvgProperies from '../src/vdom/svg-property-config'
 import { sortAttributes } from './util'
 
-describe('svg', () => {
+const isNode = !!(
+  typeof process !== 'undefined' &&
+  process.versions &&
+  process.versions.node
+)
+
+if (isNode) {
+  describe.ie = describe
+}
+
+describe.ie('svg', () => {
   let scratch
 
   beforeEach(() => {
