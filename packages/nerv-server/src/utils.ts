@@ -1,41 +1,3 @@
-export function escapeText (text: string): string {
-  let result = ''
-  let escape = ''
-  let start = 0
-  let i
-  for (i = 0; i < text.length; i++) {
-    switch (text.charCodeAt(i)) {
-      case 34: // "
-        escape = '&quot;'
-        break
-      case 39: // \
-        escape = '&#039;'
-        break
-      case 38: // &
-        escape = '&amp;'
-        break
-      case 60: // <
-        escape = '&lt;'
-        break
-      case 62: // >
-        escape = '&gt;'
-        break
-      default:
-        continue
-    }
-    if (i > start) {
-      if (start) {
-        result += text.slice(start, i)
-      } else {
-        result = text.slice(start, i)
-      }
-    }
-    result += escape
-    start = i + 1
-  }
-  return result + text.slice(start, i)
-}
-
 const uppercasePattern = /[A-Z]/g
 
 const CssPropCache = {}
@@ -109,11 +71,19 @@ export const isUnitlessNumber = {
   strokeWidth: true
 }
 
+const entities = {
+  '<': '&lt;',
+  '>': '&gt;',
+  '&': '&amp;',
+  '"': '&quot;',
+  '\\': '&#039;'
+}
+
 export function encodeEntities (text): string {
-  if (typeof text === 'boolean' || typeof text === 'number') {
-    return '' + text
+  if (typeof text !== 'string') {
+    text = String(text)
   }
-  return escapeText(text)
+  return text.replace(/[<>\"\&\\]/g, m => entities[m])
 }
 
 export { extend } from 'nerv-utils'
