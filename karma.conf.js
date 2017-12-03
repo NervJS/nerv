@@ -91,10 +91,13 @@ module.exports = function (config) {
       'packages/*/__tests__/**/*spec.js?(x)'
     ],
 
+    plugins: ['karma-spec-reporter'],
+
     specReporter: {
       suppressFailed: false, // do not print information about failed tests
       suppressPassed: true, // do not print information about passed tests
-      suppressSkipped: false // do not print information about skipped tests
+      suppressSkipped: false, // do not print information about skipped tests
+      failFast: false
     },
 
     // list of files to exclude
@@ -109,7 +112,7 @@ module.exports = function (config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['spec'].concat(
+    reporters: ['spec', ''].concat(
       coverage ? [] : [],
       sauceLabs ? 'saucelabs' : []
     ),
@@ -153,7 +156,7 @@ module.exports = function (config) {
     concurrency: 2,
 
     webpack: {
-      devtool: 'inline-source-map',
+      devtool: 'source-map',
       resolve: {
         alias: {
           nervjs: resolve('nerv'),
