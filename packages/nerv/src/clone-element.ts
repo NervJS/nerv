@@ -1,7 +1,11 @@
 import createElement from './create-element'
 import { extend, clone } from 'nerv-utils'
+import { isVText } from 'nerv-shared'
 
 export default function cloneElement (vnode, props, ...children): any {
+  if (isVText(vnode)) {
+    return vnode
+  }
   const properties = extend(clone(vnode.props), props)
   if (vnode.namespace) {
     properties.namespace = vnode.namespace
