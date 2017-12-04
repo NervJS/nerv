@@ -1,0 +1,31 @@
+import { SimpleMap } from '../src'
+
+describe('simpleMap', () => {
+  const map = new SimpleMap()
+
+  it('get and set', () => {
+    expect(map.clear()).toBeUndefined()
+    expect(map.get('a')).toBeUndefined()
+    expect(map.has('a')).toBeFalsy()
+    map.set('a', 1)
+    expect(map.size).toBe(1)
+    expect(map.has('b')).toBeFalsy()
+    map.set('a', 1)
+    expect(map.size).toBe(1)
+    expect(map.get('a')).toBe(1)
+    map.set('b', 2)
+    expect(map.size).toBe(2)
+    expect(map.has('b')).toBeTruthy()
+    expect(map.get('b')).toBe(2)
+    expect(map.delete('c')).toBeFalsy()
+    expect(map.delete('b')).toBeTruthy()
+    expect(map.size).toBe(1)
+    map.clear()
+    expect(map.size).toEqual(0)
+    // expect(map).to.haveOwnProperty('get')
+    // expect(map).to.haveOwnProperty('has')
+    // expect(map).to.haveOwnProperty('delete')
+    // expect(map).to.haveOwnProperty('clear')
+    // expect(map).to.haveOwnProperty('size')
+  })
+})

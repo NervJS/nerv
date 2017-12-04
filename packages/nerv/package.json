@@ -1,0 +1,26 @@
+{
+  "name": "nervjs",
+  "version": "0.4.0-beta.4b0270d1",
+  "description": "A react-like framework based on virtual-dom",
+  "main": "index.js",
+  "module": "dist/nerv.esm.js",
+  "jsnext:main": "dist/nerv.esm.js",
+  "typings": "./dist/src/index.d.ts",
+  "keywords": [
+    "react-like"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NervJS/nerv.git"
+  },
+  "author": "luckyadam",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NervJS/nerv/issues"
+  },
+  "homepage": "https://github.com/NervJS/nerv.git",
+  "dependencies": {
+    "nerv-shared": "0.4.0-beta.4b0270d1",
+    "nerv-utils": "0.4.0-beta.4b0270d1"
+  }
+}

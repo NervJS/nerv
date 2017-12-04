@@ -12,12 +12,19 @@
     "noUnusedLocals": true,
     "strictNullChecks": true,
     "sourceMap": true,
-    "declaration": true,
-    "declarationDir": "dist"
+    "declaration": false,
+    "baseUrl": ".",
+    "paths": {
+      "nervjs": ["packages/nerv/src"],
+      "nerv-devtools": ["packages/nerv-devtools/src"],
+      "nerv-shared": ["packages/nerv-shared/src"],
+      "nerv-utils": ["packages/nerv-utils/src"]
+    },
+    "rootDir": "."
   },
-  "filesGlob": [
-    "src/**/*.ts",
-    "src/**/*.tsx"
+  "include": [
+    "packages/*/src",
+    "packages/*/__tests__"
   ],
   "exclude": [
     "node_modules",

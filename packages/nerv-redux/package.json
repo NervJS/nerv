@@ -1,0 +1,24 @@
+{
+  "name": "nerv-redux",
+  "version": "0.4.0-beta.4b0270d1",
+  "description": "Redux for Nerv.js",
+  "main": "index.js",
+  "module": "dist/index.esm.js",
+  "repository": "https://github.com/NervJS/nerv-redux",
+  "author": "yuche <i@yuche.me>",
+  "license": "MIT",
+  "keywords": [
+    "nerv",
+    "react",
+    "redux"
+  ],
+  "devDependencies": {
+    "nervjs": "0.4.0-beta.4b0270d1",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2"
+  },
+  "peerDependencies": {
+    "nervjs": "0.4.0-beta.4b0270d1",
+    "redux": ">=2"
+  }
+}

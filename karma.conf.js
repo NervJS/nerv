@@ -1,7 +1,6 @@
-// Karma configuration
-// Generated on Tue Jul 18 2017 18:01:48 GMT+0800 (CST)
-
 const webpack = require('webpack')
+const path = require('path')
+const resolve = pkg => path.join(__dirname, './packages', pkg, 'src')
 const coverage = String(process.env.COVERAGE) !== 'false'
 const ci = String(process.env.CI).match(/^(1|true)$/gi)
 const realBrowser = String(process.env.BROWSER).match(/^(1|true)$/gi)
@@ -74,9 +73,8 @@ const localBrowsers = realBrowser ? Object.keys(travisLaunchers) : ['Chrome']
 
 module.exports = function (config) {
   config.set({
-
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+    basePath: '.',
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -84,39 +82,38 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'browsers/karma.js',
+      './node_modules/es6-promise/dist/es6-promise.auto.min.js',
       './node_modules/es5-polyfill/dist/polyfill.js',
-      // 'test/util/ie8.js',
-      // 'test/util/polyfill.js',
-      'test/spec.js'
+      'browsers/ie8.js',
+      'browsers/polyfill.js',
+      'packages/nerv/__tests__/event.spec.js',
+      'packages/*/__tests__/**/*spec.js?(x)'
     ],
 
     specReporter: {
-      suppressFailed: false,      // do not print information about failed tests
-      suppressPassed: true,      // do not print information about passed tests
-      suppressSkipped: false      // do not print information about skipped tests
+      failFast: false,
+      suppressFailed: false, // do not print information about failed tests
+      suppressPassed: true, // do not print information about passed tests
+      suppressSkipped: true // do not print information about skipped tests
     },
 
     // list of files to exclude
-    exclude: [
-    ],
+    exclude: [],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'test/**/*.js': ['webpack', 'sourcemap']
+      'packages/*/__tests__/**/*spec.js?(x)': ['webpack', 'sourcemap']
     },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['spec'].concat(
+    reporters: ['spec', 'jasmine-diff'].concat(
       coverage ? [] : [],
       sauceLabs ? 'saucelabs' : []
     ),
-
-    mochaReporter: {
-      showDiff: true
-    },
 
     browserLogOptions: { terminal: true },
     browserConsoleLogOptions: { terminal: true },
@@ -153,9 +150,18 @@ module.exports = function (config) {
     concurrency: 2,
 
     webpack: {
-      devtool: 'inline-source-map',
+      devtool: 'source-map',
       resolve: {
-        extensions: ['.ts', '.js']
+        alias: {
+          nervjs: resolve('nerv'),
+          'nerv-devtools': resolve('nerv-devtools'),
+          'nerv-shared': resolve('nerv-shared'),
+          'nerv-utils': resolve('nerv-utils'),
+          'nerv-server': resolve('nerv-server'),
+          'nerv-redux': resolve('nerv-redux')
+        },
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        mainFields: ['main', 'module']
       },
       module: {
         rules: [
@@ -182,29 +188,6 @@ module.exports = function (config) {
             loader: 'es3ify-loader'
           }
         ]
-        // loaders: [
-        //   {
-        //     test: /\.js$/,
-        //     loader: 'babel-loader',
-        //     exclude: /node_modules/
-        //   },
-        //   {
-        //     test: /\.ts?$/,
-        //     loader: 'ts-loader?' + JSON.stringify({
-        //       transpileOnly: true,
-        //       compilerOptions: {
-        //         target: 'es3',
-        //         module: 'commonjs'
-        //       }
-        //     })
-        //   }
-        // ],
-        // postLoaders: [
-        //   {
-        //     test: /.js$/,
-        //     loader: 'es3ify-loader'
-        //   }
-        // ]
       },
       plugins: [
         new webpack.DefinePlugin({
@@ -214,7 +197,7 @@ module.exports = function (config) {
         })
       ]
     },
-
+    stats: 'errors-only',
     webpackMiddleware: {
       noInfo: true,
       stats: {

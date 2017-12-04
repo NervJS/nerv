@@ -1,0 +1,15 @@
+{
+  "lerna": "2.4.0",
+  "packages": [
+    "packages/*"
+  ],
+  "command": {
+    "init": {
+      "exact": true
+    },
+    "exec": {
+      "ignore": "nerv-test-utils"
+    }
+  },
+  "version": "0.3.1-alpha.1"
+}
