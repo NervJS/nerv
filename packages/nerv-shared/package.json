@@ -1,6 +1,5 @@
 {
   "name": "nerv-shared",
-  "private": true,
   "version": "0.4.0-beta.4b0270d1",
   "description": "Internal utilities for Nerv.js",
   "main": "index.js",
