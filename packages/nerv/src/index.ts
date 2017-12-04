@@ -5,10 +5,12 @@ import createElement from './create-element'
 import cloneElement from './clone-element'
 import { nextTick } from 'nerv-utils'
 import { isValidElement } from 'nerv-shared'
+import { Children } from './children'
 import options from './options'
 import { unmountComponentAtNode, findDOMNode } from './dom'
 
 export {
+  Children,
   Component,
   PureComponent,
   createElement,
@@ -22,6 +24,7 @@ export {
 }
 
 export default {
+  Children,
   Component,
   PureComponent,
   createElement,
