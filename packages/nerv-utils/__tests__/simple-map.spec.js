@@ -3,7 +3,7 @@ import { SimpleMap } from '../src'
 describe('simpleMap', () => {
   const map = new SimpleMap()
 
-  it('get and set', done => {
+  it('get and set', () => {
     expect(map.clear()).toBeUndefined()
     expect(map.get('a')).toBeUndefined()
     expect(map.has('a')).toBeFalsy()
@@ -22,7 +22,6 @@ describe('simpleMap', () => {
     expect(map.size).toBe(1)
     map.clear()
     expect(map.size).toEqual(0)
-    done()
     // expect(map).to.haveOwnProperty('get')
     // expect(map).to.haveOwnProperty('has')
     // expect(map).to.haveOwnProperty('delete')

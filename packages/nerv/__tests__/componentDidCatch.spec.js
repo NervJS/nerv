@@ -540,11 +540,6 @@ describe('ComponentDidCatch', () => {
     }
   })
 
-  afterAll(() => {
-    scratch.parentNode.removeChild(scratch)
-    scratch = null
-  })
-
   it('does not swallow exceptions on mounting without boundaries', () => {
     var container = document.createElement('div')
     expect(() => {
