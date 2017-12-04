@@ -10,7 +10,7 @@ import {
   VirtualChildren,
   VNode
 } from 'nerv-shared'
-import { patchProp, setProperty } from './patch'
+import { patchProp } from './patch'
 import Ref from './ref'
 import { Component } from 'nervjs'
 
@@ -111,7 +111,7 @@ function setProps (domNode: Element, vnode, isSvg) {
   const props = vnode.props
   // set type property first for input element
   if ('type' in props && domNode.tagName === 'INPUT') {
-    setProperty(domNode, 'type', props['type'])
+    domNode.setAttribute('type', props['type'])
   }
   for (const p in props) {
     patchProp(domNode, p, {}, props[p], isSvg)
