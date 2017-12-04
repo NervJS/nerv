@@ -57,10 +57,11 @@ describe('keys', () => {
 
   it('should patch keyed children properly', () => {
     const container = document.createElement('container')
-    const arr = new Array(100)
+    let arr = new Array(100)
     for (let i = 0; i < arr.length; i++) {
-      arr[i] = { i }
+      arr[i] = i
     }
+    arr = arr.map((n) => ({ n }))
     const List = ({ n }) => <li key={n + ','}>{n + ','}</li>
     const App = ({ list }) => {
       return <ul>{list.map(List)}</ul>
