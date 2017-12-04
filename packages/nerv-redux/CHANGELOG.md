@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.4.0-beta.f0ef1ef6"></a>
+# [0.4.0-beta.f0ef1ef6](https://github.com/NervJS/nerv-redux/compare/0.2.8...0.4.0-beta.f0ef1ef6) (2017-12-04)
+
+
+### Features
+
+* Children export as top-level API ([f780dd9](https://github.com/NervJS/nerv-redux/commit/f780dd9))
+
+
+
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/NervJS/nerv-redux/compare/v0.2.0-alpha.1...v0.3.0) (2017-10-28)
+
+
+
+<a name="0.2.0-alpha.1"></a>
+# [0.2.0-alpha.1](https://github.com/NervJS/nerv-redux/compare/0.2.1...v0.2.0-alpha.1) (2017-10-28)
+
+
+
+
 <a name="0.4.0-beta.f869cca6"></a>
 # [0.4.0-beta.f869cca6](https://github.com/NervJS/nerv-redux/compare/v0.3.0...v0.4.0-beta.f869cca6) (2017-12-04)
 

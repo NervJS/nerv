@@ -25,7 +25,7 @@
     "size": "gzip-size ./packages/nerv/dist/nerv.min.js",
     "build:esm": "lerna exec -- rollup -c --environment TARGET:esm",
     "build:umd": "lerna exec -- rollup -c --environment TARGET:umd",
-    "release": "npm run build && lerna publish --exact --conventional-commits --canary=beta"
+    "release": "npm run build && lerna publish --exact --conventional-commits"
   },
   "lint-staged": {
     "*.{js,jsx}": [
