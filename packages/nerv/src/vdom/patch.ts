@@ -588,9 +588,6 @@ function patchProps (
     if (isNullOrUndef(nextProps[propName]) && !isNullOrUndef(value)) {
       if (isAttrAnEvent(propName)) {
         value.unhook(domNode, propName, nextProps[propName])
-      } else if (propName in domNode) {
-        domNode[propName] = isString(value) ? '' : null
-        domNode.removeAttribute(propName)
       } else {
         domNode.removeAttribute(propName)
       }

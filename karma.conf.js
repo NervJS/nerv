@@ -174,7 +174,7 @@ module.exports = function (config) {
     concurrency: 2,
 
     webpack: {
-      devtool: 'source-map',
+      devtool: 'inline-source-map',
       resolve: {
         alias: {
           nervjs: resolve('nerv'),
