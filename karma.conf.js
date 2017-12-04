@@ -59,6 +59,30 @@ const sauceLabsLaunchers = {
     browserName: 'internet explorer',
     version: '8.0',
     platform: 'Windows 7'
+  },
+  sl_ios_safari_9: {
+    base: 'SauceLabs',
+    browserName: 'iphone',
+    version: '10.3'
+  },
+  'SL_ANDROID4.4': {
+    base: 'SauceLabs',
+    browserName: 'android',
+    platform: 'Linux',
+    version: '4.4'
+  },
+  SL_ANDROID5: {
+    base: 'SauceLabs',
+    browserName: 'android',
+    platform: 'Linux',
+    version: '5.1'
+  },
+  SL_ANDROID6: {
+    base: 'SauceLabs',
+    browserName: 'Chrome',
+    platform: 'Android',
+    version: '6.0',
+    device: 'Android Emulator'
   }
 }
 
