@@ -91,6 +91,8 @@ module.exports = function (config) {
       'packages/*/__tests__/**/*spec.js?(x)'
     ],
 
+    plugins: ['karma-spec-reporter'],
+
     specReporter: {
       failFast: false,
       suppressFailed: false, // do not print information about failed tests
@@ -150,7 +152,7 @@ module.exports = function (config) {
     concurrency: 2,
 
     webpack: {
-      devtool: 'inline-source-map',
+      devtool: 'source-map',
       resolve: {
         alias: {
           nervjs: resolve('nerv'),
