@@ -83,7 +83,7 @@ export function encodeEntities (text): string {
   if (typeof text !== 'string') {
     text = String(text)
   }
-  return text.replace(/[<>\"\&\\]/g, m => entities[m])
+  return text.replace(/[<>\"\&\\]/g, (m) => entities[m])
 }
 
 export { extend } from 'nerv-utils'

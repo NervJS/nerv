@@ -54,7 +54,7 @@ function renderStylesToString (styles: string | object): string {
   }
 }
 
-function renderVNodeToString (vnode, parent, context, isSvg? : boolean) {
+function renderVNodeToString (vnode, parent, context, isSvg?: boolean) {
   if (isNullOrUndef(vnode) || isBoolean(vnode)) {
     return ''
   }

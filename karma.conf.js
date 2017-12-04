@@ -92,9 +92,10 @@ module.exports = function (config) {
     ],
 
     specReporter: {
+      failFast: false,
       suppressFailed: false, // do not print information about failed tests
       suppressPassed: true, // do not print information about passed tests
-      suppressSkipped: false // do not print information about skipped tests
+      suppressSkipped: true // do not print information about skipped tests
     },
 
     // list of files to exclude
@@ -113,10 +114,6 @@ module.exports = function (config) {
       coverage ? [] : [],
       sauceLabs ? 'saucelabs' : []
     ),
-
-    mochaReporter: {
-      showDiff: true
-    },
 
     browserLogOptions: { terminal: true },
     browserConsoleLogOptions: { terminal: true },
