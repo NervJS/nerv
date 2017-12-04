@@ -65,6 +65,24 @@ const sauceLabsLaunchers = {
     browserName: 'iphone',
     version: '10.3'
   },
+  'SL_ANDROID4.1': {
+    base: 'SauceLabs',
+    browserName: 'android',
+    platform: 'Linux',
+    version: '4.1'
+  },
+  'SL_ANDROID4.2': {
+    base: 'SauceLabs',
+    browserName: 'android',
+    platform: 'Linux',
+    version: '4.2'
+  },
+  'SL_ANDROID4.3': {
+    base: 'SauceLabs',
+    browserName: 'android',
+    platform: 'Linux',
+    version: '4.3'
+  },
   'SL_ANDROID4.4': {
     base: 'SauceLabs',
     browserName: 'android',
@@ -174,7 +192,7 @@ module.exports = function (config) {
     concurrency: 2,
 
     webpack: {
-      devtool: 'source-map',
+      devtool: 'inline-source-map',
       resolve: {
         alias: {
           nervjs: resolve('nerv'),
