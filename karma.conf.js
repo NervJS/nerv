@@ -94,10 +94,10 @@ module.exports = function (config) {
     plugins: ['karma-spec-reporter'],
 
     specReporter: {
+      failFast: false,
       suppressFailed: false, // do not print information about failed tests
       suppressPassed: true, // do not print information about passed tests
-      suppressSkipped: false, // do not print information about skipped tests
-      failFast: false
+      suppressSkipped: true // do not print information about skipped tests
     },
 
     // list of files to exclude
@@ -112,14 +112,10 @@ module.exports = function (config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['spec', ''].concat(
+    reporters: ['spec', 'jasmine-diff'].concat(
       coverage ? [] : [],
       sauceLabs ? 'saucelabs' : []
     ),
-
-    mochaReporter: {
-      showDiff: true
-    },
 
     browserLogOptions: { terminal: true },
     browserConsoleLogOptions: { terminal: true },
