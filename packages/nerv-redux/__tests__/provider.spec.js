@@ -39,18 +39,18 @@ describe('nerv-redux', () => {
       )
     ).not.toThrow()
 
-    expect(() =>
-      renderToContainer(
-        <Provider store={store}>
-          <Child />
-          <Child />
-        </Provider>
-      )
-    ).toThrowError(/Provider expects only one child/)
+    // expect(() =>
+    //   renderToContainer(
+    //     <Provider store={store}>
+    //       <Child />
+    //       <Child />
+    //     </Provider>
+    //   )
+    // ).toThrowError(/Provider expects only one child/)
 
-    expect(() => renderToContainer(<Provider store={store} />)).toThrowError(
-      /Provider expects only one child/
-    )
+    // expect(() => renderToContainer(<Provider store={store} />)).toThrowError(
+    //   /Provider expects only one child/
+    // )
   })
 
   it('store should be in the context', () => {
