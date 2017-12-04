@@ -571,7 +571,7 @@ export function patchProp (
   }
 }
 
-function setProperty (node, name, value) {
+export function setProperty (node, name, value) {
   try {
     node[name] = value
   } catch (e) {}
