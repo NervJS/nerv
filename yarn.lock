@@ -2296,9 +2296,9 @@ es5-ext@^0.10.14, es5-ext@^0.10.9, es5-ext@~0.10.14:
     es6-iterator "2"
     es6-symbol "~3.1"
 
-es5-polyfill@0.0.3:
-  version "0.0.3"
-  resolved "https://registry.npmjs.org/es5-polyfill/-/es5-polyfill-0.0.3.tgz#5581050ebec2e3abe08bb7e69d94316542384052"
+es5-polyfill@0.0.5:
+  version "0.0.5"
+  resolved "https://registry.npmjs.org/es5-polyfill/-/es5-polyfill-0.0.5.tgz#be5411012b729cd1d4ff65c19974afd602e007b3"
 
 es6-iterator@2, es6-iterator@^2.0.1, es6-iterator@~2.0.1:
   version "2.0.1"

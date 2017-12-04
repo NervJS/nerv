@@ -57,7 +57,10 @@ describe('keys', () => {
 
   it('should patch keyed children properly', () => {
     const container = document.createElement('container')
-    const arr = [...Array(100).keys()].map(n => ({ n }))
+    const arr = new Array(100)
+    for (let i = 0; i < arr.length; i++) {
+      arr[i] = { i }
+    }
     const List = ({ n }) => <li key={n + ','}>{n + ','}</li>
     const App = ({ list }) => {
       return <ul>{list.map(List)}</ul>
@@ -117,11 +120,11 @@ describe('keys', () => {
     )
     render(<App list={arr} />, container)
     render(<App list={arr4.concat([{ n: 101 }])} />, container)
-    expect(container.textContent.split(','))
-      .toEqual(
-        arr4
-          .concat([{ n: 101 }])
-          .map(({ n }) => String(n)).concat([''])
-      )
+    expect(container.textContent.split(',')).toEqual(
+      arr4
+        .concat([{ n: 101 }])
+        .map(({ n }) => String(n))
+        .concat([''])
+    )
   })
 })
