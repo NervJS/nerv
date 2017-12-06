@@ -20,6 +20,7 @@ import {
 } from 'nerv-shared'
 import { unmount, unmountChildren } from './unmount'
 import Ref from './ref'
+import { attachEvent, detachEvent } from '../hooks/event-hook'
 
 export function patch (
   lastVnode,
@@ -475,6 +476,20 @@ function setStyle (domStyle, style, value) {
   }
 }
 
+function patchEvent (
+  eventName: string,
+  lastEvent: Function,
+  nextEvent: Function,
+  domNode: Element
+) {
+  if (lastEvent !== nextEvent) {
+    if (isFunction(lastEvent)) {
+      detachEvent(domNode, eventName, lastEvent)
+    }
+    attachEvent(domNode, eventName, nextEvent)
+  }
+}
+
 function patchStyle (lastAttrValue, nextAttrValue, dom) {
   const domStyle = dom.style
   let style
@@ -530,10 +545,7 @@ export function patchProp (
         }
       }
     } else if (isAttrAnEvent(prop)) {
-      if (isFunction(lastValue)) {
-        lastValue.unhook(domNode, prop, nextValue)
-      }
-      nextValue.hook(domNode, prop, lastValue)
+      patchEvent(prop, lastValue, nextValue, domNode)
     } else if (prop === 'style') {
       patchStyle(lastValue, nextValue, domNode)
     } else if (
@@ -587,7 +599,7 @@ function patchProps (
     const value = previousProps[propName]
     if (isNullOrUndef(nextProps[propName]) && !isNullOrUndef(value)) {
       if (isAttrAnEvent(propName)) {
-        value.unhook(domNode, propName, nextProps[propName])
+        detachEvent(domNode, propName, value)
       } else {
         domNode.removeAttribute(propName)
       }

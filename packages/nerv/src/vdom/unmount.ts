@@ -1,11 +1,7 @@
-import {
-  isNullOrUndef,
-  isInvalid,
-  VType,
-  VirtualChildren
-} from 'nerv-shared'
+import { isNullOrUndef, isInvalid, VType, VirtualChildren } from 'nerv-shared'
 import { isAttrAnEvent, isArray } from 'nerv-utils'
 import Ref from './ref'
+import { detachEvent } from '../hooks/event-hook'
 
 export function unmountChildren (
   children: VirtualChildren,
@@ -35,9 +31,8 @@ export function unmount (vnode, parentDom?) {
     const { props, children, ref } = vnode
     unmountChildren(children)
     for (const propName in props) {
-      const property = props[propName]
       if (isAttrAnEvent(propName)) {
-        property.unhook(dom, propName, null)
+        detachEvent(dom, propName, props[propName])
       }
     }
     if (ref !== null) {

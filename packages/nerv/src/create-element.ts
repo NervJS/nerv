@@ -1,13 +1,11 @@
 import h from './vdom/h'
 import {
   isFunction,
-  isString,
-  isAttrAnEvent
+  isString
 } from 'nerv-utils'
 import FullComponent from './full-component'
 import StatelessComponent from './stateless-component'
 import CurrentOwner from './current-owner'
-import EventHook from './hooks/event-hook'
 import {
   Props,
   Component,
@@ -20,12 +18,6 @@ function transformPropsForRealTag (type: string, props: Props) {
   const newProps: Props = {}
   for (const propName in props) {
     const propValue = props[propName]
-    if (isAttrAnEvent(propName)) {
-      newProps[propName] = !(propValue instanceof EventHook)
-        ? new EventHook(propName, propValue)
-        : propValue
-      continue
-    }
     if (propName === 'defaultValue') {
       newProps.value = props.value || props.defaultValue
       continue

@@ -1,5 +1,4 @@
 import { isFunction, MapClass } from 'nerv-utils'
-import { VHook } from './vhook'
 
 const ONINPUT = 'oninput'
 const ONPROPERTYCHANGE = 'onpropertychange'
@@ -67,105 +66,77 @@ if (navigator.userAgent.indexOf('MSIE 9') >= 0) {
   })
 }
 
-class EventHook {
-  vhook = VHook.Event
-  eventName: string
+export function attachEvent (
+  domNode: Element,
+  eventName: string,
   handler: Function
-  constructor (eventName: string, handler) {
-    this.eventName = getEventName(eventName)
-    this.handler = handler
-  }
-
-  hook (node, prop, prev) {
-    if (
-      prev &&
-      prev.vhook === VHook.Event &&
-      prev.handler === this.handler &&
-      prev.eventName === this.eventName
-    ) {
-      return
-    }
-    const eventName = fixEvent(node, this.eventName)
-    this.eventName = eventName
-    /* istanbul ignore next */
-    if (eventName === ONPROPERTYCHANGE) {
-      processOnPropertyChangeEvent(node, this.handler)
-      return
-    }
-    let delegatedRoots = delegatedEvents.get(eventName)
-    if (unbubbleEvents[eventName] === 1) {
-      if (!delegatedRoots) {
-        delegatedRoots = new MapClass()
-      }
-      const event = attachEventToNode(node, eventName, delegatedRoots)
-      delegatedEvents.set(eventName, delegatedRoots)
-      if (isFunction(this.handler)) {
-        delegatedRoots.set(node, {
-          eventHandler: this.handler,
-          event
-        })
-      }
-    } else {
-      if (!delegatedRoots) {
-        delegatedRoots = {
-          items: new MapClass()
-        }
-        delegatedRoots.event = attachEventToDocument(
-          doc,
-          eventName,
-          delegatedRoots
-        )
-        delegatedEvents.set(eventName, delegatedRoots)
-      }
-      if (isFunction(this.handler)) {
-        delegatedRoots.items.set(node, this.handler)
-      }
-    }
-  }
+) {
+  eventName = fixEvent(domNode, eventName)
   /* istanbul ignore next */
-  unhook (node, prop, next) {
-    if (
-      next &&
-      next.vhook === VHook.Event &&
-      next.handler === this.handler &&
-      next.eventName === next.eventName
-    ) {
-      return
+  if (eventName === ONPROPERTYCHANGE) {
+    processOnPropertyChangeEvent(domNode, handler)
+    return
+  }
+  let delegatedRoots = delegatedEvents.get(eventName)
+  if (unbubbleEvents[eventName] === 1) {
+    if (!delegatedRoots) {
+      delegatedRoots = new MapClass()
     }
-    const eventName = fixEvent(node, this.eventName)
-    if (eventName === ONPROPERTYCHANGE) {
-      return
+    const event = attachEventToNode(domNode, eventName, delegatedRoots)
+    delegatedEvents.set(eventName, delegatedRoots)
+    if (isFunction(handler)) {
+      delegatedRoots.set(domNode, {
+        eventHandler: handler,
+        event
+      })
     }
-    const delegatedRoots = delegatedEvents.get(eventName)
-    if (unbubbleEvents[eventName] === 1 && delegatedRoots) {
-      const event = delegatedRoots.get(node)
-      node.removeEventListener(parseEventName(eventName), event.event, false)
-      /* istanbul ignore next */
-      const delegatedRootsSize = delegatedRoots.size
-      if (delegatedRoots.delete(node) && delegatedRootsSize === 0) {
-        delegatedEvents.delete(eventName)
+  } else {
+    if (!delegatedRoots) {
+      delegatedRoots = {
+        items: new MapClass()
       }
-    } else if (delegatedRoots && delegatedRoots.items) {
-      const items = delegatedRoots.items
-      if (items.delete(node) && items.size === 0) {
-        doc.removeEventListener(
-          parseEventName(eventName),
-          delegatedRoots.event,
-          false
-        )
-        delegatedEvents.delete(eventName)
-      }
+      delegatedRoots.event = attachEventToDocument(
+        doc,
+        eventName,
+        delegatedRoots
+      )
+      delegatedEvents.set(eventName, delegatedRoots)
+    }
+    if (isFunction(handler)) {
+      delegatedRoots.items.set(domNode, handler)
     }
   }
 }
 
-function getEventName (eventName) {
-  if (eventName === 'onDoubleClick') {
-    eventName = 'ondblclick'
-  } else if (eventName === 'onTouchTap') {
-    eventName = 'onclick'
+export function detachEvent (
+  domNode: Element,
+  eventName: string,
+  handler: Function
+) {
+  eventName = fixEvent(domNode, eventName)
+  if (eventName === ONPROPERTYCHANGE) {
+    return
   }
-  return eventName.toLowerCase()
+  const delegatedRoots = delegatedEvents.get(eventName)
+  if (unbubbleEvents[eventName] === 1 && delegatedRoots) {
+    const event = delegatedRoots.get(domNode)
+    domNode.removeEventListener(parseEventName(eventName), event.event, false)
+    /* istanbul ignore next */
+    const delegatedRootsSize = delegatedRoots.size
+    if (delegatedRoots.delete(domNode) && delegatedRootsSize === 0) {
+      delegatedEvents.delete(eventName)
+    }
+  } else if (delegatedRoots && delegatedRoots.items) {
+    const items = delegatedRoots.items
+    if (items.delete(domNode) && items.size === 0) {
+      doc.removeEventListener(
+        parseEventName(eventName),
+        delegatedRoots.event,
+        false
+      )
+      delegatedEvents.delete(eventName)
+    }
+  }
 }
 
 let propertyChangeActiveElement
@@ -194,10 +165,14 @@ function processOnPropertyChangeEvent (node, handler) {
   propertyChangeActiveHandler = handler
   if (!bindFocus) {
     bindFocus = true
-    doc.addEventListener('focusin', () => {
-      unbindOnPropertyChange()
-      bindOnPropertyChange(node)
-    }, false)
+    doc.addEventListener(
+      'focusin',
+      () => {
+        unbindOnPropertyChange()
+        bindOnPropertyChange(node)
+      },
+      false
+    )
     doc.addEventListener('focusout', unbindOnPropertyChange, false)
   }
 }
@@ -252,11 +227,16 @@ function detectCanUseOnInputNode (node) {
   )
 }
 
-function fixEvent (node, eventName) {
-  if (detectCanUseOnInputNode(node)) {
-    if (eventName === 'onchange') {
-      eventName = ONINPUT in window ? ONINPUT : ONPROPERTYCHANGE
-    }
+function fixEvent (node: Element, eventName: string) {
+  if (eventName === 'onDoubleClick') {
+    eventName = 'ondblclick'
+  } else if (eventName === 'onTouchTap') {
+    eventName = 'onclick'
+  // tslint:disable-next-line:prefer-conditional-expression
+  } else if (eventName === 'onChange' && detectCanUseOnInputNode(node)) {
+    eventName = ONINPUT in window ? ONINPUT : ONPROPERTYCHANGE
+  } else {
+    eventName = eventName.toLowerCase()
   }
   return eventName
 }
@@ -341,5 +321,3 @@ function attachEventToNode (node, eventName, delegatedRoots) {
   node.addEventListener(parseEventName(eventName), eventHandler, false)
   return eventHandler
 }
-
-export default EventHook

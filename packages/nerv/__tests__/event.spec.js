@@ -189,7 +189,7 @@ describe('Events', () => {
     const input = scratch.childNodes[0]
     const proto = input.constructor.prototype
     const addEventListenerSpy = sinon.spy(proto, 'addEventListener')
-    // const removeEventListenerSpy = sinon.spy(proto, 'removeEventListener')
+    const removeEventListenerSpy = sinon.spy(proto, 'removeEventListener')
     // https://stackoverflow.com/questions/1096436/document-getelementbyidid-focus-is-not-working-for-firefox-or-chrome
     input.focus()
     await nextTick()
@@ -202,11 +202,11 @@ describe('Events', () => {
     scratch.childNodes[0].focus()
     await nextTick()
     // @TODO: IMPORTANT
-    // expect(removeEventListenerSpy.called).toBeTruthy()
+    expect(removeEventListenerSpy.called).toBeTruthy()
   })
 
   // @TODO
-  it.skip('should change/fix event name', () => {
+  it('should change/fix event name', () => {
     const container = document.createElement('div')
     document.body.appendChild(container)
     const onchange = function () {}
