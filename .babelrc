@@ -3,7 +3,7 @@
     ["env", {
       "spec": true,
       "useBuiltIns": false
-    }], ["stage-0"]
+    }], ["stage-0"], ["es3"]
   ],
   "plugins": [
     [

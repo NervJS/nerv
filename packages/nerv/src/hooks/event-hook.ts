@@ -232,7 +232,7 @@ function fixEvent (node: Element, eventName: string) {
     eventName = 'ondblclick'
   } else if (eventName === 'onTouchTap') {
     eventName = 'onclick'
-  // tslint:disable-next-line:prefer-conditional-expression
+    // tslint:disable-next-line:prefer-conditional-expression
   } else if (eventName === 'onChange' && detectCanUseOnInputNode(node)) {
     eventName = ONINPUT in window ? ONINPUT : ONPROPERTYCHANGE
   } else {
@@ -281,17 +281,22 @@ function attachEventToDocument (d, eventName, delegatedRoots) {
         currentTarget: event.target
       }
       /* istanbul ignore next */
-      Object.defineProperties(event, {
-        currentTarget: {
-          configurable: true,
-          get () {
-            return eventData.currentTarget
+      try {
+        Object.defineProperties(event, {
+          currentTarget: {
+            configurable: true,
+            get () {
+              return eventData.currentTarget
+            }
+          },
+          stopPropagation: {
+            value: stopPropagation
           }
-        },
-        stopPropagation: {
-          value: stopPropagation
-        }
-      })
+        })
+      } catch (error) {
+        // some browsers crashed
+        // see: https://stackoverflow.com/questions/44052813/why-cannot-redefine-property
+      }
       dispatchEvent(event, event.target, delegatedRoots.items, count, eventData)
     }
   }

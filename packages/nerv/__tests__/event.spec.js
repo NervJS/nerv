@@ -201,15 +201,15 @@ describe('Events', () => {
     rerender()
     scratch.childNodes[0].focus()
     await nextTick()
-    // @TODO: IMPORTANT
     expect(removeEventListenerSpy.called).toBeTruthy()
   })
 
-  // @TODO
-  it('should change/fix event name', () => {
+  it('should change/fix onchange event name', () => {
     const container = document.createElement('div')
     document.body.appendChild(container)
     const onchange = function () {}
+    const proto = document.constructor.prototype
+    const addEventListenerSpy = sinon.spy(proto, 'addEventListener')
     // const ondbclick = function () {}
     // const ontouchtap = function () {}
     class Outer extends Component {
@@ -217,11 +217,36 @@ describe('Events', () => {
         return (
           <div>
             <input onChange={onchange} />
+            <button />
           </div>
         )
       }
     }
     const app = <Outer />
     render(app, container)
+    expect(addEventListenerSpy.called).toBe(true)
+  })
+
+  it('should change/fix onDoubleClick/onTouchTap event name', () => {
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+    const proto = document.constructor.prototype
+    const addEventListenerSpy = sinon.spy(proto, 'addEventListener')
+    const ondbclick = function () {}
+    const ontouchtap = function () {}
+    class Outer extends Component {
+      render () {
+        return (
+          <div>
+            <button onDoubleClick={ondbclick} />
+            <button onTouchTap={ontouchtap} />
+          </div>
+        )
+      }
+    }
+    const app = <Outer />
+    render(app, container)
+    expect(addEventListenerSpy.called).toBe(true)
+    expect(addEventListenerSpy.callCount).toBe(2)
   })
 })

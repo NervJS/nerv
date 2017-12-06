@@ -109,7 +109,7 @@
     "rollup-plugin-uglify": "^2.0.1",
     "sinon": "^2.3.8",
     "ts-jest": "^21.1.2",
-    "ts-loader": "^2.3.4",
+    "ts-loader": "^3.2.0",
     "tslint": "^5.7.0",
     "typescript": "^2.4.2",
     "webpack": "^3.7.1"

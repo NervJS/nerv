@@ -111,7 +111,6 @@ module.exports = function (config) {
       './node_modules/es5-polyfill/dist/polyfill.js',
       'browsers/ie8.js',
       'browsers/polyfill.js',
-      'packages/nerv/__tests__/event.spec.js',
       'packages/*/__tests__/**/*spec.js?(x)'
     ],
 
@@ -171,7 +170,7 @@ module.exports = function (config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: 2,
+    concurrency: 1,
 
     webpack: {
       devtool: 'inline-source-map',
@@ -205,11 +204,6 @@ module.exports = function (config) {
                 module: 'commonjs'
               }
             }
-          },
-          {
-            enforce: 'post',
-            test: /.js$/,
-            loader: 'es3ify-loader'
           }
         ]
       },
