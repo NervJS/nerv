@@ -1,5 +1,6 @@
 const webpack = require('webpack')
 const path = require('path')
+const ES3 = require('es3ify-webpack-plugin')
 const resolve = pkg => path.join(__dirname, './packages', pkg, 'src')
 const coverage = String(process.env.COVERAGE) !== 'false'
 const ci = String(process.env.CI).match(/^(1|true)$/gi)
@@ -212,7 +213,8 @@ module.exports = function (config) {
           coverage: coverage,
           NODE_ENV: JSON.stringify(process.env.NODE_ENV || ''),
           DISABLE_FLAKEY: !!String(process.env.FLAKEY).match(/^(0|false)$/gi)
-        })
+        }),
+        new ES3()
       ]
     },
     stats: 'errors-only',
