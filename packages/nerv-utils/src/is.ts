@@ -22,11 +22,3 @@ export function isObject (arg): arg is Object {
 export function isNative (Ctor) {
   return isFunction(Ctor) && /native code/.test(Ctor.toString())
 }
-
-export const isIE8 = (() => {
-  if (document.all && !document.addEventListener) {
-    return true
-  } else {
-    return false
-  }
-})()

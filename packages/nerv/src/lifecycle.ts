@@ -201,8 +201,8 @@ export function updateComponent (component, isForce = false) {
     const lastRendered = component._rendered
     const rendered = renderComponent(component)
     const childContext = getChildContext(component, context)
-    component._rendered = rendered
     component.dom = updateVNode(rendered, lastRendered, lastDom, childContext)
+    component._rendered = rendered
     if (isFunction(component.componentDidUpdate)) {
       errorCatcher(() => {
         component.componentDidUpdate(prevProps, prevState, context)
