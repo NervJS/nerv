@@ -437,11 +437,7 @@ function isSameVNode (a, b) {
   if (isInvalid(a) || isInvalid(b)) {
     return false
   }
-  return a.type === b.type && getKey(a) === getKey(b)
-}
-
-function getKey (vnode) {
-  return vnode.key || vnode.props.key
+  return a.type === b.type && a.key === b.key
 }
 
 function patchVText (lastVNode: VText, nextVNode: VText) {

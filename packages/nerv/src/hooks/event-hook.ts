@@ -1,4 +1,5 @@
 import { isFunction, MapClass } from 'nerv-utils'
+import { noop } from 'nerv-shared'
 
 const ONINPUT = 'oninput'
 const ONPROPERTYCHANGE = 'onpropertychange'
@@ -255,7 +256,12 @@ function dispatchEvent (event, target, items, count, eventData) {
   if (eventsToTrigger) {
     count--
     eventData.currentTarget = target
-    eventsToTrigger(event)
+    eventsToTrigger({
+      ...event,
+      // for React synthetic event compatibility
+      nativeEvent: event,
+      persist: noop
+    })
     if (event.cancelBubble) {
       return
     }
