@@ -1,7 +1,7 @@
 import { isNullOrUndef, isInvalid, VType, VirtualChildren } from 'nerv-shared'
 import { isAttrAnEvent, isArray } from 'nerv-utils'
 import Ref from './ref'
-import { detachEvent } from '../hooks/event-hook'
+import { detachEvent } from '../event'
 
 export function unmountChildren (
   children: VirtualChildren,

@@ -20,7 +20,7 @@ import {
 } from 'nerv-shared'
 import { unmount, unmountChildren } from './unmount'
 import Ref from './ref'
-import { attachEvent, detachEvent } from '../hooks/event-hook'
+import { attachEvent, detachEvent } from '../event'
 
 export function patch (
   lastVnode,
