@@ -10,12 +10,14 @@ class StateLessComponent {
   props: any
   _rendered: any
   parentContext: any
+  key: any
   dom: Element | null
   constructor (type, props) {
     this.type = type
     this._owner = props.owner
     delete props.owner
     this.props = props
+    this.key = props.key
   }
 
   init () {
@@ -26,6 +28,8 @@ class StateLessComponent {
     const oldProps = previous.props
     const newProps = current.props
     if (previous.type === current.type && shallowEqual(oldProps, newProps)) {
+      current._rendered = previous._rendered
+      current.dom = previous.dom
       return domNode
     }
     return reRenderStatelessComponent(previous, this, domNode)
