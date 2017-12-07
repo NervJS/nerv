@@ -1,4 +1,4 @@
-import { isString, isNumber, isIE8, isArray } from 'nerv-utils'
+import { isString, isNumber, supportSVG, isArray } from 'nerv-utils'
 import {
   isVNode,
   isVText,
@@ -17,7 +17,7 @@ import { Component } from 'nervjs'
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
 const doc = document
-const isSupportSVG = !isIE8
+const isSupportSVG = supportSVG()
 function createElement (
   vnode: VirtualNode,
   isSvg?: boolean,
@@ -41,7 +41,7 @@ function createElement (
     } else if (vnode.type === 'foreignObject') {
       isSvg = false
     }
-    if (!isSupportSVG) {
+    if (isSupportSVG) {
       isSvg = false
     }
     if (isSvg) {
