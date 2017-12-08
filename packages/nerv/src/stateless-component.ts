@@ -35,8 +35,8 @@ class StateLessComponent {
     return reRenderStatelessComponent(previous, this, domNode)
   }
 
-  destroy (dom?: Element) {
-    unmountStatelessComponent(this, dom)
+  destroy () {
+    unmountStatelessComponent(this)
   }
 }
 

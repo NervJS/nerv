@@ -37,7 +37,7 @@ class ComponentWrapper {
     return reRenderComponent(previous, this)
   }
 
-  destroy (dom?: Element) {
+  destroy () {
     unmountComponent(this)
   }
 }

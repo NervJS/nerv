@@ -80,6 +80,7 @@ export function mountComponent (vnode: FullComponent, parentComponent?) {
     getChildContext(component, parentContext),
     component
   ) as Element)
+  vnode.dom = dom
   component._disable = false
   options.afterMount(vnode)
   return dom
@@ -229,7 +230,7 @@ export function updateVNode (vnode, lastVNode, lastDom: Element, childContext) {
   return domNode
 }
 
-export function unmountComponent (vnode: FullComponent, dom?) {
+export function unmountComponent (vnode: FullComponent) {
   const component = vnode.component
   options.beforeUnmount(component)
   if (isFunction(component.componentWillUnmount)) {
@@ -244,7 +245,7 @@ export function unmountComponent (vnode: FullComponent, dom?) {
   }
 }
 
-export function unmountStatelessComponent (vnode: Stateless, dom) {
+export function unmountStatelessComponent (vnode: Stateless) {
   unmount(vnode._rendered)
   vnode.dom = vnode._rendered = null
   if (!isNullOrUndef(vnode.props.ref)) {
