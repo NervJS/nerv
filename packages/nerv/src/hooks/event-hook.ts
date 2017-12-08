@@ -297,6 +297,9 @@ function attachEventToDocument (d, eventName, delegatedRoots) {
           },
           stopPropagation: {
             value: stopPropagation
+          },
+          persist: {
+            value: noop
           }
         })
       } catch (error) {

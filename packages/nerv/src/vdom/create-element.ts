@@ -109,10 +109,6 @@ function mountChild (
 
 function setProps (domNode: Element, vnode: VNode, isSvg) {
   const props = vnode.props
-  // set type property first for input element
-  if ('type' in props && vnode.type === 'input') {
-    domNode.setAttribute('type', props['type'])
-  }
   for (const p in props) {
     patchProp(domNode, p, {}, props[p], isSvg)
   }

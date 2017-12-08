@@ -30,9 +30,6 @@ export function patch (
   isSVG?: boolean
 ) {
   lastDom = (lastVnode && lastVnode.dom) || lastDom
-  if (lastVnode === nextVnode) {
-    return lastDom
-  }
   if (isVText(nextVnode) && isVText(lastVnode)) {
     return patchVText(lastVnode, nextVnode)
   }
