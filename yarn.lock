@@ -2283,12 +2283,6 @@ es-to-primitive@^1.1.1:
     is-date-object "^1.0.1"
     is-symbol "^1.0.1"
 
-es3ify-loader@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/es3ify-loader/-/es3ify-loader-0.2.0.tgz#8b8423576bdbd1ea39c59be130bcd6c58c461036"
-  dependencies:
-    es3ify "0.2.x"
-
 es3ify-webpack-plugin@^0.0.1:
   version "0.0.1"
   resolved "https://registry.npmjs.org/es3ify-webpack-plugin/-/es3ify-webpack-plugin-0.0.1.tgz#31de8ce4c094bf4426689367f375edf9cca9d174"
@@ -2297,7 +2291,7 @@ es3ify-webpack-plugin@^0.0.1:
     source-map "^0.5.6"
     webpack-sources "^0.1.2"
 
-es3ify@0.2.x, es3ify@^0.2.2:
+es3ify@^0.2.2:
   version "0.2.2"
   resolved "https://registry.npmjs.org/es3ify/-/es3ify-0.2.2.tgz#5dae3e650e5be3684b88066513d528d092629862"
   dependencies:

@@ -2,7 +2,9 @@
   "name": "nerv-build",
   "private": true,
   "version": "0.3.0-alpha.0",
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "description": "A react-like framework based on virtual-dom",
   "scripts": {
     "precommit": "npm run lint && npm run lint-staged",
@@ -26,10 +28,18 @@
     "release": "npm run build && lerna publish --exact --conventional-commits --canary=beta"
   },
   "lint-staged": {
-    "*.{js,jsx}": ["eslint --fix", "git add"],
-    "*.{ts,tsx}": ["tslint --fix", "git add"]
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "git add"
+    ],
+    "*.{ts,tsx}": [
+      "tslint --fix",
+      "git add"
+    ]
   },
-  "keywords": ["react-like"],
+  "keywords": [
+    "react-like"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/NervJS/nerv.git"
@@ -55,7 +65,6 @@
     "babel-preset-es3": "^1.0.1",
     "babel-preset-stage-0": "^6.22.0",
     "coveralls": "^2.13.1",
-    "es3ify-loader": "^0.2.0",
     "es3ify-webpack-plugin": "^0.0.1",
     "es5-polyfill": "0.0.5",
     "es6-promise": "^4.1.1",
