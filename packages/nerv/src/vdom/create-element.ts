@@ -1,14 +1,14 @@
-import { isString, isNumber, supportSVG, isArray } from 'nerv-utils'
+import { supportSVG, isArray, isString, isNumber } from 'nerv-utils'
 import {
   isVNode,
-  isVText,
   isWidget,
   isNullOrUndef,
   VirtualNode,
   isInvalid,
   VType,
   VirtualChildren,
-  VNode
+  VNode,
+  isValidElement
 } from 'nerv-shared'
 import { patchProp } from './patch'
 import Ref from './ref'
@@ -24,55 +24,22 @@ function createElement (
   parentComponent?
 ): Element | Text | Comment | DocumentFragment | null {
   let domNode
-  if (isWidget(vnode)) {
-    domNode = vnode.init(parentComponent)
+  if (isValidElement(vnode)) {
+    const vtype = vnode.vtype
+    if (vtype & VType.Composite || vtype & VType.Stateless) {
+      domNode = (vnode as any).init(parentComponent)
+    } else if (vtype & VType.Text) {
+      domNode = doc.createTextNode((vnode as any).text);
+      (vnode as any).dom = domNode
+    } else if (vtype & VType.Node) {
+      domNode = mountVNode(vnode as any, isSvg, parentComponent)
+    } else if (vtype & VType.Void) {
+      domNode = (vnode as any).dom
+    }
   } else if (isString(vnode) || isNumber(vnode)) {
     domNode = doc.createTextNode(vnode as string)
-  } else if (isVText(vnode)) {
-    domNode = doc.createTextNode(vnode.text as string)
-    vnode.dom = domNode
   } else if (isNullOrUndef(vnode) || (vnode as any) === false) {
     domNode = doc.createTextNode('')
-  } else if (isVNode(vnode)) {
-    if (vnode.isSvg) {
-      isSvg = true
-    } else if (vnode.type === 'svg') {
-      isSvg = true
-    } else if (vnode.type === 'foreignObject') {
-      isSvg = false
-    }
-    if (isSupportSVG) {
-      isSvg = false
-    }
-    if (isSvg) {
-      vnode.namespace = SVG_NAMESPACE
-      vnode.isSvg = isSvg
-    }
-    domNode =
-      vnode.namespace === null
-        ? doc.createElement(vnode.type)
-        : isSupportSVG
-          ? doc.createElementNS(vnode.namespace, vnode.type)
-          : doc.createElement(vnode.type)
-    setProps(domNode, vnode, isSvg)
-    const children = vnode.children
-    if (isArray(children)) {
-      for (let i = 0; i < children.length; i++) {
-        mountChild(
-          children[i] as VirtualNode,
-          domNode,
-          vnode.parentContext,
-          parentComponent,
-          isSvg
-        )
-      }
-    } else {
-      mountChild(children, domNode, vnode.parentContext, parentComponent, isSvg)
-    }
-    vnode.dom = domNode
-    if (vnode.ref !== null) {
-      Ref.attach(vnode, vnode.ref, domNode)
-    }
   } else if (isArray(vnode)) {
     domNode = doc.createDocumentFragment()
     vnode.forEach((child) => {
@@ -83,10 +50,51 @@ function createElement (
         }
       }
     })
-  } else if (!isInvalid(vnode) && vnode.vtype === VType.Void) {
-    domNode = vnode.dom
   } else {
     throw new Error('Unsupported VNode.')
+  }
+  return domNode
+}
+
+export function mountVNode (vnode: VNode, isSvg?: boolean, parentComponent?) {
+  if (vnode.isSvg) {
+    isSvg = true
+  } else if (vnode.type === 'svg') {
+    isSvg = true
+  } else if (vnode.type === 'foreignObject') {
+    isSvg = false
+  }
+  if (isSupportSVG) {
+    isSvg = false
+  }
+  if (isSvg) {
+    vnode.namespace = SVG_NAMESPACE
+    vnode.isSvg = isSvg
+  }
+  const domNode =
+    vnode.namespace === null
+      ? doc.createElement(vnode.type)
+      : isSupportSVG
+        ? doc.createElementNS(vnode.namespace, vnode.type)
+        : doc.createElement(vnode.type)
+  setProps(domNode, vnode, isSvg)
+  const children = vnode.children
+  if (isArray(children)) {
+    for (let i = 0; i < children.length; i++) {
+      mountChild(
+        children[i] as VirtualNode,
+        domNode,
+        vnode.parentContext,
+        parentComponent,
+        isSvg
+      )
+    }
+  } else {
+    mountChild(children, domNode, vnode.parentContext, parentComponent, isSvg)
+  }
+  vnode.dom = domNode
+  if (vnode.ref !== null) {
+    Ref.attach(vnode, vnode.ref, domNode)
   }
   return domNode
 }
