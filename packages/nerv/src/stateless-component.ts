@@ -1,5 +1,10 @@
 import { VType } from 'nerv-shared'
-import { mountStatelessComponent, unmountStatelessComponent, reRenderStatelessComponent } from './lifecycle'
+import { isFunction } from 'nerv-utils'
+import {
+  mountStatelessComponent,
+  unmountStatelessComponent,
+  reRenderStatelessComponent
+} from './lifecycle'
 
 class StateLessComponent {
   vtype = VType.Stateless
@@ -23,6 +28,14 @@ class StateLessComponent {
   }
 
   update (previous, current, parentContext, domNode?) {
+    const { props, state, context } = current
+    const shouldComponentUpdate = props.onShouldComponentUpdate
+    if (
+      isFunction(shouldComponentUpdate) &&
+      !shouldComponentUpdate(props, state, context)
+    ) {
+      return domNode
+    }
     return reRenderStatelessComponent(previous, this, parentContext, domNode)
   }
 
