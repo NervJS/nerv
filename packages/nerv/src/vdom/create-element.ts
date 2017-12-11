@@ -12,7 +12,6 @@ import {
 } from 'nerv-shared'
 import { patchProp } from './patch'
 import Ref from './ref'
-import { Component } from 'nervjs'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
@@ -21,11 +20,11 @@ const isSupportSVG = supportSVG()
 function createElement (
   vnode: VirtualNode,
   isSvg?: boolean,
-  parentComponent?
+  parentContext?
 ): Element | Text | Comment | DocumentFragment | null {
   let domNode
   if (isWidget(vnode)) {
-    domNode = vnode.init(parentComponent)
+    domNode = vnode.init(parentContext)
   } else if (isString(vnode) || isNumber(vnode)) {
     domNode = doc.createTextNode(vnode as string)
   } else if (isVText(vnode)) {
@@ -34,9 +33,7 @@ function createElement (
   } else if (isNullOrUndef(vnode) || (vnode as any) === false) {
     domNode = doc.createTextNode('')
   } else if (isVNode(vnode)) {
-    if (vnode.isSvg) {
-      isSvg = true
-    } else if (vnode.type === 'svg') {
+    if (vnode.type === 'svg') {
       isSvg = true
     } else if (vnode.type === 'foreignObject') {
       isSvg = false
@@ -46,7 +43,6 @@ function createElement (
     }
     if (isSvg) {
       vnode.namespace = SVG_NAMESPACE
-      vnode.isSvg = isSvg
     }
     domNode =
       vnode.namespace === null
@@ -61,13 +57,12 @@ function createElement (
         mountChild(
           children[i] as VirtualNode,
           domNode,
-          vnode.parentContext,
-          parentComponent,
+          parentContext,
           isSvg
         )
       }
     } else {
-      mountChild(children, domNode, vnode.parentContext, parentComponent, isSvg)
+      mountChild(children, domNode, parentContext, isSvg)
     }
     vnode.dom = domNode
     if (vnode.ref !== null) {
@@ -77,7 +72,7 @@ function createElement (
     domNode = doc.createDocumentFragment()
     vnode.forEach((child) => {
       if (!isInvalid(child)) {
-        const childNode = createElement(child, isSvg, parentComponent)
+        const childNode = createElement(child, isSvg, parentContext)
         if (childNode) {
           domNode.appendChild(childNode)
         }
@@ -95,13 +90,9 @@ function mountChild (
   child: VirtualChildren,
   domNode: Element,
   parentContext: Object,
-  parentComponent: Component<any, any>,
   isSvg?: boolean
 ) {
-  if (isWidget(child) || isVNode(child)) {
-    child.parentContext = parentContext || {}
-  }
-  const childNode = createElement(child as VNode, isSvg, parentComponent)
+  const childNode = createElement(child as VNode, isSvg, parentContext)
   if (childNode) {
     domNode.appendChild(childNode)
   }

@@ -4,7 +4,7 @@ import createElement from './vdom/create-element'
 import createVText from './vdom/create-vtext'
 import { createVoid } from './vdom/create-void'
 import patch from './vdom/patch'
-import { isVNode, Component, isNullOrUndef, isValidElement } from 'nerv-shared'
+import { isVNode, Component, isNullOrUndef } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
 import options from './options'
@@ -45,21 +45,14 @@ function errorHandler (component: Component<any, any>, error) {
   }
 }
 
-export function mountVNode (vnode, parentContext: any, parentVNode?) {
-  if (isValidElement(vnode)) {
-    vnode.parentContext = parentContext
-  }
-  return createElement(vnode, false, parentVNode)
+export function mountVNode (vnode, parentContext: any) {
+  return createElement(vnode, false, parentContext)
 }
 
-export function mountComponent (vnode: FullComponent, parentComponent?) {
-  const parentContext = vnode.parentContext
+export function mountComponent (vnode: FullComponent, parentContext) {
   const ref = vnode.props.ref
   vnode.component = new vnode.type(vnode.props, parentContext)
   const component = vnode.component
-  if (!isNullOrUndef(parentComponent) && isFunction(parentComponent.getState)) {
-    component._parentComponent = parentComponent
-  }
   if (isFunction(component.componentWillMount)) {
     errorCatcher(() => {
       (component as any).componentWillMount()
@@ -77,8 +70,7 @@ export function mountComponent (vnode: FullComponent, parentComponent?) {
   }
   const dom = (component.dom = mountVNode(
     rendered,
-    getChildContext(component, parentContext),
-    component
+    getChildContext(component, parentContext)
   ) as Element)
   vnode.dom = dom
   component._disable = false
@@ -86,15 +78,15 @@ export function mountComponent (vnode: FullComponent, parentComponent?) {
   return dom
 }
 
-export function mountStatelessComponent (vnode: Stateless) {
+export function mountStatelessComponent (vnode: Stateless, parentContext) {
   const ref = vnode.props.ref
   delete vnode.props.ref
-  vnode._rendered = vnode.type(vnode.props, vnode.parentContext)
+  vnode._rendered = vnode.type(vnode.props, parentContext)
   const rendered = vnode._rendered
   if (isVNode(rendered) && !isNullOrUndef(ref)) {
     rendered.ref = ref as any
   }
-  return (vnode.dom = mountVNode(rendered, vnode.parentContext) as Element)
+  return (vnode.dom = mountVNode(rendered, parentContext) as Element)
 }
 
 export function getChildContext (component, context) {
@@ -160,15 +152,15 @@ export function reRenderComponent (prev, current) {
   return component.dom
 }
 
-export function reRenderStatelessComponent (prev, current, domNode) {
+export function reRenderStatelessComponent (prev, current, parentContext, domNode) {
   const lastRendered = prev._rendered
-  const rendered = current.type(current.props, current.parentContext)
+  const rendered = current.type(current.props, parentContext)
   current._rendered = rendered
   return (current.dom = updateVNode(
     rendered,
     lastRendered,
     domNode,
-    prev.parentContext
+    parentContext
   ))
 }
 
@@ -223,11 +215,7 @@ export function updateComponent (component, isForce = false) {
 }
 
 export function updateVNode (vnode, lastVNode, lastDom: Element, childContext) {
-  if (isValidElement(vnode)) {
-    vnode.parentContext = childContext
-  }
-  const domNode = patch(lastVNode, vnode, lastDom, childContext)
-  return domNode
+  return patch(lastVNode, vnode, lastDom, childContext)
 }
 
 export function unmountComponent (vnode: FullComponent) {

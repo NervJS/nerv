@@ -4,12 +4,12 @@ export interface Widget {
   _owner: any
   props: any
   _rendered: any
-  parentContext: any
   context: any
   init (parentVnode?): Element | null
   update (
     previous: ComponentInstance,
     current: ComponentInstance,
+    context: any,
     dom?: Element
   ): Element | null
   destroy (dom?: Element): Element | null
