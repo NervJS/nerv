@@ -562,15 +562,14 @@ export function patchProp (
       domNode.removeAttribute(prop)
     } else {
       if (isSVG) {
-        const ns = isSVG && prop !== (prop = prop.replace(/^xlink\:?/, ''))
-        if (ns) {
-          domNode.setAttributeNS(
-            'http://www.w3.org/1999/xlink',
-            prop.toLowerCase(),
-            nextValue
-          )
+        if (nextValue) {
+          if (!lastValue || lastValue.value !== nextValue.value || lastValue.namespace !== nextValue.namespace) {
+            domNode.setAttributeNS(nextValue.namespace, prop, nextValue.value as string)
+          }
         } else {
-          domNode.setAttribute(prop, nextValue)
+          const colonPosition = prop.indexOf(':')
+          const localName = colonPosition > -1 ? prop.substr(colonPosition + 1) : prop
+          domNode.removeAttributeNS(lastValue.namespace, localName)
         }
       } else {
         if (!isFunction(nextValue)) {

@@ -1,8 +1,6 @@
 import h from './vdom/h'
-import {
-  isFunction,
-  isString
-} from 'nerv-utils'
+import { isFunction, isString, isNumber, isBoolean, supportSVG } from 'nerv-utils'
+import SVGPropertyConfig from './vdom/svg-property-config'
 import FullComponent from './full-component'
 import StatelessComponent from './stateless-component'
 import CurrentOwner from './current-owner'
@@ -14,12 +12,28 @@ import {
   EMPTY_CHILDREN
 } from 'nerv-shared'
 
+const isSupportSVG = supportSVG()
+const DOMAttributeNamespaces = SVGPropertyConfig.DOMAttributeNamespaces
+
 function transformPropsForRealTag (type: string, props: Props) {
   const newProps: Props = {}
-  for (const propName in props) {
+  for (let propName in props) {
     const propValue = props[propName]
     if (propName === 'defaultValue') {
       newProps.value = props.value || props.defaultValue
+      continue
+    }
+    if (isSupportSVG
+      && DOMAttributeNamespaces.hasOwnProperty(propName)
+      && (isString(propValue) || isNumber(propValue) || isBoolean(propValue))) {
+      const originalPropName = propName
+      const domAttributeName = SVGPropertyConfig.DOMAttributeNames[propName]
+      propName = domAttributeName || propName
+      const namespace = DOMAttributeNamespaces[originalPropName]
+      newProps[propName] = {
+        namespace,
+        value: propValue
+      }
       continue
     }
     newProps[propName] = propValue

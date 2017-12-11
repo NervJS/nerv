@@ -41,7 +41,7 @@ function createElement (
     } else if (vnode.type === 'foreignObject') {
       isSvg = false
     }
-    if (isSupportSVG) {
+    if (!isSupportSVG) {
       isSvg = false
     }
     if (isSvg) {
@@ -114,7 +114,7 @@ function setProps (domNode: Element, vnode: VNode, isSvg) {
     domNode.setAttribute('type', props['type'])
   }
   for (const p in props) {
-    patchProp(domNode, p, {}, props[p], isSvg)
+    patchProp(domNode, p, null, props[p], isSvg)
   }
 }
 
