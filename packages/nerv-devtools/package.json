@@ -1,6 +1,6 @@
 {
   "name": "nerv-devtools",
-  "version": "0.4.0-beta.4b0270d1",
+  "version": "0.4.0",
   "description": "Devtools for Nerv.js",
   "main": "index.js",
   "module": "dist/index.esm.js",
@@ -21,6 +21,6 @@
   },
   "homepage": "https://github.com/NervJS/nerv.git",
   "dependencies": {
-    "nervjs": "0.4.0-beta.4b0270d1"
+    "nervjs": "0.4.0"
   }
 }
