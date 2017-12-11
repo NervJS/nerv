@@ -1,4 +1,3 @@
-import { shallowEqual } from 'nerv-utils'
 import { VType } from 'nerv-shared'
 import { mountStatelessComponent, unmountStatelessComponent, reRenderStatelessComponent } from './lifecycle'
 
@@ -25,13 +24,6 @@ class StateLessComponent {
   }
 
   update (previous, current?, domNode?) {
-    const oldProps = previous.props
-    const newProps = current.props
-    if (previous.type === current.type && shallowEqual(oldProps, newProps)) {
-      current._rendered = previous._rendered
-      current.dom = previous.dom
-      return domNode
-    }
     return reRenderStatelessComponent(previous, this, domNode)
   }
 
