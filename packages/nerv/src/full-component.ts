@@ -11,7 +11,6 @@ class ComponentWrapper {
   name: string
   _owner: any
   props: any
-  parentContext: any
   component: Component<any, any>
   context: any
   key: any
@@ -29,15 +28,15 @@ class ComponentWrapper {
     this.dom = null
   }
 
-  init (parentComponent?) {
-    return mountComponent(this, parentComponent)
+  init (parentContext?) {
+    return mountComponent(this, parentContext)
   }
 
-  update (previous, current?, domNode?) {
+  update (previous, current, parentContext, domNode?) {
     return reRenderComponent(previous, this)
   }
 
-  destroy (dom?: Element) {
+  destroy () {
     unmountComponent(this)
   }
 }

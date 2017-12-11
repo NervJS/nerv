@@ -10,7 +10,6 @@ import {
 } from 'nerv-shared'
 import { patchProp } from './patch'
 import Ref from './ref'
-import { Component } from 'nervjs'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
@@ -19,18 +18,18 @@ const isSupportSVG = supportSVG()
 function createElement (
   vnode: VirtualNode,
   isSvg?: boolean,
-  parentComponent?
+  parentContext?
 ): Element | Text | Comment | DocumentFragment | null {
   let domNode
   if (isValidElement(vnode)) {
     const vtype = vnode.vtype
     if (vtype & (VType.Composite | VType.Stateless)) {
-      domNode = (vnode as any).init(parentComponent)
+      domNode = (vnode as any).init(parentContext)
     } else if (vtype & VType.Text) {
       domNode = doc.createTextNode((vnode as any).text);
       (vnode as any).dom = domNode
     } else if (vtype & VType.Node) {
-      domNode = mountVNode(vnode as any, isSvg, parentComponent)
+      domNode = mountVNode(vnode as any, isSvg, parentContext)
     } else if (vtype & VType.Void) {
       domNode = (vnode as any).dom
     }
@@ -42,7 +41,7 @@ function createElement (
     domNode = doc.createDocumentFragment()
     vnode.forEach((child) => {
       if (!isInvalid(child)) {
-        const childNode = createElement(child, isSvg, parentComponent)
+        const childNode = createElement(child, isSvg, parentContext)
         if (childNode) {
           domNode.appendChild(childNode)
         }
@@ -54,7 +53,7 @@ function createElement (
   return domNode
 }
 
-export function mountVNode (vnode: VNode, isSvg?: boolean, parentComponent?) {
+export function mountVNode (vnode: VNode, isSvg?: boolean, parentContext?) {
   if (vnode.isSvg) {
     isSvg = true
   } else if (vnode.type === 'svg') {
@@ -82,8 +81,7 @@ export function mountVNode (vnode: VNode, isSvg?: boolean, parentComponent?) {
       mountChild(
         children[i] as VNode,
         domNode,
-        vnode.parentContext,
-        parentComponent,
+        parentContext,
         isSvg
       )
     }
@@ -91,8 +89,7 @@ export function mountVNode (vnode: VNode, isSvg?: boolean, parentComponent?) {
     mountChild(
       children as VNode,
       domNode,
-      vnode.parentContext,
-      parentComponent,
+      parentContext,
       isSvg
     )
   }
@@ -107,11 +104,10 @@ function mountChild (
   child: VNode,
   domNode: Element,
   parentContext: Object,
-  parentComponent: Component<any, any>,
   isSvg?: boolean
 ) {
   child.parentContext = parentContext || EMPTY_OBJ
-  const childNode = createElement(child as VNode, isSvg, parentComponent)
+  const childNode = createElement(child as VNode, isSvg, parentContext)
   if (childNode !== null) {
     domNode.appendChild(childNode)
   }

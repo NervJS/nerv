@@ -20,7 +20,7 @@ import {
 } from 'nerv-shared'
 import { unmount, unmountChildren } from './unmount'
 import Ref from './ref'
-import { attachEvent, detachEvent } from '../hooks/event-hook'
+import { attachEvent, detachEvent } from '../event'
 
 export function patch (
   lastVnode,
@@ -49,14 +49,14 @@ export function patch (
       }
       newDom = lastDom
     } else if (isWidget(nextVnode)) {
-      newDom = nextVnode.update(lastVnode, nextVnode, lastDom)
+      newDom = nextVnode.update(lastVnode, nextVnode, context, lastDom)
     }
     (nextVnode as any).dom = newDom
   } else {
     const parentNode = lastDom.parentNode
     const nextSibling = lastDom.nextSibling
     unmount(lastVnode, parentNode)
-    newDom = createElement(nextVnode)
+    newDom = createElement(nextVnode, isSVG, context)
     if (nextVnode !== null) {
       nextVnode.dom = newDom
     }
@@ -78,7 +78,7 @@ function patchArrayChildren (
   const nextLength = nextChildren.length
   if (lastLength === 0) {
     if (nextLength > 0) {
-      const dom = createElement(nextChildren, isSVG)
+      const dom = createElement(nextChildren, isSVG, context)
       parentDom.appendChild(dom as Node)
     }
   } else if (nextLength === 0) {
@@ -149,7 +149,7 @@ function patchNonKeyedChildren (
   if (lastLength < nextLength) {
     for (i = minLength; i < nextLength; i++) {
       if (parentDom !== null) {
-        parentDom.appendChild(createElement(nextChildren[i], isSVG) as Node)
+        parentDom.appendChild(createElement(nextChildren[i], isSVG, context) as Node)
       }
     }
   } else if (lastLength > nextLength) {
@@ -219,7 +219,7 @@ function patchKeyedChildren (
       while (bStart <= bEnd) {
         node = b[bStart]
         bStart++
-        attachNewNode(dom, createElement(node), nextNode)
+        attachNewNode(dom, createElement(node, isSVG, context), nextNode)
       }
     }
   } else if (bStart > bEnd) {
@@ -295,7 +295,7 @@ function patchKeyedChildren (
       while (bStart < bLeft) {
         node = b[bStart]
         bStart++
-        attachNewNode(dom, createElement(node, isSVG), null)
+        attachNewNode(dom, createElement(node, isSVG, context), null)
       }
     } else {
       i = aLeft - patched
@@ -316,7 +316,7 @@ function patchKeyedChildren (
             nextPos = pos + 1
             attachNewNode(
               dom,
-              createElement(node, isSVG),
+              createElement(node, isSVG, context),
               nextPos < bLength ? b[nextPos].dom : null
             )
           } else {
@@ -342,7 +342,7 @@ function patchKeyedChildren (
             nextPos = pos + 1
             attachNewNode(
               dom,
-              createElement(node, isSVG),
+              createElement(node, isSVG, context),
               nextPos < bLength ? b[nextPos].dom : null
             )
           }
@@ -555,15 +555,14 @@ export function patchProp (
       domNode.removeAttribute(prop)
     } else {
       if (isSVG) {
-        const ns = isSVG && prop !== (prop = prop.replace(/^xlink\:?/, ''))
-        if (ns) {
-          domNode.setAttributeNS(
-            'http://www.w3.org/1999/xlink',
-            prop.toLowerCase(),
-            nextValue
-          )
+        if (nextValue) {
+          if (!lastValue || lastValue.value !== nextValue.value || lastValue.namespace !== nextValue.namespace) {
+            domNode.setAttributeNS(nextValue.namespace, prop, nextValue.value as string)
+          }
         } else {
-          domNode.setAttribute(prop, nextValue)
+          const colonPosition = prop.indexOf(':')
+          const localName = colonPosition > -1 ? prop.substr(colonPosition + 1) : prop
+          domNode.removeAttributeNS(lastValue.namespace, localName)
         }
       } else {
         if (!isFunction(nextValue)) {

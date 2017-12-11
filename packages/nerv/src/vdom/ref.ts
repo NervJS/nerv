@@ -7,7 +7,9 @@ export default {
     const nextRef = nextVnode != null && nextVnode.props.ref
 
     if (prevRef !== nextRef) {
-      this.detach(lastVnode, prevRef, lastVnode.dom)
+      if (!isFunction(prevRef) || !isFunction(nextRef)) {
+        this.detach(lastVnode, prevRef, lastVnode.dom)
+      }
       this.attach(nextVnode, nextRef, domNode)
     }
   },

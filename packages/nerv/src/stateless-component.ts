@@ -8,7 +8,6 @@ class StateLessComponent {
   _owner: any
   props: any
   _rendered: any
-  parentContext: any
   key: any
   dom: Element | null
   constructor (type, props) {
@@ -19,16 +18,16 @@ class StateLessComponent {
     this.key = props.key
   }
 
-  init () {
-    return mountStatelessComponent(this)
+  init (parentContext) {
+    return mountStatelessComponent(this, parentContext)
   }
 
-  update (previous, current?, domNode?) {
-    return reRenderStatelessComponent(previous, this, domNode)
+  update (previous, current, parentContext, domNode?) {
+    return reRenderStatelessComponent(previous, this, parentContext, domNode)
   }
 
-  destroy (dom?: Element) {
-    unmountStatelessComponent(this, dom)
+  destroy () {
+    unmountStatelessComponent(this)
   }
 }
 
