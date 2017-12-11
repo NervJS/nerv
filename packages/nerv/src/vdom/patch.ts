@@ -21,6 +21,7 @@ import {
 import { unmount, unmountChildren } from './unmount'
 import Ref from './ref'
 import { attachEvent, detachEvent } from '../event'
+import SVGPropertyConfig from './svg-property-config'
 
 export function patch (
   lastVnode,
@@ -149,7 +150,11 @@ function patchNonKeyedChildren (
   if (lastLength < nextLength) {
     for (i = minLength; i < nextLength; i++) {
       if (parentDom !== null) {
-        parentDom.appendChild(createElement(nextChildren[i], isSVG, context) as Node)
+        parentDom.appendChild(createElement(
+          nextChildren[i],
+          isSVG,
+          context
+        ) as Node)
       }
     }
   } else if (lastLength > nextLength) {
@@ -554,15 +559,20 @@ export function patchProp (
     } else if (isNullOrUndef(nextValue) || nextValue === false) {
       domNode.removeAttribute(prop)
     } else {
-      if (isSVG) {
-        if (nextValue) {
-          if (!lastValue || lastValue.value !== nextValue.value || lastValue.namespace !== nextValue.namespace) {
-            domNode.setAttributeNS(nextValue.namespace, prop, nextValue.value as string)
+      const namespace = SVGPropertyConfig.DOMAttributeNamespaces[prop]
+      if (isSVG && namespace) {
+        if (nextValue && namespace) {
+          if (!lastValue || lastValue !== nextValue) {
+            domNode.setAttributeNS(
+              namespace,
+              SVGPropertyConfig.DOMAttributeNames[prop],
+              nextValue
+            )
           }
         } else {
           const colonPosition = prop.indexOf(':')
           const localName = colonPosition > -1 ? prop.substr(colonPosition + 1) : prop
-          domNode.removeAttributeNS(lastValue.namespace, localName)
+          domNode.removeAttributeNS(namespace, localName)
         }
       } else {
         if (!isFunction(nextValue)) {

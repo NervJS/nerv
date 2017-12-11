@@ -2,6 +2,8 @@ export function isNumber (arg): arg is number {
   return typeof arg === 'number'
 }
 
+export const isSupportSVG = isFunction(document.createAttributeNS)
+
 export function isString (arg): arg is string {
   return typeof arg === 'string'
 }

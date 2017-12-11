@@ -33,14 +33,3 @@ export function extend<S, F> (source: S, from: F): S | F & S {
 export function clone<T> (obj: T): T | {} {
   return extend({}, obj)
 }
-
-export const supportSVG = (() => {
-  const SVG_NS = 'http://www.w3.org/2000/svg'
-  const doc = document
-  return () => {
-    return (
-      !!doc.createElementNS &&
-      !!doc.createElementNS(SVG_NS, 'svg').createSVGRect
-    )
-  }
-})()

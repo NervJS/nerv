@@ -1,4 +1,4 @@
-import { supportSVG, isArray, isString, isNumber } from 'nerv-utils'
+import { isSupportSVG, isArray, isString, isNumber } from 'nerv-utils'
 import {
   isNullOrUndef,
   VirtualNode,
@@ -14,7 +14,6 @@ import Ref from './ref'
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
 const doc = document
-const isSupportSVG = supportSVG()
 function createElement (
   vnode: VirtualNode,
   isSvg?: boolean,
@@ -60,38 +59,24 @@ export function mountVNode (vnode: VNode, isSvg?: boolean, parentContext?) {
     isSvg = true
   } else if (vnode.type === 'foreignObject') {
     isSvg = false
-  }
-  if (isSupportSVG) {
+  } else if (!isSupportSVG) {
     isSvg = false
   }
   if (isSvg) {
     vnode.namespace = SVG_NAMESPACE
     vnode.isSvg = isSvg
   }
-  const domNode =
-    vnode.namespace === null
-      ? doc.createElement(vnode.type)
-      : isSupportSVG
-        ? doc.createElementNS(vnode.namespace, vnode.type)
-        : doc.createElement(vnode.type)
+  const domNode = !isSvg
+    ? doc.createElement(vnode.type)
+    : doc.createElementNS(vnode.namespace, vnode.type)
   setProps(domNode, vnode, isSvg)
   const children = vnode.children
   if (isArray(children)) {
     for (let i = 0; i < children.length; i++) {
-      mountChild(
-        children[i] as VNode,
-        domNode,
-        parentContext,
-        isSvg
-      )
+      mountChild(children[i] as VNode, domNode, parentContext, isSvg)
     }
   } else {
-    mountChild(
-      children as VNode,
-      domNode,
-      parentContext,
-      isSvg
-    )
+    mountChild(children as VNode, domNode, parentContext, isSvg)
   }
   vnode.dom = domNode
   if (vnode.ref !== null) {
