@@ -1,14 +1,12 @@
 import { supportSVG, isArray, isString, isNumber } from 'nerv-utils'
 import {
-  isVNode,
-  isWidget,
   isNullOrUndef,
   VirtualNode,
   isInvalid,
   VType,
-  VirtualChildren,
   VNode,
-  isValidElement
+  isValidElement,
+  EMPTY_OBJ
 } from 'nerv-shared'
 import { patchProp } from './patch'
 import Ref from './ref'
@@ -26,7 +24,7 @@ function createElement (
   let domNode
   if (isValidElement(vnode)) {
     const vtype = vnode.vtype
-    if (vtype & VType.Composite || vtype & VType.Stateless) {
+    if (vtype & (VType.Composite | VType.Stateless)) {
       domNode = (vnode as any).init(parentComponent)
     } else if (vtype & VType.Text) {
       domNode = doc.createTextNode((vnode as any).text);
@@ -82,7 +80,7 @@ export function mountVNode (vnode: VNode, isSvg?: boolean, parentComponent?) {
   if (isArray(children)) {
     for (let i = 0; i < children.length; i++) {
       mountChild(
-        children[i] as VirtualNode,
+        children[i] as VNode,
         domNode,
         vnode.parentContext,
         parentComponent,
@@ -90,7 +88,13 @@ export function mountVNode (vnode: VNode, isSvg?: boolean, parentComponent?) {
       )
     }
   } else {
-    mountChild(children, domNode, vnode.parentContext, parentComponent, isSvg)
+    mountChild(
+      children as VNode,
+      domNode,
+      vnode.parentContext,
+      parentComponent,
+      isSvg
+    )
   }
   vnode.dom = domNode
   if (vnode.ref !== null) {
@@ -100,17 +104,15 @@ export function mountVNode (vnode: VNode, isSvg?: boolean, parentComponent?) {
 }
 
 function mountChild (
-  child: VirtualChildren,
+  child: VNode,
   domNode: Element,
   parentContext: Object,
   parentComponent: Component<any, any>,
   isSvg?: boolean
 ) {
-  if (isWidget(child) || isVNode(child)) {
-    child.parentContext = parentContext || {}
-  }
+  child.parentContext = parentContext || EMPTY_OBJ
   const childNode = createElement(child as VNode, isSvg, parentComponent)
-  if (childNode) {
+  if (childNode !== null) {
     domNode.appendChild(childNode)
   }
 }
@@ -118,7 +120,7 @@ function mountChild (
 function setProps (domNode: Element, vnode: VNode, isSvg) {
   const props = vnode.props
   for (const p in props) {
-    patchProp(domNode, p, {}, props[p], isSvg)
+    patchProp(domNode, p, null, props[p], isSvg)
   }
 }
 
