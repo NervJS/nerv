@@ -10,6 +10,7 @@ import {
   VirtualChildren,
   EMPTY_CHILDREN
 } from 'nerv-shared'
+import SVGPropertyConfig from './vdom/svg-property-config'
 
 function transformPropsForRealTag (type: string, props: Props) {
   const newProps: Props = {}
@@ -17,6 +18,11 @@ function transformPropsForRealTag (type: string, props: Props) {
     const propValue = props[propName]
     if (propName === 'defaultValue') {
       newProps.value = props.value || props.defaultValue
+      continue
+    }
+    const svgPropName = SVGPropertyConfig.DOMAttributeNames[propName]
+    if (svgPropName && svgPropName !== propName) {
+      newProps[svgPropName] = propValue
       continue
     }
     newProps[propName] = propValue

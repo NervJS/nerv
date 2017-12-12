@@ -251,18 +251,18 @@ const ATTRS = {
 const SVGPropertyConfig = {
   Properties: {},
   DOMAttributeNamespaces: {
-    evEvent: NS.ev,
-    xlinkActuate: NS.xlink,
-    xlinkArcrole: NS.xlink,
-    xlinkHref: NS.xlink,
-    xlinkRole: NS.xlink,
-    xlinkShow: NS.xlink,
-    xlinkTitle: NS.xlink,
-    xlinkType: NS.xlink,
-    xmlBase: NS.xml,
-    xmlId: NS.xml,
-    xmlLang: NS.xml,
-    xmlSpace: NS.xml
+    'ev:event': NS.ev,
+    'xlink-actuate': NS.xlink,
+    'xlink-arcrole': NS.xlink,
+    'xlink-href': NS.xlink,
+    'xlink-role': NS.xlink,
+    'xlink-show': NS.xlink,
+    'xlink-title': NS.xlink,
+    'xlink-type': NS.xlink,
+    'xml-base': NS.xml,
+    'xml-id': NS.xml,
+    'xml-lang': NS.xml,
+    'xml-space': NS.xml
   },
   DOMAttributeNames: {}
 }
