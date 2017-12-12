@@ -27,7 +27,7 @@ export function patch (
   nextVnode,
   lastDom: Element,
   context: object,
-  isSVG?: boolean
+  isSvg?: boolean
 ) {
   lastDom = (lastVnode && lastVnode.dom) || lastDom
   if (lastVnode === nextVnode) {
@@ -36,16 +36,20 @@ export function patch (
   if (isVText(nextVnode) && isVText(lastVnode)) {
     return patchVText(lastVnode, nextVnode)
   }
+  isSvg = isNullOrUndef(isSvg) ? (lastVnode ? lastVnode.isSvg : isSvg) : isSvg
+  if (isSvg && nextVnode) {
+    nextVnode.isSvg = isSvg
+  }
   let newDom
   if (isSameVNode(lastVnode, nextVnode)) {
     if (isVNode(nextVnode)) {
-      patchProps(lastDom, nextVnode.props, lastVnode.props, isSVG)
+      patchProps(lastDom, nextVnode.props, lastVnode.props, isSvg)
       patchChildren(
         lastDom,
         lastVnode.children,
         nextVnode.children,
         context,
-        isSVG
+        isSvg
       )
       if (nextVnode.ref !== null) {
         Ref.update(lastVnode, nextVnode, lastDom)
@@ -59,7 +63,7 @@ export function patch (
     const parentNode = lastDom.parentNode
     const nextSibling = lastDom.nextSibling
     unmount(lastVnode, parentNode)
-    newDom = createElement(nextVnode, isSVG, context)
+    newDom = createElement(nextVnode, isSvg, context)
     if (nextVnode !== null) {
       nextVnode.dom = newDom
     }
@@ -75,13 +79,13 @@ function patchArrayChildren (
   lastChildren,
   nextChildren,
   context: object,
-  isSVG?
+  isSvg?
 ) {
   const lastLength = lastChildren.length
   const nextLength = nextChildren.length
   if (lastLength === 0) {
     if (nextLength > 0) {
-      const dom = createElement(nextChildren, isSVG, context)
+      const dom = createElement(nextChildren, isSvg, context)
       parentDom.appendChild(dom as Node)
     }
   } else if (nextLength === 0) {
@@ -93,7 +97,7 @@ function patchArrayChildren (
         nextChildren,
         parentDom,
         context,
-        isSVG,
+        isSvg,
         lastLength,
         nextLength
       )
@@ -103,7 +107,7 @@ function patchArrayChildren (
         lastChildren,
         nextChildren,
         context,
-        isSVG,
+        isSvg,
         lastLength,
         nextLength
       )
@@ -116,7 +120,7 @@ export function patchChildren (
   lastChildren,
   nextChildren,
   context,
-  isSVG?
+  isSvg?
 ) {
   if (lastChildren === nextChildren) {
     return
@@ -124,13 +128,13 @@ export function patchChildren (
   const lastChildrenIsArray = isArray(lastChildren)
   const nextChildrenIsArray = isArray(nextChildren)
   if (lastChildrenIsArray && nextChildrenIsArray) {
-    patchArrayChildren(parentDom, lastChildren, nextChildren, context, isSVG)
+    patchArrayChildren(parentDom, lastChildren, nextChildren, context, isSvg)
   } else if (!lastChildrenIsArray && !nextChildrenIsArray) {
-    patch(lastChildren, nextChildren, parentDom, context, isSVG)
+    patch(lastChildren, nextChildren, parentDom, context, isSvg)
   } else if (lastChildrenIsArray && !nextChildrenIsArray) {
-    patchArrayChildren(parentDom, lastChildren, [nextChildren], context, isSVG)
+    patchArrayChildren(parentDom, lastChildren, [nextChildren], context, isSvg)
   } else if (!lastChildrenIsArray && nextChildrenIsArray) {
-    patchArrayChildren(parentDom, [lastChildren], nextChildren, context, isSVG)
+    patchArrayChildren(parentDom, [lastChildren], nextChildren, context, isSvg)
   }
 }
 
@@ -139,20 +143,20 @@ function patchNonKeyedChildren (
   lastChildren,
   nextChildren,
   context: object,
-  isSVG: boolean,
+  isSvg: boolean,
   lastLength: number,
   nextLength: number
 ) {
   const minLength = Math.min(lastLength, nextLength)
   let i = 0
   while (i < minLength) {
-    patch(lastChildren[i], nextChildren[i], parentDom, context, isSVG)
+    patch(lastChildren[i], nextChildren[i], parentDom, context, isSvg)
     i++
   }
   if (lastLength < nextLength) {
     for (i = minLength; i < nextLength; i++) {
       if (parentDom !== null) {
-        parentDom.appendChild(createElement(nextChildren[i], isSVG, context) as Node)
+        parentDom.appendChild(createElement(nextChildren[i], isSvg, context) as Node)
       }
     }
   } else if (lastLength > nextLength) {
@@ -167,7 +171,7 @@ function patchKeyedChildren (
   b: VNode[],
   dom: Element,
   context,
-  isSVG: boolean,
+  isSvg: boolean,
   aLength: number,
   bLength: number
 ) {
@@ -192,7 +196,7 @@ function patchKeyedChildren (
   outer: {
     // Sync nodes with the same key at the beginning.
     while (aStartNode.key === bStartNode.key) {
-      patch(aStartNode, bStartNode, dom, context, isSVG)
+      patch(aStartNode, bStartNode, dom, context, isSvg)
       aStart++
       bStart++
       if (aStart > aEnd || bStart > bEnd) {
@@ -204,7 +208,7 @@ function patchKeyedChildren (
 
     // Sync nodes with the same key at the end.
     while (aEndNode.key === bEndNode.key) {
-      patch(aEndNode, bEndNode, dom, context, isSVG)
+      patch(aEndNode, bEndNode, dom, context, isSvg)
       aEnd--
       bEnd--
       if (aStart > aEnd || bStart > bEnd) {
@@ -222,7 +226,7 @@ function patchKeyedChildren (
       while (bStart <= bEnd) {
         node = b[bStart]
         bStart++
-        attachNewNode(dom, createElement(node, isSVG, context), nextNode)
+        attachNewNode(dom, createElement(node, isSvg, context), nextNode)
       }
     }
   } else if (bStart > bEnd) {
@@ -257,7 +261,7 @@ function patchKeyedChildren (
               } else {
                 pos = j
               }
-              patch(aNode, bNode, dom, context, isSVG)
+              patch(aNode, bNode, dom, context, isSvg)
               patched++
               a[i] = null as any
               break
@@ -286,7 +290,7 @@ function patchKeyedChildren (
             } else {
               pos = j
             }
-            patch(aNode, bNode, dom, context, isSVG)
+            patch(aNode, bNode, dom, context, isSvg)
             patched++
             a[i] = null as any
           }
@@ -298,7 +302,7 @@ function patchKeyedChildren (
       while (bStart < bLeft) {
         node = b[bStart]
         bStart++
-        attachNewNode(dom, createElement(node, isSVG, context), null)
+        attachNewNode(dom, createElement(node, isSvg, context), null)
       }
     } else {
       i = aLeft - patched
@@ -319,7 +323,7 @@ function patchKeyedChildren (
             nextPos = pos + 1
             attachNewNode(
               dom,
-              createElement(node, isSVG, context),
+              createElement(node, isSvg, context),
               nextPos < bLength ? b[nextPos].dom : null
             )
           } else {
@@ -345,7 +349,7 @@ function patchKeyedChildren (
             nextPos = pos + 1
             attachNewNode(
               dom,
-              createElement(node, isSVG, context),
+              createElement(node, isSvg, context),
               nextPos < bLength ? b[nextPos].dom : null
             )
           }
@@ -525,7 +529,7 @@ export function patchProp (
   prop: string,
   lastValue,
   nextValue,
-  isSVG?: boolean
+  isSvg?: boolean
 ) {
   if (lastValue !== nextValue) {
     if (prop === 'className') {
@@ -533,7 +537,7 @@ export function patchProp (
     }
     if (skipProps[prop] === 1) {
       return
-    } else if (prop === 'class' && !isSVG) {
+    } else if (prop === 'class' && !isSvg) {
       domNode.className = nextValue
     } else if (prop === 'dangerouslySetInnerHTML') {
       const lastHtml = lastValue && lastValue.__html
@@ -551,7 +555,7 @@ export function patchProp (
     } else if (
       prop !== 'list' &&
       prop !== 'type' &&
-      !isSVG &&
+      !isSvg &&
       prop in domNode
     ) {
       setProperty(domNode, prop, nextValue == null ? '' : nextValue)
@@ -561,7 +565,7 @@ export function patchProp (
     } else if (isNullOrUndef(nextValue) || nextValue === false) {
       domNode.removeAttribute(prop)
     } else {
-      if (isSVG) {
+      if (isSvg) {
         if (nextValue) {
           if (!lastValue || lastValue.value !== nextValue.value || lastValue.namespace !== nextValue.namespace) {
             domNode.setAttributeNS(nextValue.namespace, prop, nextValue.value as string)
@@ -592,7 +596,7 @@ function patchProps (
   domNode: Element,
   nextProps: Props,
   previousProps: Props,
-  isSVG?: boolean
+  isSvg?: boolean
 ) {
   for (const propName in previousProps) {
     const value = previousProps[propName]
@@ -610,7 +614,7 @@ function patchProps (
       propName,
       previousProps[propName],
       nextProps[propName],
-      isSVG
+      isSvg
     )
   }
 }

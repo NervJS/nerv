@@ -33,7 +33,9 @@ function createElement (
   } else if (isNullOrUndef(vnode) || (vnode as any) === false) {
     domNode = doc.createTextNode('')
   } else if (isVNode(vnode)) {
-    if (vnode.type === 'svg') {
+    if (vnode.isSvg) {
+      isSvg = true
+    } else if (vnode.type === 'svg') {
       isSvg = true
     } else if (vnode.type === 'foreignObject') {
       isSvg = false
@@ -42,6 +44,7 @@ function createElement (
       isSvg = false
     }
     if (isSvg) {
+      vnode.isSvg = isSvg
       vnode.namespace = SVG_NAMESPACE
     }
     domNode =
