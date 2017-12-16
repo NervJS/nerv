@@ -226,6 +226,7 @@ export function unmountComponent (vnode: FullComponent) {
       (component as any).componentWillUnmount()
     }, component)
   }
+  component._disable = true
   unmount(component._rendered)
   component.dom = component._rendered = null
   if (!isNullOrUndef(vnode.props.ref)) {
