@@ -1,4 +1,3 @@
-import { isString } from 'nerv-utils'
 import {
   Props,
   VType,
@@ -23,7 +22,7 @@ function createVNode (
     vtype: VType.Node,
     props: props || EMPTY_OBJ,
     children,
-    namespace: isString(namespace) ? namespace : null,
+    namespace: namespace || null,
     _owner: owner,
     dom: null,
     ref: ref || null
