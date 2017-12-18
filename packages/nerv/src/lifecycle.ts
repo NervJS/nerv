@@ -4,7 +4,7 @@ import createElement from './vdom/create-element'
 import createVText from './vdom/create-vtext'
 import { createVoid } from './vdom/create-void'
 import patch from './vdom/patch'
-import { isVNode, Component, isNullOrUndef } from 'nerv-shared'
+import { isVNode, Component, isNullOrUndef, CompositeComponent } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
 import options from './options'
@@ -49,7 +49,7 @@ export function mountVNode (vnode, parentContext: any) {
   return createElement(vnode, false, parentContext)
 }
 
-export function mountComponent (vnode: FullComponent, parentContext) {
+export function mountComponent (vnode: FullComponent, parentContext: object) {
   const ref = vnode.props.ref
   vnode.component = new vnode.type(vnode.props, parentContext)
   const component = vnode.component
@@ -96,7 +96,7 @@ export function getChildContext (component, context) {
   return context
 }
 
-export function renderComponent (component) {
+export function renderComponent (component: Component<any, any>) {
   CurrentOwner.current = component
   let rendered
   errorCatcher(() => {
@@ -129,14 +129,14 @@ export function flushMount () {
   })
 }
 
-export function reRenderComponent (prev, current) {
+export function reRenderComponent (prev: CompositeComponent, current: CompositeComponent) {
   const component = (current.component = prev.component)
   const nextProps = current.props
   const nextContext = component.context
   component._disable = true
   if (isFunction(component.componentWillReceiveProps)) {
     errorCatcher(() => {
-      component.componentWillReceiveProps(nextProps, nextContext)
+      (component as any).componentWillReceiveProps(nextProps, nextContext)
     }, component)
   }
   component._disable = false
@@ -152,16 +152,16 @@ export function reRenderComponent (prev, current) {
   return component.dom
 }
 
-export function reRenderStatelessComponent (prev, current, parentContext, domNode) {
+export function reRenderStatelessComponent (
+  prev: Stateless,
+  current: Stateless,
+  parentContext: Object,
+  domNode: Element
+) {
   const lastRendered = prev._rendered
   const rendered = current.type(current.props, parentContext)
   current._rendered = rendered
-  return (current.dom = updateVNode(
-    rendered,
-    lastRendered,
-    domNode,
-    parentContext
-  ))
+  return (current.dom = patch(lastRendered, rendered, domNode, parentContext))
 }
 
 export function updateComponent (component, isForce = false) {
@@ -194,7 +194,7 @@ export function updateComponent (component, isForce = false) {
     const lastRendered = component._rendered
     const rendered = renderComponent(component)
     const childContext = getChildContext(component, context)
-    component.dom = updateVNode(rendered, lastRendered, lastDom, childContext)
+    component.dom = patch(lastRendered, rendered, lastDom, childContext)
     component._rendered = rendered
     if (isFunction(component.componentDidUpdate)) {
       errorCatcher(() => {
@@ -212,10 +212,6 @@ export function updateComponent (component, isForce = false) {
   }
   options.afterUpdate(component)
   flushMount()
-}
-
-export function updateVNode (vnode, lastVNode, lastDom: Element, childContext) {
-  return patch(lastVNode, vnode, lastDom, childContext)
 }
 
 export function unmountComponent (vnode: FullComponent) {

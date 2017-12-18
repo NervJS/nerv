@@ -1,11 +1,11 @@
-import { VType, Component } from 'nerv-shared'
+import { VType, Component, CompositeComponent } from 'nerv-shared'
 import {
   mountComponent,
   reRenderComponent,
   unmountComponent
 } from './lifecycle'
 
-class ComponentWrapper {
+class ComponentWrapper implements CompositeComponent {
   vtype = VType.Composite
   type: any
   name: string
@@ -15,11 +15,11 @@ class ComponentWrapper {
   context: any
   key: any
   dom: Element | null
+  _rendered: any
 
   constructor (type, props) {
     this.type = type
-    this.name =
-      type.name || type.toString().match(/^function\s*([^\s(]+)/)[1]
+    this.name = type.name || type.toString().match(/^function\s*([^\s(]+)/)[1]
     type.displayName = this.name
     this._owner = props.owner
     delete props.owner

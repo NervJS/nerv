@@ -34,20 +34,20 @@ export function patch (
   if (isVText(nextVnode) && isVText(lastVnode)) {
     return patchVText(lastVnode, nextVnode)
   }
-  isSvg = isNullOrUndef(isSvg) ? (lastVnode ? lastVnode.isSvg : isSvg) : isSvg
-  if (isSvg && nextVnode) {
-    nextVnode.isSvg = isSvg
-  }
   let newDom
   if (isSameVNode(lastVnode, nextVnode)) {
     if (isVNode(nextVnode)) {
+      isSvg = isNullOrUndef(isSvg) ? lastVnode.isSvg : isSvg
+      if (isSvg) {
+        nextVnode.isSvg = isSvg
+      }
       patchProps(lastDom, nextVnode.props, lastVnode.props, isSvg)
       patchChildren(
         lastDom,
         lastVnode.children,
         nextVnode.children,
         context,
-        isSvg
+        isSvg as boolean
       )
       if (nextVnode.ref !== null) {
         Ref.update(lastVnode, nextVnode, lastDom)
@@ -77,7 +77,7 @@ function patchArrayChildren (
   lastChildren,
   nextChildren,
   context: object,
-  isSvg?
+  isSvg: boolean
 ) {
   const lastLength = lastChildren.length
   const nextLength = nextChildren.length
@@ -117,8 +117,8 @@ export function patchChildren (
   parentDom: Element,
   lastChildren,
   nextChildren,
-  context,
-  isSvg?
+  context: object,
+  isSvg: boolean
 ) {
   if (lastChildren === nextChildren) {
     return

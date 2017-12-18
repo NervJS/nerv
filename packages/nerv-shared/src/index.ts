@@ -12,7 +12,7 @@ export interface Widget {
     context: any,
     dom?: Element
   ): Element | null
-  destroy (dom?: Element): Element | null
+  destroy (dom?: Element)
 }
 
 export type ComponentInstance = CompositeComponent | StatelessComponent
@@ -95,6 +95,7 @@ export interface ComponentLifecycle<P, S> {
   ): void
   componentWillUnmount? (): void
   componentDidCatch? (error?): void
+  render (): VirtualNode
 }
 
 export interface Refs {
@@ -109,6 +110,9 @@ export interface Component<P, S> extends ComponentLifecycle<P, S> {
   _disable: boolean
   _rendered: any
   _parentComponent: Component<any, any>
+  prevProps: P
+  prevState: S
+  prevContext: object
   dom: any
   getState (): S
   // tslint:disable-next-line:member-ordering

@@ -1,4 +1,6 @@
-const Current = {
+const Current: {
+  current: any
+} = {
   current: null
 }
 
