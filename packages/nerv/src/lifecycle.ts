@@ -71,12 +71,11 @@ export function mountComponent (vnode: FullComponent, parentContext: object, par
   if (!isNullOrUndef(ref)) {
     readyComponents.push(() => Ref.attach(vnode, ref, component.dom))
   }
-  const dom = (component.dom = mountVNode(
+  const dom = (vnode.dom = component.dom = mountVNode(
     rendered,
     getChildContext(component, parentContext),
     component
   ) as Element)
-  vnode.dom = dom
   component._disable = false
   options.afterMount(vnode)
   return dom
