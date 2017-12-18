@@ -28,8 +28,8 @@ class ComponentWrapper implements CompositeComponent {
     this.dom = null
   }
 
-  init (parentContext?) {
-    return mountComponent(this, parentContext)
+  init (parentContext, parentComponent) {
+    return mountComponent(this, parentContext, parentComponent)
   }
 
   update (previous, current, parentContext, domNode?) {

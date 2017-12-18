@@ -5,7 +5,7 @@ export interface Widget {
   props: any
   _rendered: any
   context: any
-  init (parentVnode?): Element | null
+  init (parentContext, parentComponent): Element | null
   update (
     previous: ComponentInstance,
     current: ComponentInstance,
@@ -133,6 +133,10 @@ export function isVNode (node): node is VNode {
 
 export function isVText (node): node is VText {
   return !isNullOrUndef(node) && node.vtype === VType.Text
+}
+
+export function isComponent (instance): instance is Component<any, any> {
+  return !isInvalid(instance) && instance.isReactComponent === EMPTY_OBJ
 }
 
 export function isWidget (

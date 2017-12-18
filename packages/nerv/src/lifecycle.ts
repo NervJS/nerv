@@ -4,7 +4,7 @@ import createElement from './vdom/create-element'
 import createVText from './vdom/create-vtext'
 import { createVoid } from './vdom/create-void'
 import patch from './vdom/patch'
-import { isVNode, Component, isNullOrUndef, CompositeComponent } from 'nerv-shared'
+import { isVNode, Component, isNullOrUndef, CompositeComponent, isComponent } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
 import options from './options'
@@ -45,14 +45,17 @@ function errorHandler (component: Component<any, any>, error) {
   }
 }
 
-export function mountVNode (vnode, parentContext: any) {
-  return createElement(vnode, false, parentContext)
+export function mountVNode (vnode, parentContext: any, parentComponent?) {
+  return createElement(vnode, false, parentContext, parentComponent)
 }
 
-export function mountComponent (vnode: FullComponent, parentContext: object) {
+export function mountComponent (vnode: FullComponent, parentContext: object, parentComponent) {
   const ref = vnode.props.ref
   vnode.component = new vnode.type(vnode.props, parentContext)
   const component = vnode.component
+  if (isComponent(parentComponent)) {
+    component._parentComponent = parentComponent
+  }
   if (isFunction(component.componentWillMount)) {
     errorCatcher(() => {
       (component as any).componentWillMount()
@@ -70,7 +73,8 @@ export function mountComponent (vnode: FullComponent, parentContext: object) {
   }
   const dom = (component.dom = mountVNode(
     rendered,
-    getChildContext(component, parentContext)
+    getChildContext(component, parentContext),
+    component
   ) as Element)
   vnode.dom = dom
   component._disable = false
