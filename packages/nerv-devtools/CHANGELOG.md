@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.4.0-beta.e7741103"></a>
+# [0.4.0-beta.e7741103](https://github.com/NervJS/nerv/compare/0.2.8...0.4.0-beta.e7741103) (2017-12-19)
+
+
+### Features
+
+* devtools support stateless component ([e774110](https://github.com/NervJS/nerv/commit/e774110))
+
+
+
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/NervJS/nerv/compare/v0.2.0-alpha.1...v0.3.0) (2017-10-28)
+
+
+
+<a name="0.2.0-alpha.1"></a>
+# [0.2.0-alpha.1](https://github.com/NervJS/nerv/compare/0.2.1...v0.2.0-alpha.1) (2017-10-28)
+
+
+
+
 <a name="0.4.0-beta.04d2693f"></a>
 # [0.4.0-beta.04d2693f](https://github.com/NervJS/nerv/compare/0.2.8...0.4.0-beta.04d2693f) (2017-12-07)
 
