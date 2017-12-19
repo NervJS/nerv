@@ -61,8 +61,6 @@ export function mountVNode (vnode: VNode, isSvg?: boolean, parentContext?, paren
     isSvg = true
   } else if (vnode.type === 'svg') {
     isSvg = true
-  } else if (vnode.type === 'foreignObject') {
-    isSvg = false
   } else if (!isSupportSVG) {
     isSvg = false
   }
@@ -74,6 +72,9 @@ export function mountVNode (vnode: VNode, isSvg?: boolean, parentContext?, paren
     ? doc.createElement(vnode.type)
     : doc.createElementNS(vnode.namespace, vnode.type)
   setProps(domNode, vnode, isSvg)
+  if (vnode.type === 'foreignObject') {
+    isSvg = false
+  }
   const children = vnode.children
   if (isArray(children)) {
     for (let i = 0, len = children.length; i < len; i++) {

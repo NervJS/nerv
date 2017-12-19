@@ -1,5 +1,5 @@
 /** @jsx createElement */
-import { createElement, render } from '../src'
+import { createElement, render, Component } from '../src'
 import SvgProperies from '../src/vdom/svg-property-config'
 import { sortAttributes } from './util'
 
@@ -135,5 +135,90 @@ describe.ie('svg', () => {
     expect(el.length).toEqual(1)
     expect(el[0].getAttribute('xlink:href')).toEqual('#twitter')
     expect(el[0].getAttribute('xlink:role')).toEqual('#aaa')
+  })
+
+  it('creates elements with SVG namespace inside SVG tag during update', () => {
+    let inst,
+      div,
+      div2,
+      foreignObject,
+      foreignObject2,
+      g,
+      image,
+      image2,
+      svg,
+      svg2,
+      svg3,
+      svg4
+
+    class App extends Component {
+      state = { step: 0 }
+      render () {
+        inst = this
+        const { step } = this.state
+        if (step === 0) {
+          return null
+        }
+        return (
+          <svg>
+            <g ref={el => (g = el)} strokeWidth='5'>
+              <svg ref={el => (svg2 = el)}>
+                <foreignObject ref={el => (foreignObject = el)}>
+                  <svg ref={el => (svg3 = el)}>
+                    <svg ref={el => (svg4 = el)} />
+                    <image
+                      ref={el => (image = el)}
+                      xlinkHref='http://i.imgur.com/w7GCRPb.png'
+                    />
+                  </svg>
+                  <div ref={el => (div = el)} />
+                </foreignObject>
+              </svg>
+              <image
+                ref={el => (image2 = el)}
+                xlinkHref='http://i.imgur.com/w7GCRPb.png'
+              />
+              <foreignObject ref={el => (foreignObject2 = el)}>
+                <div ref={el => (div2 = el)} />
+              </foreignObject>
+            </g>
+          </svg>
+        )
+      }
+    }
+
+    const node = document.createElement('div')
+    render(
+      <svg ref={el => (svg = el)}>
+        <App />
+      </svg>,
+      node
+    )
+    inst.setState({ step: 1 })
+    inst.forceUpdate()
+    ;[svg, svg2, svg3, svg4].forEach(el => {
+      expect(el.namespaceURI).toBe('http://www.w3.org/2000/svg')
+      // SVG tagName is case sensitive.
+      expect(el.tagName).toBe('svg')
+    })
+    expect(g.namespaceURI).toBe('http://www.w3.org/2000/svg')
+    expect(g.tagName).toBe('g')
+    expect(g.getAttribute('stroke-width')).toBe('5')
+    ;[image, image2].forEach(el => {
+      expect(el.namespaceURI).toBe('http://www.w3.org/2000/svg')
+      expect(el.tagName).toBe('image')
+      expect(el.getAttributeNS('http://www.w3.org/1999/xlink', 'href')).toBe(
+        'http://i.imgur.com/w7GCRPb.png'
+      )
+    })
+    ;[foreignObject, foreignObject2].forEach(el => {
+      expect(el.namespaceURI).toBe('http://www.w3.org/2000/svg')
+      expect(el.tagName).toBe('foreignObject')
+    })
+    ;[div, div2].forEach(el => {
+      expect(el.namespaceURI).toBe('http://www.w3.org/1999/xhtml')
+      // DOM tagName is capitalized by browsers.
+      expect(el.tagName).toBe('DIV')
+    })
   })
 })
