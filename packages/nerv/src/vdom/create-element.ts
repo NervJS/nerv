@@ -11,6 +11,7 @@ import {
 } from 'nerv-shared'
 import { patchProp } from './patch'
 import Ref from './ref'
+import options from '../options'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
@@ -26,6 +27,7 @@ function createElement (
     const vtype = vnode.vtype
     if (vtype & (VType.Composite | VType.Stateless)) {
       domNode = (vnode as CompositeComponent).init(parentContext, parentComponent)
+      options.afterMount(vnode as CompositeComponent)
     } else if (vtype & VType.Text) {
       domNode = doc.createTextNode((vnode as any).text);
       (vnode as any).dom = domNode

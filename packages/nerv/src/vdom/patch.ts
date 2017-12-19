@@ -22,6 +22,7 @@ import { unmount, unmountChildren } from './unmount'
 import Ref from './ref'
 import { attachEvent, detachEvent } from '../event'
 import SVGPropertyConfig from './svg-property-config'
+import options from '../options'
 
 export function patch (
   lastVnode,
@@ -55,6 +56,7 @@ export function patch (
       newDom = lastDom
     } else if (isWidget(nextVnode)) {
       newDom = nextVnode.update(lastVnode, nextVnode, context, lastDom)
+      options.afterUpdate(nextVnode)
     }
     (nextVnode as any).dom = newDom
   } else {

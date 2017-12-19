@@ -27,16 +27,18 @@ function createReactElement (component) {
  * @param {Node} node
  */
 function createReactDOMComponent (node) {
-  const childNodes = node.nodeType === Node.ELEMENT_NODE ?
-    Array.from(node.childNodes) : []
+  const childNodes =
+    node.nodeType === Node.ELEMENT_NODE ? Array.from(node.childNodes) : []
   const isText = node.nodeType === Node.TEXT_NODE
 
   return {
     // --- ReactDOMComponent interface
-    _currentElement: isText ? node.textContent : {
-      type: node.nodeName.toLowerCase(),
-      props: node._props
-    },
+    _currentElement: isText
+      ? node.textContent
+      : {
+          type: node.nodeName.toLowerCase(),
+          props: node._props
+        },
     _renderedChildren: childNodes.map((child: any) => {
       if (child._component) {
         return updateReactComponent(child._component)
@@ -80,7 +82,7 @@ function typeName (element) {
  */
 function createReactCompositeComponent (vnode) {
   const _currentElement = createReactElement(vnode)
-  const node = vnode.dom || vnode.component.dom
+  const node = vnode.component.dom || vnode.dom
 
   const instance: any = {
     // --- ReactDOMComponent properties
@@ -130,9 +132,10 @@ const instanceMap = new Map()
  * @param {Component|Node} componentOrNode
  */
 function updateReactComponent (componentOrNode) {
-  const newInstance = componentOrNode instanceof Node ?
-    createReactDOMComponent(componentOrNode) :
-    createReactCompositeComponent(componentOrNode)
+  const newInstance =
+    componentOrNode instanceof Node
+      ? createReactDOMComponent(componentOrNode)
+      : createReactCompositeComponent(componentOrNode)
   if (instanceMap.has(componentOrNode)) {
     const inst = instanceMap.get(componentOrNode)
     Object.assign(inst, newInstance)
@@ -218,7 +221,7 @@ function createDevToolsBridge () {
     // Stub - React DevTools expects to find this method and replace it
     // with a wrapper in order to observe new root components being added
     // tslint:disable-next-line:no-empty
-    _renderNewRootComponent (/* instance, ... */) { }
+    _renderNewRootComponent (/* instance, ... */) {}
   }
 
   // ReactReconciler-like object
@@ -227,17 +230,18 @@ function createDevToolsBridge () {
     // with wrappers in order to observe components being mounted, updated and
     // unmounted
     // tslint:disable-next-line:no-empty
-    mountComponent (/* instance, ... */) { },
+    mountComponent (/* instance, ... */) {},
     // tslint:disable-next-line:no-empty
-    performUpdateIfNecessary (/* instance, ... */) { },
+    performUpdateIfNecessary (/* instance, ... */) {},
     // tslint:disable-next-line:no-empty
-    receiveComponent (/* instance, ... */) { },
+    receiveComponent (/* instance, ... */) {},
     // tslint:disable-next-line:no-empty
-    unmountComponent (/* instance, ... */) { }
+    unmountComponent (/* instance, ... */) {}
   }
 
   /** Notify devtools that a new component instance has been mounted into the DOM. */
-  const componentAdded = ({ component, _owner }) => {
+  const componentAdded = (vnode) => {
+    const { component, _owner } = vnode
     const instance = updateReactComponent(component)
     // if is root component
     if (_owner === null) {

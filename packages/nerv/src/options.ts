@@ -1,8 +1,11 @@
-import { noop } from 'nerv-shared'
+import { noop, CompositeComponent, StatelessComponent } from 'nerv-shared'
+
+type optionsHook = (vnode: CompositeComponent | StatelessComponent) => void
+
 const options: {
-  afterMount: Function
-  afterUpdate: Function
-  beforeUnmount: Function
+  afterMount: optionsHook
+  afterUpdate: optionsHook
+  beforeUnmount: optionsHook
   roots: Object,
   debug: boolean
 } = {

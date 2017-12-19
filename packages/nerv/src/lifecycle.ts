@@ -7,7 +7,6 @@ import patch from './vdom/patch'
 import { isVNode, Component, isNullOrUndef, CompositeComponent, isComponent } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
-import options from './options'
 import { unmount } from './vdom/unmount'
 import Ref from './vdom/ref'
 
@@ -77,7 +76,6 @@ export function mountComponent (vnode: FullComponent, parentContext: object, par
     component
   ) as Element)
   component._disable = false
-  options.afterMount(vnode)
   return dom
 }
 
@@ -213,13 +211,11 @@ export function updateComponent (component, isForce = false) {
       component._pendingCallbacks.pop().call(component)
     }
   }
-  options.afterUpdate(component)
   flushMount()
 }
 
 export function unmountComponent (vnode: FullComponent) {
   const component = vnode.component
-  options.beforeUnmount(component)
   if (isFunction(component.componentWillUnmount)) {
     errorCatcher(() => {
       (component as any).componentWillUnmount()
