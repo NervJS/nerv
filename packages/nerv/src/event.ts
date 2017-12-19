@@ -256,12 +256,16 @@ function dispatchEvent (event, target, items, count, eventData) {
   if (eventsToTrigger) {
     count--
     eventData.currentTarget = target
-    eventsToTrigger({
-      ...event,
-      // for React synthetic event compatibility
-      nativeEvent: event,
-      persist: noop
+    // for React synthetic event compatibility
+    Object.defineProperties(event, {
+      nativeEvent: {
+        value: event
+      },
+      persist: {
+        value: noop
+      }
     })
+    eventsToTrigger(event)
     if (event.cancelBubble) {
       return
     }
@@ -297,9 +301,6 @@ function attachEventToDocument (d, eventName, delegatedRoots) {
           },
           stopPropagation: {
             value: stopPropagation
-          },
-          persist: {
-            value: noop
           }
         })
       } catch (error) {

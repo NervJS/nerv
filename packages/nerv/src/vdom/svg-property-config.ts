@@ -252,17 +252,17 @@ const SVGPropertyConfig = {
   Properties: {},
   DOMAttributeNamespaces: {
     'ev:event': NS.ev,
-    'xlink-actuate': NS.xlink,
-    'xlink-arcrole': NS.xlink,
-    'xlink-href': NS.xlink,
-    'xlink-role': NS.xlink,
-    'xlink-show': NS.xlink,
-    'xlink-title': NS.xlink,
-    'xlink-type': NS.xlink,
-    'xml-base': NS.xml,
-    'xml-id': NS.xml,
-    'xml-lang': NS.xml,
-    'xml-space': NS.xml
+    'xlink:actuate': NS.xlink,
+    'xlink:arcrole': NS.xlink,
+    'xlink:href': NS.xlink,
+    'xlink:role': NS.xlink,
+    'xlink:show': NS.xlink,
+    'xlink:title': NS.xlink,
+    'xlink:type': NS.xlink,
+    'xml:base': NS.xml,
+    'xml:id': NS.xml,
+    'xml:lang': NS.xml,
+    'xml:space': NS.xml
   },
   DOMAttributeNames: {}
 }
