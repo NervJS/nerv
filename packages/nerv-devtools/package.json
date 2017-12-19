@@ -2,14 +2,10 @@
   "name": "nerv-devtools",
   "version": "0.4.0-beta.4b0270d1",
   "description": "Devtools for Nerv.js",
-  "main": "index.js",
+  "main": "dist/index.esm.js",
   "module": "dist/index.esm.js",
   "typings": "./dist/src/index.d.ts",
-  "keywords": [
-    "devtools",
-    "nerv",
-    "nervjs"
-  ],
+  "keywords": ["devtools", "nerv", "nervjs"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/NervJS/nerv.git"
