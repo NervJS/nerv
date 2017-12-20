@@ -121,11 +121,13 @@ export function detachEvent (
   const delegatedRoots = delegatedEvents.get(eventName)
   if (unbubbleEvents[eventName] === 1 && delegatedRoots) {
     const event = delegatedRoots.get(domNode)
-    domNode.removeEventListener(parseEventName(eventName), event.event, false)
-    /* istanbul ignore next */
-    const delegatedRootsSize = delegatedRoots.size
-    if (delegatedRoots.delete(domNode) && delegatedRootsSize === 0) {
-      delegatedEvents.delete(eventName)
+    if (event) {
+      domNode.removeEventListener(parseEventName(eventName), event.event, false)
+      /* istanbul ignore next */
+      const delegatedRootsSize = delegatedRoots.size
+      if (delegatedRoots.delete(domNode) && delegatedRootsSize === 0) {
+        delegatedEvents.delete(eventName)
+      }
     }
   } else if (delegatedRoots && delegatedRoots.items) {
     const items = delegatedRoots.items

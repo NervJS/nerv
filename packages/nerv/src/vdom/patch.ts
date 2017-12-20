@@ -604,6 +604,8 @@ function patchProps (
     if (isNullOrUndef(nextProps[propName]) && !isNullOrUndef(value)) {
       if (isAttrAnEvent(propName)) {
         detachEvent(domNode, propName, value)
+      } else if (propName === 'className') {
+        domNode.removeAttribute('class')
       } else {
         domNode.removeAttribute(propName)
       }
