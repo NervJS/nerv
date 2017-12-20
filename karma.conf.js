@@ -142,8 +142,8 @@ module.exports = function (config) {
     browserLogOptions: { terminal: true },
     browserConsoleLogOptions: { terminal: true },
 
-    browserNoActivityTimeout: 5 * 60 * 1000,
-    browserDisconnectTimeout: 15 * 1000,
+    browserNoActivityTimeout: 15 * 60 * 1000,
+    browserDisconnectTimeout: 30 * 1000,
     browserDisconnectTolerance: 2,
 
     // web server port
