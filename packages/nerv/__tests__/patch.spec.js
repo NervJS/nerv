@@ -81,6 +81,13 @@ describe('patch', () => {
     expect(style.color.indexOf('123')).not.toBe('-1')
   })
 
+  it('should handle classNames', () => {
+    const key = Math.random()
+    render(<div classNames='c1 c2' key={key} />, scratch)
+    render(<div style='color: red' key={key} />, scratch)
+    expect(scratch.firstChild.className).toBe('')
+  })
+
   it('should handle order', () => {
     let inst
     class App extends Component {
