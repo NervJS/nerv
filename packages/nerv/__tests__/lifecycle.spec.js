@@ -603,10 +603,6 @@ describe('Lifecycle methods', () => {
         class C extends Component {
           componentWillUnmount () {
             expect(this.dom).not.toBeNull()
-            setTimeout(() => {
-              expect(this.dom).toBeNull()
-              // expect(this.dom, `after ${name}.componentWillUnmount`).not.to.exist
-            }, 0)
           }
           render () {
             return fn(this.props)

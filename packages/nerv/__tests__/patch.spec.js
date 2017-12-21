@@ -16,7 +16,7 @@ describe('patch', () => {
     render(app, scratch)
   })
 
-  it.skip('should handle float', () => {
+  it('should handle float', () => {
     const App = () => <div style={{ float: 'left' }} />
     render(<App />, scratch)
     expect(scratch.innerHTML).toContain('left')
