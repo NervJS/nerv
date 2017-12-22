@@ -1,6 +1,6 @@
 {
   "name": "nervjs",
-  "version": "0.4.0-beta.4b0270d1",
+  "version": "1.0.0",
   "description": "A react-like framework based on virtual-dom",
   "main": "index.js",
   "module": "dist/index.esm.js",
@@ -8,7 +8,9 @@
   "typings": "dist/src/index.d.ts",
   "unpkg": "dist/nerv.js",
   "jsdelivr": "dist/nerv.js",
-  "keywords": ["react-like"],
+  "keywords": [
+    "react-like"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/NervJS/nerv.git"
@@ -20,7 +22,7 @@
   },
   "homepage": "https://github.com/NervJS/nerv.git",
   "dependencies": {
-    "nerv-shared": "0.4.0-beta.4b0270d1",
-    "nerv-utils": "0.4.0-beta.4b0270d1"
+    "nerv-shared": "1.0.0",
+    "nerv-utils": "1.0.0"
   }
 }
