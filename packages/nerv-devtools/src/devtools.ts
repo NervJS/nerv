@@ -1,18 +1,25 @@
 // tslint:disable-next-line:no-var-requires
 import { options } from 'nervjs'
-
-options.debug = true
-
+import { isComposite, isWidget, isVText, isValidElement } from 'nerv-shared'
+const isArray = Array.isArray
 /**
  * Return a ReactElement-compatible object for the current state of a Nerv
  * component.
  */
-function createReactElement (component) {
+function createReactElement (vnode) {
   return {
-    type: component.__proto__.constructor,
-    key: component.key,
+    type: vnode.type,
+    key: vnode.key,
     ref: null,
-    props: component.props
+    props: vnode.props
+  }
+}
+
+function normalizeChildren (children) {
+  if (isArray(children)) {
+    return children.filter(isValidElement).map(updateReactComponent)
+  } else {
+    return isValidElement(children) ? [updateReactComponent(children)] : []
   }
 }
 
@@ -26,26 +33,19 @@ function createReactElement (component) {
  *
  * @param {Node} node
  */
-function createReactDOMComponent (node) {
-  const childNodes =
-    node.nodeType === Node.ELEMENT_NODE ? Array.from(node.childNodes) : []
-  const isText = node.nodeType === Node.TEXT_NODE
+function createReactDOMComponent (vnode) {
+  const isText = isVText(vnode)
 
   return {
     // --- ReactDOMComponent interface
     _currentElement: isText
-      ? node.textContent
+      ? vnode.text
       : {
-          type: node.nodeName.toLowerCase(),
-          props: node._props
+          type: vnode.type,
+          props: normalizeProps(vnode.props)
         },
-    _renderedChildren: childNodes.map((child: any) => {
-      if (child._component) {
-        return updateReactComponent(child._component)
-      }
-      return updateReactComponent(child)
-    }),
-    _stringText: isText ? node.textContent : null,
+    _renderedChildren: normalizeChildren(vnode.children),
+    _stringText: isText ? vnode.text : null,
 
     // --- Additional properties used by Nerv devtools
 
@@ -54,7 +54,7 @@ function createReactDOMComponent (node) {
     // This is used to send the appropriate notifications when DOM components
     // are added or updated between composite component updates.
     _inDevTools: false,
-    node
+    node: !isText ? vnode.dom : null
   }
 }
 
@@ -70,6 +70,12 @@ function typeName (element) {
   return element.type
 }
 
+function normalizeProps (_props) {
+  const props = { ..._props }
+  delete props.owner
+  return props
+}
+
 /**
  * Return a ReactCompositeComponent-compatible object for a given Nerv
  * component instance.
@@ -81,8 +87,10 @@ function typeName (element) {
  * See https://github.com/facebook/react-devtools/blob/e31ec5825342eda570acfc9bcb43a44258fceb28/backend/getData.js
  */
 function createReactCompositeComponent (vnode) {
+  const isCompositeComponent = isComposite(vnode)
   const _currentElement = createReactElement(vnode)
-  const node = vnode.component.dom || vnode.dom
+  const component = isCompositeComponent ? vnode.component : vnode
+  const node = component.dom
 
   const instance: any = {
     // --- ReactDOMComponent properties
@@ -90,10 +98,10 @@ function createReactCompositeComponent (vnode) {
       return typeName(_currentElement)
     },
     _currentElement: createReactElement(vnode),
-    props: vnode.props,
-    state: vnode.state,
-    forceUpdate: vnode.forceUpdate && vnode.forceUpdate.bind(vnode),
-    setState: vnode.setState && vnode.setState.bind(vnode),
+    props: normalizeProps(component.props),
+    state: component.state,
+    forceUpdate: component.forceUpdate && component.forceUpdate.bind(component),
+    setState: component.setState && component.setState.bind(component),
 
     // --- Additional properties used by Nerv devtools
     node
@@ -103,16 +111,14 @@ function createReactCompositeComponent (vnode) {
   // component tree as `$r` in the console.  `_instance` must refer to a
   // React Component (or compatible) class instance with `props` and `state`
   // fields and `setState()`, `forceUpdate()` methods.
-  instance._instance = vnode
+  instance._instance = component
 
   // If the root node returned by this component instance's render function
   // was itself a composite component, there will be a `_component` property
   // containing the child component instance.
   // Otherwise, if the render() function returned an HTML/SVG element,
   // create a ReactDOMComponent-like object for the DOM node itself.
-  instance._renderedComponent = vnode._component
-    ? updateReactComponent(vnode._component)
-    : updateReactComponent(node)
+  instance._renderedComponent = updateReactComponent(component._rendered)
   return instance
 }
 
@@ -131,17 +137,16 @@ const instanceMap = new Map()
  *
  * @param {Component|Node} componentOrNode
  */
-function updateReactComponent (componentOrNode) {
-  const newInstance =
-    componentOrNode instanceof Node
-      ? createReactDOMComponent(componentOrNode)
-      : createReactCompositeComponent(componentOrNode)
-  if (instanceMap.has(componentOrNode)) {
-    const inst = instanceMap.get(componentOrNode)
+function updateReactComponent (vnode) {
+  const newInstance = !isWidget(vnode)
+    ? createReactDOMComponent(vnode)
+    : createReactCompositeComponent(vnode)
+  if (instanceMap.has(vnode)) {
+    const inst = instanceMap.get(vnode)
     Object.assign(inst, newInstance)
     return inst
   }
-  instanceMap.set(getKeyForVNode(componentOrNode), newInstance)
+  instanceMap.set(getKeyForVNode(vnode), newInstance)
   return newInstance
 }
 
@@ -241,10 +246,9 @@ function createDevToolsBridge () {
 
   /** Notify devtools that a new component instance has been mounted into the DOM. */
   const componentAdded = (vnode) => {
-    const { component, _owner } = vnode
-    const instance = updateReactComponent(component)
+    const instance = updateReactComponent(vnode)
     // if is root component
-    if (_owner === null) {
+    if (vnode.dom) {
       instance._rootID = nextRootKey(roots)
       roots[instance._rootID] = instance
       Mount._renderNewRootComponent(instance)
@@ -267,6 +271,7 @@ function createDevToolsBridge () {
     // children
     const instance = updateReactComponent(component)
     Reconciler.receiveComponent(instance)
+    console.log(instance)
     visitNonCompositeChildren(instance, (childInst) => {
       if (!childInst._inDevTools) {
         // New DOM child component
