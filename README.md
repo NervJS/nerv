@@ -82,9 +82,9 @@ import React from 'nervjs'
 * [SyntheticEvent](https://facebook.github.io/react/docs/events.html)
 	* 出于维护成本和打包大小的考虑，Nerv 没有实现完整的 Synthetic Event。
 * [PropType](https://facebook.github.io/react/docs/typechecking-with-proptypes.html) 验证
-	* React 16 之后也不推荐使用 PropType 来验证，你可以使用 Flow 或 TypeScript 把这件事做得更好。
+	* React 16 之后也不包括 `PropType` 包
 *  `createClass() 和 getDefaultProps()`
-	* 这两个 ES5 的方法和 `Children` 和 `PropType` 一样，都将在 `nerv-compat` 中得到支持。
+	* 这两个 ES5 的方法不再被推荐使用
 
 
 ### 新增的特性
