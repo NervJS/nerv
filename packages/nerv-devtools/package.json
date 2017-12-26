@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/NervJS/nerv.git",
   "dependencies": {
-    "nervjs": "1.0.0"
+    "nervjs": "1.0.0",
+    "nerv-shared": "1.0.0",
+    "nerv-utils": "1.0.0"
   }
 }

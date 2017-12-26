@@ -5,7 +5,8 @@ import {
   VirtualChildren,
   VirtualNode,
   isValidElement,
-  EMPTY_CHILDREN
+  EMPTY_CHILDREN,
+  VNode
 } from 'nerv-shared'
 import { isString, isArray, isNumber } from 'nerv-utils'
 
@@ -33,7 +34,7 @@ function h (type: string, props: Props, children?: VirtualChildren) {
     props.namespace,
     props.owner,
     props.ref
-  )
+  ) as VNode
 }
 
 function addChildren (

@@ -35,4 +35,4 @@ export default {
   findDOMNode,
   isValidElement,
   unmountComponentAtNode
-}
+} as any

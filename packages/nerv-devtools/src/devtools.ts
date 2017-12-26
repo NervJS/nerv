@@ -1,7 +1,8 @@
 // tslint:disable-next-line:no-var-requires
 import { options } from 'nervjs'
 import { isComposite, isWidget, isVText, isValidElement } from 'nerv-shared'
-const isArray = Array.isArray
+import { isArray } from 'nerv-utils'
+
 /**
  * Return a ReactElement-compatible object for the current state of a Nerv
  * component.
