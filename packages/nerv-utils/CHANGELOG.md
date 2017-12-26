@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.0.1"></a>
+## [1.0.1](https://github.com/NervJS/nerv/compare/v1.0.0...v1.0.1) (2017-12-26)
+
+
+### Bug Fixes
+
+* nerv-shared|utils don't export default ([dce46eb](https://github.com/NervJS/nerv/commit/dce46eb))
+
+
+
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/NervJS/nerv/compare/0.2.8...1.0.0) (2017-12-22)
 

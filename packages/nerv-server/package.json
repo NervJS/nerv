@@ -1,6 +1,6 @@
 {
   "name": "nerv-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Server-side rendering for Nerv.js",
   "author": "yuche",
   "license": "MIT",
@@ -13,8 +13,8 @@
     "url": "git+https://github.com/NervJS/nerv.git"
   },
   "dependencies": {
-    "nerv-shared": "1.0.0",
-    "nerv-utils": "1.0.0"
+    "nerv-shared": "1.0.1",
+    "nerv-utils": "1.0.1"
   },
   "bugs": {
     "url": "https://github.com/NervJS/nerv/issues"
