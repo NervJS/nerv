@@ -118,7 +118,7 @@ import React from 'nervjs'
 ```js
 import 'nerv-devtools'
 // or 
-// require('nervjs/devtools')
+// require('nerv-devtools')
 // before initial render()
 ```
 
