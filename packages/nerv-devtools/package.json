@@ -1,6 +1,6 @@
 {
   "name": "nerv-devtools",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Devtools for Nerv.js",
   "main": "dist/index.esm.js",
   "module": "dist/index.esm.js",
@@ -21,8 +21,8 @@
   },
   "homepage": "https://github.com/NervJS/nerv.git",
   "dependencies": {
-    "nerv-shared": "1.0.1",
-    "nerv-utils": "1.0.1",
-    "nervjs": "1.0.1"
+    "nerv-shared": "1.0.2",
+    "nerv-utils": "1.0.2",
+    "nervjs": "1.0.2"
   }
 }
