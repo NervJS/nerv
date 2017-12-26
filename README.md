@@ -72,7 +72,6 @@ import React from 'nervjs'
 * ES6 class 和生命周期
 * Context
 * Refs
-	* Nerv 支持函数 refs 引用，不支持字符串引用。
 * Stateless Component
 * High Order Component
 * Virtual-DOM
@@ -82,8 +81,6 @@ import React from 'nervjs'
 
 * [SyntheticEvent](https://facebook.github.io/react/docs/events.html)
 	* 出于维护成本和打包大小的考虑，Nerv 没有实现完整的 Synthetic Event。
-* [Children](https://facebook.github.io/react/docs/react-api.html#react.children)
-	* 因为所有 `Children` 都是数组，所以 Nerv 并不需要 `Children`。
 * [PropType](https://facebook.github.io/react/docs/typechecking-with-proptypes.html) 验证
 	* React 16 之后也不推荐使用 PropType 来验证，你可以使用 Flow 或 TypeScript 把这件事做得更好。
 *  `createClass() 和 getDefaultProps()`
@@ -100,11 +97,6 @@ import React from 'nervjs'
 * 更自由的 License
 	* Nerv 是 MIT license，并且没有任何依赖
 
-### 其他的不同
-* render 函数
-	* 当多次调用 render 函数时，Nerv 默认是追加内容，而 React 是替换内容。
-	* render 函数包含在 `ReactDOM` 的包中，而 Nerv 直接内置了这个方法。
-
 ## 引入 React 生态的模块
 除了少数经过特殊处理过的模块（例如 nerv-redux），当引入 `react-router` 这样的模块时，需要在打包工具中进行多一步处理：
 
@@ -113,8 +105,8 @@ import React from 'nervjs'
 {
   "resolve": {
     "alias": {
-      "react": "nerv-compat", // 使用 nervjs 或者 compat 取决于你引入的包是否使用了上述 Nerv 缺少的特性
-      "react-dom": "nerv-compat"
+      "react": "nervjs",
+      "react-dom": "nervjs"
     }
   }
 }
@@ -124,7 +116,7 @@ import React from 'nervjs'
 当你在安装了 React Dev Tools  的 [Chrome 插件](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=zh-CN) 之后，可以使用该工具调试 Nerv 应用：
 
 ```js
-import 'nervjs/devtools'
+import 'nerv-devtools'
 // or 
 // require('nervjs/devtools')
 // before initial render()
