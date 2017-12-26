@@ -5,7 +5,7 @@
   "main": "index.js",
   "module": "dist/index.esm.js",
   "jsnext:main": "dist/index.esm.js",
-  "typings": "dist/src/index.d.ts",
+  "typings": "dist/index.d.ts",
   "unpkg": "dist/nerv.js",
   "jsdelivr": "dist/nerv.js",
   "keywords": [

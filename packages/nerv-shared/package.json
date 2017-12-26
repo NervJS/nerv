@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "description": "Internal utilities for Nerv.js",
   "main": "index.js",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/NervJS/nerv.git"

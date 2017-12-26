@@ -4,7 +4,7 @@
   "description": "Devtools for Nerv.js",
   "main": "dist/index.esm.js",
   "module": "dist/index.esm.js",
-  "typings": "./dist/src/index.d.ts",
+  "typings": "./dist/index.d.ts",
   "keywords": [
     "devtools",
     "nerv",
