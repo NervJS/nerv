@@ -9,7 +9,14 @@
   "unpkg": "dist/nerv.js",
   "jsdelivr": "dist/nerv.js",
   "keywords": [
-    "react-like"
+    "nerv",
+    "react",
+    "preact",
+    "inferno",
+    "jsx",
+    "nervjs",
+    "reactjs",
+    "javascript"
   ],
   "repository": {
     "type": "git",
