@@ -1,20 +1,19 @@
 import Nerv from '../index'
-import assert from 'assert'
 
 describe('Should export correct module', () => {
   it('Should export `default` module', () => {
-    assert(Nerv['default'])
+    expect(Nerv['default']).not.toBe(undefined)
   })
 
   it('should export correct module', () => {
-    assert(Nerv.Children)
-    assert(Nerv.Component)
-    assert(Nerv.PureComponent)
-    assert(Nerv.createElement)
-    assert(Nerv.cloneElement)
-    assert(Nerv.options)
-    assert(Nerv.findDOMNode)
-    assert(Nerv.isValidElement)
-    assert(Nerv.unmountComponentAtNode)
+    expect(Nerv.Children).not.toBe(undefined)
+    expect(Nerv.Component).not.toBe(undefined)
+    expect(Nerv.PureComponent).not.toBe(undefined)
+    expect(Nerv.createElement).not.toBe(undefined)
+    expect(Nerv.cloneElement).not.toBe(undefined)
+    expect(Nerv.options).not.toBe(undefined)
+    expect(Nerv.findDOMNode).not.toBe(undefined)
+    expect(Nerv.isValidElement).not.toBe(undefined)
+    expect(Nerv.unmountComponentAtNode).not.toBe(undefined)
   })
 })
