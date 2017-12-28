@@ -7,7 +7,7 @@ import { nextTick } from 'nerv-utils'
 import { isValidElement } from 'nerv-shared'
 import { Children } from './children'
 import options from './options'
-import { unmountComponentAtNode, findDOMNode } from './dom'
+import { unmountComponentAtNode, findDOMNode, createPortal } from './dom'
 
 export {
   Children,
@@ -20,7 +20,8 @@ export {
   options,
   findDOMNode,
   isValidElement,
-  unmountComponentAtNode
+  unmountComponentAtNode,
+  createPortal
 }
 
 export default {
@@ -34,5 +35,6 @@ export default {
   options,
   findDOMNode,
   isValidElement,
-  unmountComponentAtNode
+  unmountComponentAtNode,
+  createPortal
 } as any
