@@ -1,0 +1,22 @@
+{
+  "name": "nerv-create-class",
+  "version": "1.0.2",
+  "description": "Create Nerv component in ES5.",
+  "main": "index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NervJS/nerv.git"
+  },
+  "author": "yuche",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NervJS/nerv/issues"
+  },
+  "homepage": "https://github.com/NervJS/nerv.git",
+  "dependencies": {
+    "nerv-shared": "1.0.2",
+    "nerv-utils": "1.0.2",
+    "nervjs": "1.0.2"
+  }
+}
