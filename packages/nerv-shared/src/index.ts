@@ -95,7 +95,6 @@ export interface ComponentLifecycle<P, S> {
   ): void
   componentWillUnmount? (): void
   componentDidCatch? (error?): void
-  render (): VirtualNode
 }
 
 export interface Refs {
@@ -117,6 +116,7 @@ export interface Component<P, S> extends ComponentLifecycle<P, S> {
   getState (): S
   // tslint:disable-next-line:member-ordering
   refs: Refs
+  render (): VirtualNode
 }
 
 export function isNullOrUndef (o: any): o is undefined | null {
