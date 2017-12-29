@@ -3,6 +3,11 @@
   "version": "1.0.2",
   "description": "Create Nerv component in ES5.",
   "main": "index.js",
+  "module": "dist/index.esm.js",
+  "jsnext:main": "dist/index.esm.js",
+  "typings": "dist/index.d.ts",
+  "unpkg": "dist/nerv-create-class.js",
+  "jsdelivr": "dist/nerv-create-class.js",
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
