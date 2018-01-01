@@ -1,5 +1,5 @@
 import h from './vdom/h'
-import { isFunction, isString } from 'nerv-utils'
+import { isFunction, isString, isUndefined } from 'nerv-utils'
 import FullComponent from './full-component'
 import StatelessComponent from './stateless-component'
 import CurrentOwner from './current-owner'
@@ -45,7 +45,7 @@ function transformPropsForComponent (props: Props, defaultProps?: Props) {
   }
   if (defaultProps) {
     for (const propName in defaultProps) {
-      if (newProps[propName] === undefined) {
+      if (isUndefined(newProps[propName])) {
         newProps[propName] = defaultProps[propName]
       }
     }

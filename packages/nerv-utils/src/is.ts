@@ -24,3 +24,7 @@ export function isObject (arg): arg is Object {
 export function isNative (Ctor) {
   return isFunction(Ctor) && /native code/.test(Ctor.toString())
 }
+
+export function isUndefined (o): o is undefined {
+  return o === undefined
+}

@@ -1,10 +1,6 @@
 import { Component } from 'nervjs'
 import { isNullOrUndef, ComponentLifecycle } from 'nerv-shared'
-import { isFunction } from 'nerv-utils'
-
-function isUndefined (o): o is undefined {
-  return o === undefined
-}
+import { isFunction, isUndefined } from 'nerv-utils'
 
 export interface Mixin<P, S> extends ComponentLifecycle<P, S> {
   statics?: {

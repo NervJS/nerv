@@ -1,4 +1,4 @@
-import { extend, isFunction, isNumber, isString } from 'nerv-utils'
+import { extend, isFunction, isNumber, isString, isUndefined } from 'nerv-utils'
 import CurrentOwner from './current-owner'
 import createElement from './vdom/create-element'
 import createVText from './vdom/create-vtext'
@@ -105,7 +105,7 @@ export function renderComponent (component: Component<any, any>) {
   }, component)
   if (isNumber(rendered) || isString(rendered)) {
     rendered = createVText(rendered)
-  } else if (rendered === undefined) {
+  } else if (isUndefined(rendered)) {
     rendered = createVoid()
   }
   CurrentOwner.current = null
