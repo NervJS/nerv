@@ -1,6 +1,6 @@
 {
   "name": "nerv-shared",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Internal utilities for Nerv.js",
   "main": "index.js",
   "types": "dist/index.d.ts",
