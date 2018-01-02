@@ -7,7 +7,7 @@ import { nextTick } from 'nerv-utils'
 import { isValidElement } from 'nerv-shared'
 import { Children } from './children'
 import options from './options'
-import { unmountComponentAtNode, findDOMNode, createPortal } from './dom'
+import { unmountComponentAtNode, findDOMNode, createPortal, unstable_renderSubtreeIntoContainer } from './dom'
 
 export {
   Children,
@@ -21,7 +21,8 @@ export {
   findDOMNode,
   isValidElement,
   unmountComponentAtNode,
-  createPortal
+  createPortal,
+  unstable_renderSubtreeIntoContainer
 }
 
 export default {
@@ -36,5 +37,6 @@ export default {
   findDOMNode,
   isValidElement,
   unmountComponentAtNode,
-  createPortal
+  createPortal,
+  unstable_renderSubtreeIntoContainer
 } as any
