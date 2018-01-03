@@ -16,7 +16,9 @@ import {
   isVText,
   isInvalid,
   VNode,
-  isNullOrUndef
+  isNullOrUndef,
+  isValidElement,
+  EMPTY_CHILDREN
 } from 'nerv-shared'
 import { unmount, unmountChildren } from './unmount'
 import Ref from './ref'
@@ -42,7 +44,7 @@ export function patch (
       if (isSvg) {
         nextVnode.isSvg = isSvg
       }
-      patchProps(lastDom, nextVnode.props, lastVnode.props, isSvg)
+      patchProps(lastDom, nextVnode.props, lastVnode.props, lastVnode, isSvg)
       patchChildren(
         lastDom,
         lastVnode.children,
@@ -529,6 +531,7 @@ export function patchProp (
   prop: string,
   lastValue,
   nextValue,
+  lastVnode: VNode | null,
   isSvg?: boolean
 ) {
   if (lastValue !== nextValue) {
@@ -545,6 +548,10 @@ export function patchProp (
 
       if (lastHtml !== nextHtml) {
         if (!isNullOrUndef(nextHtml)) {
+          if (isValidElement(lastVnode) && lastVnode.children !== EMPTY_CHILDREN) {
+            unmountChildren(lastVnode.children)
+            lastVnode.children = []
+          }
           domNode.innerHTML = nextHtml
         }
       }
@@ -573,7 +580,8 @@ export function patchProp (
           }
         } else {
           const colonPosition = prop.indexOf(':')
-          const localName = colonPosition > -1 ? prop.substr(colonPosition + 1) : prop
+          const localName =
+            colonPosition > -1 ? prop.substr(colonPosition + 1) : prop
           domNode.removeAttributeNS(namespace, localName)
         }
       } else {
@@ -597,6 +605,7 @@ function patchProps (
   domNode: Element,
   nextProps: Props,
   previousProps: Props,
+  lastVnode: VNode,
   isSvg?: boolean
 ) {
   for (const propName in previousProps) {
@@ -604,6 +613,8 @@ function patchProps (
     if (isNullOrUndef(nextProps[propName]) && !isNullOrUndef(value)) {
       if (isAttrAnEvent(propName)) {
         detachEvent(domNode, propName, value)
+      } else if (propName === 'dangerouslySetInnerHTML') {
+        domNode.textContent = ''
       } else if (propName === 'className') {
         domNode.removeAttribute('class')
       } else {
@@ -617,6 +628,7 @@ function patchProps (
       propName,
       previousProps[propName],
       nextProps[propName],
+      lastVnode,
       isSvg
     )
   }

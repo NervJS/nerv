@@ -287,8 +287,7 @@ describe('render()', function () {
     // expect(scratch.childNodes[0]).to.have.nested.deep.property('style.cssText').that.equals('display: inline;')
   })
 
-  // @TODO: IMPORTANT
-  it.skip('should support dangerouslySetInnerHTML', () => {
+  it('should support dangerouslySetInnerHTML', () => {
     const html = '<b>foo &amp; bar</b>'
     render(<div dangerouslySetInnerHTML={{ __html: html }} />, scratch)
     expect(scratch.firstChild.innerHTML).toEqual(normalizeHTML(html))
@@ -546,12 +545,11 @@ describe('render()', function () {
     expect(scratch.firstChild.value).toEqual('260')
   })
 
-  // TODO: onDoubleClick and onTouchTap failed
-  // it.skip('should handle onDoubleClick and onTouchTap', () => {
-  //   const C = <input onDoubleClick={null} onTouchTap={null} />
-  //   render(<C />, scratch)
-  //   const input = document.querySelector('input')
-  //   expect(input['ondblclick']).toEqual(null)
-  //   expect(input['onclick']).toEqual(null)
-  // })
+  it('should handle onDoubleClick and onTouchTap', () => {
+    const C = () => <input onDoubleClick={null} onTouchTap={null} id='input' />
+    render(<C />, scratch)
+    const input = scratch.firstChild
+    expect(input['ondblclick']).toBeFalsy()
+    expect(input['onclick']).toBeFalsy()
+  })
 })

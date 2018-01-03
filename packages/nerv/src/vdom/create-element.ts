@@ -17,7 +17,7 @@ const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
 const doc = document
 function createElement (
-  vnode: VirtualNode,
+  vnode: VirtualNode | VirtualNode[],
   isSvg?: boolean,
   parentContext?,
   parentComponent?
@@ -71,7 +71,7 @@ export function mountVNode (vnode: VNode, isSvg?: boolean, parentContext?, paren
   const domNode = !isSvg
     ? doc.createElement(vnode.type)
     : doc.createElementNS(vnode.namespace, vnode.type)
-  setProps(domNode, vnode, isSvg)
+  setProps(domNode, vnode, isSvg as boolean)
   if (vnode.type === 'foreignObject') {
     isSvg = false
   }
@@ -104,10 +104,10 @@ function mountChild (
   }
 }
 
-function setProps (domNode: Element, vnode: VNode, isSvg) {
+function setProps (domNode: Element, vnode: VNode, isSvg: boolean) {
   const props = vnode.props
   for (const p in props) {
-    patchProp(domNode, p, null, props[p], isSvg)
+    patchProp(domNode, p, null, props[p], null, isSvg)
   }
 }
 

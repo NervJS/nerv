@@ -156,7 +156,7 @@ export function isStateless (node): node is StatelessComponent {
   return !isNullOrUndef(node) && node.vtype === VType.Stateless
 }
 
-export function isValidElement (node) {
+export function isValidElement (node): node is VirtualNode {
   return !isNullOrUndef(node) && node.vtype
 }
 

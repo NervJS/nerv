@@ -39,7 +39,7 @@ function h (type: string, props: Props, children?: VirtualChildren) {
 
 function addChildren (
   childNodes: VirtualNode[],
-  children: VirtualNode,
+  children: VirtualNode | VirtualNode[],
   type: string
 ) {
   if (isString(children) || isNumber(children)) {
