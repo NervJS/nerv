@@ -1,4 +1,5 @@
-const canUsePromise = 'Promise' in window
+import { global } from './env'
+const canUsePromise = 'Promise' in global
 
 let resolved
 if (canUsePromise) {
@@ -7,6 +8,6 @@ if (canUsePromise) {
 
 const nextTick: (fn) => void = canUsePromise
   ? (fn) => resolved.then(fn)
-  : 'requestAnimationFrame' in window ? requestAnimationFrame : setTimeout
+  : 'requestAnimationFrame' in global ? requestAnimationFrame : setTimeout
 
 export default nextTick

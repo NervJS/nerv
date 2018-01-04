@@ -1,12 +1,10 @@
 import { isFunction, MapClass } from 'nerv-utils'
-import { noop } from 'nerv-shared'
+import { noop, doc, isBrowser } from 'nerv-shared'
 
 const ONINPUT = 'oninput'
 const ONPROPERTYCHANGE = 'onpropertychange'
 
 const delegatedEvents = new MapClass()
-
-const doc = document
 
 const unbubbleEvents = {
   [ONPROPERTYCHANGE]: 1,
@@ -56,7 +54,7 @@ const unbubbleEvents = {
 let bindFocus = false
 
 /* istanbul ignore next */
-if (navigator.userAgent.indexOf('MSIE 9') >= 0) {
+if (isBrowser && navigator.userAgent.indexOf('MSIE 9') >= 0) {
   doc.addEventListener('selectionchange', () => {
     const el = doc.activeElement
     if (detectCanUseOnInputNode(el)) {

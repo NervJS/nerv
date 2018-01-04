@@ -1,3 +1,4 @@
+import { global } from './env'
 export interface Cache<Key, Value> {
   k: Key
   v: Value
@@ -82,4 +83,4 @@ export class SimpleMap<Key, Value> {
 }
 
 export const MapClass: MapConstructor =
-  'Map' in window ? Map : (SimpleMap as any)
+  'Map' in global ? Map : (SimpleMap as any)

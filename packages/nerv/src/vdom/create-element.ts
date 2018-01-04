@@ -7,7 +7,8 @@ import {
   VNode,
   isValidElement,
   EMPTY_OBJ,
-  CompositeComponent
+  CompositeComponent,
+  doc
 } from 'nerv-shared'
 import { patchProp } from './patch'
 import Ref from './ref'
@@ -15,7 +16,6 @@ import options from '../options'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 
-const doc = document
 function createElement (
   vnode: VirtualNode | VirtualNode[],
   isSvg?: boolean,

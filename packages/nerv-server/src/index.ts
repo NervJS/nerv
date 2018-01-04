@@ -5,16 +5,14 @@ import {
   isStateless,
   isNullOrUndef,
   isInvalid,
-  isComposite,
-  isBoolean
+  isComposite
 } from './is'
-import { isString, isNumber, isFunction, isArray } from 'nerv-utils'
+import { isString, isNumber, isFunction, isArray, clone, extend } from 'nerv-utils'
 import {
   encodeEntities,
   isVoidElements,
   getCssPropertyName,
-  isUnitlessNumber,
-  extend
+  isUnitlessNumber
 } from './utils'
 
 const skipAttributes = {
@@ -55,7 +53,7 @@ function renderStylesToString (styles: string | object): string {
 }
 
 function renderVNodeToString (vnode, parent, context, isSvg?: boolean) {
-  if (isNullOrUndef(vnode) || isBoolean(vnode)) {
+  if (isInvalid(vnode)) {
     return ''
   }
   const { type, props, children } = vnode
@@ -149,7 +147,7 @@ function renderVNodeToString (vnode, parent, context, isSvg?: boolean) {
     }
     const rendered = instance.render()
     if (isFunction(instance.getChildContext)) {
-      context = extend(extend({}, context), instance.getChildContext())
+      context = extend(clone(context), instance.getChildContext())
     }
     return renderVNodeToString(rendered, vnode, context, isSvg)
   } else if (isStateless(vnode)) {
