@@ -1,4 +1,4 @@
-import { isSupportSVG, isArray, isString, isNumber } from 'nerv-utils'
+import { isSupportSVG, isArray, isString, isNumber, doc } from 'nerv-utils'
 import {
   isNullOrUndef,
   VirtualNode,
@@ -7,8 +7,7 @@ import {
   VNode,
   isValidElement,
   EMPTY_OBJ,
-  CompositeComponent,
-  doc
+  CompositeComponent
 } from 'nerv-shared'
 import { patchProp } from './patch'
 import Ref from './ref'

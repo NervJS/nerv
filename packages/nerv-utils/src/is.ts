@@ -1,8 +1,10 @@
+import { doc } from './env'
+
 export function isNumber (arg): arg is number {
   return typeof arg === 'number'
 }
 
-export const isSupportSVG = isFunction(document.createAttributeNS)
+export const isSupportSVG = isFunction(doc.createAttributeNS)
 
 export function isString (arg): arg is string {
   return typeof arg === 'string'

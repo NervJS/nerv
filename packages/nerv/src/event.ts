@@ -1,5 +1,5 @@
-import { isFunction, MapClass } from 'nerv-utils'
-import { noop, doc, isBrowser } from 'nerv-shared'
+import { isFunction, MapClass, doc, isBrowser } from 'nerv-utils'
+import { noop } from 'nerv-shared'
 
 const ONINPUT = 'oninput'
 const ONPROPERTYCHANGE = 'onpropertychange'

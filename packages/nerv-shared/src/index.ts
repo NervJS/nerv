@@ -164,16 +164,6 @@ export function isHook (arg) {
   return !isNullOrUndef(arg) && typeof arg.vhook === 'number'
 }
 
-export const isBrowser = typeof window !== 'undefined'
-
-const fakeDoc: any = {
-  createElement: noop,
-  createElementNS: noop,
-  createTextNode: noop
-}
-
-export const doc: Document = isBrowser ? document : fakeDoc
-
 // tslint:disable-next-line:no-empty
 export function noop () {}
 
