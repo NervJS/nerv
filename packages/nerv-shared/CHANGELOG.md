@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.0"></a>
+# [1.2.0](https://github.com/NervJS/nerv/compare/v1.1.0...v1.2.0) (2018-01-05)
+
+
+### Bug Fixes
+
+* `document` can't found in node envirment. ([238163d](https://github.com/NervJS/nerv/commit/238163d))
+* set `dangerouslySetInnerHTML` could fail ([e4b3b50](https://github.com/NervJS/nerv/commit/e4b3b50))
+
+
+
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/NervJS/nerv/compare/v1.0.2...v1.1.0) (2018-01-02)
 
