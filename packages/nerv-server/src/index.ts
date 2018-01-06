@@ -6,7 +6,7 @@ import {
   isNullOrUndef,
   isInvalid,
   isComposite
-} from './is'
+} from 'nerv-shared'
 import { isString, isNumber, isFunction, isArray, clone, extend } from 'nerv-utils'
 import {
   encodeEntities,
