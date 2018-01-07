@@ -1,4 +1,4 @@
-import { noop, CompositeComponent, StatelessComponent } from 'nerv-shared'
+import { noop, CompositeComponent, StatelessComponent, VirtualNode } from 'nerv-shared'
 
 export type optionsHook = (vnode: CompositeComponent | StatelessComponent) => void
 
@@ -6,13 +6,13 @@ const options: {
   afterMount: optionsHook
   afterUpdate: optionsHook
   beforeUnmount: optionsHook
-  roots: Object,
+  roots: VirtualNode[],
   debug: boolean
 } = {
     afterMount: noop,
     afterUpdate: noop,
     beforeUnmount: noop,
-    roots: {},
+    roots: [],
     debug: false
   }
 

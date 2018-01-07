@@ -1,18 +1,17 @@
 // tslint:disable-next-line:no-var-requires
 import { options } from 'nervjs'
 import { isComposite, isWidget, isVText, isValidElement } from 'nerv-shared'
-import { isArray } from 'nerv-utils'
-
+const isArray = Array.isArray
 /**
  * Return a ReactElement-compatible object for the current state of a Nerv
  * component.
  */
-function createReactElement (vnode) {
+function createReactElement (component) {
   return {
-    type: vnode.type,
-    key: vnode.key,
+    type: component.type,
+    key: component.key,
     ref: null,
-    props: vnode.props
+    props: component.props
   }
 }
 
@@ -98,7 +97,7 @@ function createReactCompositeComponent (vnode) {
     getName () {
       return typeName(_currentElement)
     },
-    _currentElement: createReactElement(vnode),
+    _currentElement,
     props: normalizeProps(component.props),
     state: component.state,
     forceUpdate: component.forceUpdate && component.forceUpdate.bind(component),
@@ -156,7 +155,7 @@ function nextRootKey (roots) {
 }
 
 function getKeyForVNode (vnode) {
-  return vnode._instance || vnode.component || vnode
+  return isWidget(vnode) ? vnode.type : vnode
 }
 
 function getInstanceFromVNode (vnode) {
@@ -245,11 +244,16 @@ function createDevToolsBridge () {
     unmountComponent (/* instance, ... */) {}
   }
 
+  function isRoot (vnode) {
+    return (options.roots as any[]).some((item) => item === vnode)
+  }
+
   /** Notify devtools that a new component instance has been mounted into the DOM. */
   const componentAdded = (vnode) => {
     const instance = updateReactComponent(vnode)
+
     // if is root component
-    if (vnode.dom) {
+    if (isRoot(vnode)) {
       instance._rootID = nextRootKey(roots)
       roots[instance._rootID] = instance
       Mount._renderNewRootComponent(instance)
@@ -272,7 +276,6 @@ function createDevToolsBridge () {
     // children
     const instance = updateReactComponent(component)
     Reconciler.receiveComponent(instance)
-    console.log(instance)
     visitNonCompositeChildren(instance, (childInst) => {
       if (!childInst._inDevTools) {
         // New DOM child component
@@ -330,10 +333,8 @@ function createDevToolsBridge () {
  */
 function visitNonCompositeChildren (component, visitor?) {
   if (component._renderedComponent) {
-    if (!component._renderedComponent._component) {
-      visitor(component._renderedComponent)
-      visitNonCompositeChildren(component._renderedComponent, visitor)
-    }
+    visitor(component._renderedComponent)
+    visitNonCompositeChildren(component._renderedComponent, visitor)
   } else if (component._renderedChildren) {
     component._renderedChildren.forEach((child) => {
       visitor(child)
