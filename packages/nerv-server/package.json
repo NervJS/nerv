@@ -1,6 +1,6 @@
 {
   "name": "nerv-server",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Server-side rendering for Nerv.js",
   "author": "yuche",
   "license": "MIT",
