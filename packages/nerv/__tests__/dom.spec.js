@@ -9,6 +9,7 @@ import {
   hydrate
 } from '../src'
 import { createPortal } from '../src/dom'
+import { normalizeHTML } from './util'
 
 describe('dom', () => {
   let scratch
@@ -213,7 +214,7 @@ describe('dom', () => {
         </div>
       )
       hydrate(vnode, div)
-      expect(div.innerHTML).toBe(dom)
+      expect(div.innerHTML).toBe(normalizeHTML(dom))
     })
   })
 
