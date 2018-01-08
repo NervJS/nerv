@@ -23,8 +23,10 @@ install:
 
 script:
   - npm run build
-  - npm run test:coverage
+  - yarn add -D codecov
+  - npm run test:coverage 
   - BROWSER=true COVERAGE=false FLAKEY=false npm run test:karma
+  - ./node_modules/.bin/codecov
   - ./node_modules/coveralls/bin/coveralls.js < ./coverage/lcov.info
 
 env:
