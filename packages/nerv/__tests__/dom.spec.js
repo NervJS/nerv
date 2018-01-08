@@ -4,7 +4,8 @@ import {
   createElement,
   render,
   unmountComponentAtNode,
-  findDOMNode
+  findDOMNode, // eslint-disable-next-line
+  unstable_renderSubtreeIntoContainer as renderSubtreeIntoContainer
 } from '../src'
 import { createPortal } from '../src/dom'
 
@@ -13,6 +14,178 @@ describe('dom', () => {
 
   beforeEach(() => {
     scratch = document.createElement('div')
+  })
+
+  describe('unstable_renderSubtreeIntoContainer', () => {
+    it('should get context through middle non-context-provider layer', () => {
+      const container = document.createElement('div')
+      document.body.appendChild(container)
+      const portal1 = document.createElement('div')
+      const portal2 = document.createElement('div')
+
+      class Parent extends Component {
+        render () {
+          return null
+        }
+        getChildContext () {
+          return { value: this.props.value }
+        }
+        componentDidMount () {
+          renderSubtreeIntoContainer(this, <Middle />, portal1)
+        }
+      }
+
+      class Middle extends Component {
+        render () {
+          return null
+        }
+        componentDidMount () {
+          renderSubtreeIntoContainer(this, <Child />, portal2)
+        }
+      }
+
+      class Child extends Component {
+        render () {
+          return <div>{this.context.value}</div>
+        }
+      }
+
+      render(<Parent value='foo' />, container)
+      expect(portal2.textContent).toBe('foo')
+    })
+
+    it('should get context through non-context-provider parent', () => {
+      const container = document.createElement('div')
+      document.body.appendChild(container)
+      const portal = document.createElement('div')
+
+      class Parent extends Component {
+        render () {
+          return <Middle />
+        }
+        getChildContext () {
+          return { value: this.props.value }
+        }
+      }
+
+      class Middle extends Component {
+        render () {
+          return null
+        }
+        componentDidMount () {
+          renderSubtreeIntoContainer(this, <Child />, portal)
+        }
+      }
+
+      class Child extends Component {
+        render () {
+          return <div>{this.context.value}</div>
+        }
+      }
+
+      render(<Parent value='foo' />, container)
+      expect(portal.textContent).toBe('foo')
+    })
+
+    it('should render portal with non-context-provider parent', () => {
+      const container = document.createElement('div')
+      document.body.appendChild(container)
+      const portal = document.createElement('div')
+
+      class Parent extends Component {
+        render () {
+          return null
+        }
+
+        componentDidMount () {
+          renderSubtreeIntoContainer(this, <div>hello</div>, portal)
+        }
+      }
+
+      render(<Parent bar='initial' />, container)
+      expect(portal.firstChild.innerHTML).toBe('hello')
+    })
+
+    it('should update context if it changes due to setState', () => {
+      const container = document.createElement('div')
+      document.body.appendChild(container)
+      const portal = document.createElement('div')
+
+      class Comp extends Component {
+        render () {
+          return <div>{this.context.foo + '-' + this.context.getFoo()}</div>
+        }
+      }
+
+      class Parent extends Component {
+        state = {
+          bar: 'initial'
+        }
+
+        getChildContext () {
+          return {
+            foo: this.state.bar,
+            getFoo: () => this.state.bar
+          }
+        }
+
+        render () {
+          return null
+        }
+
+        componentDidMount () {
+          renderSubtreeIntoContainer(this, <Comp />, portal)
+        }
+
+        componentDidUpdate () {
+          renderSubtreeIntoContainer(this, <Comp />, portal)
+        }
+      }
+
+      const instance = render(<Parent />, container)
+      expect(portal.firstChild.innerHTML).toBe('initial-initial')
+      instance.setState({ bar: 'changed' })
+      instance.forceUpdate()
+      expect(portal.firstChild.innerHTML).toBe('changed-changed')
+    })
+
+    it('should update context if it changes due to re-render', () => {
+      const container = document.createElement('div')
+      document.body.appendChild(container)
+      const portal = document.createElement('div')
+
+      class Comp extends Component {
+        render () {
+          return <div>{this.context.foo + '-' + this.context.getFoo()}</div>
+        }
+      }
+
+      class Parent extends Component {
+        getChildContext () {
+          return {
+            foo: this.props.bar,
+            getFoo: () => this.props.bar
+          }
+        }
+
+        render () {
+          return null
+        }
+
+        componentDidMount () {
+          renderSubtreeIntoContainer(this, <Comp />, portal)
+        }
+
+        componentDidUpdate () {
+          renderSubtreeIntoContainer(this, <Comp />, portal)
+        }
+      }
+
+      render(<Parent bar='initial' />, container)
+      expect(portal.firstChild.innerHTML).toBe('initial-initial')
+      render(<Parent bar='changed' />, container)
+      expect(portal.firstChild.innerHTML).toBe('changed-changed')
+    })
   })
 
   describe('unmountComponentAtNode', () => {

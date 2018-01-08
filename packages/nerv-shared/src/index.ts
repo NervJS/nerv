@@ -112,6 +112,7 @@ export interface Component<P, S> extends ComponentLifecycle<P, S> {
   prevProps: P
   prevState: S
   prevContext: object
+  isReactComponent: object
   dom: any
   getState (): S
   // tslint:disable-next-line:member-ordering

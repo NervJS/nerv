@@ -2,6 +2,7 @@ import { isValidElement } from 'nerv-shared'
 import { render } from './render'
 import { unmount } from './vdom/unmount'
 import createElement from './create-element'
+import Component from './component'
 
 export function unmountComponentAtNode (dom) {
   const component = dom._component
@@ -17,22 +18,34 @@ export function findDOMNode (component) {
   return component && component.dom
 }
 
+class WrapperComponent<P, S> extends Component<P, S> {
+  getChildContext () {
+    // tslint:disable-next-line
+    return this.props.context
+  }
+
+  render () {
+    return this.props.children
+  }
+}
+
 export function unstable_renderSubtreeIntoContainer (
   parentComponent,
   vnode,
   container,
   callback
 ) {
+  // @TODO: should handle props.context?
   const wrapper = createElement(
-    parentComponent,
+    WrapperComponent,
     { context: parentComponent.context },
     vnode
   )
-  const component = render(wrapper as any, container)
+  const rendered = render(wrapper as any, container)
   if (callback) {
-    callback.call(component)
+    callback.call(rendered)
   }
-  return component
+  return rendered
 }
 
 export function createPortal (vnode, container: Element) {
