@@ -16,6 +16,13 @@ describe('patch', () => {
     render(app, scratch)
   })
 
+  it('should not patch when stateless component scu was set false', () => {
+    const App = ({ text }) => <div>{text}</div>
+    render(<App text='test' onShouldComponentUpdate={() => false} />, scratch)
+    render(<App text='qweqe' onShouldComponentUpdate={() => false} />, scratch)
+    expect(scratch.firstChild.textContent).toBe('test')
+  })
+
   it('should handle float', () => {
     const App = () => <div style={{ float: 'left' }} />
     render(<App />, scratch)
@@ -83,7 +90,7 @@ describe('patch', () => {
 
   it('should handle classNames', () => {
     const key = Math.random()
-    render(<div classNames='c1 c2' key={key} />, scratch)
+    render(<div className='c1 c2' key={key} />, scratch)
     render(<div style='color: red' key={key} />, scratch)
     expect(scratch.firstChild.className).toBe('')
   })

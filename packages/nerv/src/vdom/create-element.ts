@@ -60,6 +60,7 @@ export function mountVNode (vnode: VNode, isSvg?: boolean, parentContext?, paren
     isSvg = true
   } else if (vnode.type === 'svg') {
     isSvg = true
+  /* istanbul ignore next */
   } else if (!isSupportSVG) {
     isSvg = false
   }

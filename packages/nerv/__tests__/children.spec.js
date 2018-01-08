@@ -12,6 +12,13 @@ describe('Children', () => {
       }
       expect(Children.map(children, times2, Number)).toEqual([2, 4, 6])
     })
+    it('should handle array of arrays', () => {
+      const children = ['1', '2', '3', ['4']]
+      function times2 (n) {
+        return n * 2
+      }
+      expect(Children.map(children, times2, Number)).toEqual([2, 4, 6, 8])
+    })
     it('should exec map with every element', () => {
       const children = [1, 2, 3]
       function times2 (n) {

@@ -15,18 +15,17 @@ describe('cloneElement()', () => {
   })
 
   it('can clone svg', () => {
+    if (document.documentMode === 8) {
+      return
+    }
     const t1 = createElement('svg')
     render(t1, scratch)
     const t2 = cloneElement(t1)
-    expect(t2).toBeTruthy()
-    // expect(t2.hasOwnProperty('svg')).toBeTruthy()
+    expect(t2.namespace).toBeTruthy()
   })
 
   it('can clone fragment', () => {
-    const f1 = [
-      <div>1</div>,
-      <span>2</span>
-    ]
+    const f1 = [<div>1</div>, <span>2</span>]
     const f2 = cloneElement(f1)
     expect(f2[0].children.text).toBe('1')
     expect(f2[1].children.text).toBe('2')
