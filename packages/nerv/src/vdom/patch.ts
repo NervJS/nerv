@@ -574,7 +574,7 @@ export function patchProp (
       const namespace = SVGPropertyConfig.DOMAttributeNamespaces[prop]
       if (isSvg && namespace) {
         if (nextValue) {
-          if (!lastValue || lastValue !== nextValue) {
+          if (!lastValue) {
             domNode.setAttributeNS(namespace, prop, nextValue)
           }
         } else {

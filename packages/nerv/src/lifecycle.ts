@@ -4,7 +4,7 @@ import createElement from './vdom/create-element'
 import createVText from './vdom/create-vtext'
 import { createVoid } from './vdom/create-void'
 import patch from './vdom/patch'
-import { isVNode, Component, isNullOrUndef, CompositeComponent, isComponent } from 'nerv-shared'
+import { Component, isNullOrUndef, CompositeComponent, isComponent } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
 import { unmount } from './vdom/unmount'
@@ -80,13 +80,8 @@ export function mountComponent (vnode: FullComponent, parentContext: object, par
 }
 
 export function mountStatelessComponent (vnode: Stateless, parentContext) {
-  const ref = vnode.props.ref
-  delete vnode.props.ref
   vnode._rendered = vnode.type(vnode.props, parentContext)
   const rendered = vnode._rendered
-  if (isVNode(rendered) && !isNullOrUndef(ref)) {
-    rendered.ref = ref as any
-  }
   return (vnode.dom = mountVNode(rendered, parentContext) as Element)
 }
 
@@ -230,7 +225,4 @@ export function unmountComponent (vnode: FullComponent) {
 
 export function unmountStatelessComponent (vnode: Stateless) {
   unmount(vnode._rendered)
-  if (!isNullOrUndef(vnode.props.ref)) {
-    Ref.detach(vnode, vnode.props.ref, vnode.dom as any)
-  }
 }

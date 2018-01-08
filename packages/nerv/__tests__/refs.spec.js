@@ -58,7 +58,7 @@ describe('refs', () => {
     expect(ref.calledWith(instance)).toBeTruthy()
   })
 
-  it('should pass rendered DOM from functional components to ref functions', () => {
+  it.skip('should pass rendered DOM from functional components to ref functions', () => {
     const ref = spy('ref')
 
     const Foo = () => <div />
@@ -291,6 +291,11 @@ describe('refs', () => {
 
   it('should remove string refs', () => {
     let innerInst
+    class Bar extends Component {
+      render () {
+        return <div />
+      }
+    }
     class Foo extends Component {
       constructor () {
         super()
@@ -300,7 +305,7 @@ describe('refs', () => {
         innerInst = this
       }
       render () {
-        return this.state.hide ? <span /> : <div ref='top' />
+        return this.state.hide ? <Bar ref='b' /> : <Bar ref='top' />
       }
     }
     render(<Foo />, scratch)
