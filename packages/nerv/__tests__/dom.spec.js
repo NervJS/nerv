@@ -5,7 +5,8 @@ import {
   render,
   unmountComponentAtNode,
   findDOMNode, // eslint-disable-next-line
-  unstable_renderSubtreeIntoContainer as renderSubtreeIntoContainer
+  unstable_renderSubtreeIntoContainer as renderSubtreeIntoContainer,
+  hydrate
 } from '../src'
 import { createPortal } from '../src/dom'
 
@@ -35,12 +36,17 @@ describe('dom', () => {
         }
       }
 
+      let m1, m2
+
       class Middle extends Component {
         render () {
           return null
         }
         componentDidMount () {
-          renderSubtreeIntoContainer(this, <Child />, portal2)
+          m1 = this
+          renderSubtreeIntoContainer(this, <Child />, portal2, function () {
+            m2 = this
+          })
         }
       }
 
@@ -52,6 +58,7 @@ describe('dom', () => {
 
       render(<Parent value='foo' />, container)
       expect(portal2.textContent).toBe('foo')
+      expect(m1).not.toEqual(m2)
     })
 
     it('should get context through non-context-provider parent', () => {
@@ -185,6 +192,28 @@ describe('dom', () => {
       expect(portal.firstChild.innerHTML).toBe('initial-initial')
       render(<Parent bar='changed' />, container)
       expect(portal.firstChild.innerHTML).toBe('changed-changed')
+    })
+  })
+
+  describe('hydrate', () => {
+    it('should do nothing when container is not a dom element', () => {
+      const t = hydrate('', null)
+      expect(t).toBeFalsy()
+    })
+
+    it('should clean all dom element in container', () => {
+      const dom = `<div><div>1</div><span>2</span><a href="#">ssd</a></div>`
+      const div = document.createElement('div')
+      div.innerHTML = dom
+      const vnode = (
+        <div>
+          <div>1</div>
+          <span>2</span>
+          <a href='#'>ssd</a>
+        </div>
+      )
+      hydrate(vnode, div)
+      expect(div.innerHTML).toBe(dom)
     })
   })
 
