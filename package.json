@@ -65,6 +65,7 @@
     "babel-preset-env": "^1.6.0",
     "babel-preset-es3": "^1.0.1",
     "babel-preset-stage-0": "^6.22.0",
+    "codecov": "^3.0.0",
     "coveralls": "^2.13.1",
     "dts-bundle": "^0.7.3",
     "es3ify-webpack-plugin": "^0.0.1",
