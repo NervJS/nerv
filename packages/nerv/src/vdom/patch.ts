@@ -474,12 +474,17 @@ const skipProps = {
 const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i
 
 function setStyle (domStyle, style, value) {
-  domStyle[style] =
-    !isNumber(value) || IS_NON_DIMENSIONAL.test(style) ? value : value + 'px'
+  if (isNullOrUndef(value) || (isNumber(value) && isNaN(value))) {
+    domStyle[style] = ''
+    return
+  }
   if (style === 'float') {
     domStyle['cssFloat'] = value
     domStyle['styleFloat'] = value
+    return
   }
+  domStyle[style] =
+    !isNumber(value) || IS_NON_DIMENSIONAL.test(style) ? value : value + 'px'
 }
 
 function patchEvent (
@@ -510,12 +515,6 @@ function patchStyle (lastAttrValue, nextAttrValue, dom) {
       value = nextAttrValue[style]
       if (value !== lastAttrValue[style]) {
         setStyle(domStyle, style, value)
-      }
-    }
-
-    for (style in lastAttrValue) {
-      if (isNullOrUndef(nextAttrValue[style])) {
-        domStyle[style] = ''
       }
     }
   } else {

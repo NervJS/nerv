@@ -287,6 +287,14 @@ describe('render()', function () {
     // expect(scratch.childNodes[0]).to.have.nested.deep.property('style.cssText').that.equals('display: inline;')
   })
 
+  it('should not set incorrect style value', () => {
+    const div = <div style={{ width: undefined, height: NaN }} />
+    render(div, scratch)
+    const { style } = scratch.childNodes[0]
+    expect(style.width).toBe('')
+    expect(style.height).toBe('')
+  })
+
   it('should support dangerouslySetInnerHTML', () => {
     const html = '<b>foo &amp; bar</b>'
     render(<div dangerouslySetInnerHTML={{ __html: html }} />, scratch)
