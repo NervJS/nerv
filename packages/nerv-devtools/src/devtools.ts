@@ -1,6 +1,12 @@
 // tslint:disable-next-line:no-var-requires
 import { options } from 'nervjs'
-import { isComposite, isWidget, isVText, isValidElement } from 'nerv-shared'
+import {
+  isComposite,
+  isWidget,
+  isVText,
+  isValidElement,
+  isStateless
+} from 'nerv-shared'
 const isArray = Array.isArray
 /**
  * Return a ReactElement-compatible object for the current state of a Nerv
@@ -104,7 +110,8 @@ function createReactCompositeComponent (vnode) {
     setState: component.setState && component.setState.bind(component),
 
     // --- Additional properties used by Nerv devtools
-    node
+    node,
+    vnode
   }
 
   // React DevTools exposes the `_instance` field of the selected item in the
@@ -141,10 +148,10 @@ function updateReactComponent (vnode) {
   const newInstance = !isWidget(vnode)
     ? createReactDOMComponent(vnode)
     : createReactCompositeComponent(vnode)
-  if (instanceMap.has(vnode)) {
-    const inst = instanceMap.get(vnode)
-    Object.assign(inst, newInstance)
-    return inst
+  const oldInst = getInstanceFromVNode(vnode)
+  if (oldInst) {
+    Object.assign(oldInst, newInstance)
+    return oldInst
   }
   instanceMap.set(getKeyForVNode(vnode), newInstance)
   return newInstance
@@ -155,7 +162,13 @@ function nextRootKey (roots) {
 }
 
 function getKeyForVNode (vnode) {
-  return isWidget(vnode) ? vnode.type : vnode
+  if (isComposite(vnode)) {
+    return vnode.component
+  } else if (isStateless(vnode)) {
+    return vnode.type
+  } else if (vnode && vnode.vtype) {
+    return vnode.dom
+  }
 }
 
 function getInstanceFromVNode (vnode) {
@@ -171,13 +184,50 @@ function getInstanceFromVNode (vnode) {
  * @param {[key: string] => ReactDOMComponent|ReactCompositeComponent}
  */
 function findRoots (node, roots) {
-  Array.from(node.childNodes).forEach((child: any) => {
-    if (child._component) {
-      roots[nextRootKey(roots)] = updateReactComponent(child._component)
-    } else {
-      findRoots(child, roots)
-    }
+  options.roots.forEach((root) => {
+    roots[nextRootKey(roots)] = updateReactComponent(root)
   })
+}
+
+function findVNodeFromDom (vnode, dom) {
+  if (!vnode) {
+    const roots = options.roots
+    for (let i = 0, len = roots.length; i < len; i++) {
+      const root = roots[i]
+      const result = findVNodeFromDom(root, dom)
+
+      if (result) {
+        return result
+      }
+    }
+  } else {
+    if (
+      vnode.dom === dom ||
+      (isComposite(vnode) && vnode.component.dom === dom)
+    ) {
+      return vnode
+    }
+    if (isWidget(vnode)) {
+      const children = vnode._rendered
+      if (children) {
+        if (isArray(children)) {
+          children.forEach((child) => {
+            if (child) {
+              const result = findVNodeFromDom(child, dom)
+              if (result) {
+                return result
+              }
+            }
+          })
+        } else {
+          const result = findVNodeFromDom(children, dom)
+          if (result) {
+            return result
+          }
+        }
+      }
+    }
+  }
 }
 
 /**
@@ -204,11 +254,9 @@ function createDevToolsBridge () {
     getNodeFromInstance (instance) {
       return instance.node
     },
-    getClosestInstanceFromNode (node) {
-      while (node && !node._component) {
-        node = node.parentNode
-      }
-      return node ? updateReactComponent(node._component) : null
+    getClosestInstanceFromNode (dom) {
+      const vnode = findVNodeFromDom(null, dom)
+      return vnode ? updateReactComponent(vnode) : null
     }
   }
 
@@ -244,8 +292,12 @@ function createDevToolsBridge () {
     unmountComponent (/* instance, ... */) {}
   }
 
+  function isEqual (a) {
+    return (b) => a === b
+  }
+
   function isRoot (vnode) {
-    return (options.roots as any[]).some((item) => item === vnode)
+    return options.roots.some(isEqual(vnode))
   }
 
   /** Notify devtools that a new component instance has been mounted into the DOM. */
@@ -292,7 +344,7 @@ function createDevToolsBridge () {
     // the devtools
     prevRenderedChildren.forEach((childInst) => {
       if (!document.body.contains(childInst.node)) {
-        instanceMap.delete(childInst.node)
+        instanceMap.delete(getKeyForVNode(childInst.vnode))
         Reconciler.unmountComponent(childInst)
       }
     })
