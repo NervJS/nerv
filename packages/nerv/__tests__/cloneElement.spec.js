@@ -9,6 +9,28 @@ describe('cloneElement()', () => {
     scratch = document.createElement('div')
   })
 
+  it('can clone vtext', () => {
+    const t = cloneElement('test')
+    expect(t.text).toEqual('test')
+  })
+
+  it('can clone svg', () => {
+    const t1 = createElement('svg')
+    render(t1, scratch)
+    const t2 = cloneElement(t1)
+    expect(t2.namespace).toBeTruthy()
+  })
+
+  it('can clone fragment', () => {
+    const f1 = [
+      <div>1</div>,
+      <span>2</span>
+    ]
+    const f2 = cloneElement(f1)
+    expect(f2[0].children.text).toBe('1')
+    expect(f2[1].children.text).toBe('2')
+  })
+
   it('can clone a vnode with props', () => {
     const vnode = <div className='hh' style={{ width: '800px' }} />
     const cloneVNode = cloneElement(vnode)

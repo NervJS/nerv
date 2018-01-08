@@ -28,7 +28,7 @@ module.exports = {
   },
   rootDir: __dirname,
   testMatch: [
-    // '<rootDir>/packages/nerv/__tests__/event.spec.js',
+    // '<rootDir>/packages/nerv/__tests__/cloneElement.spec.js',
     // '<rootDir>/packages/nerv/__tests__/component.spec.js',
     // '<rootDir>/packages/nerv/__tests__/render.spec.js',
     // '<rootDir>/packages/nerv/__tests__/lifecycle.spec.js',
