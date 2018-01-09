@@ -3,6 +3,7 @@
 > 一个基于virtual dom的类React组件框架
 
 [![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FNervJS%2Fnerv.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FNervJS%2Fnerv?ref=badge_shield)
 
 [![npm](https://img.shields.io/npm/v/nervjs.svg?style=flat-square)](https://www.npmjs.com/package/nervjs)
 [![Build Status](https://img.shields.io/travis/NervJS/nerv.svg?style=flat-square)](https://travis-ci.org/NervJS/nerv)
@@ -122,3 +123,7 @@ import 'nerv-devtools'
 // before initial render()
 ```
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FNervJS%2Fnerv.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FNervJS%2Fnerv?ref=badge_large)
