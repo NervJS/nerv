@@ -67,7 +67,8 @@ Nerv.render(
 ```
 
 ### More example: 
-* [TodoMVC built with Nerv and Redux](https://github.com/NervJS/nerv-redux-todomvc)
+* [TodoMVC](https://github.com/NervJS/nerv-redux-todomvc), built with Nerv and Redux
+* [Nerv's landing page](https://github.com/NervJS/nerv-website), built with Nerv and [react-intl](https://github.com/yahoo/react-intl)
 
 
 ## Switching to Nerv from React

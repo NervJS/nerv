@@ -172,6 +172,14 @@ function patchNonKeyedChildren (
   }
 }
 
+/**
+ *
+ * Virtual DOM patching algorithm based on ivi by
+ * Boris Kaul (@localvoid)
+ * Licensed under the MIT License
+ * https://github.com/ivijs/ivi/blob/master/LICENSE
+ *
+ */
 function patchKeyedChildren (
   a: VNode[],
   b: VNode[],
@@ -547,7 +555,10 @@ export function patchProp (
 
       if (lastHtml !== nextHtml) {
         if (!isNullOrUndef(nextHtml)) {
-          if (isValidElement(lastVnode) && lastVnode.children !== EMPTY_CHILDREN) {
+          if (
+            isValidElement(lastVnode) &&
+            lastVnode.children !== EMPTY_CHILDREN
+          ) {
             unmountChildren(lastVnode.children)
             lastVnode.children = []
           }
