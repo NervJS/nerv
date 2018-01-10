@@ -4,12 +4,9 @@ sudo: false
 node_js:
   - "9"
 
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
+cache:
+  directories:
+  - node_modules
 
 # Make chrome browser available for testing
 before_install:
@@ -27,5 +24,3 @@ script:
   - BROWSER=true COVERAGE=false FLAKEY=false npm run test:karma
   - ./node_modules/coveralls/bin/coveralls.js < ./coverage/lcov.info
 
-env:
-  - CXX=g++-4.8
