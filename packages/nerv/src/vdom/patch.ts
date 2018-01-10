@@ -574,9 +574,7 @@ export function patchProp (
       const namespace = SVGPropertyConfig.DOMAttributeNamespaces[prop]
       if (isSvg && namespace) {
         if (nextValue) {
-          if (!lastValue) {
-            domNode.setAttributeNS(namespace, prop, nextValue)
-          }
+          domNode.setAttributeNS(namespace, prop, nextValue)
         } else {
           const colonPosition = prop.indexOf(':')
           const localName =
