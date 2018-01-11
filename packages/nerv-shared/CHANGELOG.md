@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.3"></a>
+## [1.2.3](https://github.com/NervJS/nerv/compare/v1.2.2...v1.2.3) (2018-01-11)
+
+
+### Bug Fixes
+
+* unstable_renderSubtreeIntoContainer lose context ([4279a77](https://github.com/NervJS/nerv/commit/4279a77))
+
+
+
+
 <a name="1.2.0"></a>
 # [1.2.0](https://github.com/NervJS/nerv/compare/v1.1.0...v1.2.0) (2018-01-05)
 
