@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.3"></a>
+## [1.2.3](https://github.com/NervJS/nerv/compare/v1.2.2...v1.2.3) (2018-01-11)
+
+
+### Bug Fixes
+
+* stateless component don't support ref from now ([3e6781f](https://github.com/NervJS/nerv/commit/3e6781f))
+* unstable_renderSubtreeIntoContainer lose context ([4279a77](https://github.com/NervJS/nerv/commit/4279a77))
+
+
+
+
 <a name="1.2.2"></a>
 ## [1.2.2](https://github.com/NervJS/nerv/compare/v1.2.1...v1.2.2) (2018-01-08)
 

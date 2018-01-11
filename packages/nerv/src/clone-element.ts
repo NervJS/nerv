@@ -30,9 +30,6 @@ export default function cloneElement (vnode, props?: object, ...children): any {
     })
   }
   const newVNode = createElement(vnode.type, properties)
-  if (!newVNode) {
-    return newVNode
-  }
   if (isArray(childrenTmp)) {
     const _children = childrenTmp.map((child) => {
       return cloneElement(child, child.props)
