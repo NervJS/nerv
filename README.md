@@ -28,7 +28,7 @@
 
 🤣 IE8 compatibility
 
-🎯 Tiny size, 9Kb gziped
+🎯 Tiny size, 9Kb gzipped
 
 🌗 Isomorphic rendering on both client and server
 
