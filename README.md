@@ -22,7 +22,7 @@
 
 ⚛ Identical React API, no 'nerv-compat' is needed
 
-️⚔ Battle tested, serve in [JD.com](https://www.jd.com/2017?t=1607) home page and [TOPLIFE](https://www.toplife.com)
+️⚔ Battle tested, serve in [JD.com](https://www.jd.com/2017?t=1607) home page and [TOPLIFE.com](https://www.toplife.com)
 
 ⚡️ High performance
 
