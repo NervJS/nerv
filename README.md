@@ -13,7 +13,7 @@
 </p>
 
 
-> Nerv is a virtual-dom based JavaScript (TypeScript) library with identical React 16 API, which offers much higher performance, tinyer package size and better browser compatibility.
+> Nerv is a virtual-dom based JavaScript (TypeScript) library with identical React 16 API, which offers much higher performance, tinier package size and better browser compatibility.
 
 [中文文档](/README_CN.md)
 
