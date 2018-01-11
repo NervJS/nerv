@@ -1,18 +1,21 @@
 // tslint:disable-next-line
-export const global = (function() {
-  // the only reliable means to get the global object is
-  // `Function('return this')()`
-  // However, this causes CSP violations in Chrome apps.
-  if (typeof self !== 'undefined') {
-    return self
-  }
-  if (typeof window !== 'undefined') {
-    return window
-  }
+export var global = (function() {
+  let local
+
   if (typeof global !== 'undefined') {
-    return global
+    local = global
+  } else if (typeof self !== 'undefined') {
+    local = self
+  } else {
+    try {
+      local = Function('return this')()
+    } catch (e) {
+      throw new Error(
+        'global object is unavailable in this environment'
+      )
+    }
   }
-  throw new Error('unable to locate global object')
+  return local
 })()
 
 export const isBrowser = typeof window !== 'undefined'
