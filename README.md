@@ -13,7 +13,7 @@
 </p>
 
 
-> Nerv is a virtual-dom based JavaScript (TypeScript) library with identical React 16 API, which offers much higher performance and better browser compatibility.
+> Nerv is a virtual-dom based JavaScript (TypeScript) library with identical React 16 API, which offers much higher performance, tinyer package size and better browser compatibility.
 
 [中文文档](/README_CN.md)
 
@@ -22,7 +22,7 @@
 
 ⚛ Identical React API, no 'nerv-compat' is needed
 
-️⚔ Battle tested, serve in [JD.com](https://jd.com) home page
+️⚔ Battle tested, serve in [JD.com](https://www.jd.com/2017?t=1607) home page and [TOPLIFE](https://www.toplife.com)
 
 ⚡️ High performance
 
@@ -43,6 +43,7 @@ This repository is a monorepo that we manage using [Lerna](https://github.com/le
 | [`nervjs`](/packages/nerv)      |  The core of Nerv  |
 | [`nerv-redux`](/packages/nerv-redux)      |  Nerv binding for Redux  |
 | [`nerv-devtools`](/packages/nerv-devtools) | Provides support for React's Dev Tools for Nerv   |
+| [`nerv-server`](/packages/nerv-server) | Support for server side rendering |
 | [`nerv-test-utils`](/packages/nerv-test-utils) | Suite of utilities for testing Nerv applications   |
 | [`nerv-utils`](/packages/nerv-utils) |  Internal Helpers functions for Nerv  |
 | [`nerv-shared`](/packages/nerv-shared) |  Internal shared functions for Nerv  |
@@ -96,7 +97,12 @@ Add an alias in your `webpack.config.js`:
 
 ### Usage with Babel
 
-Install the babel plugin for aliasing: `npm install --save-dev babel-plugin-module-resolver`
+Install the babel plugin for aliasing
+
+```bash
+$ npm install --save-dev babel-plugin-module-resolver
+```
+
 In `.babelrc`:
 
 ```js
@@ -117,7 +123,13 @@ In `.babelrc`:
 
 ### Usage with Browserify
 
-Install the aliasify transform: `npm i -D aliasify`, then in your `package.json`:
+Install the aliasify transform:
+
+```bash
+$ npm i --save-dev aliasify
+```
+
+Then in your `package.json`:
 
 ```js
 {
