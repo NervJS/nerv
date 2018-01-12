@@ -216,6 +216,8 @@ Nerv.render(<App />, document.getElementById('#root'))
 ![nerv-devtools](https://i.loli.net/2018/01/09/5a5480c074d99.png)
 
 
+## [Change Log](https://github.com/NervJS/nerv/blob/master/packages/nerv/CHANGELOG.md)
+
 
 ## License
 
