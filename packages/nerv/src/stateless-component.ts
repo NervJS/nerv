@@ -28,11 +28,11 @@ class StateLessComponent {
   }
 
   update (previous, current, parentContext, domNode?) {
-    const { props, state, context } = current
+    const { props, context } = current
     const shouldComponentUpdate = props.onShouldComponentUpdate
     if (
       isFunction(shouldComponentUpdate) &&
-      !shouldComponentUpdate(props, state, context)
+      !shouldComponentUpdate(previous.props, props, context)
     ) {
       return domNode
     }
