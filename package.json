@@ -16,7 +16,7 @@
     "lint-staged": "lint-staged",
     "test": "jest",
     "test:watch": "jest --watch",
-    "bench:uibench": "webpack --config ./benchmarks/uibench/webpack.config.js",
+    "bench:uibench": "rollup --config ./benchmarks/uibench/rollup.config.js",
     "bench:dbmon": "webpack --config ./benchmarks/DBMonster/webpack.config.js",
     "test:coverage": "jest --coverage",
     "test:karma": "karma start karma.conf.js --single-run",

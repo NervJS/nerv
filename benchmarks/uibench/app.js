@@ -1,196 +1,210 @@
-import { Component, createElement, render } from 'nervjs'
+'use strict'
 
-class TableCell extends Component {
-  constructor(props) {
-    super(props)
-    this.onClick = this.onClick.bind(this)
-  }
+var Nerv = require('nervjs')
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.text !== nextProps.text
-  }
+function TableCell (_ref) {
+  var text = _ref.text
 
-  onClick(e) {
-    console.log('Clicked' + this.props.text)
+  return Nerv.createElement(
+    'td',
+    { className: 'TableCell', onClick: onClick(text) },
+    text
+  )
+}
+
+function onClick (text) {
+  return function (e) {
+    console.log('Clicked' + text)
     e.stopPropagation()
   }
+}
 
-  render() {
-    return (
-      <td className="TableCell" onClick={this.onClick}>
-        {this.props.text}
-      </td>
+function shouldCellUpdate (p, c) {
+  return p.text !== c.text
+}
+
+function TableRow (_ref2) {
+  var data = _ref2.data
+
+  var classes = data.active ? 'TableRow active' : 'TableRow'
+
+  var cells = data.props
+
+  var children = []
+  for (var i = 0; i < cells.length; i++) {
+    // Key is used because Nerv prints warnings that there should be a key, libraries that can detect that children
+    // shape isn't changing should render cells without keys.
+    children.push(
+      Nerv.createElement(TableCell, {
+        key: i,
+        text: cells[i],
+        onShouldComponentUpdate: shouldCellUpdate
+      })
     )
   }
+
+  return Nerv.createElement(
+    'tr',
+    { className: classes, 'data-id': data.id },
+    Nerv.createElement(TableCell, {
+      text: '#' + data.id,
+      onShouldComponentUpdate: isDataChanged
+    }),
+    children
+  )
 }
 
-class TableRow extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.data !== nextProps.data
-  }
+function isDataChanged (p, c) {
+  return p.data !== c.data
+}
 
-  render() {
-    const { data } = this.props
+function Table (_ref3) {
+  var data = _ref3.data
 
-    // Interned strings
-    const classes = data.active ? 'TableRow active' : 'TableRow'
+  var items = data.items
 
-    const cells = data.props
-
-    const children = []
-    for (let i = 0; i < cells.length; i++) {
-      // Key is used because React prints warnings that there should be a key, libraries that can detect that children
-      // shape isn't changing should render cells without keys.
-      children.push(<TableCell key={i} text={cells[i]} />)
-    }
-
-    // First table cell is inserted this way to prevent react from printing warning that it doesn't have key property
-    return (
-      <tr className={classes} data-id={data.id}>
-        <TableCell text={'#' + data.id} />
-        {children}
-      </tr>
+  var children = []
+  for (var i = 0; i < items.length; i++) {
+    var item = items[i]
+    children.push(
+      Nerv.createElement(TableRow, {
+        key: item.id,
+        data: item,
+        onShouldComponentUpdate: isDataChanged
+      })
     )
   }
+
+  return Nerv.createElement(
+    'table',
+    { className: 'Table' },
+    Nerv.createElement('tbody', null, children)
+  )
 }
 
-class Table extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.data !== nextProps.data
+function AnimBox (_ref4) {
+  var data = _ref4.data
+
+  var time = data.time
+  var style = {
+    borderRadius: (time % 10).toString() + 'px',
+    background: 'rgba(0,0,0,' + (0.5 + (time % 10) / 10).toString() + ')'
   }
 
-  render() {
-    const items = this.props.data.items
+  return Nerv.createElement('div', {
+    className: 'AnimBox',
+    'data-id': data.id,
+    style: style
+  })
+}
 
-    const children = []
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i]
-      children.push(<TableRow key={item.id} data={item} />)
-    }
+function Anim (_ref5) {
+  var data = _ref5.data
 
-    return (
-      <table className="Table">
-        <tbody>{children}</tbody>
-      </table>
+  var items = data.items
+
+  var children = []
+  for (var i = 0; i < items.length; i++) {
+    var item = items[i]
+    children.push(
+      Nerv.createElement(AnimBox, {
+        key: item.id,
+        data: item,
+        onShouldComponentUpdate: isDataChanged
+      })
     )
   }
+
+  return Nerv.createElement('div', { className: 'Anim' }, children)
 }
 
-class AnimBox extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.data !== nextProps.data
-  }
+function TreeLeaf (_ref6) {
+  var data = _ref6.data
 
-  render() {
-    const { data } = this.props
-    const time = data.time
-    const style = {
-      borderRadius: (time % 10).toString() + 'px',
-      background: 'rgba(0,0,0,' + (0.5 + (time % 10) / 10).toString() + ')'
+  return Nerv.createElement('li', { className: 'TreeLeaf' }, data.id)
+}
+
+function TreeNode (_ref7) {
+  var data = _ref7.data
+
+  var children = []
+
+  for (var i = 0; i < data.children.length; i++) {
+    var n = data.children[i]
+    if (n.container) {
+      children.push(
+        Nerv.createElement(TreeNode, {
+          key: n.id,
+          data: n,
+          onShouldComponentUpdate: isDataChanged
+        })
+      )
+    } else {
+      children.push(
+        Nerv.createElement(TreeLeaf, {
+          key: n.id,
+          data: n,
+          onShouldComponentUpdate: isDataChanged
+        })
+      )
     }
-
-    return <div className="AnimBox" data-id={data.id} style={style} />
   }
+
+  return Nerv.createElement('ul', { className: 'TreeNode' }, children)
 }
 
-class Anim extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
+function Tree (_ref8) {
+  var data = _ref8.data
+
+  return Nerv.createElement(
+    'div',
+    { className: 'Tree' },
+    Nerv.createElement(TreeNode, {
+      data: data.root,
+      onShouldComponentUpdate: isDataChanged
+    })
+  )
+}
+
+class Main extends Nerv.Component {
+  shouldComponentUpdate (nextProps, nextState) {
     return this.props.data !== nextProps.data
   }
 
-  render() {
-    const items = this.props.data.items
-
-    const children = []
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i]
-      children.push(<AnimBox key={item.id} data={item} />)
-    }
-
-    return <div className="Anim">{children}</div>
-  }
-}
-
-class TreeLeaf extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.data !== nextProps.data
-  }
-
-  render() {
-    return <li className="TreeLeaf">{this.props.data.id}</li>
-  }
-}
-
-class TreeNode extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.data !== nextProps.data
-  }
-
-  render() {
-    const { data } = this.props
-    const children = []
-
-    for (let i = 0; i < data.children.length; i++) {
-      const n = data.children[i]
-      if (n.container) {
-        children.push(<TreeNode key={n.id} data={n} />)
-      } else {
-        children.push(<TreeLeaf key={n.id} data={n} />)
-      }
-    }
-
-    return <ul className="TreeNode">{children}</ul>
-  }
-}
-
-class Tree extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.data !== nextProps.data
-  }
-
-  render() {
-    return (
-      <div className="Tree">
-        <TreeNode data={this.props.data.root} />
-      </div>
-    )
-  }
-}
-
-class Main extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.data !== nextProps.data
-  }
-
-  render() {
+  render () {
     const { data } = this.props
     const location = data.location
 
     var section
     if (location === 'table') {
-      section = <Table data={data.table} />
+      section = Nerv.createElement(Table, { data: data.table })
     } else if (location === 'anim') {
-      section = <Anim data={data.anim} />
+      section = Nerv.createElement(Anim, { data: data.anim })
     } else if (location === 'tree') {
-      section = <Tree data={data.tree} />
+      section = Nerv.createElement(Tree, { data: data.tree })
     }
 
-    return <div className="Main">{section}</div>
+    return Nerv.createElement('div', { className: 'Main' }, section)
   }
 }
 
-uibench.init('Nerv', '1.0.0-alpha')
+uibench.init('Nerv', '1.2.4')
 
-document.addEventListener('DOMContentLoaded', function(e) {
-  const container = document.querySelector('#App')
+document.addEventListener('DOMContentLoaded', function (e) {
+  var container = document.querySelector('#App')
 
   uibench.run(
-    function(state) {
-      render(<Main data={state} />, container)
+    function (state) {
+      Nerv.render(
+        Nerv.createElement(Main, {
+          data: state
+        }),
+        container
+      )
     },
-    function(samples) {
-      render(
-        <pre>{JSON.stringify(samples, null, ' ')}</pre>,
+    function (samples) {
+      Nerv.render(
+        Nerv.createElement('pre', null, JSON.stringify(samples, null, ' ')),
         container
       )
     }
