@@ -14,7 +14,7 @@
 
 > Nerv是一款基于虚拟DOM技术的JavaScript（TypeScript）库，它提供了与React 16一致的使用方式与API，并且拥有更高的性能表现、更小的包大小以及更好的浏览器兼容性
 
-[English Document](/README.md)
+[English](/README.md)
 
 
 ## 特性
@@ -48,9 +48,31 @@
 | [`nerv-shared`](/packages/nerv-shared) |  Nerv内部shared方法及  |
 | [`nerv-create-class`](/packages/nerv-create-class) |  `createClass` API支持  |
 
-## 示例
+## 快速开始
 
 [CodeSandbox Playground](https://codesandbox.io/s/qkr5ww1q8j)是最简单的开始使用**Nerv**的方式。并且如果你已经使用过**React**，你就已经知道如何来使用**Nerv**了。
+
+### 安装
+
+当然我们推荐使用 [Webpack](https://webpack.js.org) 和 [Babel](https://babeljs.io) 来使用Nerv。首先你需要安装Nerv
+
+With npm
+
+```bash
+$ npm install --save nervjs
+```
+
+With yarn
+
+```bash
+$ yarn add nervjs
+```
+
+### 使用
+
+然后就可以引入Nerv了，Nerv同时提供了作为命名空间默认导出和多个方法导出两种使用方式
+
+**默认导出作为命名空间：**
 
 ```javascript
 import Nerv from 'nervjs'
@@ -66,9 +88,29 @@ Nerv.render(
 )
 ```
 
-### 更多例子: 
+**多个方法单独导出：**
+
+```javascript
+import { Component, render } from 'nervjs'
+class HelloMessage extends Component {
+  render() {
+    return <div>Hello {this.props.name}</div>
+  }
+}
+
+render(
+  <HelloMessage name="Nerv" />,
+  document.getElementById('app')
+)
+```
+
+☝️ 更多信息请移步到官方 [开发文档](https://nervjs.github.io/docs/)
+
+## 示例 
 * [TodoMVC](https://github.com/NervJS/nerv-redux-todomvc), built with Nerv and Redux
-* [Nerv's landing page](https://github.com/NervJS/nerv-website), built with Nerv and [react-intl](https://github.com/yahoo/react-intl)
+* [Nerv官网](https://github.com/NervJS/nerv-website), built with Nerv and [react-intl](https://github.com/yahoo/react-intl)
+* [京东PC首页](https://www.jd.com/2017?t=1607)
+* [京东旗下TOPLIFE](https://www.toplife.com)
 
 
 ## 从React切换成Nerv

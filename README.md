@@ -13,22 +13,21 @@
 </p>
 
 
-> Nerv is a virtual-dom based JavaScript (TypeScript) library with identical React 16 API, which offers much higher performance, tinyer package size and better browser compatibility.
+> Nerv is a virtual-dom based JavaScript (TypeScript) library with identical React 16 API, which offers much higher performance, tinier package size and better browser compatibility.
 
-[中文文档](/README_CN.md)
-
+[中文](/README_CN.md)
 
 ## Features
 
 ⚛ Identical React API, no 'nerv-compat' is needed
 
-️⚔ Battle tested, serve in [JD.com](https://www.jd.com/2017?t=1607) home page and [TOPLIFE](https://www.toplife.com)
+️⚔ Battle tested, serve in [JD.com](https://www.jd.com/2017?t=1607) home page and [TOPLIFE.com](https://www.toplife.com)
 
 ⚡️ High performance
 
 🤣 IE8 compatibility
 
-🎯 Tiny size, 9Kb gziped
+🎯 Tiny size, 9Kb gzipped
 
 🌗 Isomorphic rendering on both client and server
 
@@ -49,9 +48,31 @@ This repository is a monorepo that we manage using [Lerna](https://github.com/le
 | [`nerv-shared`](/packages/nerv-shared) |  Internal shared functions for Nerv  |
 | [`nerv-create-class`](/packages/nerv-create-class) |  The legacy `createClass` API for Nerv  |
 
-## Examples
+## Getting Started
 
 The easiest way to get started with Nerv is using [CodeSandbox Playground](https://codesandbox.io/s/qkr5ww1q8j), If you use React, you already know how to use Nerv.
+
+### Install
+
+Of course we recommend that you use Nerv with [Webpack](https://webpack.js.org) and [Babel](https://babeljs.io).First you can install Nerv like this
+
+With npm
+
+```bash
+$ npm install --save nervjs
+```
+
+With yarn
+
+```bash
+$ yarn add nervjs
+```
+
+### Usage
+
+Then import what you want,Nerv provides both named and default exports,so you can use Nerv as a namespace or import just what you need as locals
+
+**Default exports:**
 
 ```javascript
 import Nerv from 'nervjs'
@@ -67,9 +88,29 @@ Nerv.render(
 )
 ```
 
-### More example: 
+**Named:**
+
+```javascript
+import { Component, render } from 'nervjs'
+class HelloMessage extends Component {
+  render() {
+    return <div>Hello {this.props.name}</div>
+  }
+}
+
+render(
+  <HelloMessage name="Nerv" />,
+  document.getElementById('app')
+)
+```
+
+☝️ For more information please move to the official [development document](https://nervjs.github.io/docs/)
+
+## Examples 
 * [TodoMVC](https://github.com/NervJS/nerv-redux-todomvc), built with Nerv and Redux
 * [Nerv's landing page](https://github.com/NervJS/nerv-website), built with Nerv and [react-intl](https://github.com/yahoo/react-intl)
+* [JD.com](https://www.jd.com/2017?t=1607)
+* [TOPLIFE.com](https://www.toplife.com)
 
 
 ## Switching to Nerv from React
@@ -107,17 +148,17 @@ In `.babelrc`:
 
 ```js
 {
-    "plugins": [
-        ["module-resolver", {
-            "root": ["."],
-            "alias": {
-                "react": "nervjs",
-                "react-dom": "nervjs",
-                // Not necessary unless you consume a module using `createClass`
-                "create-react-class": "nerv-create-class"
-            }
-        }]
-    ]
+  "plugins": [
+    ["module-resolver", {
+      "root": ["."],
+      "alias": {
+        "react": "nervjs",
+        "react-dom": "nervjs",
+        // Not necessary unless you consume a module using `createClass`
+        "create-react-class": "nerv-create-class"
+      }
+    }]
+  ]
 }
 ```
 
@@ -215,6 +256,8 @@ Nerv.render(<App />, document.getElementById('#root'))
 
 ![nerv-devtools](https://i.loli.net/2018/01/09/5a5480c074d99.png)
 
+
+## [Change Log](https://github.com/NervJS/nerv/blob/master/packages/nerv/CHANGELOG.md)
 
 
 ## License
