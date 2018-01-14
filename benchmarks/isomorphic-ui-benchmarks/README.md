@@ -1,0 +1,1 @@
+Please go [here](https://github.com/NervJS/isomorphic-ui-benchmarks), then clone the repo, run `npm install`, `npm start`, `npm run benchmark`.
