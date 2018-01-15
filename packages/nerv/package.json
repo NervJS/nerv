@@ -1,6 +1,6 @@
 {
   "name": "nervjs",
-  "version": "1.2.4",
+  "version": "1.2.5-beta.1",
   "description": "A react-like framework based on virtual-dom",
   "main": "index.js",
   "module": "dist/index.esm.js",
