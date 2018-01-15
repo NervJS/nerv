@@ -18,6 +18,10 @@ export function findDOMNode (component) {
   return component && component.dom
 }
 
+export function createFactory (type) {
+  return createElement.bind(null, type)
+}
+
 class WrapperComponent<P, S> extends Component<P, S> {
   getChildContext () {
     // tslint:disable-next-line

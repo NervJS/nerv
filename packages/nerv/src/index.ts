@@ -8,7 +8,13 @@ import { isValidElement } from 'nerv-shared'
 import { Children } from './children'
 import { hydrate } from './hydrate'
 import options from './options'
-import { unmountComponentAtNode, findDOMNode, createPortal, unstable_renderSubtreeIntoContainer } from './dom'
+import {
+  unmountComponentAtNode,
+  findDOMNode,
+  createPortal,
+  unstable_renderSubtreeIntoContainer,
+  createFactory
+} from './dom'
 
 export {
   Children,
@@ -24,7 +30,8 @@ export {
   unmountComponentAtNode,
   createPortal,
   unstable_renderSubtreeIntoContainer,
-  hydrate
+  hydrate,
+  createFactory
 }
 
 export default {
@@ -41,5 +48,6 @@ export default {
   unmountComponentAtNode,
   createPortal,
   unstable_renderSubtreeIntoContainer,
-  hydrate
+  hydrate,
+  createFactory
 } as any

@@ -197,6 +197,7 @@ Nerv currently support React API and features:
 * React.PropTypes
 * React.Children
 * React.isValidElement
+* React.createFactory
 * [Error Boundaries](https://reactjs.org/docs/error-boundaries.html#introducing-error-boundaries) (React 16)
  
 ### `react-dom`
