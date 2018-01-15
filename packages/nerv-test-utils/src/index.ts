@@ -1,4 +1,4 @@
-import React from 'nervjs'
+import Nerv from 'nervjs'
 // tslint:disable-next-line:no-var-requires
 const simulateEvents = require('simulate-event')
 
@@ -12,7 +12,7 @@ function isFunction (x) {
 
 function renderIntoDocument (instance) {
   const dom = document.createElement('div')
-  return React.render(instance, dom)
+  return Nerv.render(instance, dom)
 }
 
 // tslint:disable-next-line:max-line-length
@@ -118,7 +118,7 @@ function findAllInRenderedTree (instance, test) {
 function mockComponent (module, mockTagName) {
   mockTagName = mockTagName || module.mockTagName || 'div'
   module.prototype.render.mockImplementation(function () {
-    return React.createElement(mockTagName, null, this.props.children)
+    return Nerv.createElement(mockTagName, null, this.props.children)
   })
 }
 

@@ -6,9 +6,6 @@
   "command": {
     "init": {
       "exact": true
-    },
-    "exec": {
-      "ignore": "nerv-test-utils"
     }
   },
   "version": "1.2.5-beta.1"
