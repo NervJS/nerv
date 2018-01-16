@@ -70,7 +70,7 @@ $ yarn add nervjs
 
 ### Usage
 
-Then import what you want,Nerv provides both named and default exports,so you can use Nerv as a namespace or import just what you need as locals
+Import what you need. Nerv provides both named and default exports, you can use Nerv as a namespace or simply import what you need as locals.
 
 **Default exports:**
 
@@ -115,7 +115,7 @@ render(
 
 ## Switching to Nerv from React
 
-Switching to Nerv from React is easy, just aliasing `nervjs` in for `react` and `react-dom`, without any code changes.
+Switching to Nerv from React is easy as adding alias `nervjs` for `react` and `react-dom`. No changes in code needed.
 
 ### Usage with Webpack
 
@@ -243,7 +243,7 @@ At last, setting `.babelrc` if you are using `babel`:
 
 Nerv has a development tools module which allows you to inspect the component hierarchies via the [React Chrome Developer Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi) plugin. 
 
-To enable the Nerv development tool you must install the `nerv-devtools` module and then `require('nerv-devtools')` before the initial `Nerv.render()`.
+To enable the Nerv development tools you must install the `nerv-devtools` module and then `require('nerv-devtools')` before the initial `Nerv.render()`.
 
 
 ```js
