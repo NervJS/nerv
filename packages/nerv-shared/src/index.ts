@@ -70,7 +70,7 @@ export interface Props {
   children?: VirtualChildren
   ref?: Ref
   key?: any
-  className?: string
+  className?: string | object
   [k: string]: any
 }
 

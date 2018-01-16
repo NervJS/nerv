@@ -7,8 +7,10 @@
   "author": "yuche",
   "license": "MIT",
   "dependencies": {
-    "nervjs": "^0.1.10",
-    "simulate-event": "^1.4.0"
+    "nervjs": "1.2.4",
+    "simulate-event": "^1.4.0",
+    "nerv-shared": "1.2.3",
+    "nerv-utils": "1.2.4-beta.1"
   },
   "repository": {
     "type": "git",
