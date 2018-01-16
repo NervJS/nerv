@@ -1,6 +1,6 @@
 {
   "name": "nerv-create-class",
-  "version": "1.2.5-beta.1",
+  "version": "1.2.5",
   "description": "Create Nerv component in ES5.",
   "main": "index.js",
   "module": "dist/index.esm.js",

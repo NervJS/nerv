@@ -260,6 +260,9 @@ Nerv.render(<App />, document.getElementById('#root'))
 
 ## [Change Log](https://github.com/NervJS/nerv/blob/master/packages/nerv/CHANGELOG.md)
 
+## Acknowledgement
+
+[AOTU.IO（JD Multi-terminal Development Department）](https://aotu.io)
 
 ## License
 

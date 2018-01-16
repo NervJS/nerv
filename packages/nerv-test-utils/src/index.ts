@@ -1,4 +1,4 @@
-import React from 'nervjs'
+import Nerv from 'nervjs'
 import {
   isValidElement,
   isComposite,
@@ -13,7 +13,7 @@ const simulateEvents = require('simulate-event')
 function renderIntoDocument (instance) {
   const dom = document.createElement('div')
   document.body.appendChild(dom)
-  return React.render(instance, dom)
+  return Nerv.render(instance, dom)
 }
 
 // tslint:disable-next-line:max-line-length
@@ -188,7 +188,7 @@ function findRenderedComponentWithType (tree, type: string) {
 function mockComponent (module, mockTagName) {
   mockTagName = mockTagName || module.mockTagName || 'div'
   module.prototype.render.mockImplementation(function () {
-    return React.createElement(mockTagName, null, this.props.children)
+    return Nerv.createElement(mockTagName, null, this.props.children)
   })
 }
 

@@ -5,7 +5,6 @@ const uglify = require('rollup-plugin-uglify')
 const optimizeJs = require('optimize-js')
 const babel = require('rollup-plugin-babel')
 const es3 = require('rollup-plugin-es3')
-const alias = require('rollup-plugin-alias')
 const { join } = require('path')
 const cwd = __dirname
 
@@ -49,18 +48,14 @@ const baseConfig = {
       sourcemap: true
     },
     {
-      file: join(cwd, 'dist/nerv-create-class.js'),
+      file: join(cwd, 'dist/nerv-test-utils.js'),
       format: 'umd',
-      name: 'NervCreateClass',
+      name: 'NervTestUtils',
       sourcemap: true
     }
   ],
   external: ['nervjs'],
   plugins: [
-    alias({
-      'nerv-shared': join(cwd, '../nerv-shared/dist/index'),
-      'nerv-utils': join(cwd, '../nerv-utils/dist/index')
-    }),
     resolve(),
     typescript({
       typescript: require('typescript')
@@ -80,8 +75,8 @@ const esmConfig = Object.assign({}, baseConfig, {
 const productionConfig = Object.assign({}, baseConfig, {
   output: {
     format: 'umd',
-    file: join(cwd, 'dist/nerv-create-class.min.js'),
-    name: 'NervCreateClass',
+    file: join(cwd, 'dist/nerv-test-utils.js'),
+    name: 'NervTestUtils',
     sourcemap: false
   },
   plugins: baseConfig.plugins.concat([uglifyPlugin, optJSPlugin])
