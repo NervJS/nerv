@@ -1,10 +1,11 @@
-import Nerv from 'nervjs'
+import React from 'nervjs'
 import {
   isValidElement,
   isComposite,
   VirtualNode,
   isWidget,
-  isVNode
+  isVNode,
+  isComponent
 } from 'nerv-shared'
 import { isString, isArray } from 'nerv-utils'
 // tslint:disable-next-line:no-var-requires
@@ -13,7 +14,7 @@ const simulateEvents = require('simulate-event')
 function renderIntoDocument (instance) {
   const dom = document.createElement('div')
   document.body.appendChild(dom)
-  return Nerv.render(instance, dom)
+  return React.render(instance, dom)
 }
 
 // tslint:disable-next-line:max-line-length
@@ -66,15 +67,15 @@ function isElement (instance) {
 }
 
 function isElementOfType (instance, convenienceConstructor) {
-  return isElement(instance) && convenienceConstructor
+  return isElement(instance) && convenienceConstructor === instance.type
 }
 
-function isDOMComponent (instance) {
-  return isVNode(instance)
+function isDOMComponent (inst) {
+  return !!(inst && inst.nodeType === 1 && inst.tagName)
 }
 
-function isDOMElementOfType (instance: any, type: string): boolean {
-  return isDOMComponent(instance) && isString(type) && instance.type === type
+function isDOMComponentOfType (instance: any, tagName: string): boolean {
+  return isDOMComponent(instance) && isString(tagName) && instance.tagName === tagName.toUpperCase()
 }
 
 function isCompositeComponent (instance) {
@@ -92,10 +93,10 @@ function findAllInRenderedTree (
   tree: VirtualNode,
   test: (vnode: VirtualNode) => boolean
 ) {
-  if (isValidElement(tree)) {
+  if (isValidElement(tree) || isComponent(tree)) {
     let result = test(tree) ? [tree] : []
     let children
-    if (isWidget(tree)) {
+    if (isWidget(tree) || isComponent(tree)) {
       children = tree._rendered
     } else if (isVNode(tree)) {
       children = tree.children
@@ -110,6 +111,8 @@ function findAllInRenderedTree (
       children.forEach((child) => {
         result = result.concat(findAllInRenderedTree(child, test) as any)
       })
+    } else if (isDOMComponent(children)) {
+      console.log(children)
     }
     return result
   } else {
@@ -133,11 +136,10 @@ function scryRenderedDOMComponentsWithClass (
 ) {
   return findAllInRenderedTree(tree, (instance) => {
     if (isVNode(instance)) {
-      const theClass = instance.props.className
-      const classList =
-        theClass && isString(theClass)
-          ? theClass.trim().split(/\s+/)
-          : Object.keys(theClass as object).filter(Boolean)
+      const theClass = instance.props.className || ''
+      const classList = isString(theClass)
+        ? theClass.trim().split(/\s+/)
+        : Object.keys(theClass as object).filter(Boolean)
       return parseClass(classNames).every(
         (className) => classList.indexOf(className) !== -1
       )
@@ -159,7 +161,10 @@ function findRenderedDOMComponentWithClass (
 
 function scryRenderedDOMComponentsWithTag (tree, tag: string) {
   return findAllInRenderedTree(tree, (instance) => {
-    return isDOMElementOfType(instance, tag)
+    if (isVNode(instance)) {
+      return isDOMComponentOfType(instance.dom, tag)
+    }
+    return false
   })
 }
 
@@ -188,17 +193,8 @@ function findRenderedComponentWithType (tree, type: string) {
 function mockComponent (module, mockTagName) {
   mockTagName = mockTagName || module.mockTagName || 'div'
   module.prototype.render.mockImplementation(function () {
-    return Nerv.createElement(mockTagName, null, this.props.children)
+    return React.createElement(mockTagName, null, this.props.children)
   })
-}
-
-function createRenderer () {
-  // tslint:disable-next-line:no-empty
-  return () => {}
-}
-
-function batchedUpdates (cb) {
-  cb()
 }
 
 export {
@@ -208,7 +204,7 @@ export {
   isElement,
   isElementOfType,
   isDOMComponent,
-  isDOMElementOfType,
+  isDOMComponentOfType,
   isCompositeComponent,
   isCompositeComponentWithType,
   findAllInRenderedTree,
@@ -217,9 +213,7 @@ export {
   scryRenderedDOMComponentsWithTag,
   findRenderedComponentWithType,
   findRenderedDOMComponentWithClass,
-  findRenderedDOMComponentWithTag,
-  batchedUpdates,
-  createRenderer
+  findRenderedDOMComponentWithTag
 }
 
 export default {
@@ -229,7 +223,7 @@ export default {
   isElement,
   isElementOfType,
   isDOMComponent,
-  isDOMElementOfType,
+  isDOMComponentOfType,
   isCompositeComponent,
   isCompositeComponentWithType,
   findAllInRenderedTree,
@@ -238,7 +232,5 @@ export default {
   scryRenderedDOMComponentsWithTag,
   findRenderedComponentWithType,
   findRenderedDOMComponentWithClass,
-  findRenderedDOMComponentWithTag,
-  batchedUpdates,
-  createRenderer
+  findRenderedDOMComponentWithTag
 }

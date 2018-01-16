@@ -17,7 +17,7 @@ export function render (
     return null
   }
   /* istanbul ignore if */
-  if (!container || container.nodeType !== 1) {
+  if (!container) {
     throw new Error(`${container} should be a DOM Element`)
   }
   const lastVnode = (container as any)._component

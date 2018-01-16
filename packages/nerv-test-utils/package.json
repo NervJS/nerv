@@ -10,7 +10,8 @@
     "nervjs": "1.2.4",
     "simulate-event": "^1.4.0",
     "nerv-shared": "1.2.3",
-    "nerv-utils": "1.2.4-beta.1"
+    "nerv-utils": "1.2.4-beta.1",
+    "nerv-server": "1.2.3"
   },
   "repository": {
     "type": "git",
