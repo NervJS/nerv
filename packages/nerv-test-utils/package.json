@@ -1,6 +1,6 @@
 {
   "name": "nerv-test-utils",
-  "version": "1.2.5-beta.2",
+  "version": "1.2.5-beta.3",
   "description": "Nerv test utils",
   "main": "index.js",
   "module": "dist/index.esm.js",
