@@ -92,7 +92,8 @@ function patchArrayChildren (
       }
     }
   } else if (nextLength === 0) {
-    unmountChildren(lastChildren, parentDom)
+    parentDom.textContent = ''
+    unmountChildren(lastChildren)
   } else {
     if (isKeyed(lastChildren, nextChildren)) {
       patchKeyedChildren(

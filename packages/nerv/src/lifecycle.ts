@@ -81,8 +81,7 @@ export function mountComponent (vnode: FullComponent, parentContext: object, par
 
 export function mountStatelessComponent (vnode: Stateless, parentContext) {
   vnode._rendered = vnode.type(vnode.props, parentContext)
-  const rendered = vnode._rendered
-  return (vnode.dom = mountVNode(rendered, parentContext) as Element)
+  return (vnode.dom = mountVNode(vnode._rendered, parentContext) as Element)
 }
 
 export function getChildContext (component, context) {
