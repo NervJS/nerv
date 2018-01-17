@@ -156,7 +156,7 @@ describe('ReactTestUtils', () => {
     expect(scryResults5.length).toBe(0)
   })
 
-  it.skip('traverses children in the correct order', () => {
+  it('traverses children in the correct order', () => {
     class Wrapper extends React.Component {
       render () {
         return <div>{this.props.children}</div>

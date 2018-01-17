@@ -15,7 +15,7 @@ export function unmountComponentAtNode (dom) {
 }
 
 export function findDOMNode (component) {
-  return component && component.dom
+  return component && component.dom || component
 }
 
 export function createFactory (type) {

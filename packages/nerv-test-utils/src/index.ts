@@ -70,12 +70,16 @@ function isElementOfType (instance, convenienceConstructor) {
   return isElement(instance) && convenienceConstructor === instance.type
 }
 
-function isDOMComponent (inst) {
+function isDOMComponent (inst): inst is Element {
   return !!(inst && inst.nodeType === 1 && inst.tagName)
 }
 
 function isDOMComponentOfType (instance: any, tagName: string): boolean {
-  return isDOMComponent(instance) && isString(tagName) && instance.tagName === tagName.toUpperCase()
+  return (
+    isDOMComponent(instance) &&
+    isString(tagName) &&
+    instance.tagName === tagName.toUpperCase()
+  )
 }
 
 function isCompositeComponent (instance) {
@@ -93,8 +97,9 @@ function findAllInRenderedTree (
   tree: VirtualNode,
   test: (vnode: VirtualNode) => boolean
 ) {
-  if (isValidElement(tree) || isComponent(tree)) {
-    let result = test(tree) ? [tree] : []
+  if (isValidElement(tree) || isComponent(tree) || isDOMComponent) {
+    const node = isVNode(tree) ? tree.dom : tree
+    let result = test(node as any) ? [node as any] : []
     let children
     if (isWidget(tree) || isComponent(tree)) {
       children = tree._rendered
@@ -135,11 +140,8 @@ function scryRenderedDOMComponentsWithClass (
   classNames: string | string[]
 ) {
   return findAllInRenderedTree(tree, (instance) => {
-    if (isVNode(instance)) {
-      const theClass = instance.props.className || ''
-      const classList = isString(theClass)
-        ? theClass.trim().split(/\s+/)
-        : Object.keys(theClass as object).filter(Boolean)
+    if (isDOMComponent(instance)) {
+      const classList = parseClass(instance.getAttribute('class'))
       return parseClass(classNames).every(
         (className) => classList.indexOf(className) !== -1
       )
@@ -161,10 +163,7 @@ function findRenderedDOMComponentWithClass (
 
 function scryRenderedDOMComponentsWithTag (tree, tag: string) {
   return findAllInRenderedTree(tree, (instance) => {
-    if (isVNode(instance)) {
-      return isDOMComponentOfType(instance.dom, tag)
-    }
-    return false
+    return isDOMComponentOfType(instance, tag)
   })
 }
 
