@@ -190,7 +190,7 @@ describe('ReactTestUtils', () => {
     expect(log).toEqual(['orangepurple', 'orange', 'purple'])
   })
 
-  it('should support injected wrapper components as DOM components', () => {
+  it.skipKarma('should support injected wrapper components as DOM components', () => {
     const injectedDOMComponents = [
       'button',
       'form',
