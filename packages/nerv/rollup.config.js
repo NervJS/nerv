@@ -77,12 +77,19 @@ const esmConfig = Object.assign({}, baseConfig, {
   })
 })
 const productionConfig = Object.assign({}, baseConfig, {
-  output: {
-    format: 'umd',
-    file: join(cwd, 'dist/nerv.min.js'),
-    name: 'Nerv',
-    sourcemap: false
-  },
+  output: [
+    {
+      format: 'umd',
+      file: join(cwd, 'dist/nerv.min.js'),
+      name: 'Nerv',
+      sourcemap: false
+    },
+    {
+      file: join(cwd, 'dist/index.prod.js'),
+      format: 'cjs',
+      sourcemap: false
+    }
+  ],
   plugins: baseConfig.plugins.concat([uglifyPlugin, optJSPlugin])
 })
 
