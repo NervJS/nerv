@@ -27,3 +27,4 @@ try {
 } catch (e) {
   upgradeKarma()
 }
+Not sure what i am doing
