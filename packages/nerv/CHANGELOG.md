@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.5"></a>
+## [1.2.5](https://github.com/NervJS/nerv/compare/v1.2.5-beta.3...v1.2.5) (2018-01-18)
+
+
+### Bug Fixes
+
+* patch children while lastChildren is empty ([7828ba5](https://github.com/NervJS/nerv/commit/7828ba5))
+
+
+### Performance Improvements
+
+* clear the content instead of removeChild while nextChildren is empty ([fc5d09d](https://github.com/NervJS/nerv/commit/fc5d09d))
+
+
+
+
 <a name="1.2.4"></a>
 ## [1.2.4](https://github.com/NervJS/nerv/compare/v1.2.4-beta.1...v1.2.4) (2018-01-14)
 
