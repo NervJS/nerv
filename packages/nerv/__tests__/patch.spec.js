@@ -9,13 +9,6 @@ describe('patch', () => {
     scratch = document.createElement('div')
   })
 
-  it('should not patch when lastVnode and nextVnode is equal', () => {
-    const App = () => <div />
-    let app
-    render(<App ref={c => (app = c)} />, scratch)
-    render(app, scratch)
-  })
-
   it('should not patch when stateless component scu was set false', () => {
     const App = ({ text }) => <div>{text}</div>
     render(<App text='test' onShouldComponentUpdate={() => false} />, scratch)

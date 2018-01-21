@@ -1,22 +1,13 @@
 import { mountVNode, flushMount } from './lifecycle'
-import { isString, isNumber } from 'nerv-utils'
-import { isWidget, isVNode, VNode, VirtualNode } from 'nerv-shared'
+import { VirtualNode, isComposite } from 'nerv-shared'
 import { patch } from './vdom/patch'
 import options from './options'
-
-function isVChild (vnode): vnode is string | number | VNode {
-  return isVNode(vnode) || isString(vnode) || isNumber(vnode)
-}
 
 export function render (
   vnode: VirtualNode,
   container: Element,
   callback?: Function
 ) {
-  if (!isVChild(vnode) && !isWidget(vnode)) {
-    return null
-  }
-  /* istanbul ignore if */
   if (!container) {
     throw new Error(`${container} should be a DOM Element`)
   }
@@ -40,5 +31,5 @@ export function render (
     callback()
   }
 
-  return (vnode as any).component || dom
+  return isComposite(vnode) ? vnode.component : dom
 }

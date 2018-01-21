@@ -1,4 +1,4 @@
-import { isSupportSVG, isArray, isString, isNumber, doc } from 'nerv-utils'
+import { isSupportSVG, isArray, isString, isNumber, doc, isBoolean } from 'nerv-utils'
 import {
   isNullOrUndef,
   VirtualNode,
@@ -37,7 +37,7 @@ function createElement (
     }
   } else if (isString(vnode) || isNumber(vnode)) {
     domNode = doc.createTextNode(vnode as string)
-  } else if (isNullOrUndef(vnode) || (vnode as any) === false) {
+  } else if (isNullOrUndef(vnode) || isBoolean(vnode)) {
     domNode = doc.createTextNode('')
   } else if (isArray(vnode)) {
     domNode = doc.createDocumentFragment()

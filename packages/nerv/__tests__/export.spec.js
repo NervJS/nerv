@@ -1,4 +1,4 @@
-import Nerv from '../index'
+import * as Nerv from '../src'
 
 describe('Should export correct module', () => {
   it('Should export `default` module', () => {
