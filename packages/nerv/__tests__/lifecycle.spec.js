@@ -2,7 +2,7 @@
 import { Component, createElement, render } from '../src'
 import { rerender } from '../src/render-queue'
 import sinon from 'sinon'
-import { EMPTY_CHILDREN } from './util'
+import { EMPTY_CHILDREN, normalizeHTML } from './util'
 
 describe('Lifecycle methods', () => {
   let scratch
@@ -642,6 +642,60 @@ describe('Lifecycle methods', () => {
         app.setState({ page: i % components.length })
         app.forceUpdate()
       }
+    })
+  })
+
+  describe('componentWillUnmount should be called before removing DOM', () => {
+    class Hello extends Component {
+      componentWillUnmount () {
+        expect(scratch.innerHTML).toContain('hello')
+      }
+      render () {
+        return <div id='hello'>Hello {this.props.name}</div>
+      }
+    }
+    it('should work with children and null', () => {
+      render(
+        <div>
+          <span>1</span>
+          <Hello name='World' />
+        </div>,
+        scratch
+      )
+
+      render(null, scratch, () => {
+        expect(scratch.innerHTML).toBe('')
+      })
+    })
+
+    it('should work with root and null', () => {
+      render(<Hello name='World' />, scratch)
+
+      render(null, scratch, () => {
+        expect(scratch.innerHTML).toBe('')
+      })
+    })
+
+    it('should work with children and children', () => {
+      render(
+        <div>
+          <span>1</span>
+          <Hello name='World' />
+        </div>,
+        scratch
+      )
+
+      render(
+        <div>
+          <span>1</span>
+        </div>,
+        scratch,
+        () => {
+          expect(normalizeHTML(scratch.innerHTML)).toBe(
+            '<div><span>1</span></div>'
+          )
+        }
+      )
     })
   })
 })

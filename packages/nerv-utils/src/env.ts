@@ -10,9 +10,7 @@ export var global = (function() {
     try {
       local = Function('return this')()
     } catch (e) {
-      throw new Error(
-        'global object is unavailable in this environment'
-      )
+      throw new Error('global object is unavailable in this environment')
     }
   }
   return local
@@ -30,3 +28,5 @@ const fakeDoc: any = {
 }
 
 export const doc: Document = isBrowser ? document : fakeDoc
+
+export const isIE8Below = typeof (doc.createEvent) !== 'undefined'
