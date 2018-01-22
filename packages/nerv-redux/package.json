@@ -4,7 +4,7 @@
   "description": "Redux for Nerv.js",
   "main": "index.js",
   "module": "dist/index.esm.js",
-  "repository": "https://github.com/NervJS/nerv-redux",
+  "repository": "https://github.com/NervJS/nerv",
   "author": "yuche <i@yuche.me>",
   "license": "MIT",
   "keywords": [
