@@ -581,6 +581,13 @@ describe('Component', function () {
       render(<Foo children={'b'} />, scratch)
       expect(scratch.innerHTML).toEqual(normalizeHTML('<div>a</div>'))
     })
+
+    it('should not be ignored when pass a empty children', () => {
+      const Foo = props => <div>{props.children}</div>
+      const Bar = props => <Foo {...props}>{'b'}</Foo>
+      render(<Bar />, scratch)
+      expect(scratch.innerHTML).toEqual(normalizeHTML('<div>b</div>'))
+    })
   })
 
   describe('PureComponent', () => {

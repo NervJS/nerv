@@ -76,7 +76,7 @@ function createElement<T> (
       properties as any,
       (type as any).defaultProps
     )
-    if (!props.children) {
+    if (!props.children || props.children === EMPTY_CHILDREN) {
       props.children = children || EMPTY_CHILDREN
     }
     props.owner = CurrentOwner.current
