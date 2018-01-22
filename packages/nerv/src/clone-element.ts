@@ -1,7 +1,7 @@
 import createElement from './create-element'
 import createVText from './vdom/create-vtext'
 import { extend, clone, isArray, isString } from 'nerv-utils'
-import { isVText, isVNode } from 'nerv-shared'
+import { isVText, isVNode, EMPTY_CHILDREN } from 'nerv-shared'
 
 export default function cloneElement (vnode, props?: object, ...children): any {
   if (isVText(vnode)) {
@@ -31,9 +31,12 @@ export default function cloneElement (vnode, props?: object, ...children): any {
   }
   const newVNode = createElement(vnode.type, properties)
   if (isArray(childrenTmp)) {
-    const _children = childrenTmp.map((child) => {
+    let _children = childrenTmp.map((child) => {
       return cloneElement(child, child.props)
     })
+    if (_children.length === 0) {
+      _children = EMPTY_CHILDREN
+    }
     if (isVNode(newVNode)) {
       newVNode.children = _children
     }

@@ -113,4 +113,12 @@ describe('cloneElement()', () => {
       normalizeHTML('<div><span>1</span></div>')
     )
   })
+
+  it('can preserve empty children', () => {
+    const Foo = props => <div>{props.children}</div>
+    const Bar = props => <Foo {...props}>{'b'}</Foo>
+    const C = cloneElement(<Bar />, {})
+    render(C, scratch)
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>b</div>'))
+  })
 })
