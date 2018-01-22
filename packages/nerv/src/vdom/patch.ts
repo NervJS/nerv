@@ -5,8 +5,7 @@ import {
   isNumber,
   isArray,
   isFunction,
-  MapClass,
-  isIE8Below
+  MapClass
 } from 'nerv-utils'
 import createElement, { mountChild } from './create-element'
 import {
@@ -77,10 +76,6 @@ export function patch (
   return newDom
 }
 
-function clearDOM (dom: Element) {
-  isIE8Below ? dom.innerHTML = '' : dom.textContent = ''
-}
-
 function patchArrayChildren (
   parentDom: Element,
   lastChildren,
@@ -98,7 +93,7 @@ function patchArrayChildren (
     }
   } else if (nextLength === 0) {
     unmountChildren(lastChildren)
-    clearDOM(parentDom)
+    parentDom.textContent = ''
   } else {
     if (isKeyed(lastChildren, nextChildren)) {
       patchKeyedChildren(
@@ -320,7 +315,7 @@ function patchKeyedChildren (
     }
     if (aLeft === aLength && patched === 0) {
       unmountChildren(a)
-      clearDOM(dom)
+      dom.textContent = ''
       while (bStart < bLeft) {
         node = b[bStart]
         bStart++

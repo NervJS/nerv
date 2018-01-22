@@ -28,5 +28,3 @@ const fakeDoc: any = {
 }
 
 export const doc: Document = isBrowser ? document : fakeDoc
-
-export const isIE8Below = typeof (doc.createEvent) !== 'undefined'
