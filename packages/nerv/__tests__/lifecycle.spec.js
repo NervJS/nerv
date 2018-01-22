@@ -691,8 +691,8 @@ describe('Lifecycle methods', () => {
         </div>,
         scratch,
         () => {
-          expect(normalizeHTML(scratch.innerHTML)).toBe(
-            '<div><span>1</span></div>'
+          expect(scratch.innerHTML).toBe(
+            normalizeHTML('<div><span>1</span></div>')
           )
         }
       )
