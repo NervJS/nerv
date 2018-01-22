@@ -52,7 +52,11 @@ const unbubbleEvents = {
 }
 
 let bindFocus = false
-
+declare global {
+  interface Event {
+    persist: Function
+  }
+}
 /* istanbul ignore next */
 if (isBrowser && navigator.userAgent.indexOf('MSIE 9') >= 0) {
   doc.addEventListener('selectionchange', () => {
@@ -63,6 +67,11 @@ if (isBrowser && navigator.userAgent.indexOf('MSIE 9') >= 0) {
       el.dispatchEvent(ev)
     }
   })
+}
+
+if (typeof Event !== 'undefined' && !Event.prototype.persist) {
+  // tslint:disable-next-line:no-empty
+  Event.prototype.persist = noop
 }
 
 export function attachEvent (
@@ -260,9 +269,6 @@ function dispatchEvent (event, target, items, count, eventData) {
     Object.defineProperties(event, {
       nativeEvent: {
         value: event
-      },
-      persist: {
-        value: noop
       }
     })
     eventsToTrigger(event)
