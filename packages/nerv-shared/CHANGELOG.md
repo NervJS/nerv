@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.6"></a>
+## [1.2.6](https://github.com/NervJS/nerv/compare/v1.2.5...v1.2.6) (2018-01-23)
+
+
+### Bug Fixes
+
+* should not pass refs to children ([d625476](https://github.com/NervJS/nerv/commit/d625476))
+
+
+
+
 <a name="1.2.3"></a>
 ## [1.2.3](https://github.com/NervJS/nerv/compare/v1.2.2...v1.2.3) (2018-01-11)
 

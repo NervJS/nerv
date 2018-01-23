@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.6"></a>
+## [1.2.6](https://github.com/NervJS/nerv/compare/v1.2.5...v1.2.6) (2018-01-23)
+
+
+### Bug Fixes
+
+* componentWillUnmount should be called before removing DOM. fix [#32](https://github.com/NervJS/nerv/issues/32). ([eef6297](https://github.com/NervJS/nerv/commit/eef6297))
+
+
+
+
 <a name="1.2.0"></a>
 # [1.2.0](https://github.com/NervJS/nerv/compare/v1.1.0...v1.2.0) (2018-01-05)
 

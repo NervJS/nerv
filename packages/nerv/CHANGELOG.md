@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.6"></a>
+## [1.2.6](https://github.com/NervJS/nerv/compare/v1.2.5...v1.2.6) (2018-01-23)
+
+
+### Bug Fixes
+
+* cloneElement should preserve EMPTY_ARRAY instead of create a  new one. ([3b13ed9](https://github.com/NervJS/nerv/commit/3b13ed9))
+* componentWillUnmount should be called before removing DOM. fix [#32](https://github.com/NervJS/nerv/issues/32). ([eef6297](https://github.com/NervJS/nerv/commit/eef6297))
+* Event.persit support ([eb0c682](https://github.com/NervJS/nerv/commit/eb0c682))
+* iOS onClick event ([4b06357](https://github.com/NervJS/nerv/commit/4b06357))
+* render() function should render null ([8e32021](https://github.com/NervJS/nerv/commit/8e32021))
+* should not ignore children when component pass a empty children ([057f106](https://github.com/NervJS/nerv/commit/057f106))
+* should not pass refs to children ([d625476](https://github.com/NervJS/nerv/commit/d625476))
+
+
+
+
 <a name="1.2.5"></a>
 ## [1.2.5](https://github.com/NervJS/nerv/compare/v1.2.5-beta.3...v1.2.5) (2018-01-18)
 
