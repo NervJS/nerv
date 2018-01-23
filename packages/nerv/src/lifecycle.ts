@@ -49,7 +49,7 @@ export function mountVNode (vnode, parentContext: any, parentComponent?) {
 }
 
 export function mountComponent (vnode: FullComponent, parentContext: object, parentComponent) {
-  const ref = vnode.props.ref
+  const ref = vnode.ref
   vnode.component = new vnode.type(vnode.props, parentContext)
   const component = vnode.component
   if (isComponent(parentComponent)) {
@@ -140,7 +140,7 @@ export function reRenderComponent (prev: CompositeComponent, current: CompositeC
   component.prevContext = component.context
   component.props = nextProps
   component.context = nextContext
-  if (!isNullOrUndef(nextProps.ref)) {
+  if (!isNullOrUndef(current.ref)) {
     Ref.update(prev, current)
   }
   updateComponent(component)
@@ -217,8 +217,8 @@ export function unmountComponent (vnode: FullComponent) {
   }
   component._disable = true
   unmount(component._rendered)
-  if (!isNullOrUndef(vnode.props.ref)) {
-    Ref.detach(vnode, vnode.props.ref, vnode.dom as any)
+  if (!isNullOrUndef(vnode.ref)) {
+    Ref.detach(vnode, vnode.ref, vnode.dom as any)
   }
 }
 

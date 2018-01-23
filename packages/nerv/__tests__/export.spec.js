@@ -15,6 +15,6 @@ describe('Should export correct module', () => {
     expect(Nerv.findDOMNode).not.toBe(undefined)
     expect(Nerv.isValidElement).not.toBe(undefined)
     expect(Nerv.unmountComponentAtNode).not.toBe(undefined)
-    expect(Nerv.createPortal)
+    expect(Nerv.createPortal).not.toBe(undefined)
   })
 })

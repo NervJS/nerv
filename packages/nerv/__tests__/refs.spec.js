@@ -315,4 +315,27 @@ describe('refs', () => {
     innerInst.forceUpdate()
     expect(innerInst.refs['top']).toBe(undefined)
   })
+
+  it('should not pass refs to children', () => {
+    // let innerInst
+    const spy = sinon.spy()
+
+    class Inner extends Component {
+      render () {
+        return <div />
+      }
+    }
+    class Bar extends Component {
+      render () {
+        return <Inner {...this.props} />
+      }
+    }
+    class Foo extends Component {
+      render () {
+        return <Bar ref={spy} />
+      }
+    }
+    render(<Foo />, scratch)
+    expect(spy.callCount).toBe(1)
+  })
 })

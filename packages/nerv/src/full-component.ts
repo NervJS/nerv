@@ -1,4 +1,4 @@
-import { VType, Component, CompositeComponent } from 'nerv-shared'
+import { VType, Component, CompositeComponent, Ref } from 'nerv-shared'
 import {
   mountComponent,
   reRenderComponent,
@@ -16,6 +16,7 @@ class ComponentWrapper implements CompositeComponent {
   key: any
   dom: Element | null
   _rendered: any
+  ref: Ref
 
   constructor (type, props) {
     this.type = type
@@ -23,6 +24,9 @@ class ComponentWrapper implements CompositeComponent {
     type.displayName = this.name
     this._owner = props.owner
     delete props.owner
+    if ((this.ref = props.ref)) {
+      delete props.ref
+    }
     this.props = props
     this.key = props.key
     this.dom = null

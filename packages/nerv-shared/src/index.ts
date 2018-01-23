@@ -20,6 +20,7 @@ export type ComponentInstance = CompositeComponent | StatelessComponent
 export interface CompositeComponent extends Widget {
   type: any
   component: Component<any, any>
+  ref?: Ref
 }
 
 export interface StatelessComponent extends Widget {
@@ -64,7 +65,7 @@ export type VirtualNode =
 
 export type VirtualChildren = Array<string | number | VirtualNode> | VirtualNode
 
-export type Ref = (node?: Element | null) => void | null
+export type Ref = (node?: Element | null) => void | null | string
 
 export interface Props {
   children?: VirtualChildren

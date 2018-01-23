@@ -3,8 +3,8 @@ import { isComposite } from 'nerv-shared'
 
 export default {
   update (lastVnode, nextVnode, domNode?) {
-    const prevRef = lastVnode != null && lastVnode.props.ref
-    const nextRef = nextVnode != null && nextVnode.props.ref
+    const prevRef = lastVnode != null && lastVnode.ref
+    const nextRef = nextVnode != null && nextVnode.ref
 
     if (prevRef !== nextRef) {
       if (!isFunction(prevRef) || !isFunction(nextRef)) {
