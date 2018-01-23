@@ -59,4 +59,4 @@ export function createPortal (vnode, container: Element) {
   return null
 }
 
-export const unstable_batchedupdates = nextTick
+export const unstable_batchedUpdates = nextTick
