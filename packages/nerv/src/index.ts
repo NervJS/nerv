@@ -13,7 +13,8 @@ import {
   findDOMNode,
   createPortal,
   unstable_renderSubtreeIntoContainer,
-  createFactory
+  createFactory,
+  unstable_batchedupdates
 } from './dom'
 
 export {
@@ -31,7 +32,8 @@ export {
   createPortal,
   unstable_renderSubtreeIntoContainer,
   hydrate,
-  createFactory
+  createFactory,
+  unstable_batchedupdates
 }
 
 export default {
@@ -49,5 +51,6 @@ export default {
   createPortal,
   unstable_renderSubtreeIntoContainer,
   hydrate,
-  createFactory
+  createFactory,
+  unstable_batchedupdates
 } as any

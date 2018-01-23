@@ -1,4 +1,5 @@
 import { isValidElement } from 'nerv-shared'
+import { nextTick } from 'nerv-utils'
 import { render } from './render'
 import { unmount } from './vdom/unmount'
 import createElement from './create-element'
@@ -15,7 +16,7 @@ export function unmountComponentAtNode (dom) {
 }
 
 export function findDOMNode (component) {
-  return component && component.dom || component
+  return (component && component.dom) || component
 }
 
 export function createFactory (type) {
@@ -57,3 +58,5 @@ export function createPortal (vnode, container: Element) {
   render(vnode, container)
   return null
 }
+
+export const unstable_batchedupdates = nextTick

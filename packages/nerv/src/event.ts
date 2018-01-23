@@ -3,6 +3,10 @@ import { noop } from 'nerv-shared'
 
 const ONINPUT = 'oninput'
 const ONPROPERTYCHANGE = 'onpropertychange'
+const isiOS =
+  isBrowser &&
+  !!navigator.platform &&
+  /iPad|iPhone|iPod/.test(navigator.platform)
 
 const delegatedEvents = new MapClass()
 
@@ -111,6 +115,9 @@ export function attachEvent (
       delegatedEvents.set(eventName, delegatedRoots)
     }
     if (isFunction(handler)) {
+      if (isiOS) {
+        (domNode as any).onclick = noop
+      }
       delegatedRoots.items.set(domNode, handler)
     }
   }
