@@ -34,6 +34,7 @@ class StateLessComponent {
       isFunction(shouldComponentUpdate) &&
       !shouldComponentUpdate(previous.props, props, context)
     ) {
+      current._rendered = previous._rendered
       return domNode
     }
     return reRenderStatelessComponent(previous, this, parentContext, domNode)
