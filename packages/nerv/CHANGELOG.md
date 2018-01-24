@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.8"></a>
+## [1.2.8](https://github.com/NervJS/nerv/compare/v1.2.7...v1.2.8) (2018-01-24)
+
+
+### Bug Fixes
+
+* stateless component patch wrongly ([d595183](https://github.com/NervJS/nerv/commit/d595183))
+
+
+
+
 <a name="1.2.7"></a>
 ## [1.2.7](https://github.com/NervJS/nerv/compare/v1.2.6...v1.2.7) (2018-01-23)
 
