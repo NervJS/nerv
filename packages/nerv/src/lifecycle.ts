@@ -4,7 +4,12 @@ import createElement from './vdom/create-element'
 import createVText from './vdom/create-vtext'
 import { createVoid } from './vdom/create-void'
 import patch from './vdom/patch'
-import { Component, isNullOrUndef, CompositeComponent, isComponent } from 'nerv-shared'
+import {
+  Component,
+  isNullOrUndef,
+  CompositeComponent,
+  isComponent
+} from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
 import { unmount } from './vdom/unmount'
@@ -48,7 +53,11 @@ export function mountVNode (vnode, parentContext: any, parentComponent?) {
   return createElement(vnode, false, parentContext, parentComponent)
 }
 
-export function mountComponent (vnode: FullComponent, parentContext: object, parentComponent) {
+export function mountComponent (
+  vnode: FullComponent,
+  parentContext: object,
+  parentComponent
+) {
   const ref = vnode.ref
   vnode.component = new vnode.type(vnode.props, parentContext)
   const component = vnode.component
@@ -68,7 +77,7 @@ export function mountComponent (vnode: FullComponent, parentContext: object, par
     readyComponents.push(component)
   }
   if (!isNullOrUndef(ref)) {
-    readyComponents.push(() => Ref.attach(vnode, ref, component.dom))
+    Ref.attach(vnode, ref, component.dom)
   }
   const dom = (vnode.dom = component.dom = mountVNode(
     rendered,
@@ -124,7 +133,10 @@ export function flushMount () {
   })
 }
 
-export function reRenderComponent (prev: CompositeComponent, current: CompositeComponent) {
+export function reRenderComponent (
+  prev: CompositeComponent,
+  current: CompositeComponent
+) {
   const component = (current.component = prev.component)
   const nextProps = current.props
   const nextContext = component.context
