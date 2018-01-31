@@ -1,4 +1,4 @@
-import { isValidElement } from 'nerv-shared'
+import { isValidElement as isValidNervElement, VType } from 'nerv-shared'
 import { nextTick } from 'nerv-utils'
 import { render } from './render'
 import { unmount } from './vdom/unmount'
@@ -7,7 +7,7 @@ import Component from './component'
 
 export function unmountComponentAtNode (dom) {
   const component = dom._component
-  if (isValidElement(component)) {
+  if (isValidNervElement(component)) {
     unmount(component, dom)
     delete dom._component
     return true
@@ -57,6 +57,12 @@ export function createPortal (vnode, container: Element) {
   // mountVNode can handle array of vnodes for us
   render(vnode, container)
   return null
+}
+
+export function isValidElement (element) {
+  return (
+    isValidNervElement(element) && (element.vtype & (VType.Composite | VType.Node)) > 0
+  )
 }
 
 export const unstable_batchedUpdates = nextTick

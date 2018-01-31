@@ -4,7 +4,6 @@ import { render } from './render'
 import createElement from './create-element'
 import cloneElement from './clone-element'
 import { nextTick } from 'nerv-utils'
-import { isValidElement } from 'nerv-shared'
 import { Children } from './children'
 import { hydrate } from './hydrate'
 import options from './options'
@@ -14,7 +13,8 @@ import {
   createPortal,
   unstable_renderSubtreeIntoContainer,
   createFactory,
-  unstable_batchedUpdates
+  unstable_batchedUpdates,
+  isValidElement
 } from './dom'
 
 export {
