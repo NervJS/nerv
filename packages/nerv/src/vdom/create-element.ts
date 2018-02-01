@@ -7,7 +7,8 @@ import {
   VNode,
   isValidElement,
   EMPTY_OBJ,
-  CompositeComponent
+  CompositeComponent,
+  isPortal
 } from 'nerv-shared'
 import { patchProp } from './patch'
 import Ref from './ref'
@@ -34,6 +35,11 @@ function createElement (
       domNode = mountVNode(vnode as any, isSvg, parentContext, parentComponent)
     } else if (vtype & VType.Void) {
       domNode = (vnode as any).dom
+    } else if (isPortal(vtype, vnode)) {
+      vnode.type.appendChild(
+        createElement(vnode.children, isSvg, parentContext, parentComponent) as Element
+      )
+      domNode = doc.createTextNode('')
     }
   } else if (isString(vnode) || isNumber(vnode)) {
     domNode = doc.createTextNode(vnode as string)

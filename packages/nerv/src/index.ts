@@ -7,10 +7,10 @@ import { nextTick } from 'nerv-utils'
 import { Children } from './children'
 import { hydrate } from './hydrate'
 import options from './options'
+import { createPortal } from './vdom/create-portal'
 import {
   unmountComponentAtNode,
   findDOMNode,
-  createPortal,
   unstable_renderSubtreeIntoContainer,
   createFactory,
   unstable_batchedUpdates,

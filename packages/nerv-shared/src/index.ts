@@ -15,6 +15,13 @@ export interface Widget {
   destroy (dom?: Element)
 }
 
+export interface Portal {
+  type: Element
+  vtype: VType,
+  children: VirtualNode,
+  dom: null | Element
+}
+
 export type ComponentInstance = CompositeComponent | StatelessComponent
 
 export interface CompositeComponent extends Widget {
@@ -62,6 +69,7 @@ export type VirtualNode =
   | CompositeComponent
   | StatelessComponent
   | VVoid
+  | Portal
 
 export type VirtualChildren = Array<string | number | VirtualNode> | VirtualNode
 
@@ -150,6 +158,10 @@ export function isWidget (
   )
 }
 
+export function isPortal (vtype: VType, node): node is Portal {
+  return (vtype & VType.Portal) > 0
+}
+
 export function isComposite (node): node is CompositeComponent {
   return !isNullOrUndef(node) && node.vtype === VType.Composite
 }
@@ -177,5 +189,6 @@ export const enum VType {
   Node = 1 << 1,
   Composite = 1 << 2,
   Stateless = 1 << 3,
-  Void = 1 << 4
+  Void = 1 << 4,
+  Portal = 1 << 5
 }

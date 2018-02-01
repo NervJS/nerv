@@ -53,12 +53,6 @@ export function unstable_renderSubtreeIntoContainer (
   return rendered
 }
 
-export function createPortal (vnode, container: Element) {
-  // mountVNode can handle array of vnodes for us
-  render(vnode, container)
-  return null
-}
-
 export function isValidElement (element) {
   return (
     isValidNervElement(element) && (element.vtype & (VType.Composite | VType.Node)) > 0
