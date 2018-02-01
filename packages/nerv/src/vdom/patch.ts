@@ -544,7 +544,8 @@ export function patchProp (
   lastVnode: VNode | null,
   isSvg?: boolean
 ) {
-  if (lastValue !== nextValue) {
+  // fix the value update for textarea/input
+  if (lastValue !== nextValue || prop === 'value') {
     if (prop === 'className') {
       prop = 'class'
     }
