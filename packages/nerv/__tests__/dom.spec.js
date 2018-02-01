@@ -8,7 +8,6 @@ import {
   unstable_renderSubtreeIntoContainer as renderSubtreeIntoContainer,
   hydrate
 } from '../src'
-import { createPortal } from '../src/dom'
 import { normalizeHTML } from './util'
 
 describe('dom', () => {
@@ -276,7 +275,6 @@ describe('dom', () => {
       const C = <Comp />
       render(C, scratch)
       expect(findDOMNode(app).textContent).toBe('test')
-      createPortal(B, scratch)
       // expect(findDOMNode(Comp).firstChild.textContent).toBe('test')
     })
   })
