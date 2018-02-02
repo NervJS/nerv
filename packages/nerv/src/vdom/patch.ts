@@ -455,7 +455,7 @@ function isKeyed (lastChildren: VNode[], nextChildren: VNode[]): boolean {
 }
 
 function isSameVNode (a, b) {
-  if (isInvalid(a) || isInvalid(b)) {
+  if (isInvalid(a) || isInvalid(b) || isArray(a) || isArray(b)) {
     return false
   }
   return a.type === b.type && a.key === b.key
