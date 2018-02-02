@@ -61,14 +61,22 @@ declare global {
     persist: Function
   }
 }
+
 /* istanbul ignore next */
 if (isBrowser && navigator.userAgent.indexOf('MSIE 9') >= 0) {
+  const elements: HTMLInputElement[] = []
+  const values: string[] = []
   doc.addEventListener('selectionchange', () => {
-    const el = doc.activeElement
+    const el = doc.activeElement as HTMLInputElement
     if (detectCanUseOnInputNode(el)) {
-      const ev = doc.createEvent('CustomEvent')
-      ev.initCustomEvent('input', true, true, {})
-      el.dispatchEvent(ev)
+      const index = elements.indexOf(el)
+      const element = elements[index] || elements.push(el)
+      if (element.value !== values[index]) {
+        const ev = doc.createEvent('CustomEvent')
+        ev.initCustomEvent('input', true, true, undefined)
+        values[index] = element.value
+        el.dispatchEvent(ev)
+      }
     }
   })
 }
