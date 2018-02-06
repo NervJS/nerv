@@ -41,8 +41,7 @@ export function unmount (vnode, parentDom?) {
       Ref.detach(vnode, ref, dom)
     }
   } else if (vtype & VType.Portal) {
-    unmountChildren(vnode.children)
-    vnode.type.textContent = ''
+    unmountChildren(vnode.children, vnode.type)
   }
 
   if (!isNullOrUndef(parentDom) && !isNullOrUndef(dom)) {

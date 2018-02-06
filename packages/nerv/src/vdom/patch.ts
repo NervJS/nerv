@@ -18,7 +18,8 @@ import {
   VNode,
   isNullOrUndef,
   isValidElement,
-  EMPTY_CHILDREN
+  EMPTY_CHILDREN,
+  VType
 } from 'nerv-shared'
 import { unmount, unmountChildren } from './unmount'
 import Ref from './ref'
@@ -70,7 +71,12 @@ export function patch (
       nextVnode.dom = newDom
     }
     if (parentNode !== null) {
-      parentNode.insertBefore(newDom as Node, nextSibling)
+      parentNode.insertBefore(
+        newDom as Node,
+        nextVnode !== null && (nextVnode.vtype & VType.Portal)
+          ? null
+          : nextSibling
+      )
     }
   }
   return newDom
