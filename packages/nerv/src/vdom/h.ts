@@ -16,7 +16,6 @@ function h (type: string, props: Props, children?: VirtualChildren) {
     if (!children) {
       children = props.children
     }
-    delete props.children
   }
   if (isArray(children)) {
     childNodes = []
@@ -26,10 +25,11 @@ function h (type: string, props: Props, children?: VirtualChildren) {
   } else if (!isValidElement(children)) {
     children = EMPTY_CHILDREN
   }
+  props.children = childNodes !== undefined ? childNodes : children
   return createVNode(
     type,
     props,
-    childNodes !== undefined ? childNodes : children,
+    props.children as any[],
     props.key,
     props.namespace,
     props.owner,
