@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.11"></a>
+## [1.2.11](https://github.com/NervJS/nerv/compare/v1.2.10...v1.2.11) (2018-02-09)
+
+
+### Bug Fixes
+
+* cloneElement lose refs ([8321f4a](https://github.com/NervJS/nerv/commit/8321f4a))
+* make a children copy to props in DOM Component ([b513fa5](https://github.com/NervJS/nerv/commit/b513fa5))
+* not patch vnode array ([94b5605](https://github.com/NervJS/nerv/commit/94b5605))
+* remove portal could fail ([7e64994](https://github.com/NervJS/nerv/commit/7e64994))
+
+
+
+
 <a name="1.2.10"></a>
 ## [1.2.10](https://github.com/NervJS/nerv/compare/v1.2.9...v1.2.10) (2018-02-02)
 

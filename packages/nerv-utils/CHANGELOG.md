@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.11"></a>
+## [1.2.11](https://github.com/NervJS/nerv/compare/v1.2.10...v1.2.11) (2018-02-09)
+
+
+### Bug Fixes
+
+* nextTick support invoke function with arguments ([e9a6ae1](https://github.com/NervJS/nerv/commit/e9a6ae1))
+
+
+
+
 <a name="1.2.6"></a>
 ## [1.2.6](https://github.com/NervJS/nerv/compare/v1.2.5...v1.2.6) (2018-01-23)
 
