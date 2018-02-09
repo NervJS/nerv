@@ -461,7 +461,7 @@ function isKeyed (lastChildren: VNode[], nextChildren: VNode[]): boolean {
 }
 
 function isSameVNode (a, b) {
-  if (isInvalid(a) || isInvalid(b)) {
+  if (isInvalid(a) || isInvalid(b) || isArray(a) || isArray(b)) {
     return false
   }
   return a.type === b.type && a.key === b.key
@@ -550,7 +550,8 @@ export function patchProp (
   lastVnode: VNode | null,
   isSvg?: boolean
 ) {
-  if (lastValue !== nextValue) {
+  // fix the value update for textarea/input
+  if (lastValue !== nextValue || prop === 'value') {
     if (prop === 'className') {
       prop = 'class'
     }

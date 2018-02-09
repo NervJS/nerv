@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.10"></a>
+## [1.2.10](https://github.com/NervJS/nerv/compare/v1.2.9...v1.2.10) (2018-02-02)
+
+
+
+
+**Note:** Version bump only for package nerv-redux
+
+<a name="1.2.9"></a>
+## [1.2.9](https://github.com/NervJS/nerv/compare/v1.2.8...v1.2.9) (2018-02-01)
+
+
+
+
+**Note:** Version bump only for package nerv-redux
+
 <a name="1.2.8"></a>
 ## [1.2.8](https://github.com/NervJS/nerv/compare/v1.2.7...v1.2.8) (2018-01-24)
 
