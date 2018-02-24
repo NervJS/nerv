@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.12"></a>
+## [1.2.12](https://github.com/NervJS/nerv/compare/v1.2.11...v1.2.12) (2018-02-24)
+
+
+### Bug Fixes
+
+* clone text vnode error when Component update ([4ada5bd](https://github.com/NervJS/nerv/commit/4ada5bd))
+
+
+
+
 <a name="1.2.11"></a>
 ## [1.2.11](https://github.com/NervJS/nerv/compare/v1.2.10...v1.2.11) (2018-02-09)
 
