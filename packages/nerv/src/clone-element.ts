@@ -5,8 +5,7 @@ import { isVText, isVNode, EMPTY_CHILDREN, VType, isNullOrUndef } from 'nerv-sha
 
 export default function cloneElement (vnode, props?: object, ...children): any {
   if (isVText(vnode)) {
-    vnode.dom = null
-    return vnode
+    return createVText(vnode.text)
   }
   if (isString(vnode)) {
     return createVText(vnode)
