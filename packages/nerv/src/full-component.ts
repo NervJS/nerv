@@ -28,7 +28,7 @@ class ComponentWrapper implements CompositeComponent {
       delete props.ref
     }
     this.props = props
-    this.key = props.key
+    this.key = props.key || null
     this.dom = null
   }
 

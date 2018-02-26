@@ -200,9 +200,8 @@ describe('Component', function () {
     const willMount = sinon.spy(Comp.prototype, 'componentWillMount')
 
     class GoodContainer extends Component {
-      constructor () {
-        super(...arguments)
-        this.state.alt = false
+      state = {
+        alt: false
       }
 
       render () {
@@ -218,9 +217,8 @@ describe('Component', function () {
     }
 
     class BadContainer extends Component {
-      constructor () {
-        super(...arguments)
-        this.state.alt = false
+      state = {
+        alt: false
       }
 
       render () {
@@ -252,7 +250,7 @@ describe('Component', function () {
 
     sideEffect.reset()
     Comp.prototype.componentWillMount.reset()
-    // scratch.innerHTML = ''
+    scratch.innerHTML = ''
     scratch = document.createElement('div')
     render(<BadContainer ref={c => (bad = c)} />, scratch)
     expect(scratch.textContent).toEqual('DE')
@@ -262,9 +260,9 @@ describe('Component', function () {
     Comp.prototype.componentWillMount.reset()
     bad.setState({ alt: true })
     bad.forceUpdate()
-    expect(scratch.textContent).toEqual('D')
-    expect(willMount.called).toBeFalsy()
-    expect(sideEffect.called).toBeFalsy()
+    expect(scratch.textContent).toEqual('F')
+    expect(willMount.called).toBeTruthy()
+    expect(sideEffect.called).toBeTruthy()
   })
 
   describe('defaultProps', () => {

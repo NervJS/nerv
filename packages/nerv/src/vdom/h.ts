@@ -50,6 +50,8 @@ function addChildren (
     for (let i = 0; i < children.length; i++) {
       addChildren(childNodes, children[i], type)
     }
+  } else {
+    childNodes.push(createVText(''))
   }
 }
 

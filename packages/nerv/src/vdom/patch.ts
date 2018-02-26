@@ -74,6 +74,7 @@ export function patch (
       parentNode.insertBefore(
         newDom as Node,
         nextVnode !== null && (nextVnode.vtype & VType.Portal)
+        || isVText(nextVnode) && nextVnode.text === ''
           ? null
           : nextSibling
       )

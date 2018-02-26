@@ -1,5 +1,6 @@
 /** @jsx createElement */
 import { Component, createElement, render } from '../src/index'
+import sinon from 'sinon'
 import { normalizeHTML } from './util'
 
 describe('patch', () => {
@@ -123,5 +124,85 @@ describe('patch', () => {
     expect(scratch.innerHTML).toEqual(
       normalizeHTML('<div><div>1</div><li>b</li><li>a</li></div>')
     )
+  })
+
+  it('unkeyed children diffing error', () => {
+    class A extends Component {
+      render () {
+        return <div> this is a component</div>
+      }
+      componentWillUnmount () {
+        // console.log('unmount')
+      }
+      componentDidMount () {
+        // console.log('didMount')
+      }
+      componentDidUpdate () {
+        // console.log('didUpdate')
+      }
+    }
+
+    const cwu = sinon.spy(A.prototype, 'componentWillUnmount')
+    const cdm = sinon.spy(A.prototype, 'componentDidMount')
+    const cdu = sinon.spy(A.prototype, 'componentDidUpdate')
+
+    class B extends Component {
+      render () {
+        const visible = this.props.visible
+        return (
+          <div>
+            {visible ? <div>this is a plain div</div> : null}
+            <div>
+              <A />
+            </div>
+          </div>
+        )
+      }
+    }
+
+    let inst
+
+    class App extends Component {
+      state = { visible: false }
+
+      setVisible (visible) {
+        this.setState({
+          visible
+        })
+      }
+
+      constructor () {
+        super(...arguments)
+        inst = this
+      }
+
+      render () {
+        return (
+          <div>
+            <B visible={this.state.visible} />
+            <button onClick={this.setVisible.bind(this, true)}>yes</button>
+            <button onClick={this.setVisible.bind(this, false)}>no</button>
+          </div>
+        )
+      }
+    }
+
+    render(<App />, scratch)
+    expect(cdm.callCount).toBe(1)
+    inst.setVisible(true)
+    inst.forceUpdate()
+    expect(cwu.called).toBe(false)
+    expect(cdm.callCount).toBe(1)
+    expect(cdu.callCount).toBe(1)
+    inst.setVisible(false)
+    inst.forceUpdate()
+    expect(cwu.called).toBe(false)
+    expect(cdm.callCount).toBe(1)
+    expect(cdu.callCount).toBe(2)
+    inst.setVisible(true)
+    inst.forceUpdate()
+    expect(cwu.called).toBe(false)
+    expect(cdm.callCount).toBe(1)
+    expect(cdu.callCount).toBe(3)
   })
 })
