@@ -180,8 +180,6 @@ describe('patch', () => {
         return (
           <div>
             <B visible={this.state.visible} />
-            <button onClick={this.setVisible.bind(this, true)}>yes</button>
-            <button onClick={this.setVisible.bind(this, false)}>no</button>
           </div>
         )
       }
@@ -191,16 +189,25 @@ describe('patch', () => {
     expect(cdm.callCount).toBe(1)
     inst.setVisible(true)
     inst.forceUpdate()
+    expect(scratch.innerHTML).toEqual(
+      normalizeHTML('<div><div><div>this is a plain div</div><div><div> this is a component</div></div></div></div>')
+    )
     expect(cwu.called).toBe(false)
     expect(cdm.callCount).toBe(1)
     expect(cdu.callCount).toBe(1)
     inst.setVisible(false)
     inst.forceUpdate()
+    expect(scratch.innerHTML).toEqual(
+     normalizeHTML('<div><div><div><div> this is a component</div></div></div></div>')
+    )
     expect(cwu.called).toBe(false)
     expect(cdm.callCount).toBe(1)
     expect(cdu.callCount).toBe(2)
     inst.setVisible(true)
     inst.forceUpdate()
+    expect(scratch.innerHTML).toEqual(
+      normalizeHTML('<div><div><div>this is a plain div</div><div><div> this is a component</div></div></div></div>')
+    )
     expect(cwu.called).toBe(false)
     expect(cdm.callCount).toBe(1)
     expect(cdu.callCount).toBe(3)
