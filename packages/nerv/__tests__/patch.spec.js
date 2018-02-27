@@ -129,7 +129,7 @@ describe('patch', () => {
   it('unkeyed children diffing error', () => {
     class A extends Component {
       render () {
-        return <div> this is a component</div>
+        return <div>this is a component</div>
       }
       componentWillUnmount () {
         // console.log('unmount')
@@ -190,7 +190,7 @@ describe('patch', () => {
     inst.setVisible(true)
     inst.forceUpdate()
     expect(scratch.innerHTML).toEqual(
-      normalizeHTML('<div><div><div>this is a plain div</div><div><div> this is a component</div></div></div></div>')
+      normalizeHTML('<div><div><div>this is a plain div</div><div><div>this is a component</div></div></div></div>')
     )
     expect(cwu.called).toBe(false)
     expect(cdm.callCount).toBe(1)
@@ -198,7 +198,7 @@ describe('patch', () => {
     inst.setVisible(false)
     inst.forceUpdate()
     expect(scratch.innerHTML).toEqual(
-     normalizeHTML('<div><div><div><div> this is a component</div></div></div></div>')
+     normalizeHTML('<div><div><div><div>this is a component</div></div></div></div>')
     )
     expect(cwu.called).toBe(false)
     expect(cdm.callCount).toBe(1)
@@ -206,7 +206,7 @@ describe('patch', () => {
     inst.setVisible(true)
     inst.forceUpdate()
     expect(scratch.innerHTML).toEqual(
-      normalizeHTML('<div><div><div>this is a plain div</div><div><div> this is a component</div></div></div></div>')
+      normalizeHTML('<div><div><div>this is a plain div</div><div><div>this is a component</div></div></div></div>')
     )
     expect(cwu.called).toBe(false)
     expect(cdm.callCount).toBe(1)
