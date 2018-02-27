@@ -10,10 +10,7 @@ import {
 import createElement, { mountChild } from './create-element'
 import {
   Props,
-  isWidget,
-  isVNode,
   VText,
-  isVText,
   isInvalid,
   VNode,
   isNullOrUndef,
@@ -35,12 +32,10 @@ export function patch (
   isSvg?: boolean
 ) {
   lastDom = (lastVnode && lastVnode.dom) || lastDom
-  if (isVText(nextVnode) && isVText(lastVnode)) {
-    return patchVText(lastVnode, nextVnode)
-  }
   let newDom
   if (isSameVNode(lastVnode, nextVnode)) {
-    if (isVNode(nextVnode)) {
+    const vtype = nextVnode.vtype
+    if (vtype & VType.Node) {
       isSvg = isNullOrUndef(isSvg) ? lastVnode.isSvg : isSvg
       if (isSvg) {
         nextVnode.isSvg = isSvg
@@ -57,28 +52,22 @@ export function patch (
         Ref.update(lastVnode, nextVnode, lastDom)
       }
       newDom = lastDom
-    } else if (isWidget(nextVnode)) {
+    } else if ((vtype & (VType.Composite | VType.Stateless)) > 0) {
       newDom = nextVnode.update(lastVnode, nextVnode, context, lastDom)
       options.afterUpdate(nextVnode)
+    } else if (vtype & VType.Text) {
+      return patchVText(lastVnode, nextVnode)
     }
-    (nextVnode as any).dom = newDom
+    nextVnode.dom = newDom
   } else {
     const parentNode = lastDom.parentNode
-    const nextSibling = lastDom.nextSibling
-    unmount(lastVnode, parentNode)
+    unmount(lastVnode)
     newDom = createElement(nextVnode, isSvg, context)
     if (nextVnode !== null) {
       nextVnode.dom = newDom
     }
     if (parentNode !== null) {
-      parentNode.insertBefore(
-        newDom as Node,
-        nextVnode !== null && (nextVnode.vtype & VType.Portal)
-        || nextSibling === null
-        || nextSibling.nodeType === 3 && nextSibling.nodeValue === ''
-          ? null
-          : nextSibling
-      )
+      parentNode.replaceChild(newDom, lastDom)
     }
   }
   return newDom
@@ -466,7 +455,7 @@ function isSameVNode (a, b) {
   if (isInvalid(a) || isInvalid(b) || isArray(a) || isArray(b)) {
     return false
   }
-  return a.type === b.type && a.key === b.key
+  return a.type === b.type && a.vtype === b.vtype
 }
 
 function patchVText (lastVNode: VText, nextVNode: VText) {

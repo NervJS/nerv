@@ -1,5 +1,6 @@
 import createVNode from './create-vnode'
 import createVText from './create-vtext'
+import { createVoid } from './create-void'
 import {
   Props,
   VirtualChildren,
@@ -51,7 +52,7 @@ function addChildren (
       addChildren(childNodes, children[i], type)
     }
   } else {
-    childNodes.push(createVText(''))
+    childNodes.push(createVoid())
   }
 }
 

@@ -45,7 +45,7 @@ export interface VText {
 }
 
 export interface VVoid {
-  dom: Text
+  dom: Text | null
   vtype: VType
 }
 

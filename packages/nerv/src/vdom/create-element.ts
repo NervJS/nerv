@@ -34,7 +34,7 @@ function createElement (
     } else if (vtype & VType.Node) {
       domNode = mountVNode(vnode as any, isSvg, parentContext, parentComponent)
     } else if (vtype & VType.Void) {
-      domNode = (vnode as any).dom
+      domNode = (vnode as any).dom = doc.createTextNode('')
     } else if (isPortal(vtype, vnode)) {
       vnode.type.appendChild(
         createElement(vnode.children, isSvg, parentContext, parentComponent) as Element
