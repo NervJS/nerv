@@ -33,7 +33,12 @@ class Component<P, S> implements ComponentLifecycle<P, S> {
     this.refs = {}
   }
 
-  setState<K extends keyof S> (state: Pick<S, K>, callback?: Function) {
+  setState<K extends keyof S> (
+    state:
+      | ((prevState: Readonly<S>, props: P) => Pick<S, K> | S)
+      | (Pick<S, K> | S),
+    callback?: () => void
+  ): void {
     if (state) {
       (this._pendingStates = this._pendingStates || []).push(state)
     }
