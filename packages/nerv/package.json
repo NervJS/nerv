@@ -8,6 +8,14 @@
   "typings": "dist/index.d.ts",
   "unpkg": "dist/nerv.js",
   "jsdelivr": "dist/nerv.js",
+  "files": [
+    "dist",
+    "index.js",
+    "package.json",
+    "CHANGELOG.md",
+    "../README.md",
+    "../LICENSE"
+  ],
   "keywords": [
     "nerv",
     "react",
