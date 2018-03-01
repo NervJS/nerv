@@ -16,5 +16,6 @@ describe('Should export correct module', () => {
     expect(Nerv.isValidElement).not.toBe(undefined)
     expect(Nerv.unmountComponentAtNode).not.toBe(undefined)
     expect(Nerv.createPortal).not.toBe(undefined)
+    expect(Nerv.version).toBe('15.4.2')
   })
 })

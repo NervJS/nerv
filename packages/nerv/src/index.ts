@@ -8,6 +8,7 @@ import { Children } from './children'
 import { hydrate } from './hydrate'
 import options from './options'
 import { createPortal } from './vdom/create-portal'
+import { version } from './version'
 import {
   unmountComponentAtNode,
   findDOMNode,
@@ -33,7 +34,8 @@ export {
   unstable_renderSubtreeIntoContainer,
   hydrate,
   createFactory,
-  unstable_batchedUpdates
+  unstable_batchedUpdates,
+  version
 }
 
 export default {
@@ -52,5 +54,6 @@ export default {
   unstable_renderSubtreeIntoContainer,
   hydrate,
   createFactory,
-  unstable_batchedUpdates
+  unstable_batchedUpdates,
+  version
 } as any
