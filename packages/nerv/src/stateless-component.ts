@@ -27,7 +27,7 @@ class StateLessComponent {
     return mountStatelessComponent(this, parentContext)
   }
 
-  update (previous, current, parentContext, domNode?) {
+  update (previous, current, parentContext) {
     const { props, context } = current
     const shouldComponentUpdate = props.onShouldComponentUpdate
     if (
@@ -35,9 +35,9 @@ class StateLessComponent {
       !shouldComponentUpdate(previous.props, props, context)
     ) {
       current._rendered = previous._rendered
-      return domNode
+      return previous.dom
     }
-    return reRenderStatelessComponent(previous, this, parentContext, domNode)
+    return reRenderStatelessComponent(previous, this, parentContext, previous.dom)
   }
 
   destroy () {

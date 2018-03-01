@@ -1,4 +1,4 @@
-import { extend, isFunction, isNumber, isString, isUndefined } from 'nerv-utils'
+import { extend, isFunction, isNumber, isString } from 'nerv-utils'
 import CurrentOwner from './current-owner'
 import createElement from './vdom/create-element'
 import createVText from './vdom/create-vtext'
@@ -8,7 +8,8 @@ import {
   Component,
   isNullOrUndef,
   CompositeComponent,
-  isComponent
+  isComponent,
+  isInvalid
 } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
@@ -108,7 +109,7 @@ export function renderComponent (component: Component<any, any>) {
   }, component)
   if (isNumber(rendered) || isString(rendered)) {
     rendered = createVText(rendered)
-  } else if (isUndefined(rendered)) {
+  } else if (isInvalid(rendered)) {
     rendered = createVoid()
   }
   CurrentOwner.current = null
@@ -168,11 +169,10 @@ export function reRenderStatelessComponent (
   const lastRendered = prev._rendered
   const rendered = current.type(current.props, parentContext)
   current._rendered = rendered
-  return (current.dom = patch(lastRendered, rendered, domNode, parentContext))
+  return (current.dom = patch(lastRendered, rendered, lastRendered && lastRendered.dom || domNode, parentContext))
 }
 
 export function updateComponent (component, isForce = false) {
-  const lastDom = component.dom
   const props = component.props
   const state = component.getState()
   const context = component.context
@@ -201,7 +201,8 @@ export function updateComponent (component, isForce = false) {
     const lastRendered = component._rendered
     const rendered = renderComponent(component)
     const childContext = getChildContext(component, context)
-    component.dom = patch(lastRendered, rendered, lastDom, childContext)
+    const parentDom = lastRendered.dom && lastRendered.dom.parentNode
+    component.dom = patch(lastRendered, rendered, parentDom || null, childContext)
     component._rendered = rendered
     if (isFunction(component.componentDidUpdate)) {
       errorCatcher(() => {

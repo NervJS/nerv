@@ -27,11 +27,11 @@ import options from '../options'
 export function patch (
   lastVnode,
   nextVnode,
-  lastDom: Element,
+  parentNode: Element,
   context: object,
   isSvg?: boolean
 ) {
-  lastDom = (lastVnode && lastVnode.dom) || lastDom
+  const lastDom = (lastVnode.vtype & VType.Composite) ? lastVnode.component.dom : lastVnode.dom
   let newDom
   if (isSameVNode(lastVnode, nextVnode)) {
     const vtype = nextVnode.vtype
@@ -53,14 +53,13 @@ export function patch (
       }
       newDom = lastDom
     } else if ((vtype & (VType.Composite | VType.Stateless)) > 0) {
-      newDom = nextVnode.update(lastVnode, nextVnode, context, lastDom)
+      newDom = nextVnode.update(lastVnode, nextVnode, context)
       options.afterUpdate(nextVnode)
     } else if (vtype & VType.Text) {
       return patchVText(lastVnode, nextVnode)
     }
     nextVnode.dom = newDom
   } else {
-    const parentNode = lastDom.parentNode
     unmount(lastVnode)
     newDom = createElement(nextVnode, isSvg, context)
     if (nextVnode !== null) {
@@ -455,7 +454,7 @@ function isSameVNode (a, b) {
   if (isInvalid(a) || isInvalid(b) || isArray(a) || isArray(b)) {
     return false
   }
-  return a.type === b.type && a.vtype === b.vtype
+  return a.type === b.type && a.vtype === b.vtype && a.key === b.key
 }
 
 function patchVText (lastVNode: VText, nextVNode: VText) {
