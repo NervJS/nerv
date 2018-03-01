@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.13"></a>
+## [1.2.13](https://github.com/NervJS/nerv/compare/v1.2.13-beta.0...v1.2.13) (2018-03-01)
+
+
+### Bug Fixes
+
+* call insertBefore with null only if nextSibling is an empty textnode ([b44fb2c](https://github.com/NervJS/nerv/commit/b44fb2c))
+* **test:** IE8 ignore empty space ([fffbca2](https://github.com/NervJS/nerv/commit/fffbca2))
+* export React version as top level API ([5ea0920](https://github.com/NervJS/nerv/commit/5ea0920))
+
+
+
+
 <a name="1.2.13-beta.0"></a>
 ## [1.2.13-beta.0](https://github.com/NervJS/nerv/compare/v1.2.12...v1.2.13-beta.0) (2018-02-26)
 

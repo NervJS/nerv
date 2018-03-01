@@ -1,6 +1,8 @@
 {
   "lerna": "2.4.0",
-  "packages": ["packages/*"],
+  "packages": [
+    "packages/*"
+  ],
   "command": {
     "init": {
       "exact": true
@@ -9,5 +11,5 @@
       "message": "chore(release): publish %s"
     }
   },
-  "version": "1.2.13-beta.0"
+  "version": "1.2.13"
 }
