@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.14-beta.0"></a>
+## [1.2.14-beta.0](https://github.com/NervJS/nerv/compare/v1.2.13...v1.2.14-beta.0) (2018-03-02)
+
+
+### Bug Fixes
+
+* DOM reference lost during the patch. close [#42](https://github.com/NervJS/nerv/issues/42). ([055eeb9](https://github.com/NervJS/nerv/commit/055eeb9))
+
+
+
+
 <a name="1.2.13"></a>
 ## [1.2.13](https://github.com/NervJS/nerv/compare/v1.2.13-beta.0...v1.2.13) (2018-03-01)
 
