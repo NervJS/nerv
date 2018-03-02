@@ -96,7 +96,7 @@ function createReactCompositeComponent (vnode) {
   const isCompositeComponent = isComposite(vnode)
   const _currentElement = createReactElement(vnode)
   const component = isCompositeComponent ? vnode.component : vnode
-  const node = component.dom
+  const node = vnode.dom
 
   const instance: any = {
     // --- ReactDOMComponent properties
@@ -202,8 +202,7 @@ function findVNodeFromDom (vnode, dom) {
     }
   } else {
     if (
-      vnode.dom === dom ||
-      (isComposite(vnode) && vnode.component.dom === dom)
+      vnode.dom === dom
     ) {
       return vnode
     }
