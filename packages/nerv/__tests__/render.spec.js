@@ -1,5 +1,5 @@
 /** @jsx createElement */
-import { Component, createElement, render } from '../src'
+import { Component, createElement, render, findDOMNode } from '../src'
 import { rerender } from '../src/render-queue'
 import { getAttributes, normalizeHTML, delay } from './util'
 
@@ -452,11 +452,11 @@ describe('render()', function () {
 
     const c = document.createElement('c')
     c.textContent = 'baz'
-    comp.dom.appendChild(c)
+    findDOMNode(comp).appendChild(c)
 
     const b = document.createElement('b')
     b.textContent = 'bat'
-    comp.dom.appendChild(b)
+    findDOMNode(comp).appendChild(b)
 
     expect(scratch.firstChild.children.length).toBe(4)
 

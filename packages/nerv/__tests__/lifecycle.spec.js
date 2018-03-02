@@ -1,5 +1,5 @@
 /** @jsx createElement */
-import { Component, createElement, render } from '../src'
+import { Component, createElement, render, findDOMNode } from '../src'
 import { rerender } from '../src/render-queue'
 import sinon from 'sinon'
 import { EMPTY_CHILDREN, normalizeHTML } from './util'
@@ -90,7 +90,7 @@ describe('Lifecycle methods', () => {
       class Inner extends Component {
         componentDidMount () {
           log.push('Inner mounted')
-          expect(scratch.querySelector('#inner')).toEqual(this.dom)
+          expect(scratch.querySelector('#inner')).toEqual(findDOMNode(this))
         }
 
         render () {
@@ -602,7 +602,7 @@ describe('Lifecycle methods', () => {
       const createComponent = (name, fn) => {
         class C extends Component {
           componentWillUnmount () {
-            expect(this.dom).not.toBeNull()
+            expect(findDOMNode(this)).not.toBeNull()
           }
           render () {
             return fn(this.props)

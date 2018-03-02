@@ -1,4 +1,4 @@
-import { isValidElement as isValidNervElement, VType } from 'nerv-shared'
+import { isValidElement as isValidNervElement, VType, isComponent } from 'nerv-shared'
 import { nextTick } from 'nerv-utils'
 import { render } from './render'
 import { unmount } from './vdom/unmount'
@@ -16,7 +16,7 @@ export function unmountComponentAtNode (dom) {
 }
 
 export function findDOMNode (component) {
-  return (component && component.dom) || component
+  return (isComponent(component) ? component.vnode.dom : component.dom) || component
 }
 
 export function createFactory (type) {

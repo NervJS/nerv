@@ -81,9 +81,9 @@ export function mountComponent (
     readyComponents.push(component)
   }
   if (!isNullOrUndef(ref)) {
-    Ref.attach(vnode, ref, component.dom)
+    Ref.attach(vnode, ref, vnode.dom as Element)
   }
-  const dom = (vnode.dom = component.dom = mountVNode(
+  const dom = (vnode.dom = mountVNode(
     rendered,
     getChildContext(component, parentContext),
     component
@@ -160,8 +160,7 @@ export function reRenderComponent (
   if (!isNullOrUndef(current.ref)) {
     Ref.update(prev, current)
   }
-  updateComponent(component)
-  return component.dom
+  return updateComponent(component)
 }
 
 export function reRenderStatelessComponent (
@@ -179,6 +178,7 @@ export function reRenderStatelessComponent (
 
 export function updateComponent (component, isForce = false) {
   let vnode = component.vnode
+  let dom = vnode.dom
   const props = component.props
   const state = component.getState()
   const context = component.context
@@ -209,7 +209,7 @@ export function updateComponent (component, isForce = false) {
     rendered.parentVNode = vnode
     const childContext = getChildContext(component, context)
     const parentDom = lastRendered.dom && lastRendered.dom.parentNode
-    const dom = vnode.dom = component.dom = patch(lastRendered, rendered, parentDom || null, childContext)
+    dom = vnode.dom = patch(lastRendered, rendered, parentDom || null, childContext)
     component._rendered = rendered
     if (isFunction(component.componentDidUpdate)) {
       errorCatcher(() => {
@@ -231,6 +231,7 @@ export function updateComponent (component, isForce = false) {
     }
   }
   flushMount()
+  return dom
 }
 
 export function unmountComponent (vnode: FullComponent) {

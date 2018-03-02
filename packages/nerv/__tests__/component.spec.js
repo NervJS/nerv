@@ -4,7 +4,8 @@ import {
   createElement,
   render,
   cloneElement,
-  PureComponent
+  PureComponent,
+  findDOMNode
 } from '../src'
 // import createVText from '../src/vdom/create-vtext'
 import { rerender } from '../src/render-queue'
@@ -610,10 +611,10 @@ describe('Component', function () {
       }
       const spy = sinon.spy(App.prototype, 'componentWillUpdate')
       const s = render(<App />, scratch)
-      expect(s.dom.innerHTML).toEqual('7')
+      expect(findDOMNode(s).innerHTML).toEqual('7')
       fireEvent(scratch.childNodes[0], 'click')
       rerender()
-      expect(s.dom.innerHTML).toEqual('7')
+      expect(findDOMNode(s).innerHTML).toEqual('7')
       expect(spy.called).toBeFalsy()
     })
 
@@ -639,12 +640,12 @@ describe('Component', function () {
       let c
       const spy = sinon.spy(C.prototype, 'componentWillUpdate')
       const s = render(<App ref={node => (c = node)} />, scratch)
-      expect(s.dom.innerHTML).toEqual('7')
+      expect(findDOMNode(s).innerHTML).toEqual('7')
       c.setState({
         xx: 1
       })
       c.forceUpdate()
-      expect(s.dom.innerHTML).toEqual('7')
+      expect(findDOMNode(s).innerHTML).toEqual('7')
       expect(spy.called).toBeFalsy()
     })
   })

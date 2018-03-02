@@ -17,8 +17,8 @@ export interface Widget {
 
 export interface Portal {
   type: Element
-  vtype: VType,
-  children: VirtualNode,
+  vtype: VType
+  children: VirtualNode
   dom: null | Element
 }
 
@@ -28,10 +28,12 @@ export interface CompositeComponent extends Widget {
   type: any
   component: Component<any, any>
   ref?: Ref
+  dom: Element | null
 }
 
 export interface StatelessComponent extends Widget {
   type: Function
+  dom: Element | null
 }
 
 export const EMPTY_CHILDREN = []

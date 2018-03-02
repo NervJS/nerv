@@ -31,7 +31,7 @@ export function patch (
   context: object,
   isSvg?: boolean
 ) {
-  const lastDom = (lastVnode.vtype & VType.Composite) ? lastVnode.component.dom : lastVnode.dom
+  const lastDom = lastVnode.dom
   let newDom
   if (isSameVNode(lastVnode, nextVnode)) {
     const vtype = nextVnode.vtype

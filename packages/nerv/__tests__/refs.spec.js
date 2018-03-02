@@ -1,5 +1,5 @@
 /** @jsx createElement */
-import { Component, createElement, render } from '../src'
+import { Component, createElement, render, findDOMNode } from '../src'
 import sinon from 'sinon'
 
 const spy = (name, ...args) => {
@@ -107,7 +107,7 @@ describe('refs', () => {
     expect(outer.calledOnce).toBeTruthy()
     expect(outer.calledWith(inst)).toBeTruthy()
     expect(inner.calledOnce).toBeTruthy()
-    expect(inner.calledWith(inst.dom)).toBeTruthy()
+    expect(inner.calledWith(findDOMNode(inst))).toBeTruthy()
 
     outer.reset()
     inner.reset()
@@ -121,7 +121,7 @@ describe('refs', () => {
     if (document.documentMode === 8) {
       return
     }
-    expect(inner.secondCall.calledWith(inst.dom)).toBeTruthy()
+    expect(inner.secondCall.calledWith(findDOMNode(inst))).toBeTruthy()
     expect(inner.firstCall.calledWith(null)).toBeTruthy()
     expect(scratch.innerHTML).toEqual('<div><x-span></x-span></div>')
     InnermostComponent = 'span'
@@ -167,7 +167,7 @@ describe('refs', () => {
     render(<Outer ref={outer} />, scratch)
     expect(outer.calledWith(outerInst)).toBeTruthy()
     expect(inner.calledWith(innerInst)).toBeTruthy()
-    expect(innermost.calledWith(innerInst.dom)).toBeTruthy()
+    expect(innermost.calledWith(findDOMNode(innerInst))).toBeTruthy()
 
     outer.reset()
     inner.reset()
@@ -177,7 +177,7 @@ describe('refs', () => {
     innermost.reset()
     InnermostComponent = 'x-span'
     outerInst.forceUpdate()
-    expect(innermost.secondCall.calledWith(innerInst.dom)).toBeTruthy()
+    expect(innermost.secondCall.calledWith(findDOMNode(innerInst))).toBeTruthy()
     expect(innermost.firstCall.calledWith(null)).toBeTruthy()
     InnermostComponent = 'span'
 
