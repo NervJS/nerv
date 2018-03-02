@@ -123,6 +123,7 @@ export interface Component<P, S> extends ComponentLifecycle<P, S> {
   prevContext: object
   isReactComponent: object
   dom: any
+  vnode: CompositeComponent
   getState (): S
   // tslint:disable-next-line:member-ordering
   refs: Refs

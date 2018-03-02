@@ -9,7 +9,8 @@ import {
   isNullOrUndef,
   CompositeComponent,
   isComponent,
-  isInvalid
+  isInvalid,
+  VType
 } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
@@ -62,6 +63,7 @@ export function mountComponent (
   const ref = vnode.ref
   vnode.component = new vnode.type(vnode.props, parentContext)
   const component = vnode.component
+  component.vnode = vnode
   if (isComponent(parentComponent)) {
     component._parentComponent = parentComponent
   }
@@ -73,6 +75,7 @@ export function mountComponent (
   }
   component._dirty = false
   const rendered = renderComponent(component)
+  rendered.parentVNode = vnode
   component._rendered = rendered
   if (isFunction(component.componentDidMount)) {
     readyComponents.push(component)
@@ -91,6 +94,7 @@ export function mountComponent (
 
 export function mountStatelessComponent (vnode: Stateless, parentContext) {
   vnode._rendered = vnode.type(vnode.props, parentContext)
+  vnode._rendered.parentVNode = vnode
   return (vnode.dom = mountVNode(vnode._rendered, parentContext) as Element)
 }
 
@@ -168,11 +172,13 @@ export function reRenderStatelessComponent (
 ) {
   const lastRendered = prev._rendered
   const rendered = current.type(current.props, parentContext)
+  rendered.parentVNode = current
   current._rendered = rendered
   return (current.dom = patch(lastRendered, rendered, lastRendered && lastRendered.dom || domNode, parentContext))
 }
 
 export function updateComponent (component, isForce = false) {
+  let vnode = component.vnode
   const props = component.props
   const state = component.getState()
   const context = component.context
@@ -200,14 +206,20 @@ export function updateComponent (component, isForce = false) {
   if (!skip) {
     const lastRendered = component._rendered
     const rendered = renderComponent(component)
+    rendered.parentVNode = vnode
     const childContext = getChildContext(component, context)
     const parentDom = lastRendered.dom && lastRendered.dom.parentNode
-    component.dom = patch(lastRendered, rendered, parentDom || null, childContext)
+    const dom = vnode.dom = component.dom = patch(lastRendered, rendered, parentDom || null, childContext)
     component._rendered = rendered
     if (isFunction(component.componentDidUpdate)) {
       errorCatcher(() => {
         component.componentDidUpdate(prevProps, prevState, context)
       }, component)
+    }
+    while (vnode = vnode.parentVNode) {
+      if ((vnode.vtype & (VType.Composite | VType.Stateless)) > 0) {
+        vnode.dom = dom
+      }
     }
   }
   component.prevProps = component.props
