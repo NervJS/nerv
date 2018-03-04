@@ -1512,6 +1512,10 @@ clone@^1.0.0, clone@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/clone/-/clone-1.0.2.tgz#260b7a99ebb1edfe247538175f783243cb19d149"
 
+clorox@^1.0.1:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/clorox/-/clorox-1.0.2.tgz#f89dbaba26046f7327dfabc2dd97e76af91d742d"
+
 cmd-shim@^2.0.2:
   version "2.0.2"
   resolved "https://registry.npmjs.org/cmd-shim/-/cmd-shim-2.0.2.tgz#6fcbda99483a8fd15d7d30a196ca69d688a2efdb"
@@ -5429,6 +5433,13 @@ progress@^1.1.8:
   version "1.1.8"
   resolved "https://registry.npmjs.org/progress/-/progress-1.1.8.tgz#e260c78f6161cdd9b0e56cc3e0a85de17c7a57be"
 
+prompts@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.npmjs.org/prompts/-/prompts-0.1.4.tgz#d5376a0441edb8c26a65a208ef964ec287ee2b6e"
+  dependencies:
+    clorox "^1.0.1"
+    sisteransi "^0.1.0"
+
 prr@~0.0.0:
   version "0.0.0"
   resolved "https://registry.npmjs.org/prr/-/prr-0.0.0.tgz#1a84b85908325501411853d0081ee3fa86e2926a"
@@ -6091,6 +6102,10 @@ sinon@^2.3.8:
     samsam "^1.1.3"
     text-encoding "0.6.4"
     type-detect "^4.0.0"
+
+sisteransi@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npmjs.org/sisteransi/-/sisteransi-0.1.0.tgz#2e6706ac427019b84e60f751d588d87920484f25"
 
 slash@^1.0.0:
   version "1.0.0"
