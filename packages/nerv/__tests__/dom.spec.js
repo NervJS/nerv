@@ -257,25 +257,34 @@ describe('dom', () => {
       expect(scratch.textContent).toBe('')
     })
 
-    it('should findDomNode works', () => {
-      const B = <b>hellooo</b>
-      render(B, scratch)
-      expect(findDOMNode(B).firstChild.textContent).toBe('hellooo')
-      // expect(findDOMNode(B)).toBe(B)
-      let app
-      class Comp extends Component {
-        constructor () {
-          super()
-          app = this
+    describe('findDOMNode', () => {
+      it('should findDomNode works', () => {
+        const B = <b>hellooo</b>
+        render(B, scratch)
+        expect(findDOMNode(B).firstChild.textContent).toBe('hellooo')
+        // expect(findDOMNode(B)).toBe(B)
+        let app
+        class Comp extends Component {
+          constructor () {
+            super()
+            app = this
+          }
+          render () {
+            return <span>test</span>
+          }
         }
-        render () {
-          return <span>test</span>
-        }
-      }
-      const C = <Comp />
-      render(C, scratch)
-      expect(findDOMNode(app).textContent).toBe('test')
-      // expect(findDOMNode(Comp).firstChild.textContent).toBe('test')
+        const C = <Comp />
+        render(C, scratch)
+        expect(findDOMNode(app).textContent).toBe('test')
+        // expect(findDOMNode(Comp).firstChild.textContent).toBe('test')
+      })
+
+      it('should return null while input is invalid', () => {
+        expect(findDOMNode(false)).toBe(null)
+        expect(findDOMNode(undefined)).toBe(null)
+        expect(findDOMNode(null)).toBe(null)
+        expect(findDOMNode(true)).toBe(null)
+      })
     })
   })
 })
