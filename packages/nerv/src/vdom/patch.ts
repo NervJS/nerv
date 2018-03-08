@@ -57,6 +57,8 @@ export function patch (
       options.afterUpdate(nextVnode)
     } else if (vtype & VType.Text) {
       return patchVText(lastVnode, nextVnode)
+    } else if (vtype & VType.Portal) {
+      patchChildren(lastVnode.type, lastVnode.children, nextVnode.children, context, isSvg as boolean)
     }
     nextVnode.dom = newDom
   } else {
