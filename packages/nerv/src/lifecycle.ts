@@ -81,7 +81,7 @@ export function mountComponent (
     readyComponents.push(component)
   }
   if (!isNullOrUndef(ref)) {
-    readyComponents.push(() => Ref.attach(vnode, ref, vnode.dom as Element))
+    Ref.attach(vnode, ref, vnode.dom as Element)
   }
   const dom = (vnode.dom = mountVNode(
     rendered,
