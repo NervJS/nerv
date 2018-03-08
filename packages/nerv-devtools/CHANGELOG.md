@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.14"></a>
+## [1.2.14](https://github.com/NervJS/nerv/compare/v1.2.14-beta.0...v1.2.14) (2018-03-08)
+
+
+
+
+**Note:** Version bump only for package nerv-devtools
+
 <a name="1.2.14-beta.0"></a>
 ## [1.2.14-beta.0](https://github.com/NervJS/nerv/compare/v1.2.13...v1.2.14-beta.0) (2018-03-02)
 

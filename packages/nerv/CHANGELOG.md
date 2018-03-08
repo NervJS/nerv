@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.14"></a>
+## [1.2.14](https://github.com/NervJS/nerv/compare/v1.2.14-beta.0...v1.2.14) (2018-03-08)
+
+
+### Bug Fixes
+
+* as per React, functional ref should also detach ([9338a0a](https://github.com/NervJS/nerv/commit/9338a0a))
+* cloneElement should clone void vnode as well ([b007de9](https://github.com/NervJS/nerv/commit/b007de9))
+* findDOMNode should return null while input is invalid ([76bbec5](https://github.com/NervJS/nerv/commit/76bbec5))
+* patch do nothing when lastVnode and nextVnode are both Portal ([cd99801](https://github.com/NervJS/nerv/commit/cd99801))
+* ref should exec after componentDidMount hook ([7bf5efa](https://github.com/NervJS/nerv/commit/7bf5efa))
+* ref should exeute before render() function ([a4cb918](https://github.com/NervJS/nerv/commit/a4cb918))
+
+
+
+
 <a name="1.2.14-beta.0"></a>
 ## [1.2.14-beta.0](https://github.com/NervJS/nerv/compare/v1.2.13...v1.2.14-beta.0) (2018-03-02)
 
