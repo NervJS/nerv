@@ -49,7 +49,7 @@ export default function cloneElement (vnode, props?: object, ...children): any {
     newVNode.props.children = _children
   } else if (childrenTmp) {
     if (isVNode(newVNode)) {
-      newVNode.children = childrenTmp
+      newVNode.children = cloneElement(childrenTmp)
     }
     newVNode.props.children = cloneElement(childrenTmp, childrenTmp.props)
   }
