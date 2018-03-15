@@ -151,6 +151,48 @@ describe('Component', function () {
     expect(clone.prototype).toEqual(instance.prototype)
   })
 
+  it('should clone children as well', () => {
+    let inst
+    class Child extends Component {
+      render () {
+        return (
+          <div>
+            {this.props.children}
+            {this.props.children}
+          </div>
+        )
+      }
+    }
+
+    class Daddy extends Component {
+      constructor () {
+        super(...arguments)
+        this.state = {
+          xxx: 'xxx'
+        }
+        inst = this
+      }
+      render () {
+        const xxx = this.state.xxx
+        return (
+          <Child>
+            {xxx ? <div>{xxx}</div> : ''}
+          </Child>
+        )
+      }
+    }
+
+    expect(() => {
+      render(
+        <Daddy />,
+        scratch
+      )
+      inst.setState({ xxx: false })
+      inst.forceUpdate()
+    }).not.toThrow()
+    expect(scratch.innerHTML).toEqual('<div></div>')
+  })
+
   it('should remove children when root changes to text node', () => {
     let comp
     class Comp extends Component {
@@ -427,6 +469,16 @@ describe('Component', function () {
       )
       expect(dom.firstChild.textContent).toEqual('null')
       expect(dom.lastChild.textContent).toEqual('aaa')
+    })
+
+    it('(StatelessComponent) should support function returning null', () => {
+      const FunctionReturningNull = () => null
+      expect(() => {
+        render(
+          <FunctionReturningNull />,
+          scratch
+        )
+      }).not.toThrow()
     })
   })
 
