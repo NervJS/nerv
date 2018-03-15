@@ -174,23 +174,16 @@ describe('Component', function () {
       }
       render () {
         const xxx = this.state.xxx
-        return (
-          <Child>
-            {xxx ? <div>{xxx}</div> : ''}
-          </Child>
-        )
+        return <Child>{xxx ? <div>{xxx}</div> : ''}</Child>
       }
     }
 
     expect(() => {
-      render(
-        <Daddy />,
-        scratch
-      )
+      render(<Daddy />, scratch)
       inst.setState({ xxx: false })
       inst.forceUpdate()
     }).not.toThrow()
-    expect(scratch.innerHTML).toEqual('<div></div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div></div>'))
   })
 
   it('should remove children when root changes to text node', () => {
@@ -474,10 +467,7 @@ describe('Component', function () {
     it('(StatelessComponent) should support function returning null', () => {
       const FunctionReturningNull = () => null
       expect(() => {
-        render(
-          <FunctionReturningNull />,
-          scratch
-        )
+        render(<FunctionReturningNull />, scratch)
       }).not.toThrow()
     })
   })
