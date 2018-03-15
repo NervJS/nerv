@@ -14,6 +14,7 @@ module.exports = {
   external: ['nerv-shared'],
   plugins: [
     typescript({
+      tsconfig: resolver('../../tsconfig.json'),
       typescript: require('typescript')
     })
   ]

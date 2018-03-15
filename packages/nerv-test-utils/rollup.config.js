@@ -30,6 +30,7 @@ module.exports = {
       'nerv-utils': join(cwd, '../nerv-utils/dist/index')
     }),
     typescript({
+      tsconfig: resolver('../../tsconfig.json'),
       typescript: require('typescript')
     })
   ]

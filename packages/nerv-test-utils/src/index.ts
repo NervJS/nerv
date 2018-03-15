@@ -8,8 +8,7 @@ import {
   isComponent
 } from 'nerv-shared'
 import { isString, isArray } from 'nerv-utils'
-// tslint:disable-next-line:no-var-requires
-const simulateEvents = require('simulate-event')
+import simulateEvents from 'simulate-event'
 
 function renderIntoDocument (instance) {
   const dom = document.createElement('div')

@@ -3,6 +3,9 @@ const pkg = require('./package.json')
 const alias = require('rollup-plugin-alias')
 const { join } = require('path')
 const cwd = __dirname
+function resolver (path) {
+  return join(__dirname, path)
+}
 module.exports = {
   input: 'src/index.ts',
   plugins: [
@@ -10,7 +13,9 @@ module.exports = {
       'nerv-shared': join(cwd, '../nerv-shared/dist/index'),
       'nerv-utils': join(cwd, '../nerv-utils/dist/index')
     }),
-    typescript()
+    typescript({
+      tsconfig: resolver('../../tsconfig.json')
+    })
   ],
   output: [
     {
