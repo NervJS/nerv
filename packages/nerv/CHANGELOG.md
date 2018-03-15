@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.15"></a>
+## [1.2.15](https://github.com/NervJS/nerv/compare/v1.2.14...v1.2.15) (2018-03-15)
+
+
+### Bug Fixes
+
+* cloneElement should clone children as well ([682fe15](https://github.com/NervJS/nerv/commit/682fe15))
+* Stateless component should support function returning null. ([386f07a](https://github.com/NervJS/nerv/commit/386f07a))
+* **nerv-build:** fix error during installing nerv-build on windows ([6f9caf6](https://github.com/NervJS/nerv/commit/6f9caf6))
+* **test:** add test for commit 386f07a and 682fe15. ([f307fec](https://github.com/NervJS/nerv/commit/f307fec))
+* **test:** normalize html and format the test file ([a0de170](https://github.com/NervJS/nerv/commit/a0de170))
+
+
+
+
 <a name="1.2.14"></a>
 ## [1.2.14](https://github.com/NervJS/nerv/compare/v1.2.14-beta.0...v1.2.14) (2018-03-08)
 

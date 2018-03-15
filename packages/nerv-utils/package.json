@@ -1,6 +1,6 @@
 {
   "name": "nerv-utils",
-  "version": "1.2.11",
+  "version": "1.2.15",
   "description": "Internal utilities for Nerv.js",
   "main": "index.js",
   "types": "dist/index.d.ts",
