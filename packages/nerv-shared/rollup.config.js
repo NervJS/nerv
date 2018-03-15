@@ -12,6 +12,7 @@ module.exports = {
   },
   plugins: [
     typescript({
+      tsconfig: resolver('../../tsconfig.json'),
       typescript: require('typescript')
     })
   ]

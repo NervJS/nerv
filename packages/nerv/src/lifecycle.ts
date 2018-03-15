@@ -10,6 +10,9 @@ import {
   CompositeComponent,
   isComponent,
   isInvalid,
+  VText,
+  VVoid,
+  VNode,
   VType
 } from 'nerv-shared'
 import FullComponent from './full-component'
@@ -49,6 +52,15 @@ function errorHandler (component: Component<any, any>, error) {
   } else {
     throw error
   }
+}
+
+function ensureVirtualNode (rendered: any): VText | VVoid | VNode {
+  if (isNumber(rendered) || isString(rendered)) {
+    return createVText(rendered)
+  } else if (isInvalid(rendered)) {
+    return createVoid()
+  }
+  return rendered
 }
 
 export function mountVNode (vnode, parentContext: any, parentComponent?) {
@@ -93,7 +105,8 @@ export function mountComponent (
 }
 
 export function mountStatelessComponent (vnode: Stateless, parentContext) {
-  vnode._rendered = vnode.type(vnode.props, parentContext)
+  const rendered = vnode.type(vnode.props, parentContext)
+  vnode._rendered = ensureVirtualNode(rendered)
   vnode._rendered.parentVNode = vnode
   return (vnode.dom = mountVNode(vnode._rendered, parentContext) as Element)
 }
@@ -111,11 +124,7 @@ export function renderComponent (component: Component<any, any>) {
   errorCatcher(() => {
     rendered = component.render()
   }, component)
-  if (isNumber(rendered) || isString(rendered)) {
-    rendered = createVText(rendered)
-  } else if (isInvalid(rendered)) {
-    rendered = createVoid()
-  }
+  rendered = ensureVirtualNode(rendered)
   CurrentOwner.current = null
   return rendered
 }

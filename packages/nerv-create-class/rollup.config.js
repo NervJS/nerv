@@ -9,6 +9,10 @@ const alias = require('rollup-plugin-alias')
 const { join } = require('path')
 const cwd = __dirname
 
+function resolver (path) {
+  return join(__dirname, path)
+}
+
 const optJSPlugin = {
   name: 'optimizeJs',
   transformBundle (code) {
@@ -63,6 +67,7 @@ const baseConfig = {
     }),
     resolve(),
     typescript({
+      tsconfig: resolver('../../tsconfig.json'),
       typescript: require('typescript')
     }),
     buble(),
