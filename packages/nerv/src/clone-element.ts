@@ -11,7 +11,7 @@ export default function cloneElement (vnode, props?: object, ...children): any {
   if (isString(vnode)) {
     return createVText(vnode)
   }
-  if (!isInvalid(vnode) && isPortal(vnode.vtype, vnode)) {
+  if (!isInvalid(vnode) && isPortal(vnode.vtype, vnode) || (vnode && (vnode.vtype & VType.Void))) {
     return createVoid()
   }
   const properties = clone(extend(clone(vnode.props), props))
