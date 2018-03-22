@@ -4,12 +4,9 @@
     "packages/*"
   ],
   "command": {
-    "init": {
-      "exact": true
-    },
     "publish": {
       "message": "chore(release): publish %s"
     }
   },
-  "version": "1.2.15"
+  "version": "independent"
 }
