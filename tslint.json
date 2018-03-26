@@ -23,8 +23,6 @@
     "no-object-literal-type-assertion": false,
     "member-access": false,
     "object-literal-sort-keys": false,
-    "jsx-alignment": true,
-    "jsx-self-close": true,
     "jsx-no-multiline-js": false,
     "quotemark": [
       true,
