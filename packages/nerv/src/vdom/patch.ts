@@ -60,7 +60,8 @@ export function patch (
     } else if (vtype & VType.Portal) {
       patchChildren(lastVnode.type, lastVnode.children, nextVnode.children, context, isSvg as boolean)
     }
-    nextVnode.dom = newDom
+    // @TODO: test case
+    nextVnode.dom = newDom || lastDom
   } else {
     unmount(lastVnode)
     newDom = createElement(nextVnode, isSvg, context)
