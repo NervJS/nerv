@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.17"></a>
+## [1.2.17](https://github.com/NervJS/nerv/compare/v1.2.16...v1.2.17) (2018-04-01)
+
+
+
+
+**Note:** Version bump only for package nervjs
+
 <a name="1.2.16"></a>
 ## [1.2.16](https://github.com/NervJS/nerv/compare/v1.2.15...v1.2.16) (2018-03-26)
 
