@@ -125,9 +125,10 @@ export function patchChildren (
   context: object,
   isSvg: boolean
 ) {
-  if (lastChildren === nextChildren) {
-    return
-  }
+  // @TODO: is a better way to compatible with react-router?
+  // if (lastChildren === nextChildren) {
+  //   return
+  // }
   const lastChildrenIsArray = isArray(lastChildren)
   const nextChildrenIsArray = isArray(nextChildren)
   if (lastChildrenIsArray && nextChildrenIsArray) {
