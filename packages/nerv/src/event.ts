@@ -180,7 +180,7 @@ function propertyChangeHandler (event) {
     return
   }
   propertyChangeActiveElementValue = val
-  const handler = propertyChangeActiveHandlers[target.name])
+  const handler = propertyChangeActiveHandlers[target.name]
   if (isFunction(handler) {
     handler.call(target, event)
   }
