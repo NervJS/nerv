@@ -167,7 +167,7 @@ export function detachEvent (
 let propertyChangeActiveElement
 let propertyChangeActiveElementValue
 let propertyChangeActiveElementValueProp
-let propertyChangeActiveHandler
+let propertyChangeActiveHandlers = {}
 
 /* istanbul ignore next */
 function propertyChangeHandler (event) {
@@ -180,17 +180,18 @@ function propertyChangeHandler (event) {
     return
   }
   propertyChangeActiveElementValue = val
-  if (isFunction(propertyChangeActiveHandler)) {
-    propertyChangeActiveHandler.call(target, event)
+  const handler = propertyChangeActiveHandlers[target.name])
+  if (isFunction(handler) {
+    handler.call(target, event)
   }
 }
 
 /* istanbul ignore next */
 function processOnPropertyChangeEvent (node, handler) {
-  propertyChangeActiveHandler = handler
+  propertyChangeActiveHandlers[node.name] = handler
   if (!bindFocus) {
-    bindFocus = true
-    doc.addEventListener(
+    // bindFocus = true
+    node.addEventListener(
       'focusin',
       () => {
         unbindOnPropertyChange()
@@ -198,7 +199,7 @@ function processOnPropertyChangeEvent (node, handler) {
       },
       false
     )
-    doc.addEventListener('focusout', unbindOnPropertyChange, false)
+    node.addEventListener('focusout', unbindOnPropertyChange, false)
   }
 }
 
