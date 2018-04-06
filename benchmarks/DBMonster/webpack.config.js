@@ -28,7 +28,22 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        options: {
+          presets: [['env', {
+            'targets': {
+              'browsers': ['last 2 versions', 'safari >= 7']
+            }
+          }], 'stage-0'],
+          plugins: [
+            [
+              'transform-react-jsx',
+              {
+                pragma: 'createElement'
+              }
+            ]
+          ]
+        }
       }
     ]
   },

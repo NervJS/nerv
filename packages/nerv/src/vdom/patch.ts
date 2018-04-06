@@ -60,7 +60,8 @@ export function patch (
     } else if (vtype & VType.Portal) {
       patchChildren(lastVnode.type, lastVnode.children, nextVnode.children, context, isSvg as boolean)
     }
-    nextVnode.dom = newDom
+    // @TODO: test case
+    nextVnode.dom = newDom || lastDom
   } else {
     unmount(lastVnode)
     newDom = createElement(nextVnode, isSvg, context)
@@ -124,9 +125,10 @@ export function patchChildren (
   context: object,
   isSvg: boolean
 ) {
-  if (lastChildren === nextChildren) {
-    return
-  }
+  // @TODO: is a better way to compatible with react-router?
+  // if (lastChildren === nextChildren) {
+  //   return
+  // }
   const lastChildrenIsArray = isArray(lastChildren)
   const nextChildrenIsArray = isArray(nextChildren)
   if (lastChildrenIsArray && nextChildrenIsArray) {
