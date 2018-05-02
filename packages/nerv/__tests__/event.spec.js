@@ -204,28 +204,28 @@ describe('Events', () => {
     expect(removeEventListenerSpy.called).toBeTruthy()
   })
 
-  it('should change/fix onchange event name', () => {
-    const container = document.createElement('div')
-    document.body.appendChild(container)
-    const onchange = function () {}
-    const proto = document.constructor.prototype
-    const addEventListenerSpy = sinon.spy(proto, 'addEventListener')
-    // const ondbclick = function () {}
-    // const ontouchtap = function () {}
-    class Outer extends Component {
-      render () {
-        return (
-          <div>
-            <input onChange={onchange} />
-            <button />
-          </div>
-        )
-      }
-    }
-    const app = <Outer />
-    render(app, container)
-    expect(addEventListenerSpy.called).toBe(true)
-  })
+  // it('should change/fix onchange event name', () => {
+  //   const container = document.createElement('div')
+  //   document.body.appendChild(container)
+  //   const onchange = function () {}
+  //   const proto = document.constructor.prototype
+  //   const addEventListenerSpy = sinon.spy(proto, 'addEventListener')
+  //   // const ondbclick = function () {}
+  //   // const ontouchtap = function () {}
+  //   class Outer extends Component {
+  //     render () {
+  //       return (
+  //         <div>
+  //           <input onChange={onchange} />
+  //           <button />
+  //         </div>
+  //       )
+  //     }
+  //   }
+  //   const app = <Outer />
+  //   render(app, container)
+  //   expect(addEventListenerSpy.called).toBe(true)
+  // })
 
   it('should change/fix onDoubleClick/onTouchTap event name', () => {
     const container = document.createElement('div')
