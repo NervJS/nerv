@@ -55,7 +55,7 @@ const unbubbleEvents = {
   onwaiting: 1
 }
 
-let bindFocus = false
+const bindFocus = false
 declare global {
   interface Event {
     persist: Function
@@ -167,7 +167,7 @@ export function detachEvent (
 let propertyChangeActiveElement
 let propertyChangeActiveElementValue
 let propertyChangeActiveElementValueProp
-let propertyChangeActiveHandlers = {}
+const propertyChangeActiveHandlers = {}
 
 /* istanbul ignore next */
 function propertyChangeHandler (event) {
@@ -181,7 +181,7 @@ function propertyChangeHandler (event) {
   }
   propertyChangeActiveElementValue = val
   const handler = propertyChangeActiveHandlers[target.name]
-  if (isFunction(handler) {
+  if (isFunction(handler)) {
     handler.call(target, event)
   }
 }
