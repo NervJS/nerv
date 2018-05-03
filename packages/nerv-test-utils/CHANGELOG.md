@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.2.18"></a>
+## [1.2.18](https://github.com/NervJS/nerv/compare/v1.2.17...v1.2.18) (2018-05-03)
+
+
+### Bug Fixes
+
+* componentDidUpdate prevState error ([c2aecac](https://github.com/NervJS/nerv/commit/c2aecac))
+
+
+
+
 <a name="1.2.15"></a>
 ## [1.2.15](https://github.com/NervJS/nerv/compare/v1.2.14...v1.2.15) (2018-03-15)
 
