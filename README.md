@@ -5,7 +5,7 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/nervjs"><img src="https://img.shields.io/npm/v/nervjs.svg?style=flat-square" alt="Build Status"></a>
-  <a href="https://www.npmjs.com/package/vue"><img src="https://img.shields.io/npm/l/nervjs.svg" alt="License"></a>
+  <a href="https://www.npmjs.com/package/nervjs"><img src="https://img.shields.io/npm/l/nervjs.svg?style=flat-square" alt="License"></a>
   <a href="https://coveralls.io/github/NervJS/nerv?branch=master"><img src="https://img.shields.io/coveralls/NervJS/nerv.svg?style=flat-square" alt="Coverage Status"></a>
   <a href="https://www.npmjs.com/package/nervjs"><img src="https://img.shields.io/npm/dt/nervjs.svg?style=flat-square" alt="Downloads"></a>
   <a href="https://travis-ci.org/NervJS/nerv"><img src="https://img.shields.io/travis/NervJS/nerv.svg?style=flat-square" alt="Build Status"></a>
