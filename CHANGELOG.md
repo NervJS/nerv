@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.0-beta.0"></a>
+# [1.3.0-beta.0](https://github.com/NervJS/nerv/compare/v1.2.18...v1.3.0-beta.0) (2018-05-31)
+
+
+### Features
+
+* export  PropTypes as top-level API ([f45010f](https://github.com/NervJS/nerv/commit/f45010f))
+
+
+
+
 <a name="1.2.17"></a>
 ## [1.2.17](https://github.com/NervJS/nerv/compare/v1.2.16...v1.2.17) (2018-04-01)
 
