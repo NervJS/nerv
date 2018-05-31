@@ -17,6 +17,7 @@ import {
   unstable_batchedUpdates,
   isValidElement
 } from './dom'
+import { PropTypes } from './prop-types' // for React 15- compat
 
 export {
   Children,
@@ -35,7 +36,8 @@ export {
   hydrate,
   createFactory,
   unstable_batchedUpdates,
-  version
+  version,
+  PropTypes
 }
 
 export default {
@@ -55,5 +57,6 @@ export default {
   hydrate,
   createFactory,
   unstable_batchedUpdates,
-  version
+  version,
+  PropTypes
 } as any
