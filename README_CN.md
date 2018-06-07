@@ -187,7 +187,7 @@ $ npm i --save-dev aliasify
 
 ## 适配React
 
-当先Nerv支持的React API与特性
+当前Nerv支持的React API与特性
 
 ### `react`
 
