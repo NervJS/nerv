@@ -45,7 +45,7 @@
 | [`nerv-server`](/packages/nerv-server) | 提供服务端渲染支持 |
 | [`nerv-test-utils`](/packages/nerv-test-utils) | Nerv应用测试套件   |
 | [`nerv-utils`](/packages/nerv-utils) |  Nerv内部帮助方法集  |
-| [`nerv-shared`](/packages/nerv-shared) |  Nerv内部shared方法及  |
+| [`nerv-shared`](/packages/nerv-shared) |  Nerv内部shared方法集  |
 | [`nerv-create-class`](/packages/nerv-create-class) |  `createClass` API支持  |
 
 ## 快速开始
@@ -187,7 +187,7 @@ $ npm i --save-dev aliasify
 
 ## 适配React
 
-当先Nerv支持的React API与特性
+当前Nerv支持的React API与特性
 
 ### `react`
 
