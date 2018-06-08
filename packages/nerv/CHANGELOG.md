@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.0"></a>
+# [1.3.0](https://github.com/NervJS/nerv/compare/v1.3.0-beta.0...v1.3.0) (2018-06-08)
+
+
+### Bug Fixes
+
+* children is a falsy but valid value ([911f017](https://github.com/NervJS/nerv/commit/911f017))
+
+
+
+
 <a name="1.3.0-beta.0"></a>
 # [1.3.0-beta.0](https://github.com/NervJS/nerv/compare/v1.2.18...v1.3.0-beta.0) (2018-05-31)
 
