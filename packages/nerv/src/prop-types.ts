@@ -1,20 +1,33 @@
 import { noop } from 'nerv-shared'
+const shim = noop as any
+shim.isRequired = noop
 
-export const PropTypes = {
-  array: noop,
-  bool: noop,
-  func: noop,
-  number: noop,
-  object: noop,
-  string: noop,
-
-  any: noop,
-  arrayOf: noop,
-  element: noop,
-  instanceOf: noop,
-  node: noop,
-  objectOf: noop,
-  oneOf: noop,
-  oneOfType: noop,
-  shape: noop
+function getShim () {
+  return shim
 }
+
+const PropTypes = {
+  array: shim,
+  bool: shim,
+  func: shim,
+  number: shim,
+  object: shim,
+  string: shim,
+
+  any: shim,
+  arrayOf: getShim,
+  element: shim,
+  instanceOf: getShim,
+  node: shim,
+  objectOf: getShim,
+  oneOf: getShim,
+  oneOfType: getShim,
+  shape: getShim,
+  exact: getShim,
+  PropTypes: {},
+  checkPropTypes: noop
+}
+
+PropTypes.PropTypes = PropTypes
+
+export { PropTypes }
