@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.1"></a>
+## [1.3.1](https://github.com/NervJS/nerv/compare/v1.3.0-beta.0...v1.3.1) (2018-06-29)
+
+
+### Bug Fixes
+
+* set empty methods to propTypes ([1dbbdd0](https://github.com/NervJS/nerv/commit/1dbbdd0))
+
+
+
+
 <a name="1.3.0-beta.0"></a>
 # [1.3.0-beta.0](https://github.com/NervJS/nerv/compare/v1.2.18...v1.3.0-beta.0) (2018-05-31)
 
