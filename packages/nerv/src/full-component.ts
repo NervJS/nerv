@@ -37,6 +37,7 @@ class ComponentWrapper implements CompositeComponent {
   }
 
   update (previous, current, parentContext, domNode?) {
+    this.context = parentContext
     return reRenderComponent(previous, this)
   }
 

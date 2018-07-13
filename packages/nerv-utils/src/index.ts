@@ -19,17 +19,31 @@ export function isAttrAnEvent (attr: string): boolean {
   return attr[0] === 'o' && attr[1] === 'n'
 }
 
-export function extend<S, F> (source: S, from: F): S | F & S {
-  if (!from) {
-    return source
-  }
-  for (const key in from) {
-    if (from.hasOwnProperty(key)) {
-      (source as any)[key] = from[key]
+const extend = ((): (<S, F>(source: S, from: F) => S | F & S) => {
+  if ('assign' in Object) {
+    return <S, F>(source: S, from: F): S | F & S => {
+      if (!from) {
+        return source
+      }
+      Object.assign(source, from)
+      return source
+    }
+  } else {
+    return <S, F>(source: S, from: F): S | F & S => {
+      if (!from) {
+        return source
+      }
+      for (const key in from) {
+        if (from.hasOwnProperty(key)) {
+          (source as any)[key] = from[key]
+        }
+      }
+      return source
     }
   }
-  return source
-}
+})()
+
+export { extend }
 
 export function clone<T> (obj: T): T | {} {
   return extend({}, obj)

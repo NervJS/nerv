@@ -53,14 +53,25 @@ describe('nerv-redux', () => {
     // )
   })
 
-  it('store should be in the context', () => {
+  it('should have store in the context', () => {
     const store = createStore(() => ({}))
+    let child
+    const getRef = (ref) => {
+      child = ref
+    }
+    class ProviderChild extends Component {
+      render () { return null }
+    }
     const instance = renderToContainer(
       <Provider store={store}>
-        <Child />
+        <ProviderChild ref={getRef} />
       </Provider>
     )
-    expect(instance.context.store).toEqual(store)
+
+    expect(child.context.store).toEqual(store)
+
+    // shouldn't modify Provider.context
+    expect(instance.context).toEqual({})
   })
 
   it('should pass state consistently to mapState', async () => {
