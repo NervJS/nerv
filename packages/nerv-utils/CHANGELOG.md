@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.2-beta.0"></a>
+## [1.3.2-beta.0](https://github.com/NervJS/nerv/compare/v1.3.1...v1.3.2-beta.0) (2018-07-13)
+
+
+### Bug Fixes
+
+* **nerv:** fix the buggy behavior of modifying context when calling getChildContext ([56911c6](https://github.com/NervJS/nerv/commit/56911c6))
+
+
+
+
 <a name="1.2.15"></a>
 ## [1.2.15](https://github.com/NervJS/nerv/compare/v1.2.14...v1.2.15) (2018-03-15)
 

@@ -1,4 +1,5 @@
-import { extend, isFunction, isNumber, isString } from 'nerv-utils'
+// import { extend, isFunction, isNumber, isString } from 'nerv-utils'
+import { extend, isFunction, isNumber, isString, clone } from 'nerv-utils'
 import CurrentOwner from './current-owner'
 import createElement from './vdom/create-element'
 import createVText from './vdom/create-vtext'
@@ -13,7 +14,8 @@ import {
   VText,
   VVoid,
   VNode,
-  VType
+  VType,
+  EMPTY_OBJ
 } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
@@ -111,11 +113,11 @@ export function mountStatelessComponent (vnode: Stateless, parentContext) {
   return (vnode.dom = mountVNode(vnode._rendered, parentContext) as Element)
 }
 
-export function getChildContext (component, context) {
+export function getChildContext (component, context = EMPTY_OBJ) {
   if (component.getChildContext) {
-    return extend(context, component.getChildContext())
+    return extend(clone(context), component.getChildContext())
   }
-  return context
+  return clone(context)
 }
 
 export function renderComponent (component: Component<any, any>) {
@@ -153,7 +155,7 @@ export function reRenderComponent (
 ) {
   const component = (current.component = prev.component)
   const nextProps = current.props
-  const nextContext = component.context
+  const nextContext = current.context
   component._disable = true
   if (isFunction(component.componentWillReceiveProps)) {
     errorCatcher(() => {

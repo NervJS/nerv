@@ -1,5 +1,6 @@
 import { isValidElement as isValidNervElement, VType, isComponent, isInvalid } from 'nerv-shared'
 import { nextTick } from 'nerv-utils'
+import { getChildContext } from './lifecycle'
 import { render } from './render'
 import { unmount } from './vdom/unmount'
 import createElement from './create-element'
@@ -49,7 +50,7 @@ export function unstable_renderSubtreeIntoContainer (
   // @TODO: should handle props.context?
   const wrapper = createElement(
     WrapperComponent,
-    { context: parentComponent.context },
+    { context: getChildContext(parentComponent, parentComponent.context) },
     vnode
   )
   const rendered = render(wrapper as any, container)
