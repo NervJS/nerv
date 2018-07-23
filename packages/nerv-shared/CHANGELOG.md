@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.2"></a>
+## [1.3.2](https://github.com/NervJS/nerv/compare/v1.3.2-beta.0...v1.3.2) (2018-07-23)
+
+
+### Bug Fixes
+
+* invoke setState callback in componentWillMount, fix [#84](https://github.com/NervJS/nerv/issues/84) ([12fa8cf](https://github.com/NervJS/nerv/commit/12fa8cf))
+
+
+
+
 <a name="1.2.15"></a>
 ## [1.2.15](https://github.com/NervJS/nerv/compare/v1.2.14...v1.2.15) (2018-03-15)
 
