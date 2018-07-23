@@ -8,8 +8,7 @@ import {
   Component,
   VNode,
   VirtualChildren,
-  EMPTY_CHILDREN,
-  isInvalid
+  EMPTY_CHILDREN
 } from 'nerv-shared'
 import SVGPropertyConfig from './vdom/svg-property-config'
 
@@ -78,7 +77,7 @@ function createElement<T> (
       (type as any).defaultProps
     )
     if (!props.children || props.children === EMPTY_CHILDREN) {
-      props.children = isInvalid(children) ? EMPTY_CHILDREN : children
+      props.children = children || children === 0 ? children : EMPTY_CHILDREN
     }
     props.owner = CurrentOwner.current
     return type.prototype && type.prototype.render
