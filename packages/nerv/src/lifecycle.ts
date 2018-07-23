@@ -85,7 +85,7 @@ export function mountComponent (
     errorCatcher(() => {
       (component as any).componentWillMount()
     }, component)
-    component.state = component.getState()
+    component.state = component.getState(true)
   }
   component._dirty = false
   const rendered = renderComponent(component)

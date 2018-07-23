@@ -210,6 +210,32 @@ describe('Lifecycle methods', () => {
     })
   })
 
+  describe('#componentWillMount', () => {
+    it('should works like react', () => {
+      const spy = sinon.spy()
+      class App extends Component {
+        constructor (props) {
+          super(props)
+          this.state = {
+            msg: ''
+          }
+        }
+
+        componentWillMount () {
+          this.setState({
+            msg: 'test'
+          }, () => spy())
+        }
+        render () {
+          return <div>{this.state.msg}</div>
+        }
+      }
+
+      render(<App />, scratch)
+      expect(spy.calledOnce).toBe(true)
+    })
+  })
+
   describe('top-level componentWillUnmount', () => {
     it('should invoke componentWillUnmount for top-level components', () => {
       let doRender1 = null

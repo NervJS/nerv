@@ -50,9 +50,9 @@ class Component<P, S> implements ComponentLifecycle<P, S> {
     }
   }
 
-  getState () {
+  getState (willMount?: boolean) {
     // tslint:disable-next-line:no-this-assignment
-    const { _pendingStates, state, props } = this
+    const { _pendingStates, state, props, _pendingCallbacks } = this
     if (!_pendingStates.length) {
       return state
     }
@@ -65,6 +65,12 @@ class Component<P, S> implements ComponentLifecycle<P, S> {
       }
       extend(stateClone, nextState)
     })
+    if (_pendingCallbacks && willMount && _pendingCallbacks.length > 0) {
+      _pendingCallbacks.forEach((cb, idx) => {
+        cb()
+        _pendingCallbacks.splice(idx, 1)
+      })
+    }
     return stateClone
   }
 
