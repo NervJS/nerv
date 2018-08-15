@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.3"></a>
+## [1.3.3](https://github.com/NervJS/nerv/compare/v1.3.2...v1.3.3) (2018-08-15)
+
+
+### Bug Fixes
+
+* lastStyle contains style that nextStyle don't, close [#88](https://github.com/NervJS/nerv/issues/88) ([ee0ef8e](https://github.com/NervJS/nerv/commit/ee0ef8e))
+
+
+
+
 <a name="1.3.2"></a>
 ## [1.3.2](https://github.com/NervJS/nerv/compare/v1.3.2-beta.0...v1.3.2) (2018-07-23)
 
