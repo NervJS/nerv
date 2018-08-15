@@ -528,6 +528,11 @@ function patchStyle (lastAttrValue, nextAttrValue, dom) {
         setStyle(domStyle, style, value)
       }
     }
+    for (style in lastAttrValue) {
+      if (isNullOrUndef(nextAttrValue[style])) {
+        domStyle[style] = ''
+      }
+    }
   } else {
     for (style in nextAttrValue) {
       value = nextAttrValue[style]
