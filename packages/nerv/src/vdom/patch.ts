@@ -512,7 +512,7 @@ function patchEvent (
   }
 }
 
-function patchStyle (lastAttrValue, nextAttrValue, dom) {
+function patchStyle (lastAttrValue: CSSStyleSheet, nextAttrValue: CSSStyleSheet, dom: HTMLElement) {
   const domStyle = dom.style
   let style
   let value
@@ -577,7 +577,7 @@ export function patchProp (
     } else if (isAttrAnEvent(prop)) {
       patchEvent(prop, lastValue, nextValue, domNode)
     } else if (prop === 'style') {
-      patchStyle(lastValue, nextValue, domNode)
+      patchStyle(lastValue, nextValue, domNode as HTMLElement)
     } else if (
       prop !== 'list' &&
       prop !== 'type' &&
