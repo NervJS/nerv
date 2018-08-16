@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.4-beta.0"></a>
+## [1.3.4-beta.0](https://github.com/NervJS/nerv/compare/v1.3.3...v1.3.4-beta.0) (2018-08-16)
+
+
+### Features
+
+* add typing to pathcStyle ([41e3618](https://github.com/NervJS/nerv/commit/41e3618))
+
+
+
+
 <a name="1.3.3"></a>
 ## [1.3.3](https://github.com/NervJS/nerv/compare/v1.3.2...v1.3.3) (2018-08-15)
 
