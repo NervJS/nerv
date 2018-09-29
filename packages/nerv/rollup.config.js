@@ -24,7 +24,8 @@ const optJSPlugin = {
 }
 const babelPlugin = babel({
   babelrc: false,
-  presets: ['es3']
+  presets: ['es3'],
+  sourceMap: true
 })
 const uglifyPlugin = uglify({
   compress: {
@@ -46,6 +47,7 @@ const uglifyPlugin = uglify({
 })
 const baseConfig = {
   input: join(cwd, 'src/index.ts'),
+  sourcemap: true,
   output: [
     {
       file: join(cwd, 'dist/index.js'),
@@ -71,7 +73,7 @@ const baseConfig = {
     }),
     buble(),
     babelPlugin,
-    es3(['defineProperty', 'freeze'])
+    es3({ remove: ['defineProperty', 'freeze'] })
   ]
 }
 const esmConfig = Object.assign({}, baseConfig, {
