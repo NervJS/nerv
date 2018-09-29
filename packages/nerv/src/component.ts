@@ -18,11 +18,7 @@ class Component<P, S> implements ComponentLifecycle<P, S> {
   _pendingStates: any[] = []
   _pendingCallbacks: Function[]
   refs: Refs
-
-  // Is a React Component.
-  // tslint:disable-next-line:max-line-length
-  // see: https://github.com/facebook/react/blob/3c977dea6b96f6a9bb39f09886848da870748441/packages/react/src/ReactBaseClasses.js#L26
-  isReactComponent = EMPTY_OBJ
+  isReactComponent: Object
 
   constructor (props?: P, context?: any) {
     if (!this.state) {
@@ -84,5 +80,7 @@ class Component<P, S> implements ComponentLifecycle<P, S> {
   // tslint:disable-next-line
   public render(nextProps?: P, nextState?, nextContext?): any {}
 }
+
+Component.prototype.isReactComponent = EMPTY_OBJ
 
 export default Component

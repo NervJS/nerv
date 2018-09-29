@@ -60,6 +60,19 @@ describe('Component', function () {
     expect(scratch.innerHTML).toEqual(normalizeHTML('<div>C</div>'))
   })
 
+  it('is a react component', () => {
+    class C extends Component {
+      render () {
+        return <div>C</div>
+      }
+    }
+    let c
+    render(<C ref={ins => (c = ins)} />, scratch)
+
+    expect(!!Component.prototype.isReactComponent).toBeTruthy()
+    expect(!!c.isReactComponent).toBeTruthy()
+  })
+
   it('should render functional components', () => {
     const props = { foo: 'bar' }
     const C = sinon.spy(options => <div {...options} />)
