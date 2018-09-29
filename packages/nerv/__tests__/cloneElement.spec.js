@@ -121,4 +121,13 @@ describe('cloneElement()', () => {
     render(C, scratch)
     expect(scratch.innerHTML).toEqual(normalizeHTML('<div>b</div>'))
   })
+
+  it('can clone false/null element', () => {
+    const C = cloneElement(false)
+    render(C, scratch)
+    expect(scratch.innerHTML).toEqual(normalizeHTML(''))
+    const C1 = cloneElement(null)
+    render(C1, scratch)
+    expect(scratch.innerHTML).toEqual(normalizeHTML(''))
+  })
 })
