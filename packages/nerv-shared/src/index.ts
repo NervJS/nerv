@@ -149,7 +149,7 @@ export function isVText (node): node is VText {
 }
 
 export function isComponent (instance): instance is Component<any, any> {
-  return !isInvalid(instance) && instance.isReactComponent === EMPTY_OBJ
+  return !isInvalid(instance) && !isNullOrUndef(instance.isReactComponent)
 }
 
 export function isWidget (
