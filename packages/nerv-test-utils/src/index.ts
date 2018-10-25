@@ -8,7 +8,7 @@ import {
   isComponent
 } from 'nerv-shared'
 import { isString, isArray } from 'nerv-utils'
-import simulateEvents from 'simulate-event'
+import simulant from 'simulant'
 
 function renderIntoDocument (instance) {
   const dom = document.createElement('div')
@@ -16,8 +16,8 @@ function renderIntoDocument (instance) {
   return React.render(instance, dom)
 }
 
-// tslint:disable-next-line:max-line-length
 const Simulate = {}
+
 const EVENTS = [
   'keyDown',
   'keyPress',
@@ -56,9 +56,10 @@ const EVENTS = [
   'animationIteration',
   'transitionEnd'
 ]
+
 EVENTS.forEach((event) => {
   Simulate[event] = (node, mock) =>
-    simulateEvents.simulate(node, event.toLowerCase(), mock)
+    simulant.fire(node, event.toLowerCase(), mock)
 })
 
 function isElement (instance) {

@@ -11,7 +11,7 @@
     "nerv-shared": "1.3.2",
     "nerv-utils": "1.3.2-beta.0",
     "nervjs": "1.2.4",
-    "simulate-event": "^1.4.0"
+    "simulant": "^0.2.2"
   },
   "repository": {
     "type": "git",
