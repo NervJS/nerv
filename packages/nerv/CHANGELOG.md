@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.5"></a>
+## [1.3.5](https://github.com/NervJS/nerv/compare/v1.3.4...v1.3.5) (2018-09-29)
+
+
+### Bug Fixes
+
+* sourcemap empty, close [#92](https://github.com/NervJS/nerv/issues/92) ([f1d354f](https://github.com/NervJS/nerv/commit/f1d354f))
+
+
+
+
+<a name="1.3.4"></a>
+## [1.3.4](https://github.com/NervJS/nerv/compare/v1.3.4-beta.0...v1.3.4) (2018-09-29)
+
+
+### Bug Fixes
+
+* cloneElement with false cause error ([e15a5dd](https://github.com/NervJS/nerv/commit/e15a5dd))
+
+
+
+
 <a name="1.3.4-beta.0"></a>
 ## [1.3.4-beta.0](https://github.com/NervJS/nerv/compare/v1.3.3...v1.3.4-beta.0) (2018-08-16)
 
