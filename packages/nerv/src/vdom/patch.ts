@@ -62,6 +62,8 @@ export function patch (
     }
     // @TODO: test case
     nextVnode.dom = newDom || lastDom
+  } else if (isArray(lastVnode) && isArray(nextVnode)) {
+    patchArrayChildren(lastDom, lastVnode, nextVnode, context, false)
   } else {
     unmount(lastVnode)
     newDom = createElement(nextVnode, isSvg, context)
