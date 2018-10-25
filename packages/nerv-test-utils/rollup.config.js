@@ -19,13 +19,13 @@ module.exports = {
       file: resolver('dist/index.esm.js')
     }
   ],
-  external: ['nervjs'],
+  external: ['nervjs', 'simulant'],
   globals: {
     nervjs: 'Nerv'
   },
   plugins: [
     alias({
-      'nervjs': join(cwd, '../nerv/dist/index'),
+      nervjs: join(cwd, '../nerv/dist/index'),
       'nerv-shared': join(cwd, '../nerv-shared/dist/index'),
       'nerv-utils': join(cwd, '../nerv-utils/dist/index')
     }),
