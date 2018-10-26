@@ -126,7 +126,8 @@ export interface Component<P, S> extends ComponentLifecycle<P, S> {
   isReactComponent: object
   dom: any
   vnode: CompositeComponent
-  getState (willMount?: boolean): S
+  clearCallBacks: () => void
+  getState (): S
   // tslint:disable-next-line:member-ordering
   refs: Refs
   render (): VirtualNode

@@ -1,4 +1,4 @@
-import { isFunction, extend, clone } from 'nerv-utils'
+import { isFunction, extend, clone, isArray } from 'nerv-utils'
 import { enqueueRender } from './render-queue'
 import { updateComponent } from './lifecycle'
 import { Props, ComponentLifecycle, Refs, EMPTY_OBJ } from 'nerv-shared'
@@ -46,9 +46,9 @@ class Component<P, S> implements ComponentLifecycle<P, S> {
     }
   }
 
-  getState (willMount?: boolean) {
+  getState () {
     // tslint:disable-next-line:no-this-assignment
-    const { _pendingStates, state, props, _pendingCallbacks } = this
+    const { _pendingStates, state, props } = this
     if (!_pendingStates.length) {
       return state
     }
@@ -56,18 +56,21 @@ class Component<P, S> implements ComponentLifecycle<P, S> {
     const queue = _pendingStates.concat()
     this._pendingStates.length = 0
     queue.forEach((nextState) => {
+      extend(stateClone, nextState)
       if (isFunction(nextState)) {
         nextState = nextState.call(this, state, props)
       }
-      extend(stateClone, nextState)
     })
-    if (_pendingCallbacks && willMount && _pendingCallbacks.length > 0) {
-      _pendingCallbacks.forEach((cb, idx) => {
-        cb()
-        _pendingCallbacks.splice(idx, 1)
-      })
-    }
+
     return stateClone
+  }
+
+  clearCallBacks () {
+    if (isArray(this._pendingCallbacks)) {
+      while (this._pendingCallbacks.length) {
+        (this._pendingCallbacks.pop() as any).call(this)
+      }
+    }
   }
 
   forceUpdate (callback?: Function) {

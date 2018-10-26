@@ -85,7 +85,8 @@ export function mountComponent (
     errorCatcher(() => {
       (component as any).componentWillMount()
     }, component)
-    component.state = component.getState(true)
+    component.state = component.getState()
+    component.clearCallBacks()
   }
   component._dirty = false
   const rendered = renderComponent(component)
@@ -236,11 +237,7 @@ export function updateComponent (component, isForce = false) {
   component.prevProps = component.props
   component.prevState = component.state
   component.prevContext = component.context
-  if (component._pendingCallbacks) {
-    while (component._pendingCallbacks.length) {
-      component._pendingCallbacks.pop().call(component)
-    }
-  }
+  component.clearCallBacks()
   flushMount()
   return dom
 }
