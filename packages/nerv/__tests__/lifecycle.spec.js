@@ -234,6 +234,30 @@ describe('Lifecycle methods', () => {
       render(<App />, scratch)
       expect(spy.calledOnce).toBe(true)
     })
+
+    it('get latest state', () => {
+      class App extends Component {
+        constructor (props) {
+          super(props)
+          this.state = {
+            msg: ''
+          }
+        }
+
+        componentWillMount () {
+          this.setState({
+            msg: 'test'
+          }, () => {
+            expect(this.state.msg).toBe('test')
+          })
+        }
+        render () {
+          return <div>{this.state.msg}</div>
+        }
+      }
+
+      render(<App />, scratch)
+    })
   })
 
   describe('top-level componentWillUnmount', () => {
