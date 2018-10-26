@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.7"></a>
+## [1.3.7](https://github.com/NervJS/nerv/compare/v1.3.6...v1.3.7) (2018-10-26)
+
+
+### Bug Fixes
+
+* get latest state in componentWillMount setState callback ([20e1e2d](https://github.com/NervJS/nerv/commit/20e1e2d))
+
+
+
+
 <a name="1.3.6"></a>
 ## [1.3.6](https://github.com/NervJS/nerv/compare/v1.3.5...v1.3.6) (2018-10-25)
 
