@@ -1,6 +1,6 @@
 import createElement from './create-element'
 import createVText from './vdom/create-vtext'
-import { extend, clone, isArray, isString } from 'nerv-utils'
+import { extend, clone, isArray, isString, isNumber } from 'nerv-utils'
 import { isVText, isVNode, EMPTY_CHILDREN, VType, isNullOrUndef, isPortal, isInvalid } from 'nerv-shared'
 import { createVoid } from './vdom/create-void'
 
@@ -8,7 +8,7 @@ export default function cloneElement (vnode, props?: object, ...children): any {
   if (isVText(vnode)) {
     return createVText(vnode.text)
   }
-  if (isString(vnode)) {
+  if (isString(vnode) || isNumber(vnode)) {
     return createVText(vnode)
   }
   if (isInvalid(vnode)
