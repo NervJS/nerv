@@ -1,5 +1,6 @@
 /** @jsx createElement */
 import { Component, createElement, cloneElement, render } from '../src'
+import createVText from '../src/vdom/create-vtext'
 import { normalizeHTML } from './util'
 
 describe('cloneElement()', () => {
@@ -10,8 +11,15 @@ describe('cloneElement()', () => {
   })
 
   it('can clone vtext', () => {
-    const t = cloneElement('test')
+    const t = cloneElement(createVText('test'))
     expect(t.text).toEqual('test')
+  })
+
+  it('can clone string and number', () => {
+    const t = cloneElement('test')
+    const t1 = cloneElement(12)
+    expect(t.text).toEqual('test')
+    expect(t1.text).toEqual(12)
   })
 
   it('can clone svg', () => {
