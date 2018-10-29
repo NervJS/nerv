@@ -563,6 +563,37 @@ describe('Component', function () {
       expect(firstChild.innerHTML).toEqual('1')
       expect(a).toEqual(3)
     })
+
+    it('should set state while first arg is function', async () => {
+      let inst
+      class A extends Component {
+        constructor (props) {
+          super(props)
+          this.state = {
+            count: 1
+          }
+          inst = this
+        }
+        shouldComponentUpdate () {
+          return false
+        }
+        click () {
+          this.setState(() => {
+            return { count: 2 }
+          })
+        }
+        render () {
+          return <div onClick={this.click.bind(this)}>{this.state.count}</div>
+        }
+      }
+
+      render(<A />, scratch)
+      const firstChild = scratch.childNodes[0]
+      expect(firstChild.innerHTML).toEqual('1')
+      fireEvent(firstChild, 'click')
+      rerender()
+      expect(inst.state.count).toBe(2)
+    })
   })
 
   describe('forceUpdate', () => {

@@ -56,10 +56,10 @@ class Component<P, S> implements ComponentLifecycle<P, S> {
     const queue = _pendingStates.concat()
     this._pendingStates.length = 0
     queue.forEach((nextState) => {
-      extend(stateClone, nextState)
       if (isFunction(nextState)) {
         nextState = nextState.call(this, state, props)
       }
+      extend(stateClone, nextState)
     })
 
     return stateClone
