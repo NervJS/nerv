@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.9"></a>
+## [1.3.9](https://github.com/NervJS/nerv/compare/v1.3.8...v1.3.9) (2018-11-22)
+
+
+### Bug Fixes
+
+* devtools not working ([9cf6b10](https://github.com/NervJS/nerv/commit/9cf6b10))
+
+
+
+
 <a name="1.3.8"></a>
 ## [1.3.8](https://github.com/NervJS/nerv/compare/v1.3.7...v1.3.8) (2018-10-29)
 
