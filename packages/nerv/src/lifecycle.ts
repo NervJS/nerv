@@ -21,6 +21,7 @@ import FullComponent from './full-component'
 import Stateless from './stateless-component'
 import { unmount } from './vdom/unmount'
 import Ref from './vdom/ref'
+import options from './options'
 
 const readyComponents: any[] = []
 
@@ -228,6 +229,7 @@ export function updateComponent (component, isForce = false) {
         component.componentDidUpdate(prevProps, prevState, context)
       }, component)
     }
+    options.afterUpdate(vnode)
     while (vnode = vnode.parentVNode) {
       if ((vnode.vtype & (VType.Composite | VType.Stateless)) > 0) {
         vnode.dom = dom

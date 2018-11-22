@@ -5,7 +5,8 @@ import {
   isWidget,
   isVText,
   isValidElement,
-  isStateless
+  isStateless,
+  isNullOrUndef
 } from 'nerv-shared'
 const isArray = Array.isArray
 /**
@@ -40,6 +41,9 @@ function normalizeChildren (children) {
  * @param {Node} node
  */
 function createReactDOMComponent (vnode) {
+  if (isNullOrUndef(vnode)) {
+    return {}
+  }
   const isText = isVText(vnode)
 
   return {
