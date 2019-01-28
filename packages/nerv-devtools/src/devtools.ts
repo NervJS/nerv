@@ -1,5 +1,5 @@
 // tslint:disable-next-line:no-var-requires
-import { options } from 'nervjs'
+import { options, findDOMNode } from 'nervjs'
 import {
   isComposite,
   isWidget,
@@ -64,7 +64,7 @@ function createReactDOMComponent (vnode) {
     // This is used to send the appropriate notifications when DOM components
     // are added or updated between composite component updates.
     _inDevTools: false,
-    node: !isText ? vnode.dom : null
+    node: !isText ? findDOMNode(vnode) : null
   }
 }
 
@@ -100,7 +100,7 @@ function createReactCompositeComponent (vnode) {
   const isCompositeComponent = isComposite(vnode)
   const _currentElement = createReactElement(vnode)
   const component = isCompositeComponent ? vnode.component : vnode
-  const node = vnode.dom
+  const node = findDOMNode(vnode)
 
   const instance: any = {
     // --- ReactDOMComponent properties
@@ -171,7 +171,7 @@ function getKeyForVNode (vnode) {
   } else if (isStateless(vnode)) {
     return vnode.type
   } else if (vnode && vnode.vtype) {
-    return vnode.dom
+    return findDOMNode(vnode)
   }
 }
 
@@ -206,7 +206,7 @@ function findVNodeFromDom (vnode, dom) {
     }
   } else {
     if (
-      vnode.dom === dom
+      findDOMNode(vnode) === dom
     ) {
       return vnode
     }
