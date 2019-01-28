@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.10"></a>
+## [1.3.10](https://github.com/NervJS/nerv/compare/v1.3.9...v1.3.10) (2019-01-28)
+
+
+### Bug Fixes
+
+* index.js does not export default createClass function, close [#95](https://github.com/NervJS/nerv/issues/95) ([e83a947](https://github.com/NervJS/nerv/commit/e83a947))
+
+
+
+
 <a name="1.3.9"></a>
 ## [1.3.9](https://github.com/NervJS/nerv/compare/v1.3.8...v1.3.9) (2018-11-22)
 

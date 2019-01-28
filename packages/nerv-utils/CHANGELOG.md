@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.10"></a>
+## [1.3.10](https://github.com/NervJS/nerv/compare/v1.3.9...v1.3.10) (2019-01-28)
+
+
+### Bug Fixes
+
+* **transformer:** Promise broken in macOS Safari ([18c0b9b](https://github.com/NervJS/nerv/commit/18c0b9b))
+
+
+
+
 <a name="1.3.2-beta.0"></a>
 ## [1.3.2-beta.0](https://github.com/NervJS/nerv/compare/v1.3.1...v1.3.2-beta.0) (2018-07-13)
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.10"></a>
+## [1.3.10](https://github.com/NervJS/nerv/compare/v1.3.9...v1.3.10) (2019-01-28)
+
+
+### Bug Fixes
+
+* add more unitless css properties ([3654160](https://github.com/NervJS/nerv/commit/3654160))
+
+
+
+
 <a name="1.3.7"></a>
 ## [1.3.7](https://github.com/NervJS/nerv/compare/v1.3.6...v1.3.7) (2018-10-26)
 
