@@ -1,7 +1,10 @@
 import { global } from './env'
 import { isFunction } from './is'
 
-const canUsePromise = 'Promise' in global
+const isMacSafari = navigator && navigator.platform &&
+  navigator.platform.includes('Mac') && /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+
+const canUsePromise = 'Promise' in global && isMacSafari
 
 let resolved
 if (canUsePromise) {
