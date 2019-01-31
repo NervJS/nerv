@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.3.12"></a>
+## [1.3.12](https://github.com/NervJS/nerv/compare/v1.3.11...v1.3.12) (2019-01-30)
+
+
+### Bug Fixes
+
+* String#includes is not supported by IE ([36b74c4](https://github.com/NervJS/nerv/commit/36b74c4))
+
+
+
+
 <a name="1.3.11"></a>
 ## [1.3.11](https://github.com/NervJS/nerv/compare/v1.3.10...v1.3.11) (2019-01-28)
 
