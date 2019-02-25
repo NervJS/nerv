@@ -60,6 +60,21 @@ describe('Component', function () {
     expect(scratch.innerHTML).toEqual(normalizeHTML('<div>C</div>'))
   })
 
+  // it('should render fragment', () => {
+  //   class C extends Component {
+  //     render () {
+  //       return <Fragment>C</Fragment>
+  //     }
+  //   }
+  //   const spy = sinon.spy(C.prototype, 'render')
+  //   render(<C />, scratch)
+
+  //   expect(spy.calledOnce).toBeTruthy()
+  //   expect(spy.returned(sinon.match({ type: 'div' }))).toBeTruthy()
+
+  //   expect(scratch.innerHTML).toEqual(normalizeHTML('<div>C</div>'))
+  // })
+
   it('is a react component', () => {
     class C extends Component {
       render () {

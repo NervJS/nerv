@@ -14,15 +14,88 @@ export interface Widget {
   ): Element | null
   destroy (dom?: Element)
 }
+export interface ExoticComponent<T> {
+  vtype: VType
+  name: string
+}
+export interface ForwardRefComponent {
+  vtype: VType
+  render: (props: any, refs: any) => VirtualNode
+}
+export interface MemoElement {
+  vtype: VType
+  render: (props: any) => VirtualNode
+  equals?: (prevProps, nextProps) => boolean
+  name: string
+}
 
+export interface LazyELement {
+  vtype: VType
+  toImport: () => Promise<any>
+  status: number
+  result: any
+  name: string
+  Suspense: any
+  SuspenseComponent: any
+}
+
+export interface LazyComponent extends Widget {
+  ref?: Ref
+  dom: Element | null
+  type: any
+  initLazyComponent (parentContext, parentComponent, isSvg): any
+}
+export interface MemoComponent extends Widget {
+  ref?: Ref
+  dom: Element | null
+  type: any
+}
+export interface NervContext<T> extends ExoticComponent<any>  {
+  NervProvider: any
+  NervConsumer: any
+  contextValue: any
+  vtype: VType
+  name: string
+}
+export interface NervProvider<T> {
+  _context: NervContext<T>
+  ref?: Ref
+  dom: Element | null
+  vtype: VType
+  props: any
+}
+export interface NervConsumer<T> {
+  dom: null | Element
+  key: null | string
+  ref: any
+  vtype: VType
+  props: {
+    children: (value: T) => VirtualNode
+  },
+}
 export interface Portal {
   type: Element
   vtype: VType
   children: VirtualNode
   dom: null | Element
 }
-
-export type ComponentInstance = CompositeComponent | StatelessComponent
+export interface Fragment {
+  vtype: VType
+  children: VirtualNode
+  dom: null | Element
+  props: any
+}
+export interface Suspense extends Widget{
+  vtype: VType
+  name: string
+  dom: null | Element
+  props: {
+    fallback: VirtualNode
+  }
+  lazyComponent: any
+  initSuspenseComponent (parentContext, parentComponent, isSvg): DocumentFragment
+}
+export type ComponentInstance = CompositeComponent | StatelessComponent | Suspense
 
 export interface CompositeComponent extends Widget {
   type: any
@@ -62,8 +135,12 @@ export interface VNode {
   isSvg?: boolean
   parentContext?: any
   dom: Element | null
-  ref: Function | string | null
+  ref: Function | string | RefObject | null
 }
+export type RefObject = {
+  current: null | Element
+}
+
 
 export type VirtualNode =
   | VNode
@@ -72,6 +149,10 @@ export type VirtualNode =
   | StatelessComponent
   | VVoid
   | Portal
+  | Fragment
+  | NervProvider<any>
+  | NervConsumer<any>
+  | Suspense
 
 export type VirtualChildren = Array<string | number | VirtualNode> | VirtualNode
 
@@ -87,14 +168,21 @@ export interface Props {
 
 export interface ComponentLifecycle<P, S> {
   componentWillMount? (): void
+  UNSAFE_componentWillMount? (): void
   componentDidMount? (): void
   componentWillReceiveProps? (nextProps: Readonly<P>, nextContext: any): void
+  UNSAFE_componentWillReceiveProps? (nextProps: Readonly<P>, nextContext: any): void
   shouldComponentUpdate? (
     nextProps: Readonly<P>,
     nextState: Readonly<S>,
     nextContext: any
   ): boolean
   componentWillUpdate? (
+    nextProps: Readonly<P>,
+    nextState: Readonly<S>,
+    nextContext: any
+  ): void
+  UNSAFE_componentWillUpdate? (
     nextProps: Readonly<P>,
     nextState: Readonly<S>,
     nextContext: any
@@ -106,6 +194,8 @@ export interface ComponentLifecycle<P, S> {
   ): void
   componentWillUnmount? (): void
   componentDidCatch? (error?): void
+  getDerivedStateFromProps? (nextProps: Readonly<P>, prevState:Readonly<S>): object | null
+  getSnapShotBeforeUpdate? (prevProps: Readonly<P>, prevState:Readonly<S>): object | null
 }
 
 export interface Refs {
@@ -131,6 +221,7 @@ export interface Component<P, S> extends ComponentLifecycle<P, S> {
   // tslint:disable-next-line:member-ordering
   refs: Refs
   render (): VirtualNode
+  vtype: VType
 }
 
 export function isNullOrUndef (o: any): o is undefined | null {
@@ -155,7 +246,7 @@ export function isComponent (instance): instance is Component<any, any> {
 
 export function isWidget (
   node
-): node is CompositeComponent | StatelessComponent {
+): node is CompositeComponent | StatelessComponent | Suspense {
   return (
     !isNullOrUndef(node) &&
     (node.vtype & (VType.Composite | VType.Stateless)) > 0
@@ -166,6 +257,17 @@ export function isPortal (vtype: VType, node): node is Portal {
   return (vtype & VType.Portal) > 0
 }
 
+export function isFragment(vtype: VType, node): node is Fragment {
+  return (vtype & VType.Fragment) > 0
+}
+export function isNervProvider(node): node is NervProvider<any> {
+  let vtype = node && node.vtype
+  return (vtype & VType.NervProvider) > 0
+}
+export function isNervConsumer(node):node is NervConsumer<any> {
+  let vtype = node && node.vtype
+  return (vtype & VType.NervConsumer) > 0
+}
 export function isComposite (node): node is CompositeComponent {
   return !isNullOrUndef(node) && node.vtype === VType.Composite
 }
@@ -194,5 +296,14 @@ export const enum VType {
   Composite = 1 << 2,
   Stateless = 1 << 3,
   Void = 1 << 4,
-  Portal = 1 << 5
+  Portal = 1 << 5,
+  Fragment = 1<<6,
+  NervConsumer = 1<<7,
+  NervProvider = 1<<8,
+  NervContext = 1<<9,
+  ForwardRefComponent = 1<<10,
+  MemoComponent = 1<< 11,
+  LazyComponent = 1<<12,
+  Suspense = 1<<13
+
 }

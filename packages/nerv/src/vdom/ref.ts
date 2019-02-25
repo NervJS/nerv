@@ -1,5 +1,6 @@
 import { isFunction, isString } from 'nerv-utils'
 import { isComposite } from 'nerv-shared'
+import { isObject } from 'util';
 
 export default {
   update (lastVnode, nextVnode, domNode?) {
@@ -20,6 +21,8 @@ export default {
       if (inst && isFunction(inst.render)) {
         inst.refs[ref] = node
       }
+    } else if (isObject(ref)) {
+      ref.current = node 
     }
   },
   detach (vnode, ref, domNode: Element) {
@@ -31,6 +34,8 @@ export default {
       if (inst.refs[ref] === node && isFunction(inst.render)) {
         delete inst.refs[ref]
       }
+    } else if (isObject(ref)) {
+      delete ref['current']
     }
   }
 }

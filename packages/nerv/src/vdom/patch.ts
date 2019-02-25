@@ -31,7 +31,13 @@ export function patch (
   context: object,
   isSvg?: boolean
 ) {
-  const lastDom = lastVnode.dom
+  let lastDom
+  try {
+    lastDom = lastVnode.dom
+  } catch(err) {
+    console.log('lastVnode ', lastVnode, nextVnode)
+    return
+  }
   let newDom
   if (isSameVNode(lastVnode, nextVnode)) {
     const vtype = nextVnode.vtype
@@ -55,9 +61,18 @@ export function patch (
     } else if ((vtype & (VType.Composite | VType.Stateless)) > 0) {
       newDom = nextVnode.update(lastVnode, nextVnode, context)
       options.afterUpdate(nextVnode)
+    } else if (vtype & VType.MemoComponent) {
+      newDom = nextVnode.update(lastVnode, nextVnode, context)
+      options.afterUpdate(nextVnode)
+    } else if((vtype & VType.NervProvider)) {
+      patchChildren(lastVnode.type, lastVnode.props.children, nextVnode.props.children, context, isSvg as boolean)
+    } else if((vtype & VType.NervConsumer)) {
+      patchChildren(lastVnode.type, lastVnode.props.children, nextVnode.props.children, context, isSvg as boolean)
     } else if (vtype & VType.Text) {
       return patchVText(lastVnode, nextVnode)
     } else if (vtype & VType.Portal) {
+      patchChildren(lastVnode.type, lastVnode.children, nextVnode.children, context, isSvg as boolean)
+    } else if (vtype & VType.Fragment) {
       patchChildren(lastVnode.type, lastVnode.children, nextVnode.children, context, isSvg as boolean)
     }
     // @TODO: test case
@@ -76,7 +91,6 @@ export function patch (
   }
   return newDom
 }
-
 function patchArrayChildren (
   parentDom: Element,
   lastChildren,
@@ -136,6 +150,7 @@ export function patchChildren (
   if (lastChildrenIsArray && nextChildrenIsArray) {
     patchArrayChildren(parentDom, lastChildren, nextChildren, context, isSvg)
   } else if (!lastChildrenIsArray && !nextChildrenIsArray) {
+    console.log('patch children heheh', lastChildren, nextChildren)
     patch(lastChildren, nextChildren, parentDom, context, isSvg)
   } else if (lastChildrenIsArray && !nextChildrenIsArray) {
     patchArrayChildren(parentDom, lastChildren, [nextChildren], context, isSvg)
@@ -143,7 +158,6 @@ export function patchChildren (
     patchArrayChildren(parentDom, [lastChildren], nextChildren, context, isSvg)
   }
 }
-
 function patchNonKeyedChildren (
   parentDom: Element,
   lastChildren,

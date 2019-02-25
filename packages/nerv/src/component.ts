@@ -1,8 +1,7 @@
-import { isFunction, extend, clone, isArray } from 'nerv-utils'
+import { isFunction, extend, clone, isArray, isEmptyObject } from 'nerv-utils'
 import { enqueueRender } from './render-queue'
 import { updateComponent } from './lifecycle'
 import { Props, ComponentLifecycle, Refs, EMPTY_OBJ } from 'nerv-shared'
-
 interface Component<P = {}, S = {}> extends ComponentLifecycle<P, S> {
   _rendered: any
   dom: any
@@ -10,6 +9,7 @@ interface Component<P = {}, S = {}> extends ComponentLifecycle<P, S> {
 
 class Component<P, S> implements ComponentLifecycle<P, S> {
   public static defaultProps: {}
+  public static contextType: any = {}
   state: Readonly<S>
   props: Readonly<P> & Readonly<Props>
   context: any
@@ -25,10 +25,19 @@ class Component<P, S> implements ComponentLifecycle<P, S> {
       this.state = {} as S
     }
     this.props = props || ({} as P)
-    this.context = context || EMPTY_OBJ
+    let contextType = this.getContextType()
+    this.context = !isEmptyObject(context) && context  || contextType || EMPTY_OBJ
     this.refs = {}
   }
-
+  getContextType() {
+    let klass = this['__proto__']['constructor']
+    let contextNew = klass && klass.contextType
+    if(contextNew) {
+      let contextType = contextNew && contextNew.contextValue
+      console.log('contextType', contextType)
+      return contextType
+    }
+  }
   setState<K extends keyof S> (
     state:
       | ((prevState: Readonly<S>, props: P) => Pick<S, K> | S)

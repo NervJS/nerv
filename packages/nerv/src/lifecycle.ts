@@ -15,7 +15,8 @@ import {
   VVoid,
   VNode,
   VType,
-  EMPTY_OBJ
+  EMPTY_OBJ,
+  MemoComponent
 } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
@@ -70,6 +71,18 @@ export function mountVNode (vnode, parentContext: any, parentComponent?) {
   return createElement(vnode, false, parentContext, parentComponent)
 }
 
+function callGetDerivedStateFromProps(component, inst) {
+  if (isFunction(inst.getDerivedStateFromProps)) {
+    let partialState = inst.getDerivedStateFromProps.call(
+      null,
+      component.props,
+      inst.state,
+    )
+    if (partialState != null) {
+      inst.state = Object.assign({}, inst.state, partialState);
+    }
+  }
+}
 export function mountComponent (
   vnode: FullComponent,
   parentContext: object,
@@ -82,15 +95,30 @@ export function mountComponent (
   if (isComponent(parentComponent)) {
     component._parentComponent = parentComponent
   }
-  if (isFunction(component.componentWillMount)) {
+  // component <=> inst, vnode <=> element 
+  callGetDerivedStateFromProps(vnode, component)
+
+  if (isFunction(component.componentWillMount) ||  isFunction(component.UNSAFE_componentWillMount)) {
     errorCatcher(() => {
-      (component as any).componentWillMount()
+      if (isFunction(component.componentWillMount)) {
+          // show warning
+        if (!isFunction(component.getDerivedStateFromProps)) {
+          (component as any).componentWillMount();
+        }
+      }
+      if (
+        isFunction(component.UNSAFE_componentWillMount) &&
+        !isFunction(component.getDerivedStateFromProps)
+      ) {
+        (component as any).UNSAFE_componentWillMount();
+      }
     }, component)
     component.state = component.getState()
     component.clearCallBacks()
   }
   component._dirty = false
   const rendered = renderComponent(component)
+  console.log('rendered is what', rendered)
   rendered.parentVNode = vnode
   component._rendered = rendered
   if (isFunction(component.componentDidMount)) {
@@ -107,7 +135,16 @@ export function mountComponent (
   component._disable = false
   return dom
 }
-
+export function mountMemoComponent (vnode: MemoComponent, parentContext) {
+  const rendered = vnode.type.render(vnode.props, parentContext)
+  vnode._rendered = ensureVirtualNode(rendered)
+  vnode._rendered.parentVNode = vnode
+  return (vnode.dom = mountVNode(vnode._rendered, parentContext) as Element)
+}
+export function mountExoticComponent (vnode, parentContext) {
+  // const rendered = 
+  console.log('mountExoticComponent', vnode)
+}
 export function mountStatelessComponent (vnode: Stateless, parentContext) {
   const rendered = vnode.type(vnode.props, parentContext)
   vnode._rendered = ensureVirtualNode(rendered)
@@ -153,15 +190,23 @@ export function flushMount () {
 
 export function reRenderComponent (
   prev: CompositeComponent,
-  current: CompositeComponent
+  current: CompositeComponent,
 ) {
   const component = (current.component = prev.component)
   const nextProps = current.props
   const nextContext = current.context
   component._disable = true
-  if (isFunction(component.componentWillReceiveProps)) {
+  // callGetDerivedStateFromProps(current, component)
+
+
+  if (isFunction(component.componentWillReceiveProps) ||isFunction(component.UNSAFE_componentWillReceiveProps)) {
     errorCatcher(() => {
-      (component as any).componentWillReceiveProps(nextProps, nextContext)
+      if (isFunction(component.componentWillReceiveProps)) {
+        (component as any).componentWillReceiveProps(nextProps, nextContext);
+      }
+      if (isFunction(component.UNSAFE_componentWillReceiveProps)) {
+        (component as any).UNSAFE_componentWillReceiveProps(nextProps, nextContext);
+      }
     }, component)
   }
   component._disable = false
@@ -188,6 +233,18 @@ export function reRenderStatelessComponent (
   current._rendered = rendered
   return (current.dom = patch(lastRendered, rendered, lastRendered && lastRendered.dom || domNode, parentContext))
 }
+export function reRenderMemoComponent (
+  prev: MemoComponent,
+  current: MemoComponent,
+  parentContext: Object,
+  domNode: Element
+) {
+  const lastRendered = prev._rendered
+  const rendered = current.type.render(current.props, parentContext)
+  rendered.parentVNode = current
+  current._rendered = rendered
+  return (current.dom = patch(lastRendered, rendered, lastRendered && lastRendered.dom || domNode, parentContext))
+}
 
 export function updateComponent (component, isForce = false) {
   let vnode = component.vnode
@@ -207,9 +264,14 @@ export function updateComponent (component, isForce = false) {
     component.shouldComponentUpdate(props, state, context) === false
   ) {
     skip = true
-  } else if (isFunction(component.componentWillUpdate)) {
+  } else if (isFunction(component.componentWillUpdate) || isFunction(component.UNSAFE_componentWillUpdate)) {
     errorCatcher(() => {
-      component.componentWillUpdate(props, state, context)
+        if (typeof component.componentWillUpdate === 'function') {
+          component.componentWillUpdate(props, state, context);
+        }
+        if (typeof component.UNSAFE_componentWillUpdate === 'function') {
+          component.UNSAFE_componentWillUpdate(props, state, context);
+        }
     }, component)
   }
   component.props = props
@@ -222,11 +284,12 @@ export function updateComponent (component, isForce = false) {
     rendered.parentVNode = vnode
     const childContext = getChildContext(component, context)
     const parentDom = lastRendered.dom && lastRendered.dom.parentNode
-    dom = vnode.dom = patch(lastRendered, rendered, parentDom || null, childContext)
+    dom = vnode.dom = patch(lastRendered, rendered, parentDom || null, childContext, undefined)
     component._rendered = rendered
     if (isFunction(component.componentDidUpdate)) {
       errorCatcher(() => {
         component.componentDidUpdate(prevProps, prevState, context)
+        // component.componentDidUpdate(prevProps, prevState, component.__snapshotBeforeUpdate)
       }, component)
     }
     options.afterUpdate(vnode)
@@ -259,5 +322,9 @@ export function unmountComponent (vnode: FullComponent) {
 }
 
 export function unmountStatelessComponent (vnode: Stateless) {
+  unmount(vnode._rendered)
+}
+
+export function unmountMemoComponent (vnode: MemoComponent) {
   unmount(vnode._rendered)
 }

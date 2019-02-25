@@ -6,9 +6,20 @@ import { EMPTY_CHILDREN, normalizeHTML } from './util'
 
 describe('Lifecycle methods', () => {
   let scratch
+  let scratch1
+  let scratch2
+  let scratch3
 
   beforeEach(() => {
     scratch = document.createElement('div')
+    scratch1 = document.createElement('div')
+    document.body.appendChild(scratch1)
+
+    scratch2 = document.createElement('div')
+    document.body.appendChild(scratch2)
+
+    scratch3 = document.createElement('div')
+    document.body.appendChild(scratch3)
   })
 
   describe('#componentWillUpdate', () => {
@@ -85,6 +96,106 @@ describe('Lifecycle methods', () => {
     })
 
     it('should be called after children are mounted', () => {
+      const log = []
+
+      class Inner extends Component {
+        componentDidMount () {
+          log.push('Inner mounted')
+          expect(scratch.querySelector('#inner')).toEqual(findDOMNode(this))
+        }
+
+        render () {
+          return <div id='inner' />
+        }
+      }
+
+      class Outer extends Component {
+        componentDidUpdate () {
+          log.push('Outer updated')
+        }
+
+        render () {
+          return this.props.renderInner ? <Inner /> : <div />
+        }
+      }
+
+      render(<Outer renderInner />, scratch)
+    })
+  })
+  describe('#UNSAFE_componentWillUpdate', () => {
+    it('unsafe should NOT be called on initial render', () => {
+      class ReceivePropsComponent extends Component {
+        UNSAFE_componentWillUpdate () {}
+        render () {
+          return <div />
+        }
+      }
+      const spy = sinon.spy(
+        ReceivePropsComponent.prototype,
+        'UNSAFE_componentWillUpdate'
+      )
+      render(<ReceivePropsComponent />, scratch)
+      expect(spy.called).toBeFalsy()
+    })
+
+    it('unsafe should be called when rerender with new props from parent', () => {
+      let doRender
+      class Outer extends Component {
+        constructor (p, c) {
+          super(p, c)
+          this.state = { i: 0 }
+        }
+        componentDidMount () {
+          doRender = () => this.setState({ i: this.state.i + 1 })
+        }
+        render () {
+          return <Inner i={this.state.i} {...this.props} />
+        }
+      }
+      class Inner extends Component {
+        UNSAFE_componentWillUpdate (nextProps, nextState) {
+          expect(nextProps).toEqual({ children: EMPTY_CHILDREN, i: 1 })
+          expect(nextState).toEqual({})
+        }
+        render () {
+          return <div />
+        }
+      }
+      const innerSpy = sinon.spy(Inner.prototype, 'UNSAFE_componentWillUpdate')
+      const outerSpy = sinon.spy(Outer.prototype, 'componentDidMount')
+
+      render(<Outer />, scratch)
+      expect(innerSpy.called).toBeFalsy()
+
+      doRender()
+      rerender()
+      expect(outerSpy.called).toBeTruthy()
+    })
+
+    it('unsafe should be called on new state', () => {
+      let doRender
+      class ReceivePropsComponent extends Component {
+        UNSAFE_componentWillUpdate () {}
+        componentDidMount () {
+          doRender = () => this.setState({ i: this.state.i + 1 })
+        }
+        render () {
+          return <div />
+        }
+      }
+      const spy = sinon.spy(
+        ReceivePropsComponent.prototype,
+        'UNSAFE_componentWillUpdate'
+      )
+      render(<ReceivePropsComponent />, scratch)
+      expect(spy.called).toBeFalsy()
+
+      doRender()
+      rerender()
+      expect(spy.called).toBeTruthy()
+    })
+
+    it('unsafe should be called after children are mounted', () => {
       const log = []
 
       class Inner extends Component {
@@ -209,6 +320,109 @@ describe('Lifecycle methods', () => {
       expect(cdm.called).toBeTruthy()
     })
   })
+  describe('#UNSAFE componentWillReceiveProps', () => {
+    it('unsafe should NOT be called on initial render', () => {
+      class ReceivePropsComponent extends Component {
+        UNSAFE_componentWillReceiveProps () {}
+        componentWillReceiveProps () {}
+        render () {
+          return <div />
+        }
+      }
+      const spy = sinon.spy(
+        ReceivePropsComponent.prototype,
+        'componentWillReceiveProps'
+      )
+      const spy1 = sinon.spy(
+        ReceivePropsComponent.prototype,
+        'UNSAFE_componentWillReceiveProps'
+      )
+      render(<ReceivePropsComponent />, scratch)
+      expect(spy.called).toBeFalsy()
+      expect(spy1.called).toBeFalsy()
+    })
+
+    it('unsafe should be called when rerender with new props from parent', () => {
+      let doRender
+      class Outer extends Component {
+        constructor (p, c) {
+          super(p, c)
+          this.state = { i: 0 }
+        }
+        componentDidMount () {
+          doRender = () => this.setState({ i: this.state.i + 1 })
+        }
+        render () {
+          return <Inner i={this.state.i} {...this.props} />
+        }
+      }
+      class Inner extends Component {
+        UNSAFE_componentWillMount () {
+          expect(this.props.i).toEqual(0)
+        }
+        UNSAFE_componentWillReceiveProps (nextProps) {
+          expect(nextProps.i).toEqual(1)
+        }
+        render () {
+          return <div />
+        }
+      }
+      const innerSpy = sinon.spy(Inner.prototype, 'UNSAFE_componentWillReceiveProps')
+      // const outerSpy = sinon.spy(Outer.prototype, 'componentDidMount')
+
+      render(<Outer />, scratch)
+      expect(innerSpy.called).toBeFalsy()
+
+      doRender()
+      rerender()
+      expect()
+      expect(innerSpy.called).toBeTruthy()
+    })
+
+    it('unsafe should be called in right execution order', () => {
+      let doRender
+      class Outer extends Component {
+        constructor (p, c) {
+          super(p, c)
+          this.state = { i: 0 }
+        }
+        componentDidMount () {
+          doRender = () => this.setState({ i: this.state.i + 1 })
+        }
+        render () {
+          return <Inner i={this.state.i} {...this.props} />
+        }
+      }
+      class Inner extends Component {
+        componentDidUpdate () {
+          expect(cwrp.called).toBeTruthy()
+          expect(cwu.called).toBeTruthy()
+        }
+        UNSAFE_componentWillReceiveProps () {
+          expect(cwrp.called).toBeTruthy()
+          expect(cdu.called).toBeFalsy()
+        }
+        UNSAFE_componentWillUpdate () {
+          expect(cwrp.called).toBeTruthy()
+          expect(cdu.called).toBeFalsy()
+        }
+        render () {
+          return <div />
+        }
+      }
+      const cwrp = sinon.spy(Inner.prototype, 'UNSAFE_componentWillReceiveProps')
+      const cdu = sinon.spy(Inner.prototype, 'componentDidUpdate')
+      const cwu = sinon.spy(Inner.prototype, 'UNSAFE_componentWillUpdate')
+      const cdm = sinon.spy(Outer.prototype, 'componentDidMount')
+
+      render(<Outer />, scratch)
+      doRender()
+      rerender()
+
+      expect(cwrp.called).toBeTruthy()
+      expect(cdm.called).toBeTruthy()
+    })
+  })
 
   describe('#componentWillMount', () => {
     it('should works like react', () => {
@@ -257,6 +471,160 @@ describe('Lifecycle methods', () => {
       }
 
       render(<App />, scratch)
+    })
+  })
+
+  // describe('#getSnapShotBeforeUpdate', () => {
+  //   it('should works like react', () => {
+  //     class App extends Component {
+  //       constructor (props) {
+  //         super(props)
+  //         this.index = 0
+  //         this.state = {
+  //           arr: [0]
+  //         }
+  //       }
+  //       render () {
+  //         return <ScrollingList arr={this.state.arr} />
+  //       }
+  //       componentDidMount () {
+  //         setInterval(() => {
+  //           const newArr = this.state.arr.concat([++this.index])
+  //           this.setState({
+  //             arr: newArr
+  //           })
+  //         }, 1000)
+  //       }
+  //     }
+  //     class ScrollingList extends Component {
+  //       constructor (props) {
+  //         super(props)
+  //         this.listRef = null
+  //       }
+  //       getSnapshotBeforeUpdate (prevProps, prevState) {
+  //         // Are we adding new items to the list?
+  //         // Capture the current height of the list so we can adjust scroll later.
+  //         if (prevProps.arr.length < this.props.arr.length) {
+  //           return this.listRef.current.scrollHeight
+  //         }
+  //         return null
+  //       }
+  //       componentDidUpdate (prevProps, prevState, snapshot) {
+  //         // If we have a snapshot value, we've just added new items.
+  //         // Adjust scroll so these new items don't push the old ones out of view.
+  //         if (snapshot !== null) {
+  //           this.listRef.current.scrollTop +=
+  //             this.listRef.current.scrollHeight - snapshot
+  //         }
+  //       }
+  //       render () {
+  //         const content = (this.props.arr || []).map((item, index) => {
+  //           return <div>content{item}</div>
+  //         })
+  //         return (
+  //           <div style={{height: '100px', overflow: 'scroll'}} ref={(ref) => { this.listRef = ref }}>
+  //             {content}
+  //           </div>
+  //         )
+  //       }
+  //     }
+  //     render(<App />, scratch3)
+  //   })
+  // })
+  describe('#getDerivedStateFromProps', () => {
+    it('should works like react', () => {
+      class Father extends Component {
+        constructor (props) {
+          super(props)
+          this.state = {
+            name: 'name from father'
+          }
+        }
+        render () {
+          return <div>
+            Father
+              <Son name={this.state.name} />
+          </div>
+        }
+        componentDidMount () {
+          this.setState({
+            name: 'new name from father!'
+          })
+        }
+      }
+      class Son extends Component {
+        constructor (props) {
+          super(props)
+          this.state = {
+            name: 'son\'s name'
+          }
+        }
+        static getDerivedStateFromProps (nextProps, prevState) {
+          console.log('test nextProps, prevState', nextProps, prevState)
+          return {
+            name: nextProps.name
+          }
+        }
+        render () {
+          return <div> state.name :{this.state.name} <div> props.name:{this.props.name}</div></div>
+        }
+      }
+
+      render(<Father />, scratch2)
+    })
+    it('get latest state', () => {
+      class App extends Component {
+        constructor (props) {
+          super(props)
+          this.state = {
+            msg: ''
+          }
+        }
+
+        componentWillMount () {
+          this.setState({
+            msg: 'test'
+          }, () => {
+            expect(this.state.msg).toBe('test')
+          })
+        }
+        render () {
+          return <div>{this.state.msg}</div>
+        }
+      }
+
+      render(<App />, scratch)
+    })
+  })
+  describe('#UNSAFE_componentWillMount', () => {
+    it('unsafe should works like react', () => {
+      const spy = sinon.spy()
+      class App extends Component {
+        constructor (props) {
+          super(props)
+          this.state = {
+            msg: ''
+          }
+        }
+        componentWillMount () {
+          console.log('test safeee')
+          this.setState({
+            msg: 'test unsafeeeee'
+          })
+        }
+        UNSAFE_componentWillMount () {
+          console.log('test unsafeee')
+          this.setState({
+            msg: 'test unsafe'
+          }, () => spy())
+        }
+        render () {
+          return <div>{this.state.msg}</div>
+        }
+      }
+
+      render(<App />, scratch1)
+      expect(spy.calledOnce).toBe(true)
     })
   })
 
@@ -328,7 +696,6 @@ describe('Lifecycle methods', () => {
       expect(barCwum.calledOnce).toBeTruthy()
     })
   })
-
   // const _it = it
   describe('#constructor and component(Did|Will)(Mount|Unmount)', () => {
     // /* global DISABLE_FLAKEY xit */

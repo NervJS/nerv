@@ -42,6 +42,8 @@ export function unmount (vnode, parentDom?) {
     }
   } else if (vtype & VType.Portal) {
     unmountChildren(vnode.children, vnode.type)
+  } else if (vtype & VType.Fragment) {
+    unmountChildren(vnode.children, vnode.type)
   }
 
   if (!isNullOrUndef(parentDom) && !isNullOrUndef(dom)) {

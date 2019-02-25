@@ -30,3 +30,12 @@ export function isNative (Ctor) {
 export function isUndefined (o): o is undefined {
   return o === undefined
 }
+
+export function isEmptyObject(arg): arg is Object {
+  if(arg) {
+  console.log('Object.keys', Object.keys(arg))
+
+    return Object.keys(arg).length < 0
+  }
+  return true
+}
