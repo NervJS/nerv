@@ -1,11 +1,12 @@
 import h from './vdom/h'
-import { isFunction, isString, isUndefined, doc } from 'nerv-utils'
+import { isFunction, isString, isUndefined } from 'nerv-utils'
 import FullComponent from './full-component'
 import {NervProviderWrapper as NervProvider, NervConsumerWrapper as NervConsumer, NervProviderConsumerElement} from './vdom/create-context'
 import { SuspenseComponent } from './vdom/suspense'
 import { MemoComponentWrapper as MemoComponent } from './vdom/memo'
 import StatelessComponent from './stateless-component'
 import { LazyComponentWrapper as LazyComponent } from './vdom/lazy'
+import { FragmentComponent } from './vdom/fragment'
 import CurrentOwner from './current-owner'
 import {
   Props,
@@ -14,7 +15,7 @@ import {
   VirtualChildren,
   EMPTY_CHILDREN,
   ForwardRefComponent,
-  Suspense
+  Suspense,
 } from 'nerv-shared'
 import SVGPropertyConfig from './vdom/svg-property-config'
 import { isObject } from 'util';
@@ -90,6 +91,11 @@ function createElement<T> (
     }
    
     props.owner = CurrentOwner.current
+    if(type.prototype && type.prototype.constructor && type.prototype.constructor.name === 'FragmentComponent') {
+      return new FragmentComponent(type, props)
+    }
+
+    // if(type.constructor)
     return type.prototype && type.prototype.render
       ? new FullComponent(type, props)
       : new StatelessComponent(type, props)
@@ -137,7 +143,7 @@ function createElement<T> (
         }
         let lazyComponent =  new LazyComponent(type, props)
         lazyComponent.readLazyComponent(type)
-        return doc.createDocumentFragment() // todo: return lazyComponent
+        return lazyComponent // todo: return lazyComponent
         // console.log('component lazyyy', component)
         // break;
       case VType.Suspense:

@@ -4,6 +4,8 @@ export function createFragment (children: VirtualNode): Fragment {
   return {
     vtype: VType.Fragment,
     children,
-    dom: null
+    dom: null,
+    props: null,
+    name: 'Fragment'
   }
 }

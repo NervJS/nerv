@@ -14,7 +14,8 @@ import {
   Suspense,
   LazyComponent,
   NervConsumer,
-  NervProvider
+  NervProvider,
+  Fragment
 } from 'nerv-shared'
 import { patchProp } from './patch'
 import Ref from './ref'
@@ -29,6 +30,7 @@ export function createElement (
   parentComponent?
 ): Element | Text | Comment | DocumentFragment | null {
   let domNode
+  console.log('vnode123', vnode, VType.Fragment)
   if (isValidElement(vnode)) {
     const vtype = vnode.vtype
    if (vtype & (VType.Composite | VType.Stateless)) {
@@ -76,17 +78,18 @@ export function createElement (
       )
       domNode = doc.createTextNode('')
     } else if (isFragment(vtype, vnode)) {
-      let children = vnode.children
       domNode = doc.createDocumentFragment()
-    
-      if (isArray(children)) {
-        for (let i = 0, len = children.length; i < len; i++) {
-          let child = children[i] as VNode
-          mountChild( child, domNode, parentContext, isSvg, parentComponent )
+      let children = (vnode as Fragment).props.children
+      if(!isArray(children)) { children = [children]}
+      children.map && children.map((child) => {
+        if (!isInvalid(child)) {
+          const childNode = createElement(child, isSvg, parentContext, parentComponent)
+          if (childNode) {
+            domNode.appendChild(childNode)
+          }
         }
-      } else {
-        mountChild( children as VNode, domNode, parentContext, isSvg, parentComponent )
-      }
+      });
+      (vnode as any).dom = domNode
     } 
   } else if (isString(vnode) || isNumber(vnode)) {
     domNode = doc.createTextNode(vnode as string)

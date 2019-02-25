@@ -12,7 +12,7 @@ import { createFragment } from './vdom/create-fragment'
 import { createRef, forwardRef } from './vdom/create-ref'
 import { memo } from './vdom/memo'
 import { lazy } from './vdom/lazy'
-import { Fragment } from './vdom/fragment'
+import { FragmentComponent as Fragment } from './vdom/fragment'
 import { version } from './version'
 import { SuspenseComponent as Suspense } from './vdom/suspense'
 import {

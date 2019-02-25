@@ -84,6 +84,7 @@ export interface Fragment {
   children: VirtualNode
   dom: null | Element
   props: any
+  name: string
 }
 export interface Suspense extends Widget{
   vtype: VType

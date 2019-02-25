@@ -37,6 +37,7 @@ describe('createFragment', () => {
         })
       }
       render () {
+        console.log('fra', <Fragment />)
         return (
           <div className='test_fragment' ref={node => (this.static = node)}>
             <div className='test_fragment_1'>
