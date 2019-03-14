@@ -180,7 +180,7 @@ export function reRenderStatelessComponent (
   prev: Stateless,
   current: Stateless,
   parentContext: Object,
-  domNode: Element
+  domNode: Element | null
 ) {
   const lastRendered = prev._rendered
   const rendered = current.type(current.props, parentContext)

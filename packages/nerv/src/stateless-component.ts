@@ -27,12 +27,12 @@ class StateLessComponent {
     return mountStatelessComponent(this, parentContext)
   }
 
-  update (previous, current, parentContext) {
-    const { props, context } = current
+  update (previous: this, current: this, parentContext) {
+    const { props } = current
     const shouldComponentUpdate = props.onShouldComponentUpdate
     if (
       isFunction(shouldComponentUpdate) &&
-      !shouldComponentUpdate(previous.props, props, context)
+      !shouldComponentUpdate(previous.props, props)
     ) {
       current._rendered = previous._rendered
       return previous.dom
