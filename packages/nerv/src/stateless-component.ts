@@ -5,6 +5,7 @@ import {
   unmountStatelessComponent,
   reRenderStatelessComponent
 } from './lifecycle'
+import { CurrentHook } from './hooks'
 
 class StateLessComponent {
   vtype = VType.Stateless
@@ -15,6 +16,15 @@ class StateLessComponent {
   _rendered: any
   key: any
   dom: Element | null
+  parentContext: any
+  isRendering = false
+  hooks = {
+    component: this,
+    list: [] as any[],
+    effects: [] as any[],
+    layoutEffects: [] as any
+  } as any
+
   constructor (type, props) {
     this.type = type
     this._owner = props.owner
@@ -24,11 +34,18 @@ class StateLessComponent {
   }
 
   init (parentContext) {
-    return mountStatelessComponent(this, parentContext)
+    // this.parentContext = parentContext
+    CurrentHook.component = this
+    CurrentHook.index = 0
+    const dom = mountStatelessComponent(this, parentContext)
+    return dom
   }
 
   update (previous: this, current: this, parentContext) {
+    // this.parentContext = parentContext
     const { props } = current
+    CurrentHook.component = this
+    CurrentHook.index = 0
     const shouldComponentUpdate = props.onShouldComponentUpdate
     if (
       isFunction(shouldComponentUpdate) &&
@@ -37,7 +54,12 @@ class StateLessComponent {
       current._rendered = previous._rendered
       return previous.dom
     }
-    return reRenderStatelessComponent(previous, this, parentContext, previous.dom)
+    const dom = reRenderStatelessComponent(previous, this, parentContext, previous.dom)
+    return dom
+  }
+
+  forceUpdate () {
+    this.update(this, this, this.parentContext)
   }
 
   destroy () {

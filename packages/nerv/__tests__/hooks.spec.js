@@ -2,14 +2,14 @@
 import { createElement, useEffect, useState, useReducer, useLayoutEffect, render, nextTick } from '../src'
 import sinon from 'sinon'
 
-describe('Lifecycle methods', () => {
+describe('hooks', () => {
   let scratch
 
   beforeEach(() => {
     scratch = document.createElement('div')
   })
 
-  describe('useState', () => {
+  describe.only('useState', () => {
     it('serves the same state across render calls', () => {
       const stateHistory = []
 
@@ -34,7 +34,7 @@ describe('Lifecycle methods', () => {
         const [state, setState] = useState(0)
         lastState = state
         doSetState = setState
-        return null
+        return <div />
       })
 
       render(<Comp />, scratch)
@@ -54,11 +54,15 @@ describe('Lifecycle methods', () => {
     })
 
     it('can be set by another component', async () => {
+      let handleClick
       function StateContainer () {
         const [count, setCount] = useState(0)
+        handleClick = () => {
+          setCount(c => c + 10)
+        }
         return (<div>
           <p>Count: {count}</p>
-          <Increment increment={() => setCount(c => c + 10)} />
+          <Increment increment={handleClick} />
         </div>)
       }
 
@@ -68,9 +72,9 @@ describe('Lifecycle methods', () => {
 
       render(<StateContainer />, scratch)
       expect(scratch.textContent).toMatch('Count: 0')
+      console.log(scratch.textContent)
 
-      const button = scratch.querySelector('button')
-      button.click()
+      handleClick()
 
       // rerender()
       await nextTick()
@@ -86,7 +90,7 @@ describe('Lifecycle methods', () => {
       }
 
       render(<Comp />, scratch)
-      render(<Comp />, scratch)
+      // render(<Comp />, scratch)
 
       expect(initState.calledOnce).toBeTruthy()
     })
