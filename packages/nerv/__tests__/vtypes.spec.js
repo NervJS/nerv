@@ -40,7 +40,7 @@ describe('vtypes', () => {
     expect(t.vtype).toBe(VType.Composite)
   })
 
-  it('stateless type', () => {
+  it.skip('stateless type', () => {
     const T = () => <div />
     const t = <T />
     expect(t.vtype).toBe(VType.Stateless)

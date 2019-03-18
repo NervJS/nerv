@@ -2,6 +2,7 @@ import { mountVNode, flushMount } from './lifecycle'
 import { VirtualNode, isComposite } from 'nerv-shared'
 import { patch } from './vdom/patch'
 import options from './options'
+import { rerender } from './render-queue';
 
 export function render (
   vnode: VirtualNode,
@@ -17,6 +18,7 @@ export function render (
   if (lastVnode !== undefined) {
     options.roots = options.roots.filter((item) => item !== lastVnode)
     dom = patch(lastVnode, vnode, container, {})
+    rerender(true)
   } else {
     dom = mountVNode(vnode, {})
     container.appendChild(dom)

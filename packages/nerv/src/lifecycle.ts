@@ -22,6 +22,7 @@ import Stateless from './stateless-component'
 import { unmount } from './vdom/unmount'
 import Ref from './vdom/ref'
 import options from './options'
+import ComponentInst from './component'
 
 const readyComponents: any[] = []
 
@@ -76,7 +77,13 @@ export function mountComponent (
   parentComponent
 ) {
   const ref = vnode.ref
-  vnode.component = new vnode.type(vnode.props, parentContext)
+  if (vnode.type.prototype && vnode.type.prototype.render) {
+    vnode.component = new vnode.type(vnode.props, parentContext)
+  } else {
+    const c = new ComponentInst(vnode.props, parentContext)
+    c.render = () => vnode.type.call(c, c.props, c.context)
+    vnode.component = c as any
+  }
   const component = vnode.component
   component.vnode = vnode
   if (isComponent(parentComponent)) {

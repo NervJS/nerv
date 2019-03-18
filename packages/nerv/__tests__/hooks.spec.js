@@ -2,14 +2,14 @@
 import { createElement, useEffect, useState, useReducer, useLayoutEffect, render, nextTick } from '../src'
 import sinon from 'sinon'
 
-describe('hooks', () => {
+describe.skip('hooks', () => {
   let scratch
 
   beforeEach(() => {
     scratch = document.createElement('div')
   })
 
-  describe.only('useState', () => {
+  describe('useState', () => {
     it('serves the same state across render calls', () => {
       const stateHistory = []
 

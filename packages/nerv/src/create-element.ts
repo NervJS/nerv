@@ -1,16 +1,16 @@
 import h from './vdom/h'
 import { isFunction, isString, isUndefined } from 'nerv-utils'
 import FullComponent from './full-component'
-import StatelessComponent from './stateless-component'
+// import StatelessComponent from './stateless-component'
 import CurrentOwner from './current-owner'
 import {
   Props,
-  Component,
   VNode,
   VirtualChildren,
   EMPTY_CHILDREN
 } from 'nerv-shared'
 import SVGPropertyConfig from './vdom/svg-property-config'
+import Component from './component'
 
 function transformPropsForRealTag (type: string, props: Props) {
   const newProps: Props = {}
@@ -80,9 +80,7 @@ function createElement<T> (
       props.children = children || children === 0 ? children : EMPTY_CHILDREN
     }
     props.owner = CurrentOwner.current
-    return type.prototype && type.prototype.render
-      ? new FullComponent(type, props)
-      : new StatelessComponent(type, props)
+    return new FullComponent(type, props)
   }
   return type
 }

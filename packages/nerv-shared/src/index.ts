@@ -130,7 +130,7 @@ export interface Component<P, S> extends ComponentLifecycle<P, S> {
   getState (): S
   // tslint:disable-next-line:member-ordering
   refs: Refs
-  render (): VirtualNode
+  render (props?, context?): VirtualNode
 }
 
 export function isNullOrUndef (o: any): o is undefined | null {
