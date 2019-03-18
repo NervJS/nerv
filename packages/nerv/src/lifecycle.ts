@@ -82,7 +82,7 @@ export function mountComponent (
   } else {
     const c = new ComponentInst(vnode.props, parentContext)
     c.render = () => vnode.type.call(c, c.props, c.context)
-    vnode.component = c as any
+    vnode.component = c
   }
   const component = vnode.component
   component.vnode = vnode
@@ -133,6 +133,7 @@ export function getChildContext (component, context = EMPTY_OBJ) {
 
 export function renderComponent (component: Component<any, any>) {
   CurrentOwner.current = component
+  CurrentOwner.index = 0
   let rendered
   errorCatcher(() => {
     rendered = component.render()

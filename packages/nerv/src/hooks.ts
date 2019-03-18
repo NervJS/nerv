@@ -1,19 +1,11 @@
 import { isFunction } from 'nerv-utils'
-import StatelessComponent from './stateless-component'
-
-export const CurrentHook = {
-  component: null,
-  index: 0
-} as {
-  component: StatelessComponent | null,
-  index: number
-}
+import Current from './current-owner'
 
 function getHooks (index: number) {
-  if (CurrentHook.component === null) {
-    throw new Error(`invalid hooks call: hooks can only be called in stateless component.`)
+  if (Current.current === null) {
+    throw new Error(`invalid hooks call: hooks can only be called in a stateless component.`)
   }
-  const hooks = CurrentHook.component.hooks
+  const hooks = Current.current.hooks
   if (index >= hooks.list.length) {
     hooks.list.push({})
   }
@@ -34,14 +26,15 @@ export function useState<S> (initialState: S | (() => S)): [S, Dispatch<SetState
   if (isFunction(initialState)) {
     initialState = initialState()
   }
-  const hook = getHooks(CurrentHook.index++)
+  const hook = getHooks(Current.index++)
   if (!hook.value) {
-    hook.component = CurrentHook.component!
+    hook.component = Current.current!
     hook.value = [
       initialState,
       (action: Dispatch<SetStateAction<S>>) => {
         hook.value[0] = isFunction(action) ? action(hook.value[0]) : action
-        hook.component!.forceUpdate()
+        hook.component._disable = false
+        hook.component.setState({})
       }
     ]
   }

@@ -1,17 +1,22 @@
 import { isFunction, extend, clone, isArray } from 'nerv-utils'
 import { enqueueRender } from './render-queue'
 import { updateComponent } from './lifecycle'
-import { Props, ComponentLifecycle, Refs, EMPTY_OBJ } from 'nerv-shared'
+import { Props, ComponentLifecycle, Refs, EMPTY_OBJ, Component as ComponentInst, CompositeComponent } from 'nerv-shared'
 
 interface Component<P = {}, S = {}> extends ComponentLifecycle<P, S> {
   _rendered: any
   dom: any
 }
 
-class Component<P, S> implements ComponentLifecycle<P, S> {
+class Component<P, S> implements ComponentInst<P, S> {
   public static defaultProps: {}
   state: Readonly<S>
   props: Readonly<P> & Readonly<Props>
+  prevProps: P
+  prevState: S
+  prevContext: object
+  _parentComponent: ComponentInst<any, any>
+  vnode: CompositeComponent
   context: any
   _dirty = true
   _disable = true
@@ -19,6 +24,12 @@ class Component<P, S> implements ComponentLifecycle<P, S> {
   _pendingCallbacks: Function[]
   refs: Refs
   isReactComponent: Object
+  hooks = {
+    component: this,
+    list: [] as any[],
+    effects: [] as any[],
+    layoutEffects: [] as any
+  } as any
 
   constructor (props?: P, context?: any) {
     if (!this.state) {
@@ -41,6 +52,7 @@ class Component<P, S> implements ComponentLifecycle<P, S> {
     if (isFunction(callback)) {
       (this._pendingCallbacks = this._pendingCallbacks || []).push(callback)
     }
+    debugger
     if (!this._disable) {
       enqueueRender(this)
     }
@@ -62,7 +74,7 @@ class Component<P, S> implements ComponentLifecycle<P, S> {
       extend(stateClone, nextState)
     })
 
-    return stateClone
+    return stateClone as S
   }
 
   clearCallBacks () {

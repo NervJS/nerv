@@ -1,7 +1,11 @@
+import { Component } from 'nerv-shared'
+
 const Current: {
-  current: any
+  current: null | Component<any, any>,
+  index: number
 } = {
-  current: null
+  current: null,
+  index: 0
 }
 
 export default Current

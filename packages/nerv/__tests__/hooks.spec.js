@@ -1,15 +1,16 @@
 /** @jsx createElement */
 import { createElement, useEffect, useState, useReducer, useLayoutEffect, render, nextTick } from '../src'
+import { delay } from './util'
 import sinon from 'sinon'
 
-describe.skip('hooks', () => {
+describe('hooks', () => {
   let scratch
 
   beforeEach(() => {
     scratch = document.createElement('div')
   })
 
-  describe('useState', () => {
+  describe.only('useState', () => {
     it('serves the same state across render calls', () => {
       const stateHistory = []
 
@@ -108,7 +109,7 @@ describe.skip('hooks', () => {
       expect(scratch.childNodes[0].childNodes[0].data).toEqual('2')
     })
 
-    it('lazy state initializer', () => {
+    it('lazy state initializer', async () => {
       let stateUpdater = null
       function Counter (props) {
         const [count, updateCount] = useState(() => {
@@ -122,10 +123,11 @@ describe.skip('hooks', () => {
       expect(scratch.childNodes[0].childNodes[0].data).toEqual('2')
 
       stateUpdater(10)
+      await nextTick()
       expect(scratch.childNodes[0].childNodes[0].data).toEqual('10')
     })
 
-    it('returns the same updater function every time', () => {
+    it('returns the same updater function every time', async () => {
       const updaters = []
       function Counter () {
         const [count, updateCount] = useState(0)
@@ -138,16 +140,20 @@ describe.skip('hooks', () => {
 
       updaters[0](1)
 
+      await nextTick()
+
       expect(scratch.childNodes[0].childNodes[0].data).toEqual('1')
 
       updaters[0](count => count + 10)
+
+      await nextTick()
 
       expect(scratch.childNodes[0].childNodes[0].data).toEqual('11')
 
       expect(updaters).toEqual([updaters[0], updaters[0], updaters[0]])
     })
 
-    it('updates multiple times within same render function', () => {
+    it('updates multiple times within same render function', async () => {
       const logs = []
       function Counter ({row: newRow}) {
         const [count, setCount] = useState(0)
@@ -161,6 +167,7 @@ describe.skip('hooks', () => {
       }
 
       render(<Counter />, scratch)
+      await delay(50)
       expect(logs).toEqual([
         // Should increase by three each time
         'Render: 0',
@@ -169,6 +176,7 @@ describe.skip('hooks', () => {
         'Render: 9',
         'Render: 12'
       ])
+
       expect(scratch.childNodes[0].childNodes[0].data).toEqual('12')
     })
   })
