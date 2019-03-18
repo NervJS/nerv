@@ -236,8 +236,8 @@ describe('hooks', () => {
     })
   })
 
-  describe('useReducer', () => {
-    it('works with useReducer', () => {
+  describe.only('useReducer', () => {
+    it('works with useReducer', async () => {
       const logs = []
       function reducer (state, action) {
         return action === 'increment' ? state + 1 : state
@@ -252,6 +252,7 @@ describe('hooks', () => {
       }
 
       render(<Counter />, scratch)
+      await delay(5)
       expect(logs).toEqual([
         'Render: 0',
         'Render: 1',

@@ -1,4 +1,4 @@
-import { isFunction } from 'nerv-utils'
+import { isFunction, isUndefined } from 'nerv-utils'
 import Current from './current-owner'
 
 function getHooks (index: number) {
@@ -22,6 +22,10 @@ type Inputs = ReadonlyArray<any>
 
 type Reducer<S, A> = (prevState: S, action: A) => S
 
+type ReducerState<R extends Reducer<any, any>> = R extends Reducer<infer S, any> ? S : never
+
+type ReducerAction<R extends Reducer<any, any>> = R extends Reducer<any, infer A> ? A : never
+
 export function useState<S> (initialState: S | (() => S)): [S, Dispatch<SetStateAction<S>>] {
   if (isFunction(initialState)) {
     initialState = initialState()
@@ -41,8 +45,27 @@ export function useState<S> (initialState: S | (() => S)): [S, Dispatch<SetState
   return hook.value
 }
 
-export function useReducer<S, A> (reducer: Reducer<S, A>, initialState: S): [S, (action: A) => void] | any {
-  return []
+export function useReducer<R extends Reducer<any, any>, I> (
+  reducer: R,
+  initialState: I & ReducerState<R>,
+  initializer?: (arg: I & ReducerState<R>) => ReducerState<R>
+): [ReducerState<R>, Dispatch<ReducerAction<R>>] {
+  if (isFunction(initialState)) {
+    initialState = initialState()
+  }
+  const hook = getHooks(Current.index++)
+  if (!hook.value) {
+    hook.component = Current.current!
+    hook.value = [
+      isUndefined(initializer) ? initialState : initializer(initialState),
+      (action: Dispatch<ReducerAction<R>>) => {
+        hook.value[0] = reducer(hook.value[0], action)
+        hook.component._disable = false
+        hook.component.setState({})
+      }
+    ]
+  }
+  return hook.value
 }
 
 export function useEffect (effect: EffectCallback, inputs?: Inputs): void {
