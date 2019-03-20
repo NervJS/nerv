@@ -1,4 +1,4 @@
-import { Component } from 'nerv-shared'
+import Component from './component'
 
 const Current: {
   current: null | Component<any, any>,

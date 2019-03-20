@@ -1,9 +1,10 @@
-import { VType, Component, CompositeComponent, Ref } from 'nerv-shared'
+import { VType, CompositeComponent, Ref } from 'nerv-shared'
 import {
   mountComponent,
   reRenderComponent,
   unmountComponent
 } from './lifecycle'
+import Component from './component'
 
 class ComponentWrapper implements CompositeComponent {
   vtype = VType.Composite

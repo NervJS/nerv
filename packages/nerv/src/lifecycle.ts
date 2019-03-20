@@ -6,7 +6,6 @@ import createVText from './vdom/create-vtext'
 import { createVoid } from './vdom/create-void'
 import patch from './vdom/patch'
 import {
-  Component,
   isNullOrUndef,
   CompositeComponent,
   isComponent,
@@ -15,14 +14,16 @@ import {
   VVoid,
   VNode,
   VType,
-  EMPTY_OBJ
+  EMPTY_OBJ,
+  EMPTY_CHILDREN
 } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
 import { unmount } from './vdom/unmount'
 import Ref from './vdom/ref'
 import options from './options'
-import ComponentInst from './component'
+import Component from './component'
+import { invokeEffects } from './hooks';
 
 const readyComponents: any[] = []
 
@@ -80,14 +81,14 @@ export function mountComponent (
   if (vnode.type.prototype && vnode.type.prototype.render) {
     vnode.component = new vnode.type(vnode.props, parentContext)
   } else {
-    const c = new ComponentInst(vnode.props, parentContext)
+    const c = new Component(vnode.props, parentContext)
     c.render = () => vnode.type.call(c, c.props, c.context)
     vnode.component = c
   }
   const component = vnode.component
   component.vnode = vnode
   if (isComponent(parentComponent)) {
-    component._parentComponent = parentComponent
+    component._parentComponent = parentComponent as any
   }
   if (isFunction(component.componentWillMount)) {
     errorCatcher(() => {
@@ -111,6 +112,7 @@ export function mountComponent (
     getChildContext(component, parentContext),
     component
   ) as Element)
+  invokeEffects(component)
   component._disable = false
   return dom
 }
@@ -134,6 +136,7 @@ export function getChildContext (component, context = EMPTY_OBJ) {
 export function renderComponent (component: Component<any, any>) {
   CurrentOwner.current = component
   CurrentOwner.index = 0
+  invokeEffects(component, true)
   let rendered
   errorCatcher(() => {
     rendered = component.render()
@@ -165,7 +168,7 @@ export function reRenderComponent (
   prev: CompositeComponent,
   current: CompositeComponent
 ) {
-  const component = (current.component = prev.component)
+  const component = (current.component = prev.component) as any
   const nextProps = current.props
   const nextContext = current.context
   component._disable = true
@@ -253,6 +256,7 @@ export function updateComponent (component, isForce = false) {
   component.prevContext = component.context
   component.clearCallBacks()
   flushMount()
+  invokeEffects(component)
   return dom
 }
 

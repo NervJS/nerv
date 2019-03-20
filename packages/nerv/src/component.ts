@@ -1,12 +1,23 @@
-import { isFunction, extend, clone, isArray } from 'nerv-utils'
+import { isFunction, extend, clone, isArray, nextTick } from 'nerv-utils'
 import { enqueueRender } from './render-queue'
 import { updateComponent } from './lifecycle'
-import { Props, ComponentLifecycle, Refs, EMPTY_OBJ, Component as ComponentInst, CompositeComponent } from 'nerv-shared'
+import {
+  Props,
+  ComponentLifecycle,
+  Refs,
+  EMPTY_OBJ,
+  Component as ComponentInst,
+  CompositeComponent,
+  EMPTY_CHILDREN
+} from 'nerv-shared'
+import { Hook, HookEffect, invokeEffects } from './hooks'
 
 interface Component<P = {}, S = {}> extends ComponentLifecycle<P, S> {
   _rendered: any
   dom: any
 }
+
+const scheduleEffects: Array<Component<any, any>> = []
 
 class Component<P, S> implements ComponentInst<P, S> {
   public static defaultProps: {}
@@ -15,7 +26,7 @@ class Component<P, S> implements ComponentInst<P, S> {
   prevProps: P
   prevState: S
   prevContext: object
-  _parentComponent: ComponentInst<any, any>
+  _parentComponent: Component<any, any>
   vnode: CompositeComponent
   context: any
   _dirty = true
@@ -24,12 +35,10 @@ class Component<P, S> implements ComponentInst<P, S> {
   _pendingCallbacks: Function[]
   refs: Refs
   isReactComponent: Object
-  hooks = {
-    component: this,
-    list: [] as any[],
-    effects: [] as any[],
-    layoutEffects: [] as any
-  } as any
+  _afterScheduleEffect = false
+  hooks: Hook[] = []
+  effects: HookEffect[] = EMPTY_CHILDREN
+  layoutEffects: HookEffect[] = EMPTY_CHILDREN
 
   constructor (props?: P, context?: any) {
     if (!this.state) {
@@ -52,7 +61,6 @@ class Component<P, S> implements ComponentInst<P, S> {
     if (isFunction(callback)) {
       (this._pendingCallbacks = this._pendingCallbacks || []).push(callback)
     }
-    debugger
     if (!this._disable) {
       enqueueRender(this)
     }
@@ -81,6 +89,24 @@ class Component<P, S> implements ComponentInst<P, S> {
     if (isArray(this._pendingCallbacks)) {
       while (this._pendingCallbacks.length) {
         (this._pendingCallbacks.pop() as any).call(this)
+      }
+    }
+  }
+  invokeScheduleEffects () {
+    if (!this._afterScheduleEffect) {
+      this._afterScheduleEffect = true
+      scheduleEffects.push(this)
+      if (scheduleEffects.length === 1) {
+        nextTick(() => {
+          debugger
+          scheduleEffects.forEach((component) => {
+            component._afterScheduleEffect = false
+            if (!component.vnode.dom) {
+              return
+            }
+            invokeEffects(component, true)
+          })
+        })
       }
     }
   }

@@ -36,7 +36,7 @@ export interface StatelessComponent extends Widget {
   dom: Element | null
 }
 
-export const EMPTY_CHILDREN = []
+export const EMPTY_CHILDREN: any[] = []
 
 export const EMPTY_OBJ = {}
 
