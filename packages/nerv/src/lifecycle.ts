@@ -14,8 +14,7 @@ import {
   VVoid,
   VNode,
   VType,
-  EMPTY_OBJ,
-  EMPTY_CHILDREN
+  EMPTY_OBJ
 } from 'nerv-shared'
 import FullComponent from './full-component'
 import Stateless from './stateless-component'
@@ -23,7 +22,7 @@ import { unmount } from './vdom/unmount'
 import Ref from './vdom/ref'
 import options from './options'
 import Component from './component'
-import { invokeEffects } from './hooks';
+import { invokeEffects } from './hooks'
 
 const readyComponents: any[] = []
 

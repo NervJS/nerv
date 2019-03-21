@@ -2,6 +2,7 @@ import { isFunction, isUndefined } from 'nerv-utils'
 import Current from './current-owner'
 import { isNullOrUndef } from 'nerv-shared'
 import Component from './component'
+import { RefObject } from './create-ref'
 
 function getHooks (index: number): Hook {
   if (Current.current === null) {
@@ -88,12 +89,16 @@ export interface HookState<S> {
   state: [S, Dispatch<SetStateAction<S>>]
 }
 
+export interface HookRef<T> {
+  ref?: RefObject<T>
+}
+
 export interface HookReducer<R extends Reducer<any, any>, I> {
   component: Component<any, any>
   state: [ReducerState<R>, Dispatch<ReducerAction<R>>]
 }
 
-export type Hook = HookEffect & HookState<unknown> & HookReducer<any, unknown>
+export type Hook = HookEffect & HookState<unknown> & HookReducer<any, unknown> & HookRef<unknown>
 
 export function invokeEffects (component: Component<any, any>, delay: boolean = false) {
   const effects = delay ? component.effects : component.layoutEffects
@@ -135,4 +140,14 @@ export function useEffect (effect: EffectCallback, deps?: Inputs): void {
 
 export function useLayoutEffect (effect: EffectCallback, deps?: Inputs): void {
   useEffectImpl(effect, deps)
+}
+
+export function useRef<T> (initialValue?: T): RefObject<T> {
+  const hook = getHooks(Current.index++) as HookRef<T>
+  if (!hook.ref) {
+    hook.ref = {
+      current: initialValue
+    }
+  }
+  return hook.ref
 }

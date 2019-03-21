@@ -98,14 +98,15 @@ class Component<P, S> implements ComponentInst<P, S> {
       scheduleEffects.push(this)
       if (scheduleEffects.length === 1) {
         nextTick(() => {
-          debugger
-          scheduleEffects.forEach((component) => {
-            component._afterScheduleEffect = false
-            if (!component.vnode.dom) {
-              return
-            }
-            invokeEffects(component, true)
-          })
+          setTimeout(() => {
+            scheduleEffects.forEach((component) => {
+              component._afterScheduleEffect = false
+              if (!component.vnode.dom) {
+                return
+              }
+              invokeEffects(component, true)
+            })
+          }, 0)
         })
       }
     }

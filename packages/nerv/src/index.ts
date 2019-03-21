@@ -18,7 +18,8 @@ import {
   isValidElement
 } from './dom'
 import { PropTypes } from './prop-types' // for React 15- compat
-import { useEffect, useLayoutEffect, useReducer, useState } from './hooks'
+import { useEffect, useLayoutEffect, useReducer, useState, useRef } from './hooks'
+import { createRef, forwardRef } from './create-ref'
 
 export {
   Children,
@@ -39,7 +40,9 @@ export {
   unstable_batchedUpdates,
   version,
   PropTypes,
-  useEffect, useLayoutEffect, useReducer, useState
+  createRef,
+  forwardRef,
+  useEffect, useLayoutEffect, useReducer, useState, useRef
 }
 
 export default {
@@ -61,5 +64,7 @@ export default {
   unstable_batchedUpdates,
   version,
   PropTypes,
-  useEffect, useLayoutEffect, useReducer, useState
+  createRef,
+  forwardRef,
+  useEffect, useLayoutEffect, useReducer, useState, useRef
 } as any

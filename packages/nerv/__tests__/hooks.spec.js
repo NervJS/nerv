@@ -10,7 +10,7 @@ describe('hooks', () => {
     scratch = document.createElement('div')
   })
 
-  describe.only('useState', () => {
+  describe('useState', () => {
     it('serves the same state across render calls', () => {
       const stateHistory = []
 
@@ -181,7 +181,7 @@ describe('hooks', () => {
     })
   })
 
-  describe('useEffect', () => {
+  describe.skip('useEffect', () => {
     it('emit effect after render', async () => {
       let counter = 0
 
@@ -221,6 +221,7 @@ describe('hooks', () => {
 
       function Comp () {
         useEffect(() => {
+          debugger
           counter += 1
         })
         return <div />
@@ -229,12 +230,12 @@ describe('hooks', () => {
       render(<Comp />, scratch)
 
       await delay(5)
-
+      await nextTick()
       expect(counter).toBe(1)
     })
   })
 
-  describe.only('useReducer', () => {
+  describe('useReducer', () => {
     it('works with useReducer', async () => {
       const logs = []
       function reducer (state, action) {
@@ -261,7 +262,7 @@ describe('hooks', () => {
     })
   })
 
-  describe.only('useLayoutEffect', () => {
+  describe('useLayoutEffect', () => {
     it('mount and update a function component with useLayoutEffect', () => {
       let renderCounter = 0
       let effectCounter = 0
@@ -356,7 +357,7 @@ describe('hooks', () => {
           },
           [count]
         )
-        ++renderCounter
+        // ++renderCounter
         return <span>{count}</span>
       }
 

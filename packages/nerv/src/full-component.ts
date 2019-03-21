@@ -28,6 +28,10 @@ class ComponentWrapper implements CompositeComponent {
     if ((this.ref = props.ref)) {
       delete props.ref
     }
+    if (type._forwarded) {
+      props.ref = this.ref
+      delete this.ref
+    }
     this.props = props
     this.key = props.key || null
     this.dom = null
