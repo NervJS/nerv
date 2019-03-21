@@ -87,7 +87,6 @@ export function mountComponent (
       (component as any).componentWillMount()
     }, component)
     component.state = component.getState()
-    component.clearCallBacks()
   }
   component._dirty = false
   const rendered = renderComponent(component)
@@ -105,6 +104,7 @@ export function mountComponent (
     component
   ) as Element)
   component._disable = false
+  component.clearCallBacks()
   return dom
 }
 
