@@ -70,4 +70,4 @@ export default {
   forwardRef,
   memo,
   useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo
-} as any
+}

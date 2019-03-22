@@ -26,7 +26,7 @@ export function unmount (vnode, parentDom?) {
   // see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_Operators
   const dom = vnode.dom
 
-  if ((vtype & (VType.Composite | VType.Stateless)) > 0) {
+  if ((vtype & (VType.Composite)) > 0) {
     options.beforeUnmount(vnode)
     vnode.destroy()
   } else if ((vtype & VType.Node) > 0) {

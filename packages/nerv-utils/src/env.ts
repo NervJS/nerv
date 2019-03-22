@@ -8,6 +8,7 @@ export var global = (function() {
     local = self
   } else {
     try {
+      // tslint:disable-next-line:function-constructor
       local = Function('return this')()
     } catch (e) {
       throw new Error('global object is unavailable in this environment')

@@ -52,7 +52,7 @@ export function patch (
         Ref.update(lastVnode, nextVnode, lastDom)
       }
       newDom = lastDom
-    } else if ((vtype & (VType.Composite | VType.Stateless)) > 0) {
+    } else if ((vtype & (VType.Composite)) > 0) {
       newDom = nextVnode.update(lastVnode, nextVnode, context)
       options.afterUpdate(nextVnode)
     } else if (vtype & VType.Text) {

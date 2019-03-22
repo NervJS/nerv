@@ -5,7 +5,6 @@ import {
   isWidget,
   isVText,
   isValidElement,
-  isStateless,
   isNullOrUndef
 } from 'nerv-shared'
 const isArray = Array.isArray
@@ -168,8 +167,6 @@ function nextRootKey (roots) {
 function getKeyForVNode (vnode) {
   if (isComposite(vnode)) {
     return vnode.component
-  } else if (isStateless(vnode)) {
-    return vnode.type
   } else if (vnode && vnode.vtype) {
     return findDOMNode(vnode)
   }

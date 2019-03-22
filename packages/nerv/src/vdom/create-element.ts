@@ -25,7 +25,7 @@ function createElement (
   let domNode
   if (isValidElement(vnode)) {
     const vtype = vnode.vtype
-    if (vtype & (VType.Composite | VType.Stateless)) {
+    if (vtype & (VType.Composite)) {
       domNode = (vnode as CompositeComponent).init(parentContext, parentComponent)
       options.afterMount(vnode as CompositeComponent)
     } else if (vtype & VType.Text) {

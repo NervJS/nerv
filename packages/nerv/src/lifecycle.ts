@@ -17,7 +17,6 @@ import {
   EMPTY_OBJ
 } from 'nerv-shared'
 import FullComponent from './full-component'
-import Stateless from './stateless-component'
 import { unmount } from './vdom/unmount'
 import Ref from './vdom/ref'
 import options from './options'
@@ -116,15 +115,6 @@ export function mountComponent (
   return dom
 }
 
-export function mountStatelessComponent (vnode: Stateless, parentContext) {
-  vnode.isRendering = true
-  const rendered = vnode.type(vnode.props, parentContext)
-  vnode.isRendering = false
-  vnode._rendered = ensureVirtualNode(rendered)
-  vnode._rendered.parentVNode = vnode
-  return (vnode.dom = mountVNode(vnode._rendered, parentContext) as Element)
-}
-
 export function getChildContext (component, context = EMPTY_OBJ) {
   if (component.getChildContext) {
     return extend(clone(context), component.getChildContext())
@@ -188,21 +178,6 @@ export function reRenderComponent (
   return updateComponent(component)
 }
 
-export function reRenderStatelessComponent (
-  prev: Stateless,
-  current: Stateless,
-  parentContext: Object,
-  domNode: Element | null
-) {
-  const lastRendered = prev._rendered
-  current.isRendering = true
-  const rendered = current.type(current.props, parentContext)
-  current.isRendering = false
-  rendered.parentVNode = current
-  current._rendered = rendered
-  return (current.dom = patch(lastRendered, rendered, lastRendered && lastRendered.dom || domNode, parentContext))
-}
-
 export function updateComponent (component, isForce = false) {
   let vnode = component.vnode
   let dom = vnode.dom
@@ -245,7 +220,7 @@ export function updateComponent (component, isForce = false) {
     }
     options.afterUpdate(vnode)
     while (vnode = vnode.parentVNode) {
-      if ((vnode.vtype & (VType.Composite | VType.Stateless)) > 0) {
+      if ((vnode.vtype & (VType.Composite)) > 0) {
         vnode.dom = dom
       }
     }
@@ -271,8 +246,4 @@ export function unmountComponent (vnode: FullComponent) {
   if (!isNullOrUndef(vnode.ref)) {
     Ref.detach(vnode, vnode.ref, vnode.dom as any)
   }
-}
-
-export function unmountStatelessComponent (vnode: Stateless) {
-  unmount(vnode._rendered)
 }

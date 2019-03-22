@@ -2,7 +2,6 @@
 import {
   isVNode,
   isVText,
-  isStateless,
   isNullOrUndef,
   isInvalid,
   isComposite
@@ -157,9 +156,6 @@ function renderVNodeToString (vnode, parent, context, isSvg?: boolean) {
     if (isFunction(instance.getChildContext)) {
       context = extend(clone(context), instance.getChildContext())
     }
-    return renderVNodeToString(rendered, vnode, context, isSvg)
-  } else if (isStateless(vnode)) {
-    const rendered = type(props, context)
     return renderVNodeToString(rendered, vnode, context, isSvg)
   }
 }
