@@ -21,7 +21,7 @@ type Dispatch<A> = (value: A) => void
 
 type EffectCallback = () => (void | (() => void))
 
-type Inputs = ReadonlyArray<unknown>
+type DependencyList = ReadonlyArray<unknown>
 
 type Reducer<S, A> = (prevState: S, action: A) => S
 
@@ -71,7 +71,7 @@ export function useReducer<R extends Reducer<any, any>, I> (
   return hook.state
 }
 
-function areDepsChanged (prevDeps?: Inputs, deps?: Inputs) {
+function areDepsChanged (prevDeps?: DependencyList, deps?: DependencyList) {
   if (isNullOrUndef(prevDeps) || isNullOrUndef(deps)) {
     return true
   }
@@ -79,7 +79,7 @@ function areDepsChanged (prevDeps?: Inputs, deps?: Inputs) {
 }
 
 export interface HookEffect {
-  deps?: Inputs
+  deps?: DependencyList
   effect: EffectCallback
   cleanup?: Function
 }
@@ -98,7 +98,14 @@ export interface HookReducer<R extends Reducer<any, any>, I> {
   state: [ReducerState<R>, Dispatch<ReducerAction<R>>]
 }
 
-export type Hook = HookEffect & HookState<unknown> & HookReducer<any, unknown> & HookRef<unknown>
+export interface HookCallback<T> {
+  deps?: DependencyList
+  callback: Function
+  value: T
+}
+
+// tslint:disable-next-line:max-line-length
+export type Hook = HookEffect & HookState<unknown> & HookReducer<any, unknown> & HookRef<unknown> & HookCallback<any>
 
 export function invokeEffects (component: Component<any, any>, delay: boolean = false) {
   const effects = delay ? component.effects : component.layoutEffects
@@ -119,7 +126,7 @@ export function invokeEffects (component: Component<any, any>, delay: boolean = 
   }
 }
 
-function useEffectImpl (effect: EffectCallback, deps?: Inputs, delay: boolean = false) {
+function useEffectImpl (effect: EffectCallback, deps?: DependencyList, delay: boolean = false) {
   const hook = getHooks(Current.index++)
   if (areDepsChanged(hook.deps, deps)) {
     hook.effect = effect
@@ -134,11 +141,11 @@ function useEffectImpl (effect: EffectCallback, deps?: Inputs, delay: boolean = 
   }
 }
 
-export function useEffect (effect: EffectCallback, deps?: Inputs): void {
+export function useEffect (effect: EffectCallback, deps?: DependencyList): void {
   useEffectImpl(effect, deps, true)
 }
 
-export function useLayoutEffect (effect: EffectCallback, deps?: Inputs): void {
+export function useLayoutEffect (effect: EffectCallback, deps?: DependencyList): void {
   useEffectImpl(effect, deps)
 }
 
@@ -150,4 +157,18 @@ export function useRef<T> (initialValue?: T): RefObject<T> {
     }
   }
   return hook.ref
+}
+
+export function useMemo<T> (factory: () => T, deps?: DependencyList): T {
+  const hook = getHooks(Current.index++)
+  if (areDepsChanged(hook.deps, deps)) {
+    hook.deps = deps
+    hook.callback = factory
+    hook.value = factory()
+  }
+  return hook.value
+}
+
+export function useCallback<T extends (...args: never[]) => unknown> (callback: T, deps: DependencyList): T {
+  return useMemo(() => callback, deps)
 }

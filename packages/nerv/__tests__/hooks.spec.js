@@ -1,5 +1,5 @@
 /** @jsx createElement */
-import { createElement, useEffect, useState, useReducer, useLayoutEffect, render, nextTick } from '../src'
+import { createElement, useEffect, useState, useReducer, useLayoutEffect, render, nextTick, useCallback, useMemo, useRef } from '../src'
 import { delay } from './util'
 import sinon from 'sinon'
 
@@ -392,6 +392,71 @@ describe('hooks', () => {
       await delay(5)
       expect(renderCounter).toEqual(2)
       expect(cleanupCounter).toEqual(0)
+    })
+  })
+
+  describe('useMemo', () => {
+    it('only recomputes the result when inputs change', () => {
+      const memoFunction = sinon.spy((a, b) => a + b)
+      const results = []
+
+      function Comp ({ a, b }) {
+        const result = useMemo(() => memoFunction(a, b), [a, b])
+        results.push(result)
+        return null
+      }
+
+      render(<Comp a={1} b={1} />, scratch)
+      render(<Comp a={1} b={1} />, scratch)
+
+      expect(results).toEqual([2, 2])
+      expect(memoFunction.calledOnce).toBeTruthy()
+
+      render(<Comp a={1} b={2} />, scratch)
+      render(<Comp a={1} b={2} />, scratch)
+
+      expect(results).toEqual([2, 2, 3, 3])
+      expect(memoFunction).toBeTruthy()
+    })
+  })
+
+  describe('useCallback', () => {
+    it('only recomputes the callback when inputs change', () => {
+      const callbacks = []
+
+      function Comp ({ a, b }) {
+        const cb = useCallback(() => a + b, [a, b])
+        callbacks.push(cb)
+        return null
+      }
+
+      render(<Comp a={1} b={1} />, scratch)
+      render(<Comp a={1} b={1} />, scratch)
+
+      expect(callbacks[0]).toEqual(callbacks[1])
+      expect(callbacks[0]()).toEqual(2)
+
+      render(<Comp a={1} b={2} />, scratch)
+      render(<Comp a={1} b={2} />, scratch)
+
+      expect(callbacks[1]).not.toEqual(callbacks[2])
+      expect(callbacks[2]).toEqual(callbacks[3])
+      expect(callbacks[2]()).toEqual(3)
+    })
+  })
+
+  describe('useRef', () => {
+    it('provides a stable reference', () => {
+      const values = []
+      function Comp () {
+        const ref = useRef(1)
+        values.push(ref.current)
+        ref.current = 2
+        return null
+      }
+      render(<Comp />, scratch)
+      render(<Comp />, scratch)
+      expect(values).toEqual([1, 2])
     })
   })
 })

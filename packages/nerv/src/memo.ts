@@ -1,9 +1,10 @@
 import { shallowEqual, isFunction } from 'nerv-utils'
 import Ref from './vdom/ref'
 import createElement from './create-element'
+import Component from './component'
 
 export function memo (component: Function, propsAreEqual?: Function) {
-  function shouldComponentUpdate (nextProps): boolean {
+  function shouldComponentUpdate (this: Component, nextProps): boolean {
     const prevRef = this.props.ref
     const nextRef = nextProps.ref
     if (prevRef !== nextRef) {
@@ -14,7 +15,7 @@ export function memo (component: Function, propsAreEqual?: Function) {
     return isFunction(propsAreEqual) ? !propsAreEqual(this.props, nextProps) : !shallowEqual(this.props, nextProps)
   }
 
-  function Memoed (props) {
+  function Memoed (this: Component, props) {
     this.shouldComponentUpdate = shouldComponentUpdate
     return createElement(component, { ...props })
   }
