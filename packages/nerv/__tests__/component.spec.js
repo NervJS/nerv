@@ -5,7 +5,8 @@ import {
   render,
   cloneElement,
   PureComponent,
-  findDOMNode
+  findDOMNode,
+  memo
 } from '../src'
 // import createVText from '../src/vdom/create-vtext'
 import { rerender } from '../src/render-queue'
@@ -672,6 +673,105 @@ describe('Component', function () {
       const Bar = props => <Foo {...props}>{'b'}</Foo>
       render(<Bar />, scratch)
       expect(scratch.innerHTML).toEqual(normalizeHTML('<div>b</div>'))
+    })
+  })
+
+  describe('memo()', () => {
+    it('should work with function components', () => {
+      const spy = sinon.spy()
+
+      function Foo () {
+        spy()
+        return <h1>Hello World</h1>
+      }
+
+      const Memoized = memo(Foo)
+
+      let update
+      class App extends Component {
+        constructor () {
+          super()
+          update = () => this.setState({})
+        }
+        render () {
+          return <Memoized />
+        }
+      }
+      render(<App />, scratch)
+
+      expect(spy.calledOnce).toBeTruthy()
+
+      update()
+      rerender()
+
+      expect(spy.calledOnce).toBeTruthy()
+    })
+
+    it('should support custom comparer functions', () => {
+      function Foo () {
+        return <h1>Hello World</h1>
+      }
+
+      const spy = sinon.spy(() => true)
+      const Memoized = memo(Foo, spy)
+
+      let update
+      class App extends Component {
+        constructor () {
+          super()
+          update = () => this.setState({})
+        }
+        render () {
+          return <Memoized />
+        }
+      }
+      render(<App />, scratch)
+
+      update()
+      rerender()
+
+      expect(spy.calledOnce).toBeTruthy()
+      expect(spy.calledWith({ children: [] }, { children: [] })).toBeTruthy()
+    })
+
+    it('should rerender when custom comparer returns false', () => {
+      const spy = sinon.spy()
+      function Foo () {
+        spy()
+        return <h1>Hello World</h1>
+      }
+
+      const App = memo(Foo, () => false)
+      render(<App />, scratch)
+      expect(spy.calledOnce).toBeTruthy()
+
+      render(<App foo='bar' />, scratch)
+      expect(spy.calledTwice).toBeTruthy()
+    })
+
+    // it('should pass props and nextProps to comparer fn', () => {
+    //   const spy = sinon.spy(() => false)
+    //   function Foo() {
+    //     return <div>foo</div>
+    //   }
+
+    //   const props = { foo: true };
+    //   const nextProps = { foo: false };
+    //   const App = memo(Foo, spy);
+    //   render(h(App, props), scratch);
+    //   render(h(App, nextProps), scratch);
+
+    //   expect(spy).to.be.calledWith(props, nextProps);
+    // })
+
+    it('should nest without errors', () => {
+      const Foo = () => <div>foo</div>
+      const App = memo(memo(Foo))
+
+      // eslint-disable-next-line prefer-arrow-callback
+      expect(function () {
+        render(<App />, scratch)
+      }).not.toThrow()
     })
   })
 

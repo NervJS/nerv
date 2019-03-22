@@ -20,6 +20,7 @@ import {
 import { PropTypes } from './prop-types' // for React 15- compat
 import { useEffect, useLayoutEffect, useReducer, useState, useRef } from './hooks'
 import { createRef, forwardRef } from './create-ref'
+import { memo } from './memo'
 
 export {
   Children,
@@ -42,6 +43,7 @@ export {
   PropTypes,
   createRef,
   forwardRef,
+  memo,
   useEffect, useLayoutEffect, useReducer, useState, useRef
 }
 
@@ -66,5 +68,6 @@ export default {
   PropTypes,
   createRef,
   forwardRef,
+  memo,
   useEffect, useLayoutEffect, useReducer, useState, useRef
 } as any

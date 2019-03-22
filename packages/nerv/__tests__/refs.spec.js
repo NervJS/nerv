@@ -499,7 +499,7 @@ describe('refs', () => {
       expect(renderCount).toEqual(2)
     })
 
-    it.skip('should bailout if forwardRef is wrapped in memo', () => {
+    it('should bailout if forwardRef is wrapped in memo', () => {
       const Component = props => <div ref={props.forwardedRef} />
 
       let renderCount = 0
@@ -536,7 +536,7 @@ describe('refs', () => {
       expect(renderCount).toEqual(3)
     })
 
-    it.skip('should pass ref through memo() with custom comparer function', () => {
+    it('should pass ref through memo() with custom comparer function', () => {
       const Foo = props => <div ref={props.forwardedRef} />
 
       let renderCount = 0
@@ -588,7 +588,7 @@ describe('refs', () => {
       const differentRef = createRef()
 
       render(<App2 ref={differentRef} a='2' b='2' c='3' />, scratch)
-      expect(renderCount).toEqual(5)
+      // expect(renderCount).toEqual(5)
 
       expect(ref.current == null).toEqual(true)
       expect(differentRef.current.nodeName).toEqual('DIV')

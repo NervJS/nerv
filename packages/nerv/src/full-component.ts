@@ -5,6 +5,7 @@ import {
   unmountComponent
 } from './lifecycle'
 import Component from './component'
+import { isUndefined } from 'nerv-utils'
 
 class ComponentWrapper implements CompositeComponent {
   vtype = VType.Composite
@@ -29,7 +30,9 @@ class ComponentWrapper implements CompositeComponent {
       delete props.ref
     }
     if (type._forwarded) {
-      props.ref = this.ref
+      if (!isUndefined(this.ref)) {
+        props.ref = this.ref
+      }
       delete this.ref
     }
     this.props = props

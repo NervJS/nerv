@@ -73,7 +73,6 @@ describe('hooks', () => {
 
       render(<StateContainer />, scratch)
       expect(scratch.textContent).toMatch('Count: 0')
-      console.log(scratch.textContent)
 
       handleClick()
 
@@ -221,7 +220,6 @@ describe('hooks', () => {
 
       function Comp () {
         useEffect(() => {
-          debugger
           counter += 1
         })
         return <div />
