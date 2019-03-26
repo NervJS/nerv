@@ -1,5 +1,6 @@
 /** @jsx createElement */
 import { createElement, useEffect, useState, useReducer, useLayoutEffect, render, nextTick, useCallback, useMemo, useRef } from '../src'
+import { rerender } from '../src/render-queue'
 import { delay } from './util'
 import sinon from 'sinon'
 
@@ -180,7 +181,7 @@ describe('hooks', () => {
     })
   })
 
-  describe.skip('useEffect', () => {
+  describe('useEffect', () => {
     it('emit effect after render', async () => {
       let counter = 0
 
@@ -193,43 +194,109 @@ describe('hooks', () => {
 
       render(<Comp />, scratch)
 
+      await nextTick()
       await delay(5)
 
       expect(counter).toBe(1)
     })
 
-    it('emit effect after update', async () => {
-      let counter = 0
+    it('performs the effect only if one of the inputs changed', async () => {
+      const callback = sinon.spy()
+
+      function Comp (props) {
+        useEffect(callback, [props.a, props.b])
+        return null
+      }
+
+      render(<Comp a={1} b={2} />, scratch)
+
+      await nextTick()
+      await delay(5)
+
+      expect(callback.calledOnce).toBeTruthy()
+
+      render(<Comp a={2} b={2} />, scratch)
+
+      await nextTick()
+      await delay(5)
+      expect(callback.calledTwice).toBeTruthy()
+
+      render(<Comp a={2} b={2} />, scratch)
+
+      await nextTick()
+      await delay(5)
+
+      expect(callback.calledTwice).toBeTruthy()
+
+      // return scheduleEffectAssert(() => expect(callback).to.be.calledOnce)
+      //   .then(() => render(<Comp a={1} b={2} />, scratch))
+      //   .then(() => scheduleEffectAssert(() => expect(callback).to.be.calledOnce))
+      //   .then(() => render(<Comp a={2} b={2} />, scratch))
+      //   .then(() => scheduleEffectAssert(() => expect(callback).to.be.calledTwice))
+      //   .then(() => render(<Comp a={2} b={2} />, scratch))
+      //   .then(() => scheduleEffectAssert(() => expect(callback).to.be.calledTwice))
+    })
+
+    it('performs the effect at mount time and never again if an empty input Array is passed', async () => {
+      const callback = sinon.spy()
 
       function Comp () {
-        useEffect(() => {
-          counter += 1
-        })
-        return counter ? <div /> : null
+        useEffect(callback, [])
+        return null
       }
 
       render(<Comp />, scratch)
+      render(<Comp />, scratch)
 
-      await delay(10)
+      expect(callback.calledOnce).toBeTruthy()
 
-      expect(counter).toBe(2)
+      await nextTick()
+      await delay(5)
+
+      expect(callback.calledOnce).toBeTruthy()
+
+      render(<Comp />, scratch)
+
+      await nextTick()
+
+      await nextTick()
+      await delay(5)
+      expect(callback.calledOnce).toBeTruthy()
     })
-
-    it('emit clean up after unmount component', async () => {
-      let counter = 0
+    it('cleanups the effect when the component get unmounted if the effect was called before', async () => {
+      const cleanupFunction = sinon.spy()
+      const callback = sinon.spy(() => cleanupFunction)
 
       function Comp () {
-        useEffect(() => {
-          counter += 1
-        })
+        useEffect(callback)
+        return null
+      }
+
+      render(<Comp />, scratch)
+      await nextTick()
+      await delay(5)
+      render(null, scratch)
+      rerender()
+      expect(cleanupFunction.calledOnce).toBeTruthy()
+    })
+
+    it('works with closure effect callbacks capturing props', async () => {
+      const values = []
+
+      function Comp (props) {
+        useEffect(() => values.push(props.value))
         return <div />
       }
 
-      render(<Comp />, scratch)
+      render(<Comp value={1} />, scratch)
+      render(<Comp value={2} />, scratch)
 
+      await nextTick()
       await delay(5)
       await nextTick()
-      expect(counter).toBe(1)
+      await delay(5)
+
+      expect(values).toEqual([1, 2])
     })
   })
 
@@ -457,6 +524,161 @@ describe('hooks', () => {
       render(<Comp />, scratch)
       render(<Comp />, scratch)
       expect(values).toEqual([1, 2])
+    })
+  })
+
+  describe('combinations', () => {
+    it('can mix useState hooks', () => {
+      const states = {}
+      const setStates = {}
+
+      function Parent () {
+        const [state1, setState1] = useState(1)
+        const [state2, setState2] = useState(2)
+
+        Object.assign(states, { state1, state2 })
+        Object.assign(setStates, { setState1, setState2 })
+
+        return <Child />
+      }
+
+      function Child () {
+        const [state3, setState3] = useState(3)
+        const [state4, setState4] = useState(4)
+
+        Object.assign(states, { state3, state4 })
+        Object.assign(setStates, { setState3, setState4 })
+
+        return null
+      }
+
+      render(<Parent />, scratch)
+      expect(states).toEqual({ state1: 1, state2: 2, state3: 3, state4: 4 })
+
+      setStates.setState2(n => n * 10)
+      setStates.setState3(n => n * 10)
+      rerender()
+      expect(states).toEqual({ state1: 1, state2: 20, state3: 30, state4: 4 })
+    })
+
+    it('can rerender synchronously from within a layout effect', () => {
+      const didRender = sinon.spy()
+
+      function Comp () {
+        const [counter, setCounter] = useState(0)
+
+        useLayoutEffect(() => { if (counter === 0) setCounter(1) })
+
+        didRender(counter)
+        return null
+      }
+
+      render(<Comp />, scratch)
+      rerender()
+
+      expect(didRender.calledTwice).toBeTruthy()
+      expect(didRender.calledWith(1)).toBeTruthy()
+
+      // expect(didRender).to.have.been.calledTwice.and.calledWith(1)
+    })
+
+    it('can access refs from within a layout effect callback', () => {
+      let refAtLayoutTime
+
+      function Comp () {
+        const input = useRef()
+
+        useLayoutEffect(() => {
+          refAtLayoutTime = input.current
+        })
+
+        return <input ref={input} value='hello' />
+      }
+
+      render(<Comp />, scratch)
+
+      expect(refAtLayoutTime.value).toEqual('hello')
+    })
+
+    it('can use multiple useState and useReducer hooks', () => {
+      let states = []
+      let dispatchState4
+
+      function reducer1 (state, action) {
+        switch (action.type) {
+          case 'increment': return state + action.count
+        }
+      }
+
+      function reducer2 (state, action) {
+        switch (action.type) {
+          case 'increment': return state + action.count * 2
+        }
+      }
+
+      function Comp () {
+        const [state1] = useState(0)
+        const [state2] = useReducer(reducer1, 10)
+        const [state3] = useState(1)
+        const [state4, dispatch] = useReducer(reducer2, 20)
+
+        dispatchState4 = dispatch
+        states.push(state1, state2, state3, state4)
+
+        return null
+      }
+
+      render(<Comp />, scratch)
+
+      expect(states).toEqual([0, 10, 1, 20])
+
+      states = []
+
+      dispatchState4({ type: 'increment', count: 10 })
+      rerender()
+
+      expect(states).toEqual([0, 10, 1, 40])
+    })
+
+    it('ensures useEffect always schedule after the next paint following a redraw effect, when using the default debounce strategy', async () => {
+      let effectCount = 0
+
+      function Comp () {
+        const [counter, setCounter] = useState(0)
+        useEffect(() => {
+          if (counter === 0) setCounter(1)
+          effectCount++
+        })
+
+        return null
+      }
+
+      render(<Comp />, scratch)
+      expect(effectCount).toEqual(0)
+      await delay(5)
+
+      expect(effectCount).toEqual(2)
+    })
+
+    it('can rerender asynchronously from within an effect', async () => {
+      const didRender = sinon.spy()
+
+      function Comp () {
+        const [counter, setCounter] = useState(0)
+
+        useEffect(() => { if (counter === 0) setCounter(1) })
+
+        didRender(counter)
+        return null
+      }
+
+      render(<Comp />, scratch)
+
+      await nextTick()
+      await delay(5)
+      rerender()
+      expect(didRender.calledTwice).toBeTruthy()
+      expect(didRender.calledWith(1)).toBeTruthy()
     })
   })
 })

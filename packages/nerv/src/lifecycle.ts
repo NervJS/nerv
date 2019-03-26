@@ -236,6 +236,11 @@ export function updateComponent (component, isForce = false) {
 
 export function unmountComponent (vnode: FullComponent) {
   const component = vnode.component
+  component.hooks.forEach((hook) => {
+    if (isFunction(hook.cleanup)) {
+      hook.cleanup()
+    }
+  })
   if (isFunction(component.componentWillUnmount)) {
     errorCatcher(() => {
       (component as any).componentWillUnmount()

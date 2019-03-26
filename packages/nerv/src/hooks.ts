@@ -1,4 +1,4 @@
-import { isFunction, isUndefined } from 'nerv-utils'
+import { isFunction, isUndefined, nextTick } from 'nerv-utils'
 import Current from './current-owner'
 import { isNullOrUndef } from 'nerv-shared'
 import Component from './component'
@@ -28,6 +28,35 @@ type Reducer<S, A> = (prevState: S, action: A) => S
 type ReducerState<R extends Reducer<any, any>> = R extends Reducer<infer S, any> ? S : never
 
 type ReducerAction<R extends Reducer<any, any>> = R extends Reducer<any, infer A> ? A : never
+
+export interface HookEffect {
+  deps?: DependencyList
+  effect: EffectCallback
+  cleanup?: Function
+}
+
+export interface HookState<S> {
+  component: Component<any, any>
+  state: [S, Dispatch<SetStateAction<S>>]
+}
+
+export interface HookRef<T> {
+  ref?: RefObject<T>
+}
+
+export interface HookReducer<R extends Reducer<any, any>, I> {
+  component: Component<any, any>
+  state: [ReducerState<R>, Dispatch<ReducerAction<R>>]
+}
+
+export interface HookCallback<T> {
+  deps?: DependencyList
+  callback: Function
+  value: T
+}
+
+// tslint:disable-next-line:max-line-length
+export type Hook = HookEffect & HookState<unknown> & HookReducer<any, unknown> & HookRef<unknown> & HookCallback<any>
 
 export function useState<S> (initialState: S | (() => S)): [S, Dispatch<SetStateAction<S>>] {
   if (isFunction(initialState)) {
@@ -78,35 +107,6 @@ function areDepsChanged (prevDeps?: DependencyList, deps?: DependencyList) {
   return deps.some((a, i) => a !== prevDeps[i])
 }
 
-export interface HookEffect {
-  deps?: DependencyList
-  effect: EffectCallback
-  cleanup?: Function
-}
-
-export interface HookState<S> {
-  component: Component<any, any>
-  state: [S, Dispatch<SetStateAction<S>>]
-}
-
-export interface HookRef<T> {
-  ref?: RefObject<T>
-}
-
-export interface HookReducer<R extends Reducer<any, any>, I> {
-  component: Component<any, any>
-  state: [ReducerState<R>, Dispatch<ReducerAction<R>>]
-}
-
-export interface HookCallback<T> {
-  deps?: DependencyList
-  callback: Function
-  value: T
-}
-
-// tslint:disable-next-line:max-line-length
-export type Hook = HookEffect & HookState<unknown> & HookReducer<any, unknown> & HookRef<unknown> & HookCallback<any>
-
 export function invokeEffects (component: Component<any, any>, delay: boolean = false) {
   const effects = delay ? component.effects : component.layoutEffects
   effects.forEach((hook) => {
@@ -126,6 +126,26 @@ export function invokeEffects (component: Component<any, any>, delay: boolean = 
   }
 }
 
+let scheduleEffectComponents: Array<Component<any, any>> = []
+
+function invokeScheduleEffects (component: Component) {
+  if (!component._afterScheduleEffect) {
+    component._afterScheduleEffect = true
+    scheduleEffectComponents.push(component)
+    if (scheduleEffectComponents.length === 1) {
+      nextTick(() => {
+        setTimeout(() => {
+          scheduleEffectComponents.forEach((c) => {
+            c._afterScheduleEffect = false
+            invokeEffects(c, true)
+          })
+          scheduleEffectComponents = []
+        }, 0)
+      })
+    }
+  }
+}
+
 function useEffectImpl (effect: EffectCallback, deps?: DependencyList, delay: boolean = false) {
   const hook = getHooks(Current.index++)
   if (areDepsChanged(hook.deps, deps)) {
@@ -134,7 +154,7 @@ function useEffectImpl (effect: EffectCallback, deps?: DependencyList, delay: bo
 
     if (delay) {
       Current.current!.effects = Current.current!.effects.concat(hook)
-      Current.current!.invokeScheduleEffects()
+      invokeScheduleEffects(Current.current!)
     } else {
       Current.current!.layoutEffects = Current.current!.layoutEffects.concat(hook)
     }

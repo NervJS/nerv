@@ -1,4 +1,4 @@
-import { isFunction, extend, clone, isArray, nextTick } from 'nerv-utils'
+import { isFunction, extend, clone, isArray } from 'nerv-utils'
 import { enqueueRender } from './render-queue'
 import { updateComponent } from './lifecycle'
 import {
@@ -10,14 +10,12 @@ import {
   CompositeComponent,
   EMPTY_CHILDREN
 } from 'nerv-shared'
-import { Hook, HookEffect, invokeEffects } from './hooks'
+import { Hook, HookEffect } from './hooks'
 
 interface Component<P = {}, S = {}> extends ComponentLifecycle<P, S> {
   _rendered: any
   dom: any
 }
-
-const scheduleEffects: Array<Component<any, any>> = []
 
 class Component<P, S> implements ComponentInst<P, S> {
   public static defaultProps: {}
@@ -92,26 +90,6 @@ class Component<P, S> implements ComponentInst<P, S> {
       }
     }
   }
-  invokeScheduleEffects () {
-    if (!this._afterScheduleEffect) {
-      this._afterScheduleEffect = true
-      scheduleEffects.push(this)
-      if (scheduleEffects.length === 1) {
-        nextTick(() => {
-          setTimeout(() => {
-            scheduleEffects.forEach((component) => {
-              component._afterScheduleEffect = false
-              if (!component.vnode.dom) {
-                return
-              }
-              invokeEffects(component, true)
-            })
-          }, 0)
-        })
-      }
-    }
-  }
-
   forceUpdate (callback?: Function) {
     if (isFunction(callback)) {
       (this._pendingCallbacks = this._pendingCallbacks || []).push(callback)
