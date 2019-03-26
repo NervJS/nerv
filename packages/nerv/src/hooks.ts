@@ -1,4 +1,4 @@
-import { isFunction, isUndefined, nextTick } from 'nerv-utils'
+import { isFunction, isUndefined, nextTick, isArray } from 'nerv-utils'
 import Current from './current-owner'
 import { isNullOrUndef } from 'nerv-shared'
 import Component from './component'
@@ -191,4 +191,22 @@ export function useMemo<T> (factory: () => T, deps?: DependencyList): T {
 
 export function useCallback<T extends (...args: never[]) => unknown> (callback: T, deps: DependencyList): T {
   return useMemo(() => callback, deps)
+}
+
+export function useImperativeHandle<T, R extends T> (
+  ref: RefObject<T> | undefined,
+  init: () => R,
+  deps?: DependencyList
+): void {
+  useLayoutEffect(() => {
+    if (isFunction(ref)) {
+      ref(init())
+      return () => ref(null)
+    } else if (!isUndefined(ref)) {
+      ref.current = init()
+      return () => {
+        delete ref.current
+      }
+    }
+  }, isArray(deps) ? deps.concat([ref]) : undefined)
 }
