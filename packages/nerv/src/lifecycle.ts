@@ -92,9 +92,6 @@ export function mountComponent (
   const rendered = renderComponent(component)
   rendered.parentVNode = vnode
   component._rendered = rendered
-  if (isFunction(component.componentDidMount)) {
-    readyComponents.push(component)
-  }
   if (!isNullOrUndef(ref)) {
     Ref.attach(vnode, ref, vnode.dom as Element)
   }
@@ -103,6 +100,9 @@ export function mountComponent (
     getChildContext(component, parentContext),
     component
   ) as Element)
+  if (isFunction(component.componentDidMount)) {
+    readyComponents.push(component)
+  }
   component._disable = false
   component.clearCallBacks()
   return dom
