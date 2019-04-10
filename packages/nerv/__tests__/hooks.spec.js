@@ -655,6 +655,7 @@ describe('hooks', () => {
 
       render(<Comp />, scratch)
       expect(effectCount).toEqual(0)
+      await nextTick()
       await delay(5)
 
       expect(effectCount).toEqual(2)
