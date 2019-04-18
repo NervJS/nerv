@@ -112,7 +112,7 @@ module.exports = function (config) {
       './node_modules/es5-polyfill/dist/polyfill.js',
       'browsers/ie8.js',
       'browsers/polyfill.js',
-      'packages/*/__tests__/**/*spec.js?(x)'
+      'packages/*/__tests__/**/lifecycle.spec.js?(x)'
     ],
 
     specReporter: {
@@ -128,7 +128,7 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'packages/*/__tests__/**/*spec.js?(x)': ['webpack', 'sourcemap']
+      'packages/*/__tests__/**/lifecycle.spec.js?(x)': ['webpack', 'sourcemap']
     },
 
     // test results reporter to use

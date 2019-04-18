@@ -88,9 +88,24 @@ export function mountComponent (
   if (isComponent(parentComponent)) {
     component._parentComponent = parentComponent as any
   }
+  const newState = callGetDerivedStateFromProps(vnode.props, component.state, component)
+  component.state = newState
+  // if (isFunction(component.componentWillMount)) {
+  //   errorCatcher(() => {
+  //     (component as any).componentWillMount()
+  //   }, component)
+  //   component.state = component.getState()
+  //   component.clearCallBacks()
+  // }
+
   if (isFunction(component.componentWillMount)) {
     errorCatcher(() => {
-      (component as any).componentWillMount()
+      if (isFunction(component.componentWillMount)) {
+          // show warning
+        if (!hasNewLifecycle(component)) {
+          (component as any).componentWillMount()
+        }
+      }
     }, component)
     component.state = component.getState()
     component.clearCallBacks()
@@ -161,7 +176,7 @@ export function reRenderComponent (
   const nextProps = current.props
   const nextContext = current.context
   component._disable = true
-  if (isFunction(component.componentWillReceiveProps)) {
+  if (isFunction(component.componentWillReceiveProps) && !hasNewLifecycle(component)) {
     errorCatcher(() => {
       (component as any).componentWillReceiveProps(nextProps, nextContext)
     }, component)
@@ -182,7 +197,11 @@ export function updateComponent (component, isForce = false) {
   let vnode = component.vnode
   let dom = vnode.dom
   const props = component.props
-  const state = component.getState()
+  let state = component.getState()
+
+  const stateFromProps = callGetDerivedStateFromProps(props, state, component)
+  state = stateFromProps
+  component.state = stateFromProps
   const context = component.context
   const prevProps = component.prevProps || props
   const prevState = component.prevState || component.state
@@ -196,7 +215,7 @@ export function updateComponent (component, isForce = false) {
     component.shouldComponentUpdate(props, state, context) === false
   ) {
     skip = true
-  } else if (isFunction(component.componentWillUpdate)) {
+  } else if (isFunction(component.componentWillUpdate) && !hasNewLifecycle(component)) {
     errorCatcher(() => {
       component.componentWillUpdate(props, state, context)
     }, component)
@@ -251,4 +270,27 @@ export function unmountComponent (vnode: FullComponent) {
   if (!isNullOrUndef(vnode.ref)) {
     Ref.detach(vnode, vnode.ref, vnode.dom as any)
   }
+}
+function callGetDerivedStateFromProps (props, state, inst) {
+  const {getDerivedStateFromProps} = inst.constructor
+  let newState = state
+  if (isFunction(getDerivedStateFromProps)) {
+    const partialState = getDerivedStateFromProps.call(
+      null,
+      props,
+      state
+    )
+
+    if (partialState) {
+      newState = {...state, ...partialState}
+    }
+  }
+  return newState
+}
+function hasNewLifecycle (component) {
+  const {getDerivedStateFromProps} = component.constructor
+  if (getDerivedStateFromProps && isFunction(getDerivedStateFromProps)) {
+    return true
+  }
+  return false
 }
