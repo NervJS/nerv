@@ -152,7 +152,6 @@ function renderVNodeToString (vnode, parent, context, isSvg?: boolean) {
       instance.componentWillMount()
       instance.state = instance.getState()
     }
-
     const rendered = instance.render()
     if (isFunction(instance.getChildContext)) {
       context = extend(clone(context), instance.getChildContext())

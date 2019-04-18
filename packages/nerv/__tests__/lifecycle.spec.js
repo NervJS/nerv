@@ -848,6 +848,7 @@ describe('Lifecycle methods', () => {
         }
         componentDidMount () {
           // eslint-disable-next-line react/no-did-mount-set-state
+          console.log('componentDIdMontWow')
           this.setState({ value: 'updated' })
         }
         render () {
@@ -1194,6 +1195,145 @@ describe('Lifecycle methods', () => {
         { value: 11 }
       ])
     })
+    it('should be passed previous props and state', () => {
+      let updateState
+
+      let prevPropsArg
+      let prevStateArg
+      // let snapshotArg
+      let curProps
+      let curState
+
+      class Foo extends Component {
+        constructor (props) {
+          super(props)
+          this.state = {
+            value: 0
+          }
+          updateState = () => this.setState({
+            value: this.state.value + 1
+          })
+        }
+        static getDerivedStateFromProps (props, state) {
+          return {
+            value: state.value + 1
+          }
+        }
+        componentDidUpdate (prevProps, prevState, snapshot) {
+          prevPropsArg = { ...prevProps }
+          prevStateArg = { ...prevState }
+          // snapshotArg = snapshot
+
+          curProps = { ...this.props }
+          curState = { ...this.state }
+        }
+        render () {
+          return <div>{this.state.value}</div>
+        }
+      }
+      // Initial render
+      // state.value: initialized to 0 in constructor, 0 -> 1 in gDSFP
+      render(<Foo foo='foo' />, scratch)
+      expect(scratch.firstChild.textContent).toBe('1')
+      expect(prevPropsArg).toBeUndefined()
+      expect(prevStateArg).toBeUndefined()
+      // expect(snapshotArg).toBeUndefined()
+      expect(curProps).toBeUndefined()
+      expect(curState).toBeUndefined()
+
+      // New props
+      // state.value: 1 -> 2 in gDSFP
+      render(<Foo foo='bar' />, scratch)
+      expect(scratch.firstChild.textContent).toBe('2')
+      expect(prevPropsArg).toEqual({ foo: 'foo', children: [] })
+      expect(prevStateArg).toEqual({ value: 1 })
+      // expect(snapshotArg).toBeUndefined()
+      expect(curProps).toEqual({ foo: 'bar', children: [] })
+      expect(curState).toEqual({ value: 2 })
+
+      // New state
+      // state.value: 2 -> 3 in updateState, 3 -> 4 in gDSFP
+      updateState()
+      rerender()
+      expect(scratch.firstChild.textContent).toBe('4')
+      expect(prevPropsArg).toEqual({ foo: 'bar', children: [] })
+      expect(prevStateArg).toEqual({ value: 2 })
+      // expect(snapshotArg).toBeUndefined()
+      expect(curProps).toEqual({ foo: 'bar', children: [] })
+      expect(curState).toEqual({ value: 4 })
+    })
+    it('should be passed next props and state', () => {
+      /** @type {() => void} */
+      let updateState
+
+      let curProps
+      let curState
+      let nextPropsArg
+      let nextStateArg
+
+      class Foo extends Component {
+        constructor (props) {
+          super(props)
+          this.state = {
+            value: 0
+          }
+          updateState = () => this.setState({
+            value: this.state.value + 1
+          })
+        }
+        static getDerivedStateFromProps (props, state) {
+          const newValue = state.value + 1
+          console.log('call getDerivedStateFromProps', newValue)
+
+          return {
+            value: newValue
+          }
+        }
+        shouldComponentUpdate (nextProps, nextState) {
+          nextPropsArg = { ...nextProps }
+          nextStateArg = { ...nextState }
+          curProps = { ...this.props }
+          curState = { ...this.state }
+          return true
+        }
+        render () {
+          return <div>{this.state.value}</div>
+        }
+      }
+
+      // Expectation:
+      // `this.state` in shouldComponentUpdate should be
+      // `nextState` in shouldComponentUpdate should be
+
+      // Initial render
+      // state.value: initialized to 0 in constructor, 0 -> 1 in gDSFP
+      render(<Foo foo='foo' />, scratch)
+      expect(scratch.firstChild.textContent).toBe('1')
+      expect(curProps).toBeUndefined()
+      expect(curState).toBeUndefined()
+      expect(nextPropsArg).toBeUndefined()
+      expect(nextStateArg).toBeUndefined()
+
+      // New props
+      // state.value: 1 -> 2 in gDSFP
+      render(<Foo foo='bar' />, scratch)
+      expect(scratch.firstChild.textContent).toBe('2')
+      expect(curProps).toEqual({ foo: 'foo', children: [] })
+      expect(curState).toEqual({ value: 1 })
+      expect(nextPropsArg).toEqual({ foo: 'bar', children: [] })
+      expect(nextStateArg).toEqual({ value: 2 })
+      // New state
+      // state.value: 2 -> 3 in updateState, 3 -> 4 in gDSFP
+      updateState()
+      rerender()
+
+      expect(scratch.firstChild.textContent).toBe('4')
+      expect(curProps).toEqual({ foo: 'bar', children: [] })
+      expect(curState).toEqual({ value: 2 })
+      expect(nextPropsArg).toEqual({ foo: 'bar', children: [] })
+      expect(nextStateArg).toEqual({ value: 4 })
+    })
+
     // it('should call nested new lifecycle methods in the right order', () => {
     //   let updateOuterState
     //   let updateInnerState

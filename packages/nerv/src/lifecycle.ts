@@ -89,7 +89,10 @@ export function mountComponent (
     component._parentComponent = parentComponent as any
   }
   const newState = callGetDerivedStateFromProps(vnode.props, component.state, component)
-  component.state = newState
+  if (newState) {
+    component.state = newState
+  }
+
   // if (isFunction(component.componentWillMount)) {
   //   errorCatcher(() => {
   //     (component as any).componentWillMount()
@@ -198,14 +201,16 @@ export function updateComponent (component, isForce = false) {
   let dom = vnode.dom
   const props = component.props
   let state = component.getState()
-
-  const stateFromProps = callGetDerivedStateFromProps(props, state, component)
-  state = stateFromProps
-  component.state = stateFromProps
   const context = component.context
   const prevProps = component.prevProps || props
   const prevState = component.prevState || component.state
   const prevContext = component.prevContext || context
+
+  const stateFromProps = callGetDerivedStateFromProps(props, state, component)
+  if (stateFromProps) {
+    state = stateFromProps
+  }
+
   component.props = prevProps
   component.context = prevContext
   let skip = false
@@ -220,6 +225,10 @@ export function updateComponent (component, isForce = false) {
       component.componentWillUpdate(props, state, context)
     }, component)
   }
+  if (stateFromProps) {
+    component.state = stateFromProps
+  }
+
   component.props = props
   component.state = state
   component.context = context
@@ -273,7 +282,7 @@ export function unmountComponent (vnode: FullComponent) {
 }
 function callGetDerivedStateFromProps (props, state, inst) {
   const {getDerivedStateFromProps} = inst.constructor
-  let newState = state
+  let newState
   if (isFunction(getDerivedStateFromProps)) {
     const partialState = getDerivedStateFromProps.call(
       null,
