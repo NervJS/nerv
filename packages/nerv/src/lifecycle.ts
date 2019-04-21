@@ -236,14 +236,16 @@ export function updateComponent (component, isForce = false) {
   if (!skip) {
     const lastRendered = component._rendered
     const rendered = renderComponent(component)
+
     rendered.parentVNode = vnode
     const childContext = getChildContext(component, context)
+    const snapshot = callGetSnapshotBeforeUpdate(prevProps, prevState, component)
     const parentDom = lastRendered.dom && lastRendered.dom.parentNode
     dom = vnode.dom = patch(lastRendered, rendered, parentDom || null, childContext)
     component._rendered = rendered
     if (isFunction(component.componentDidUpdate)) {
       errorCatcher(() => {
-        component.componentDidUpdate(prevProps, prevState, context)
+        component.componentDidUpdate(prevProps, prevState, snapshot)
       }, component)
     }
     options.afterUpdate(vnode)
@@ -295,6 +297,14 @@ function callGetDerivedStateFromProps (props, state, inst) {
     }
   }
   return newState
+}
+function callGetSnapshotBeforeUpdate (props, state, inst) {
+  const {getSnapshotBeforeUpdate} = inst
+  let snapshot
+  if (isFunction(getSnapshotBeforeUpdate)) {
+    snapshot = getSnapshotBeforeUpdate.call(inst, props, state)
+  }
+  return snapshot
 }
 function hasNewLifecycle (component) {
   const {getDerivedStateFromProps} = component.constructor
