@@ -111,15 +111,11 @@ export function mountComponent (
       }
     }, component)
     component.state = component.getState()
-    component.clearCallBacks()
   }
   component._dirty = false
   const rendered = renderComponent(component)
   rendered.parentVNode = vnode
   component._rendered = rendered
-  if (isFunction(component.componentDidMount)) {
-    readyComponents.push(component)
-  }
   if (!isNullOrUndef(ref)) {
     Ref.attach(vnode, ref, vnode.dom as Element)
   }
@@ -129,7 +125,11 @@ export function mountComponent (
     component
   ) as Element)
   invokeEffects(component)
+  if (isFunction(component.componentDidMount)) {
+    readyComponents.push(component)
+  }
   component._disable = false
+  component.clearCallBacks()
   return dom
 }
 

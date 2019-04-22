@@ -192,6 +192,9 @@ describe('Lifecycle methods', () => {
           expect(cwrp.called).toBeTruthy()
           expect(cdu.called).toBeFalsy()
         }
+        componentDidMount () {
+          expect(cdm.called).toBeFalsy()
+        }
         render () {
           return <div />
         }
