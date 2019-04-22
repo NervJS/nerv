@@ -66,10 +66,8 @@ function extend (base, props) {
 }
 
 function bindAll<P, S> (ctx: Component<P, S>) {
-  console.log('bindAll', ctx)
   for (const i in ctx) {
     const v = ctx[i]
-    console.log('vvvvvvvvv', v)
     if (typeof v === 'function' && !v.__bound && AUTOBIND_BLACKLIST[i] !== 1) {
       (ctx[i] = v.bind(ctx)).__bound = true
     }

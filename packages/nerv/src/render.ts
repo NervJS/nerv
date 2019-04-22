@@ -26,7 +26,6 @@ export function render (
     (container as any)._component = vnode
   }
   flushMount()
-  console.log('callback', callback)
   if (callback) {
     callback()
   }

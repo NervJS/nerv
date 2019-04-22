@@ -160,11 +160,13 @@ export function flushMount () {
   // @TODO: perf
   const queue = readyComponents.slice(0)
   readyComponents.length = 0
+  console.log('readyComponents', readyComponents.length)
   queue.forEach((item) => {
     if (isFunction(item)) {
       item()
     } else if (item.componentDidMount) {
       errorCatcher(() => {
+        console.log('componentDidMount itemmm', item)
         item.componentDidMount()
       }, item)
     }
