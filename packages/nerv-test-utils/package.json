@@ -1,6 +1,6 @@
 {
   "name": "nerv-test-utils",
-  "version": "1.4.0-beta.1",
+  "version": "1.4.0-beta.2",
   "description": "Nerv test utils",
   "main": "index.js",
   "module": "dist/index.esm.js",
@@ -8,8 +8,8 @@
   "license": "MIT",
   "dependencies": {
     "nerv-server": "1.2.3",
-    "nerv-shared": "1.4.0-beta.1",
-    "nerv-utils": "1.4.0-beta.1",
+    "nerv-shared": "1.4.0-beta.2",
+    "nerv-utils": "1.4.0-beta.2",
     "nervjs": "1.2.4",
     "simulant": "^0.2.2"
   },

@@ -1,6 +1,6 @@
 {
   "name": "nerv-shared",
-  "version": "1.4.0-beta.1",
+  "version": "1.4.0-beta.2",
   "description": "Internal utilities for Nerv.js",
   "main": "index.js",
   "types": "dist/index.d.ts",
