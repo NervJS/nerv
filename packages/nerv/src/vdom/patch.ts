@@ -22,7 +22,6 @@ import { unmount, unmountChildren } from './unmount'
 import Ref from './ref'
 import { attachEvent, detachEvent } from '../event'
 import SVGPropertyConfig from './svg-property-config'
-import options from '../options'
 
 export function patch (
   lastVnode,
@@ -54,7 +53,6 @@ export function patch (
       newDom = lastDom
     } else if ((vtype & (VType.Composite)) > 0) {
       newDom = nextVnode.update(lastVnode, nextVnode, context)
-      options.afterUpdate(nextVnode)
     } else if (vtype & VType.Text) {
       return patchVText(lastVnode, nextVnode)
     } else if (vtype & VType.Portal) {

@@ -2,7 +2,6 @@ import { isNullOrUndef, isInvalid, VType, VirtualChildren } from 'nerv-shared'
 import { isAttrAnEvent, isArray } from 'nerv-utils'
 import Ref from './ref'
 import { detachEvent } from '../event'
-import options from '../options'
 
 export function unmountChildren (
   children: VirtualChildren,
@@ -27,7 +26,6 @@ export function unmount (vnode, parentDom?) {
   const dom = vnode.dom
 
   if ((vtype & (VType.Composite)) > 0) {
-    options.beforeUnmount(vnode)
     vnode.destroy()
   } else if ((vtype & VType.Node) > 0) {
     const { props, children, ref } = vnode

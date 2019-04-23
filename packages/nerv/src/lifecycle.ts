@@ -19,7 +19,6 @@ import {
 import FullComponent from './full-component'
 import { unmount } from './vdom/unmount'
 import Ref from './vdom/ref'
-import options from './options'
 import Component from './component'
 import { invokeEffects } from './hooks'
 
@@ -218,7 +217,6 @@ export function updateComponent (component, isForce = false) {
         component.componentDidUpdate(prevProps, prevState, context)
       }, component)
     }
-    options.afterUpdate(vnode)
     while (vnode = vnode.parentVNode) {
       if ((vnode.vtype & (VType.Composite)) > 0) {
         vnode.dom = dom

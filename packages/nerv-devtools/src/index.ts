@@ -121,36 +121,35 @@ export function initDevTools () {
   const prevAfterMount = options.afterMount
   const prevBeforeUnmount = options.beforeUnmount
   const prevAfterUpdate = options.afterUpdate
+  const prevBeforeMount = options.beforeMount
+  const prevBeforeUpdate = options.beforeUpdate
+  const prevAfterCreate = options.afterCreate
 
-  // options.vnode = vnode => {
-  //   // Tiny performance improvement by initializing fields as doubles
-  //   // from the start. `performance.now()` will always return a double.
-  //   // See https://github.com/facebook/react/issues/14365
-  //   // and https://slidr.io/bmeurer/javascript-engine-fundamentals-the-good-the-bad-and-the-ugly
-  //   vnode.startTime = NaN
-  //   vnode.endTime = NaN
+  options.afterCreate = (vnode: any) => {
+    // Tiny performance improvement by initializing fields as doubles
+    // from the start. `performance.now()` will always return a double.
+    // See https://github.com/facebook/react/issues/14365
+    // and https://slidr.io/bmeurer/javascript-engine-fundamentals-the-good-the-bad-and-the-ugly
+    vnode.startTime = NaN
+    vnode.endTime = NaN
 
-  //   vnode.startTime = 0
-  //   vnode.endTime = -1
-  //   if (prevVNodeHook) prevVNodeHook(vnode)
-  // }
+    vnode.startTime = 0
+    vnode.endTime = -1
+    prevAfterCreate(vnode)
+  }
 
-  // options.diff = vnode => {
-  //   vnode.startTime = now()
-  //   if (prevBeforeDiff != null) prevBeforeDiff(vnode)
-  // }
+  options.beforeMount = (vnode: any) => {
+    vnode.startTime = now()
+    prevBeforeMount(vnode)
+  }
 
-  // options.diffed = vnode => {
-  //   vnode.endTime = now()
-  //   if (prevAfterDiff != null) prevAfterDiff(vnode)
-  // }
+  options.beforeUpdate = (vnode: any) => {
+    vnode.startTime = now()
+    prevBeforeUpdate(vnode)
+  }
 
-  // FIXME: afterMount timing
   options.afterMount = catchErrors((vnode) => {
-    // Call previously defined hook
-    if (prevAfterMount != null) {
-      prevAfterMount(vnode)
-    }
+    prevAfterMount(vnode)
 
     // These cases are already handled by `unmount`
     if (vnode == null) {
@@ -160,15 +159,13 @@ export function initDevTools () {
   })
 
   options.afterUpdate = catchErrors((vnode) => {
-    // Call previously defined hook
-    if (prevAfterMount != null) {
-      prevAfterUpdate(vnode)
-    }
+    prevAfterUpdate(vnode)
 
     // These cases are already handled by `unmount`
     if (vnode == null) {
       return
     }
+    vnode.endTime = now()
     onCommitRoot(vnode)
   })
 

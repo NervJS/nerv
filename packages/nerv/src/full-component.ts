@@ -6,6 +6,7 @@ import {
 } from './lifecycle'
 import Component from './component'
 import { isUndefined } from 'nerv-utils'
+import options from './options'
 
 class ComponentWrapper implements CompositeComponent {
   vtype = VType.Composite
@@ -38,18 +39,26 @@ class ComponentWrapper implements CompositeComponent {
     this.props = props
     this.key = props.key || null
     this.dom = null
+    options.afterCreate(this)
   }
 
   init (parentContext, parentComponent) {
-    return mountComponent(this, parentContext, parentComponent)
+    options.beforeMount(this)
+    const dom = mountComponent(this, parentContext, parentComponent)
+    options.afterMount(this)
+    return dom
   }
 
   update (previous, current, parentContext, domNode?) {
     this.context = parentContext
-    return reRenderComponent(previous, this)
+    options.beforeUpdate(this)
+    const dom = reRenderComponent(previous, this)
+    options.afterUpdate(this)
+    return dom
   }
 
   destroy () {
+    options.beforeUnmount(this)
     unmountComponent(this)
   }
 }
