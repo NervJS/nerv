@@ -1,6 +1,6 @@
 import { isFunction, isString, isObject } from 'nerv-utils'
 import { isComposite } from 'nerv-shared'
-
+import { errorCatcher } from '../lifecycle'
 export default {
   update (lastVnode, nextVnode, domNode?) {
     const prevRef = lastVnode != null && lastVnode.ref
@@ -14,7 +14,10 @@ export default {
   attach (vnode, ref, domNode: Element) {
     const node = isComposite(vnode) ? vnode.component : domNode
     if (isFunction(ref)) {
-      ref(node)
+      const componentForCatcher = isComposite(vnode) ? vnode.component : vnode
+      errorCatcher(() => {
+        ref(node)
+      }, componentForCatcher)
     } else if (isString(ref)) {
       const inst = vnode._owner
       if (inst && isFunction(inst.render)) {
@@ -27,7 +30,10 @@ export default {
   detach (vnode, ref, domNode: Element) {
     const node = isComposite(vnode) ? vnode.component : domNode
     if (isFunction(ref)) {
-      ref(null)
+      const componentForCatcher = isComposite(vnode) ? vnode.component : vnode
+      errorCatcher(() => {
+        ref(null)
+      }, componentForCatcher)
     } else if (isString(ref)) {
       const inst = vnode._owner
       if (inst.refs[ref] === node && isFunction(inst.render)) {

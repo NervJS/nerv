@@ -1429,81 +1429,306 @@ describe('Lifecycle methods', () => {
       // once the whole diff-phase is complete. This is why
       // "outer getSnapshotBeforeUpdate" is called just before the "inner" hooks.
       // For react this call would be right before "outer componentDidUpdate"
-      // expect(log).toEqual([
-      //   'outer getDerivedStateFromProps',
-      //   'outer shouldComponentUpdate',
-      //   'outer render',
-      //   'outer getSnapshotBeforeUpdate',
-      //   'inner getDerivedStateFromProps',
-      //   'inner shouldComponentUpdate',
-      //   'inner render',
-      //   'inner getSnapshotBeforeUpdate',
-      //   'inner componentDidUpdate',
-      //   'outer componentDidUpdate'
-      // ])
+      expect(log).toEqual([
+        'outer getDerivedStateFromProps',
+        'outer shouldComponentUpdate',
+        'outer render',
+        'outer getSnapshotBeforeUpdate',
+        'inner getDerivedStateFromProps',
+        'inner shouldComponentUpdate',
+        'inner render',
+        'inner getSnapshotBeforeUpdate',
+        'inner componentDidUpdate',
+        'outer componentDidUpdate'
+      ])
       // Outer state update & Inner props update
       log = []
       updateOuterState()
       rerender()
-      // expect(log).toEqual([
-      //   'outer getDerivedStateFromProps',
-      //   'outer shouldComponentUpdate',
-      //   'outer render',
-      //   'outer getSnapshotBeforeUpdate',
-      //   'inner getDerivedStateFromProps',
-      //   'inner shouldComponentUpdate',
-      //   'inner render',
-      //   'inner getSnapshotBeforeUpdate',
-      //   'inner componentDidUpdate',
-      //   'outer componentDidUpdate'
-      // ])
+      expect(log).toEqual([
+        'outer getDerivedStateFromProps',
+        'outer shouldComponentUpdate',
+        'outer render',
+        'outer getSnapshotBeforeUpdate',
+        'inner getDerivedStateFromProps',
+        'inner shouldComponentUpdate',
+        'inner render',
+        'inner getSnapshotBeforeUpdate',
+        'inner componentDidUpdate',
+        'outer componentDidUpdate'
+      ])
       // Inner state update
       log = []
       updateInnerState()
       rerender()
-      // expect(log).toEqual([
-      //   'inner getDerivedStateFromProps',
-      //   'inner shouldComponentUpdate',
-      //   'inner render',
-      //   'inner getSnapshotBeforeUpdate',
-      //   'inner componentDidUpdate'
-      // ])
+      expect(log).toEqual([
+        'inner getDerivedStateFromProps',
+        'inner shouldComponentUpdate',
+        'inner render',
+        'inner getSnapshotBeforeUpdate',
+        'inner componentDidUpdate'
+      ])
       // Force update Outer
       log = []
       forceUpdateOuter()
       rerender()
-      // expect(log).toEqual([
-      //   'outer getDerivedStateFromProps',
-      //   'outer render',
-      //   'outer getSnapshotBeforeUpdate',
-      //   'inner getDerivedStateFromProps',
-      //   'inner shouldComponentUpdate',
-      //   'inner render',
-      //   'inner getSnapshotBeforeUpdate',
-      //   'inner componentDidUpdate',
-      //   'outer componentDidUpdate'
-      // ])
+      expect(log).toEqual([
+        'outer getDerivedStateFromProps',
+        'outer render',
+        'outer getSnapshotBeforeUpdate',
+        'inner getDerivedStateFromProps',
+        'inner shouldComponentUpdate',
+        'inner render',
+        'inner getSnapshotBeforeUpdate',
+        'inner componentDidUpdate',
+        'outer componentDidUpdate'
+      ])
       // Force update Inner
       log = []
       forceUpdateInner()
       rerender()
-      // expect(log).toEqual([
-      //   'inner getDerivedStateFromProps',
-      //   'inner render',
-      //   'inner getSnapshotBeforeUpdate',
-      //   'inner componentDidUpdate'
-      // ])
+      expect(log).toEqual([
+        'inner getDerivedStateFromProps',
+        'inner render',
+        'inner getSnapshotBeforeUpdate',
+        'inner componentDidUpdate'
+      ])
       // Unmounting Outer & Inner
       log = []
       render(<table />, scratch)
-      // expect(log).toEqual([
-      //   'outer componentWillUnmount',
-      //   'inner componentWillUnmount'
-      // ])
+      expect(log).toEqual([
+        'outer componentWillUnmount',
+        'inner componentWillUnmount'
+      ])
     })
   })
 
-  describe('getDerivedStateFromError', () => { })
+  describe('getDerivedStateFromError', () => {
+    let receiver
+    scratch = document.createElement('div')
+    class Receiver extends Component {
+      constructor (props) {
+        super(props)
+        receiver = this
+      }
+      static getDerivedStateFromError (error) {
+        console.log('getDerivedStateFromError is called', error)
+        return { error }
+      }
+      render () {
+        return <div>{this.state.error ? String(this.state.error) : this.props.children}</div>
+      }
+    }
+    const spyGetDerivedStateFromError = sinon.spy(Receiver, 'getDerivedStateFromError')
+    beforeEach(() => {
+      receiver = undefined
+      spyGetDerivedStateFromError.reset()
+    })
+    // it('should be called when child fails in constructor', () => {
+    //   class ThrowErr extends Component {
+    //     constructor (props, context) {
+    //       super(props, context)
+    //       throw new Error('Error!')
+    //     }
+    //     render () {
+    //       return <div />
+    //     }
+    //   }
+    //   render(<Receiver><ThrowErr /></Receiver>, scratch)
+    //   rerender()
+    //   // expect(Receiver.getDerivedStateFromError.called).toBeTruthy()
+    // })
+    it('should be called when child fails in componentWillMount', () => {
+      class ThrowErr extends Component {
+        componentWillMount () {
+          throw new Error('Error during componentWillMount!')
+        }
+        render () {
+          return <div>123</div>
+        }
+      }
+      render(<Receiver><ThrowErr /></Receiver>, scratch)
+      document.body.appendChild(scratch)
+      expect(spyGetDerivedStateFromError.called).toBeTruthy()
+    })
+    it('should be called when child fails in render', () => {
+      // eslint-disable-next-line react/require-render-return
+      class ThrowErr extends Component {
+        render () {
+          throw new Error('Error during render!')
+        }
+      }
+      render(<Receiver><ThrowErr /></Receiver>, scratch)
+      document.body.appendChild(scratch)
+      expect(spyGetDerivedStateFromError.called).toBeTruthy()
+    })
+    it('should be called when child fails in componentDidMount', () => {
+      class ThrowErr extends Component {
+        componentDidMount () {
+          throw new Error('Error during componentDidMount!')
+        }
+        render () {
+          return <div />
+        }
+      }
+      render(<Receiver><ThrowErr /></Receiver>, scratch)
+      document.body.appendChild(scratch)
+      expect(spyGetDerivedStateFromError.called).toBeTruthy()
+    })
+    it('should be called when child fails in getDerivedStateFromProps', () => {
+      class ThrowErr extends Component {
+        static getDerivedStateFromProps () {
+          throw new Error('Error during getDerivedStateFromProps!')
+        }
+        render () {
+          console.log('render children')
+          return <span>Should not get here</span>
+        }
+      }
+
+      // const spyRender = sinon.spy(ThrowErr.prototype, 'render')
+      render(<Receiver><ThrowErr /></Receiver>, scratch)
+      document.body.appendChild(scratch)
+      expect(spyGetDerivedStateFromError.called).toBeTruthy()
+      // @TODO: render should not be called
+      // expect(spyRender.notCalled).toBeTruthy()
+    })
+    it('should be called when child fails in getSnapshotBeforeUpdate', () => {
+      class ThrowErr extends Component {
+        getSnapshotBeforeUpdate () {
+          throw new Error('Error in getSnapshotBeforeUpdate!')
+        }
+        render () {
+          return <span />
+        }
+      }
+      render(<Receiver><ThrowErr /></Receiver>, scratch)
+      receiver.forceUpdate()
+
+      expect(spyGetDerivedStateFromError.called).toBeTruthy()
+    })
+    it('should be called when child fails in componentDidUpdate', () => {
+      class ThrowErr extends Component {
+        componentDidUpdate () {
+          throw new Error('Error in componentDidUpdate!')
+        }
+        render () {
+          return <span />
+        }
+      }
+      render(<Receiver><ThrowErr /></Receiver>, scratch)
+      receiver.forceUpdate()
+      expect(spyGetDerivedStateFromError.called).toBeTruthy()
+    })
+    it('should be called when child fails in componentWillUpdate', () => {
+      class ThrowErr extends Component {
+        componentWillUpdate () {
+          throw new Error('Error in componentWillUpdate!')
+        }
+        render () {
+          return <span />
+        }
+      }
+      render(<Receiver><ThrowErr /></Receiver>, scratch)
+      receiver.forceUpdate()
+      expect(spyGetDerivedStateFromError.called).toBeTruthy()
+    })
+    it('should be called when child fails in componentWillReceiveProps', () => {
+      let receiver
+      class Receiver extends Component {
+        constructor () {
+          super()
+          this.state = { foo: 'bar' }
+          receiver = this
+        }
+        static getDerivedStateFromError (error) {
+          return { error }
+        }
+        render () {
+          return <div>{this.state.error ? String(this.state.error) : <ThrowErr foo={this.state.foo} />}</div>
+        }
+      }
+      class ThrowErr extends Component {
+        componentWillReceiveProps () {
+          throw new Error('Error in componentWillReceiveProps!')
+        }
+        render () {
+          return <span />
+        }
+      }
+      const spyGetDerivedStateFromError = sinon.spy(Receiver, 'getDerivedStateFromError')
+      render(<Receiver />, scratch)
+      document.body.appendChild(scratch)
+      receiver.setState({ foo: 'baz' })
+      rerender()
+      expect(spyGetDerivedStateFromError.called).toBeTruthy()
+    })
+    it('should be called when child fails in shouldComponentUpdate', () => {
+      let receiver
+      class Receiver extends Component {
+        constructor () {
+          super()
+          this.state = { foo: 'bar' }
+          receiver = this
+        }
+        static getDerivedStateFromError (error) {
+          return { error }
+        }
+        render () {
+          return <div>{this.state.error ? String(this.state.error) : <ThrowErr foo={this.state.foo} />}</div>
+        }
+      }
+      class ThrowErr extends Component {
+        shouldComponentUpdate () {
+          throw new Error('Error in shouldComponentUpdate!')
+        }
+        render () {
+          return <span />
+        }
+      }
+      const spyGetDerivedStateFromError = sinon.spy(Receiver, 'getDerivedStateFromError')
+      render(<Receiver />, scratch)
+      receiver.setState({ foo: 'baz' })
+      rerender()
+      expect(spyGetDerivedStateFromError.called).toBeTruthy()
+    })
+    it('should be called when child fails in componentWillUnmount', () => {
+      class ThrowErr extends Component {
+        componentWillUnmount () {
+          throw new Error('Error in componentWillUnmount!')
+        }
+        render () {
+          return <div />
+        }
+      }
+
+      render(<Receiver><ThrowErr /></Receiver>, scratch)
+      render(<Receiver><div /></Receiver>, scratch)
+      expect(spyGetDerivedStateFromError.called).toBeTruthy()
+    })
+    it('should be called when functional child fails', () => {
+      function ThrowErr () {
+        throw new Error('Error!')
+      }
+      render(<Receiver><ThrowErr /></Receiver>, scratch)
+      expect(spyGetDerivedStateFromError.called).toBeTruthy()
+    })
+
+    it('should re-render with new content', () => {
+      class ThrowErr extends Component {
+        componentWillMount () {
+          throw new Error('Error contents')
+        }
+        render () {
+          return 'No error!?!?'
+        }
+      }
+
+      render(<Receiver><ThrowErr /></Receiver>, scratch)
+      rerender()
+      expect(scratch.textContent).toEqual('Error: Error contents')
+    })
+  })
   describe('getSnapshotBeforeUpdate', () => {
     it('should pass the return value from getSnapshotBeforeUpdate to componentDidUpdate', () => {
       let log = []

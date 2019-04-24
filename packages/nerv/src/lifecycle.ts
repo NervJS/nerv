@@ -25,7 +25,7 @@ import { invokeEffects } from './hooks'
 
 const readyComponents: any[] = []
 
-function errorCatcher (fn: Function, component: Component<any, any>) {
+export function errorCatcher (fn: Function, component: Component<any, any>) {
   try {
     return fn()
   } catch (error) {
@@ -34,10 +34,11 @@ function errorCatcher (fn: Function, component: Component<any, any>) {
 }
 
 function errorHandler (component: Component<any, any>, error) {
+  // if(!component) { throw error ; return }
   let boundary
-
   while (true) {
-    if (isFunction(component.componentDidCatch)) {
+    const { getDerivedStateFromError } = (component as any).constructor
+    if (isFunction(getDerivedStateFromError) || isFunction(component.componentDidCatch)) {
       boundary = component
       break
     } else if (component._parentComponent) {
@@ -46,11 +47,15 @@ function errorHandler (component: Component<any, any>, error) {
       break
     }
   }
-
   if (boundary) {
+    const { getDerivedStateFromError } = (boundary as any).constructor
     const _disable = boundary._disable
     boundary._disable = false
-    boundary.componentDidCatch(error)
+    if (isFunction(getDerivedStateFromError)) {
+      component.setState(getDerivedStateFromError(error))
+    } else if (isFunction(component.componentDidCatch)) {
+      boundary.componentDidCatch(error)
+    }
     boundary._disable = _disable
   } else {
     throw error
@@ -92,7 +97,6 @@ export function mountComponent (
   if (newState) {
     component.state = newState
   }
-
   // if (isFunction(component.componentWillMount)) {
   //   errorCatcher(() => {
   //     (component as any).componentWillMount()
@@ -103,11 +107,9 @@ export function mountComponent (
 
   if (isFunction(component.componentWillMount)) {
     errorCatcher(() => {
-      if (isFunction(component.componentWillMount)) {
-          // show warning
-        if (!hasNewLifecycle(component)) {
-          (component as any).componentWillMount()
-        }
+      // @TODO show warning
+      if (!hasNewLifecycle(component)) {
+       (component as any).componentWillMount()
       }
     }, component)
     component.state = component.getState()
@@ -160,13 +162,11 @@ export function flushMount () {
   // @TODO: perf
   const queue = readyComponents.slice(0)
   readyComponents.length = 0
-  console.log('readyComponents', readyComponents.length)
   queue.forEach((item) => {
     if (isFunction(item)) {
       item()
     } else if (item.componentDidMount) {
       errorCatcher(() => {
-        console.log('componentDidMount itemmm', item)
         item.componentDidMount()
       }, item)
     }
@@ -197,7 +197,13 @@ export function reRenderComponent (
   }
   return updateComponent(component)
 }
-
+function callShouldComponentUpdate (props, state, context, component) {
+  let shouldUpdate = true
+  errorCatcher(() => {
+    shouldUpdate = component.shouldComponentUpdate(props, state, context)
+  }, component)
+  return shouldUpdate
+}
 export function updateComponent (component, isForce = false) {
   let vnode = component.vnode
   let dom = vnode.dom
@@ -219,7 +225,7 @@ export function updateComponent (component, isForce = false) {
   if (
     !isForce &&
     isFunction(component.shouldComponentUpdate) &&
-    component.shouldComponentUpdate(props, state, context) === false
+    callShouldComponentUpdate(props, state, context, component) === false
   ) {
     skip = true
   } else if (isFunction(component.componentWillUpdate) && !hasNewLifecycle(component)) {
@@ -238,7 +244,6 @@ export function updateComponent (component, isForce = false) {
   if (!skip) {
     const lastRendered = component._rendered
     const rendered = renderComponent(component)
-
     rendered.parentVNode = vnode
     const childContext = getChildContext(component, context)
     const snapshot = callGetSnapshotBeforeUpdate(prevProps, prevState, component)
@@ -287,25 +292,29 @@ export function unmountComponent (vnode: FullComponent) {
 function callGetDerivedStateFromProps (props, state, inst) {
   const {getDerivedStateFromProps} = inst.constructor
   let newState
-  if (isFunction(getDerivedStateFromProps)) {
-    const partialState = getDerivedStateFromProps.call(
-      null,
-      props,
-      state
-    )
-
-    if (partialState) {
-      newState = {...state, ...partialState}
+    // @TODO show warning
+  errorCatcher(() => {
+    if (isFunction(getDerivedStateFromProps)) {
+      const partialState = getDerivedStateFromProps.call(
+        null,
+        props,
+        state
+      )
+      if (partialState) {
+        newState = {...state, ...partialState}
+      }
     }
-  }
+  }, inst)
   return newState
 }
 function callGetSnapshotBeforeUpdate (props, state, inst) {
   const {getSnapshotBeforeUpdate} = inst
   let snapshot
-  if (isFunction(getSnapshotBeforeUpdate)) {
-    snapshot = getSnapshotBeforeUpdate.call(inst, props, state)
-  }
+  errorCatcher(() => {
+    if (isFunction(getSnapshotBeforeUpdate)) {
+      snapshot = getSnapshotBeforeUpdate.call(inst, props, state)
+    }
+  }, inst)
   return snapshot
 }
 function hasNewLifecycle (component) {
