@@ -21,7 +21,7 @@ type Dispatch<A> = (value: A) => void
 
 type EffectCallback = () => (void | (() => void))
 
-type DependencyList = ReadonlyArray<unknown>
+type DependencyList = ReadonlyArray<any>
 
 type Reducer<S, A> = (prevState: S, action: A) => S
 
@@ -104,7 +104,18 @@ function areDepsChanged (prevDeps?: DependencyList, deps?: DependencyList) {
   if (isNullOrUndef(prevDeps) || isNullOrUndef(deps)) {
     return true
   }
-  return deps.some((a, i) => a !== prevDeps[i])
+  for (let i = 0; i < deps.length; i += 1) {
+    const val1 = deps[i]
+    const val2 = prevDeps[i]
+
+    // Object.is polyfill
+    // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+    if (!((val1 === val2 && (val1 !== 0 || 1 / val1 === 1 / (val2)))
+        || (val1 !== val1 && val2 !== val2))) {
+        return false
+    }
+  }
+  return true
 }
 
 export function invokeEffects (component: Component<any, any>, delay: boolean = false) {
