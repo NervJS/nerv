@@ -79,7 +79,7 @@ export function getChildren (vnode) {
   if (c == null) {
     if (vnode.children) {
       if (isArray(vnode.children)) {
-        return vnode.children
+        return vnode.children.slice()
       }
       return [vnode.children]
     }
