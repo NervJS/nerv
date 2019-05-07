@@ -18,7 +18,8 @@ import {
   isValidElement
 } from './dom'
 import { PropTypes } from './prop-types' // for React 15- compat
-import { useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo } from './hooks'
+// tslint:disable-next-line: max-line-length
+import { useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo, useImperativeHandle } from './hooks'
 import { createRef, forwardRef } from './create-ref'
 import { memo } from './memo'
 
@@ -44,7 +45,7 @@ export {
   createRef,
   forwardRef,
   memo,
-  useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo
+  useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo, useImperativeHandle
 }
 
 export default {
@@ -69,5 +70,5 @@ export default {
   createRef,
   forwardRef,
   memo,
-  useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo
+  useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo, useImperativeHandle
 }
