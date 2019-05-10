@@ -7,10 +7,10 @@
   "author": "yuche",
   "license": "MIT",
   "dependencies": {
-    "nerv-server": "1.2.3",
+    "nerv-server": "^1.4.0-beta.3",
     "nerv-shared": "1.4.0-beta.3",
     "nerv-utils": "1.4.0-beta.3",
-    "nervjs": "1.2.4",
+    "nervjs": "^1.4.0-beta.3",
     "simulant": "^0.2.2"
   },
   "repository": {
