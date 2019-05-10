@@ -109,7 +109,7 @@ function areDepsChanged (prevDeps?: DependencyList, deps?: DependencyList) {
 
 export function invokeEffects (component: Component<any, any>, delay: boolean = false) {
   const effects = delay ? component.effects : component.layoutEffects
-  effects.forEach((hook) => {
+  effects && effects.forEach((hook) => {
     if (isFunction(hook.cleanup)) {
       hook.cleanup()
     }
