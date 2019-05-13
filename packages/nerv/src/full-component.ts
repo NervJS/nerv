@@ -5,7 +5,7 @@ import {
   unmountComponent
 } from './lifecycle'
 import Component from './component'
-import { isUndefined } from 'nerv-utils'
+import { isUndefined, isArray } from 'nerv-utils'
 import options from './options'
 
 class ComponentWrapper implements CompositeComponent {
@@ -23,7 +23,11 @@ class ComponentWrapper implements CompositeComponent {
 
   constructor (type, props) {
     this.type = type
-    this.name = type.name || type.toString().match(/^function\s*([^\s(]+)/)[1]
+    this.name = type.name
+    if (isUndefined(this.name)) {
+      const names = type.toString().match(/^function\s*([^\s(]+)/)
+      this.name = isArray(names) ? names[0] : 'Component'
+    }
     type.displayName = this.name
     this._owner = props.owner
     delete props.owner
