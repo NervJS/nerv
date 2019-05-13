@@ -100,22 +100,22 @@ export function useReducer<R extends Reducer<any, any>, I> (
   return hook.state
 }
 
+// Object.is polyfill
+// https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+function is (x: any, y: any) {
+  if (x === y) { // Steps 1-5, 7-10
+    // Steps 6.b-6.e: +0 != -0
+    return x !== 0 || 1 / x === 1 / y
+  }
+  // eslint-disable-next-line no-self-compare
+  return x !== x && y !== y
+}
+
 function areDepsChanged (prevDeps?: DependencyList, deps?: DependencyList) {
   if (isNullOrUndef(prevDeps) || isNullOrUndef(deps)) {
     return true
   }
-  for (let i = 0; i < deps.length; i += 1) {
-    const val1 = deps[i]
-    const val2 = prevDeps[i]
-
-    // Object.is polyfill
-    // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/is
-    if (!((val1 === val2 && (val1 !== 0 || 1 / val1 === 1 / (val2)))
-        || (val1 !== val1 && val2 !== val2))) {
-        return false
-    }
-  }
-  return true
+  return deps.some((d, i) => !is(d, prevDeps[i]))
 }
 
 export function invokeEffects (component: Component<any, any>, delay: boolean = false) {
