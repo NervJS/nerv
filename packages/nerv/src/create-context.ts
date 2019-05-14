@@ -1,6 +1,6 @@
 import { Emiter } from './emiter'
 import Component from './component'
-import { isUndefined } from 'nerv-utils'
+import { isUndefined, objectIs } from 'nerv-utils'
 
 export let uid = 0
 
@@ -40,7 +40,7 @@ export function createContext<T> (defaultValue: T): Context<T> {
     }
 
     componentWillReceiveProps (nextProps: ProviderProps<T>) {
-      if (this.props.value !== nextProps.value) {
+      if (!objectIs(this.props.value, nextProps.value)) {
         this.emiter.set(nextProps.value)
       }
     }
@@ -75,7 +75,7 @@ export function createContext<T> (defaultValue: T): Context<T> {
     }
 
     onUpdate = (value: T) => {
-      if (value !== this.state.value) {
+      if (!objectIs(value, this.state.value)) {
         this.setState({
           value: this.getContextValue()
         })
