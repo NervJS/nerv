@@ -1,4 +1,4 @@
-import { isFunction, isUndefined, nextTick, isArray } from 'nerv-utils'
+import { isFunction, isUndefined, nextTick, isArray, objectIs } from 'nerv-utils'
 import Current from './current-owner'
 import { isNullOrUndef } from 'nerv-shared'
 import Component from './component'
@@ -100,22 +100,11 @@ export function useReducer<R extends Reducer<any, any>, I> (
   return hook.state
 }
 
-// Object.is polyfill
-// https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/is
-function is (x: any, y: any) {
-  if (x === y) { // Steps 1-5, 7-10
-    // Steps 6.b-6.e: +0 != -0
-    return x !== 0 || 1 / x === 1 / y
-  }
-  // eslint-disable-next-line no-self-compare
-  return x !== x && y !== y
-}
-
 function areDepsChanged (prevDeps?: DependencyList, deps?: DependencyList) {
   if (isNullOrUndef(prevDeps) || isNullOrUndef(deps)) {
     return true
   }
-  return deps.some((d, i) => !is(d, prevDeps[i]))
+  return deps.some((d, i) => !objectIs(d, prevDeps[i]))
 }
 
 export function invokeEffects (component: Component<any, any>, delay: boolean = false) {

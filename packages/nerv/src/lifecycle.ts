@@ -1,5 +1,5 @@
 // import { extend, isFunction, isNumber, isString } from 'nerv-utils'
-import { extend, isFunction, isNumber, isString, clone } from 'nerv-utils'
+import { extend, isFunction, isNumber, isString, clone, isUndefined } from 'nerv-utils'
 import CurrentOwner from './current-owner'
 import createElement from './vdom/create-element'
 import createVText from './vdom/create-vtext'
@@ -21,6 +21,7 @@ import { unmount } from './vdom/unmount'
 import Ref from './vdom/ref'
 import Component from './component'
 import { invokeEffects } from './hooks'
+import { Emiter } from './emiter'
 
 const readyComponents: any[] = []
 
@@ -76,7 +77,15 @@ export function mountComponent (
 ) {
   const ref = vnode.ref
   if (vnode.type.prototype && vnode.type.prototype.render) {
-    vnode.component = new vnode.type(vnode.props, parentContext)
+    const contextType = vnode.type.contextType
+    const hasContextType = !isUndefined(contextType)
+    const provider = hasContextType ? (parentContext[contextType._id] as Emiter<any>) : null
+    const context = hasContextType
+      ? (
+        !isNullOrUndef(provider) ? provider.value : contextType._defaultValue
+      )
+      : parentContext
+    vnode.component = new vnode.type(vnode.props, context)
   } else {
     const c = new Component(vnode.props, parentContext)
     c.render = () => vnode.type.call(c, c.props, c.context)

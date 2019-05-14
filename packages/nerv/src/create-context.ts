@@ -20,12 +20,11 @@ export interface ConsumerState<T> {
   value: T
 }
 
-export type IProvider<T> = Component<ProviderProps<T>>
-export type IConsumer<T> = Component<ConsumerProps, ConsumerState<T>>
-
 export interface Context<T> {
-  Provider: IProvider<T>
-  Consumer: IConsumer<T>
+  Provider: Component<ProviderProps<T>>
+  Consumer: Component<ConsumerProps, ConsumerState<T>>
+  _id: string,
+  _defaultValue: T
 }
 
 export function createContext<T> (defaultValue: T): Context<T> {
@@ -95,6 +94,8 @@ export function createContext<T> (defaultValue: T): Context<T> {
 
   return {
     Provider,
-    Consumer
+    Consumer,
+    _id: contextProp,
+    _defaultValue: defaultValue
   } as any
 }

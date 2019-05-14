@@ -411,6 +411,130 @@ describe('create-context', () => {
     expect(nestedInst.props.global).toBe(NESTED_CONTEXT.global)
     expect(nestedInst.props.theme).toBe(NESTED_CONTEXT.theme)
 
-    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>b - 2</div><div>a - 1</div>'))
+    expect(scratch.innerHTML).toEqual(
+      normalizeHTML('<div>b - 2</div><div>a - 1</div>')
+    )
+  })
+
+  describe('contextTypes', () => {
+    it('should use default value', () => {
+      const ctx = createContext('foo')
+
+      let actual
+      class App extends Component {
+        render () {
+          actual = this.context
+          return <div>bar</div>
+        }
+      }
+
+      App.contextType = ctx
+
+      render(<App />, scratch)
+      expect(actual).toEqual('foo')
+    })
+  })
+
+  it('should use the value of the nearest Provider', () => {
+    const ctx = createContext('foo')
+
+    let actual
+    class App extends Component {
+      render () {
+        actual = this.context
+        return <div>bar</div>
+      }
+    }
+
+    App.contextType = ctx
+    const Provider = ctx.Provider
+
+    render(
+      <Provider value='bar'>
+        <Provider value='bob'>
+          <App />
+        </Provider>
+      </Provider>,
+      scratch
+    )
+    expect(actual).toEqual('bob')
+  })
+
+  it('should restore legacy context for children', () => {
+    const Foo = createContext('foo')
+    const spy = sinon.spy()
+
+    class NewContext extends Component {
+      render () {
+        return <div>{this.props.children}</div>
+      }
+    }
+
+    class OldContext extends Component {
+      getChildContext () {
+        return { foo: 'foo' }
+      }
+
+      render () {
+        return <div>{this.props.children}</div>
+      }
+    }
+
+    class Inner extends Component {
+      render () {
+        spy(this.context)
+        return <div>Inner</div>
+      }
+    }
+
+    NewContext.contextType = Foo
+
+    render(
+      <Foo.Provider value='bar'>
+        <OldContext>
+          <NewContext>
+            <Inner />
+          </NewContext>
+        </OldContext>
+      </Foo.Provider>,
+      scratch
+    )
+
+    expect(spy.calledWithMatch({ foo: 'foo' })).toBeTruthy()
+  })
+
+  it('should call componentWillUnmount', () => {
+    const Foo = createContext('foo')
+    const spy = sinon.spy()
+
+    let instance
+    class App extends Component {
+      constructor (props) {
+        super(props)
+        instance = this
+      }
+
+      componentWillUnmount () {
+        spy(this)
+      }
+
+      render () {
+        return <div />
+      }
+    }
+
+    App.contextType = Foo
+
+    render(
+      <Foo.Provider value='foo'>
+        <App />
+      </Foo.Provider>,
+      scratch
+    )
+
+    render(null, scratch)
+
+    expect(spy.calledOnce).toBeTruthy()
+    expect(spy.getCall(0).args[0]).toEqual(instance)
   })
 })
