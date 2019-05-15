@@ -1,5 +1,19 @@
 /** @jsx createElement */
-import { createElement, useEffect, useState, useReducer, useLayoutEffect, render, nextTick, useCallback, useMemo, useRef } from '../src'
+import {
+  createElement,
+  useEffect,
+  useState,
+  useReducer,
+  useLayoutEffect,
+  render,
+  nextTick,
+  useCallback,
+  useMemo,
+  useRef,
+  createContext,
+  useContext,
+  Component
+} from '../src'
 import { rerender } from '../src/render-queue'
 import { delay } from './util'
 import sinon from 'sinon'
@@ -62,10 +76,12 @@ describe('hooks', () => {
         handleClick = () => {
           setCount(c => c + 10)
         }
-        return (<div>
-          <p>Count: {count}</p>
-          <Increment increment={handleClick} />
-        </div>)
+        return (
+          <div>
+            <p>Count: {count}</p>
+            <Increment increment={handleClick} />
+          </div>
+        )
       }
 
       function Increment (props) {
@@ -83,7 +99,9 @@ describe('hooks', () => {
     })
 
     it('can initialize the state via a function', () => {
-      const initState = sinon.spy(() => { 1 })
+      const initState = sinon.spy(() => {
+        1
+      })
 
       function Comp () {
         useState(initState)
@@ -100,9 +118,7 @@ describe('hooks', () => {
       function App (props) {
         const [value] = useState(props.value)
 
-        return (
-          <span key={value}>{value}</span>
-        )
+        return <span key={value}>{value}</span>
       }
 
       render(<App value={2} />, scratch)
@@ -155,7 +171,7 @@ describe('hooks', () => {
 
     it('updates multiple times within same render function', async () => {
       const logs = []
-      function Counter ({row: newRow}) {
+      function Counter ({ row: newRow }) {
         const [count, setCount] = useState(0)
         if (count < 12) {
           setCount(c => c + 1)
@@ -306,7 +322,7 @@ describe('hooks', () => {
       function reducer (state, action) {
         return action === 'increment' ? state + 1 : state
       }
-      function Counter ({row: newRow}) {
+      function Counter ({ row: newRow }) {
         const [count, dispatch] = useReducer(reducer, 0)
         if (count < 3) {
           dispatch('increment')
@@ -317,12 +333,7 @@ describe('hooks', () => {
 
       render(<Counter />, scratch)
       await delay(5)
-      expect(logs).toEqual([
-        'Render: 0',
-        'Render: 1',
-        'Render: 2',
-        'Render: 3'
-      ])
+      expect(logs).toEqual(['Render: 0', 'Render: 1', 'Render: 2', 'Render: 3'])
       expect(scratch.childNodes[0].childNodes[0].data).toEqual('3')
     })
   })
@@ -334,14 +345,12 @@ describe('hooks', () => {
       let cleanupCounter = 0
 
       function Counter (props) {
-        useLayoutEffect(
-          () => {
-            ++effectCounter
-            return () => {
-              ++cleanupCounter
-            }
+        useLayoutEffect(() => {
+          ++effectCounter
+          return () => {
+            ++cleanupCounter
           }
-        )
+        })
         ++renderCounter
         return <span>{props.count}</span>
       }
@@ -369,16 +378,13 @@ describe('hooks', () => {
 
       function Counter (props) {
         const [text, udpateText] = useState('foo')
-        useLayoutEffect(
-          () => {
-            ++effectCounter
-            udpateText('bar')
-            return () => {
-              ++cleanupCounter
-            }
-          },
-          [props.count]
-        )
+        useLayoutEffect(() => {
+          ++effectCounter
+          udpateText('bar')
+          return () => {
+            ++cleanupCounter
+          }
+        }, [props.count])
         ++renderCounter
         return <span>{text}</span>
       }
@@ -412,16 +418,13 @@ describe('hooks', () => {
 
       function Counter (props) {
         const [count, updateCount] = useState(0)
-        useLayoutEffect(
-          () => {
-            ++effectCounter
-            updateCount(1)
-            return () => {
-              ++cleanupCounter
-            }
-          },
-          [count]
-        )
+        useLayoutEffect(() => {
+          ++effectCounter
+          updateCount(1)
+          return () => {
+            ++cleanupCounter
+          }
+        }, [count])
         // ++renderCounter
         return <span>{count}</span>
       }
@@ -440,16 +443,13 @@ describe('hooks', () => {
 
       function Counter () {
         const [count, updateCount] = useState(0)
-        useLayoutEffect(
-          () => {
-            ++effectCounter
-            updateCount(count + 1)
-            return () => {
-              ++cleanupCounter
-            }
-          },
-          []
-        )
+        useLayoutEffect(() => {
+          ++effectCounter
+          updateCount(count + 1)
+          return () => {
+            ++cleanupCounter
+          }
+        }, [])
         ++renderCounter
         return <span>{count}</span>
       }
@@ -567,7 +567,9 @@ describe('hooks', () => {
       function Comp () {
         const [counter, setCounter] = useState(0)
 
-        useLayoutEffect(() => { if (counter === 0) setCounter(1) })
+        useLayoutEffect(() => {
+          if (counter === 0) setCounter(1)
+        })
 
         didRender(counter)
         return null
@@ -606,13 +608,15 @@ describe('hooks', () => {
 
       function reducer1 (state, action) {
         switch (action.type) {
-          case 'increment': return state + action.count
+          case 'increment':
+            return state + action.count
         }
       }
 
       function reducer2 (state, action) {
         switch (action.type) {
-          case 'increment': return state + action.count * 2
+          case 'increment':
+            return state + action.count * 2
         }
       }
 
@@ -667,7 +671,9 @@ describe('hooks', () => {
       function Comp () {
         const [counter, setCounter] = useState(0)
 
-        useEffect(() => { if (counter === 0) setCounter(1) })
+        useEffect(() => {
+          if (counter === 0) setCounter(1)
+        })
 
         didRender(counter)
         return null
@@ -680,6 +686,171 @@ describe('hooks', () => {
       rerender()
       expect(didRender.calledTwice).toBeTruthy()
       expect(didRender.calledWith(1)).toBeTruthy()
+    })
+  })
+
+  describe('useContext', () => {
+    it('gets values from context', () => {
+      const values = []
+      const Context = createContext(13)
+
+      function Comp () {
+        const value = useContext(Context)
+        values.push(value)
+        return null
+      }
+
+      render(<Comp />, scratch)
+      render(
+        <Context.Provider value={42}>
+          <Comp />
+        </Context.Provider>,
+        scratch
+      )
+      render(
+        <Context.Provider value={69}>
+          <Comp />
+        </Context.Provider>,
+        scratch
+      )
+
+      expect(values).toEqual([13, 42, 69])
+    })
+
+    it('should use default value', () => {
+      const Foo = createContext(42)
+      const spy = sinon.spy()
+
+      function App () {
+        spy(useContext(Foo))
+        return <div />
+      }
+
+      render(<App />, scratch)
+      expect(spy.calledWith(42)).toBeTruthy()
+    })
+
+    it('should update when value changes with nonUpdating Component on top', async () => {
+      const spy = sinon.spy()
+      const Ctx = createContext(0)
+
+      class NoUpdate extends Component {
+        shouldComponentUpdate () {
+          return false
+        }
+        render () {
+          return this.props.children
+        }
+      }
+
+      function App (props) {
+        return (
+          <Ctx.Provider value={props.value}>
+            <NoUpdate>
+              <Comp />
+            </NoUpdate>
+          </Ctx.Provider>
+        )
+      }
+
+      function Comp () {
+        const value = useContext(Ctx)
+        spy(value)
+        return <h1>{value}</h1>
+      }
+
+      render(<App value={0} />, scratch)
+      expect(spy.calledOnce).toBeTruthy()
+      expect(spy.calledWith(0)).toBeTruthy()
+      // expect(spy).to.be.calledOnce
+      // expect(spy).to.be.calledWith(0)
+      render(<App value={1} />, scratch)
+      await delay(5)
+      // Should not be called a third time
+      expect(spy.calledTwice).toBeTruthy()
+      expect(spy.calledWith(1)).toBeTruthy()
+    })
+
+    it('should only update when value has changed', done => {
+      const spy = sinon.spy()
+      const Ctx = createContext(0)
+
+      function App (props) {
+        return (
+          <Ctx.Provider value={props.value}>
+            <Comp />
+          </Ctx.Provider>
+        )
+      }
+
+      function Comp () {
+        const value = useContext(Ctx)
+        spy(value)
+        return <h1>{value}</h1>
+      }
+
+      render(<App value={0} />, scratch)
+      expect(spy.calledOnce).toBeTruthy()
+      expect(spy.calledWith(0)).toBeTruthy()
+      // expect(spy).to.be.calledOnce
+      // expect(spy).to.be.calledWith(0)
+      render(<App value={1} />, scratch)
+      expect(spy.calledTwice).toBeTruthy()
+      expect(spy.calledWith(1)).toBeTruthy()
+      // expect(spy).to.be.calledTwice
+      // expect(spy).to.be.calledWith(1)
+
+      // Wait for enqueued hook update
+      setTimeout(() => {
+        // Should not be called a third time
+        expect(spy.calledTwice).toBeTruthy()
+        done()
+      }, 0)
+    })
+
+    it('should allow multiple context hooks at the same time', () => {
+      const Foo = createContext(0)
+      const Bar = createContext(10)
+      const spy = sinon.spy()
+      const unmountspy = sinon.spy()
+
+      function Comp () {
+        const foo = useContext(Foo)
+        const bar = useContext(Bar)
+        spy(foo, bar)
+        useEffect(() => () => unmountspy())
+
+        return <div />
+      }
+
+      render(
+        <Foo.Provider value={0}>
+          <Bar.Provider value={10}>
+            <Comp />
+          </Bar.Provider>
+        </Foo.Provider>,
+        scratch
+      )
+
+      // expect(spy).to.be.calledOnce
+      // expect(spy).to.be.calledWith(0, 10)
+      expect(spy.calledOnce).toBeTruthy()
+      expect(spy.calledWith(0, 10)).toBeTruthy()
+
+      render(
+        <Foo.Provider value={11}>
+          <Bar.Provider value={42}>
+            <Comp />
+          </Bar.Provider>
+        </Foo.Provider>,
+        scratch
+      )
+
+      expect(spy.calledTwice).toBeTruthy()
+      expect(unmountspy.called).toBeFalsy()
+
+      // expect(spy).to.be.calledTwice
+      // expect(unmountspy).not.to.be.called
     })
   })
 })

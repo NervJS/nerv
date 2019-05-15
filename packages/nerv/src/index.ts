@@ -19,7 +19,7 @@ import {
 } from './dom'
 import { PropTypes } from './prop-types' // for React 15- compat
 // tslint:disable-next-line: max-line-length
-import { useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo, useImperativeHandle } from './hooks'
+import { useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo, useImperativeHandle, useContext } from './hooks'
 import { createRef, forwardRef } from './create-ref'
 import { memo } from './memo'
 import { createContext } from './create-context'
@@ -47,7 +47,7 @@ export {
   forwardRef,
   memo,
   createContext,
-  useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo, useImperativeHandle
+  useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo, useImperativeHandle, useContext
 }
 
 export default {
@@ -73,5 +73,5 @@ export default {
   forwardRef,
   memo,
   createContext,
-  useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo, useImperativeHandle
+  useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo, useImperativeHandle, useContext
 }

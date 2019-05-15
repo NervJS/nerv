@@ -3,6 +3,8 @@ import Current from './current-owner'
 import { isNullOrUndef } from 'nerv-shared'
 import Component from './component'
 import { RefObject } from './create-ref'
+import { Context } from './create-context'
+import { enqueueRender } from './render-queue'
 
 function getHooks (index: number): Hook {
   if (Current.current === null) {
@@ -55,8 +57,12 @@ export interface HookCallback<T> {
   value: T
 }
 
+export interface HookContext {
+  context?: true
+}
+
 // tslint:disable-next-line:max-line-length
-export type Hook = HookEffect & HookState<unknown> & HookReducer<any, unknown> & HookRef<unknown> & HookCallback<any>
+export type Hook = HookEffect & HookState<unknown> & HookReducer<any, unknown> & HookRef<unknown> & HookCallback<any> & HookContext
 
 export function useState<S> (initialState: S | (() => S)): [S, Dispatch<SetStateAction<S>>] {
   if (isFunction(initialState)) {
@@ -191,6 +197,21 @@ export function useMemo<T> (factory: () => T, deps?: DependencyList): T {
 
 export function useCallback<T extends (...args: never[]) => unknown> (callback: T, deps: DependencyList): T {
   return useMemo(() => callback, deps)
+}
+
+export function useContext<T> (context: Context<T>): T {
+  const provider = Current.current!.context[context._id]
+  if (isUndefined(provider)) {
+    return context._defaultValue
+  }
+  const hook = getHooks(Current.index++)
+  // should update when value changes with shouldComponentUpdate:false Component on top
+  if (isUndefined(hook.context)) {
+    hook.context = true
+    const c = Current.current!
+    provider.on(() => enqueueRender(c))
+  }
+  return provider.value
 }
 
 export function useImperativeHandle<T, R extends T> (
