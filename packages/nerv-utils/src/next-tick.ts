@@ -13,7 +13,7 @@ const nextTick: (fn, ...args) => void = (fn, ...args) => {
   if (canUsePromise) {
     return resolved.then(fn)
   }
-  const timerFunc = 'requestAnimationFrame' in global ? requestAnimationFrame : setTimeout
+  const timerFunc = 'requestAnimationFrame' in global && !isMacSafari ? requestAnimationFrame : setTimeout
   timerFunc(fn)
 }
 
