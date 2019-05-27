@@ -612,38 +612,6 @@ describe('ComponentDidCatch', () => {
     )
     await delay()
     expect(container.firstChild.textContent).toBe('Caught an error: Hello.')
-    // @TODO: React mount after catch a error
-    // expect(log).toEqual([
-    //   'ErrorBoundary constructor',
-    //   'ErrorBoundary componentWillMount',
-    //   'ErrorBoundary render success',
-    //   'BrokenRender constructor',
-    //   'BrokenRender componentWillMount',
-    //   'BrokenRender render [!]',
-    //   // Fiber mounts with null children before capturing error
-    //   'ErrorBoundary componentDidMount',
-    //   // Catch and render an error message
-    //   'ErrorBoundary componentDidCatch',
-    //   'ErrorBoundary componentWillUpdate',
-    //   'ErrorBoundary render error',
-    //   'ErrorBoundary componentDidUpdate'
-    // ])
-
-    log.length = 0
-    unmountComponentAtNode(container)
-    expect(log).toEqual(['ErrorBoundary componentWillUnmount'])
-  })
-
-  it('renders an error state if child throws in render', async () => {
-    var container = document.createElement('div')
-    render(
-      <ErrorBoundary>
-        <BrokenRender />
-      </ErrorBoundary>,
-      container
-    )
-    await delay()
-    expect(container.firstChild.textContent).toBe('Caught an error: Hello.')
 
     log.length = 0
     unmountComponentAtNode(container)
