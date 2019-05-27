@@ -29,3 +29,6 @@ const fakeDoc: any = {
 }
 
 export const doc: Document = isBrowser ? document : fakeDoc
+
+export const isMacSafari = isBrowser && navigator.platform &&
+  /mac/i.test(navigator.platform) && /^((?!chrome|android).)*safari/i.test(navigator.userAgent)

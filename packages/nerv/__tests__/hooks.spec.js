@@ -18,6 +18,14 @@ import { rerender } from '../src/render-queue'
 import { delay } from './util'
 import sinon from 'sinon'
 
+const isNode = !!(
+  typeof process !== 'undefined' &&
+  process.versions &&
+  process.versions.node
+)
+
+if (isNode) it.skipKarma = it
+
 describe('hooks', () => {
   let scratch
 
@@ -644,7 +652,7 @@ describe('hooks', () => {
       expect(states).toEqual([0, 10, 1, 40])
     })
 
-    it('ensures useEffect always schedule after the next paint following a redraw effect, when using the default debounce strategy', async () => {
+    it.skipKarma('ensures useEffect always schedule after the next paint following a redraw effect, when using the default debounce strategy', async () => {
       let effectCount = 0
 
       function Comp () {

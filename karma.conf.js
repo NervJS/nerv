@@ -110,6 +110,7 @@ module.exports = function (config) {
       'browsers/karma.js',
       './node_modules/es6-promise/dist/es6-promise.auto.min.js',
       './node_modules/es5-polyfill/dist/polyfill.js',
+      './node_modules/es6-object-assign/dist/object-assign-auto.min.js',
       'browsers/ie8.js',
       'browsers/polyfill.js',
       'packages/*/__tests__/**/*spec.js?(x)'
