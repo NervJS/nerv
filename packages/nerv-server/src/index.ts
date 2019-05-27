@@ -2,12 +2,12 @@
 import {
   isVNode,
   isVText,
-  isStateless,
   isNullOrUndef,
   isInvalid,
   isComposite
 } from 'nerv-shared'
 import { isString, isNumber, isFunction, isArray, clone, extend } from 'nerv-utils'
+import { Component } from 'nervjs'
 import {
   encodeEntities,
   isVoidElements,
@@ -138,7 +138,13 @@ function renderVNodeToString (vnode, parent, context, isSvg?: boolean) {
     }
     return renderedString
   } else if (isComposite(vnode)) {
-    const instance = new type(props, context)
+    let instance
+    if (vnode.type.prototype && vnode.type.prototype.render) {
+      instance = new type(props, context)
+    } else {
+      instance = new Component(props, context)
+      instance.render = () => type.call(instance, instance.props, instance.context)
+    }
     instance._disable = true
     instance.props = props
     instance.context = context
@@ -150,9 +156,6 @@ function renderVNodeToString (vnode, parent, context, isSvg?: boolean) {
     if (isFunction(instance.getChildContext)) {
       context = extend(clone(context), instance.getChildContext())
     }
-    return renderVNodeToString(rendered, vnode, context, isSvg)
-  } else if (isStateless(vnode)) {
-    const rendered = type(props, context)
     return renderVNodeToString(rendered, vnode, context, isSvg)
   }
 }

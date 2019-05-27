@@ -10,7 +10,6 @@
     "precommit": "npm run lint && npm run lint-staged",
     "prepush": "npm run test",
     "postinstall": "lerna bootstrap",
-    "prepublish": "npm run build",
     "clean": "lerna exec -- rimraf dist",
     "lint": "tslint -p tsconfig.json --type-check",
     "lint-staged": "lint-staged",
@@ -115,7 +114,7 @@
     "ts-jest": "^21.1.2",
     "ts-loader": "^3.2.0",
     "tslint": "^5.7.0",
-    "typescript": "^2.4.2",
+    "typescript": "^3.3.3333",
     "webpack": "^3.7.1"
   }
 }

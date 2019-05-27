@@ -10,14 +10,14 @@ export function enqueueRender (component) {
   }
 }
 
-export function rerender () {
+export function rerender (isForce = false) {
   let p
   const list = items
   items = []
   // tslint:disable-next-line:no-conditional-assignment
   while ((p = list.pop())) {
     if (p._dirty) {
-      updateComponent(p)
+      updateComponent(p, isForce)
     }
   }
 }

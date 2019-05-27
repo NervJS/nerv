@@ -11,7 +11,8 @@ module.exports = {
   plugins: [
     alias({
       'nerv-shared': join(cwd, '../nerv-shared/dist/index'),
-      'nerv-utils': join(cwd, '../nerv-utils/dist/index')
+      'nerv-utils': join(cwd, '../nerv-utils/dist/index'),
+      nervjs: join(cwd, '../nerv/dist/index.esm')
     }),
     typescript({
       tsconfig: resolver('../../tsconfig.json')

@@ -18,6 +18,11 @@ import {
   isValidElement
 } from './dom'
 import { PropTypes } from './prop-types' // for React 15- compat
+// tslint:disable-next-line: max-line-length
+import { useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo, useImperativeHandle, useContext } from './hooks'
+import { createRef, forwardRef } from './create-ref'
+import { memo } from './memo'
+import { createContext } from './create-context'
 
 export {
   Children,
@@ -37,7 +42,12 @@ export {
   createFactory,
   unstable_batchedUpdates,
   version,
-  PropTypes
+  PropTypes,
+  createRef,
+  forwardRef,
+  memo,
+  createContext,
+  useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo, useImperativeHandle, useContext
 }
 
 export default {
@@ -58,5 +68,10 @@ export default {
   createFactory,
   unstable_batchedUpdates,
   version,
-  PropTypes
-} as any
+  PropTypes,
+  createRef,
+  forwardRef,
+  memo,
+  createContext,
+  useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo, useImperativeHandle, useContext
+}

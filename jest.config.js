@@ -7,7 +7,12 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   moduleNameMapper: {
     nervjs: '<rootDir>/packages/nerv/src',
-    '^nerv(.*?)$': '<rootDir>/packages/nerv$1/src'
+    'nerv-create-class': '<rootDir>/packages/nerv-create-class',
+    'nerv-devtools': '<rootDir>/packages/nerv-devtools',
+    'nerv-redux': '<rootDir>/packages/nerv-redux',
+    'nerv-shared': '<rootDir>/packages/nerv-shared',
+    'nerv-test-utils': '<rootDir>/packages/nerv-test-utils',
+    'nerv-utils': '<rootDir>/packages/nerv-utils'
   },
   mapCoverage: true,
   globals: {

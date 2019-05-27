@@ -36,7 +36,7 @@ export interface StatelessComponent extends Widget {
   dom: Element | null
 }
 
-export const EMPTY_CHILDREN = []
+export const EMPTY_CHILDREN: any[] = []
 
 export const EMPTY_OBJ = {}
 
@@ -130,7 +130,7 @@ export interface Component<P, S> extends ComponentLifecycle<P, S> {
   getState (): S
   // tslint:disable-next-line:member-ordering
   refs: Refs
-  render (): VirtualNode
+  render (props?, context?): VirtualNode
 }
 
 export function isNullOrUndef (o: any): o is undefined | null {
@@ -158,7 +158,7 @@ export function isWidget (
 ): node is CompositeComponent | StatelessComponent {
   return (
     !isNullOrUndef(node) &&
-    (node.vtype & (VType.Composite | VType.Stateless)) > 0
+    (node.vtype & (VType.Composite)) > 0
   )
 }
 
@@ -168,10 +168,6 @@ export function isPortal (vtype: VType, node): node is Portal {
 
 export function isComposite (node): node is CompositeComponent {
   return !isNullOrUndef(node) && node.vtype === VType.Composite
-}
-
-export function isStateless (node): node is StatelessComponent {
-  return !isNullOrUndef(node) && node.vtype === VType.Stateless
 }
 
 export function isValidElement (node): node is VirtualNode {
@@ -192,7 +188,6 @@ export const enum VType {
   Text = 1,
   Node = 1 << 1,
   Composite = 1 << 2,
-  Stateless = 1 << 3,
   Void = 1 << 4,
   Portal = 1 << 5
 }
