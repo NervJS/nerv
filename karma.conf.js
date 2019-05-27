@@ -128,7 +128,7 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'packages/*/__tests__/**/*spec.js?(x)': ['webpack', 'sourcemap']
+      'packages/*/__tests__/**/*spec.js?(x)': ['webpack']
     },
 
     // test results reporter to use
@@ -174,7 +174,7 @@ module.exports = function (config) {
     concurrency: 1,
 
     webpack: {
-      devtool: 'inline-source-map',
+      // devtool: 'inline-source-map',
       resolve: {
         alias: {
           nervjs: resolve('nerv'),
