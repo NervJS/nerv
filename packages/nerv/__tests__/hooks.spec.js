@@ -66,13 +66,15 @@ describe('hooks', () => {
       expect(Comp.calledOnce).toBeTruthy()
 
       doSetState(1)
-      await nextTick()
+      rerender()
+      // await nextTick()
       expect(lastState).toEqual(1)
       expect(Comp.calledTwice).toBeTruthy()
 
       // Updater function style
       doSetState(current => current * 10)
-      await nextTick()
+      rerender()
+      // await nextTick()
       expect(lastState).toEqual(10)
       expect(Comp.calledThrice).toBeTruthy()
     })
@@ -101,8 +103,8 @@ describe('hooks', () => {
 
       handleClick()
 
-      // rerender()
-      await nextTick()
+      rerender()
+      // await nextTick()
       expect(scratch.textContent).toMatch('Count: 10')
     })
 
@@ -147,7 +149,8 @@ describe('hooks', () => {
       expect(scratch.childNodes[0].childNodes[0].data).toEqual('2')
 
       stateUpdater(10)
-      await nextTick()
+      rerender()
+      // await nextTick()
       expect(scratch.childNodes[0].childNodes[0].data).toEqual('10')
     })
 
@@ -164,13 +167,14 @@ describe('hooks', () => {
 
       updaters[0](1)
 
-      await nextTick()
+      // await nextTick()
+      rerender()
 
       expect(scratch.childNodes[0].childNodes[0].data).toEqual('1')
 
       updaters[0](count => count + 10)
-
-      await nextTick()
+      rerender()
+      // await nextTick()
 
       expect(scratch.childNodes[0].childNodes[0].data).toEqual('11')
 
