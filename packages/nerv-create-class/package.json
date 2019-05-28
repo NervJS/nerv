@@ -1,6 +1,6 @@
 {
   "name": "nerv-create-class",
-  "version": "1.4.0-beta.4",
+  "version": "1.4.0-beta.5",
   "description": "Create Nerv component in ES5.",
   "main": "index.js",
   "module": "dist/index.esm.js",
@@ -20,8 +20,8 @@
   },
   "homepage": "https://github.com/NervJS/nerv",
   "dependencies": {
-    "nerv-shared": "1.4.0-beta.4",
-    "nerv-utils": "1.4.0-beta.4",
-    "nervjs": "1.4.0-beta.4"
+    "nerv-shared": "1.4.0-beta.5",
+    "nerv-utils": "1.4.0-beta.5",
+    "nervjs": "1.4.0-beta.5"
   }
 }

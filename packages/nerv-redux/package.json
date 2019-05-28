@@ -1,6 +1,6 @@
 {
   "name": "nerv-redux",
-  "version": "1.4.0-beta.4",
+  "version": "1.4.0-beta.5",
   "description": "Redux for Nerv.js",
   "main": "index.js",
   "module": "dist/index.esm.js",
@@ -13,7 +13,7 @@
     "redux"
   ],
   "devDependencies": {
-    "nervjs": "1.4.0-beta.4",
+    "nervjs": "1.4.0-beta.5",
     "react-redux": "5.0.6",
     "redux": "^3.7.2"
   },
