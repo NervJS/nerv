@@ -60,11 +60,10 @@ const sauceLabsLaunchers = {
     browserName: 'iphone',
     version: '10.3'
   },
-  'SL_ANDROID4.4': {
+  sl_ios_safari_12: {
     base: 'SauceLabs',
-    browserName: 'android',
-    platform: 'Linux',
-    version: '4.4'
+    browserName: 'iphone',
+    version: '12.2'
   },
   SL_ANDROID5: {
     base: 'SauceLabs',
@@ -72,11 +71,11 @@ const sauceLabsLaunchers = {
     platform: 'Linux',
     version: '5.1'
   },
-  SL_ANDROID6: {
+  SL_ANDROID8: {
     base: 'SauceLabs',
     browserName: 'Chrome',
     platform: 'Android',
-    version: '6.0',
+    version: '8.0',
     device: 'Android Emulator'
   }
 }
