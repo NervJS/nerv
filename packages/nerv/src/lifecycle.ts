@@ -102,23 +102,12 @@ export function mountComponent (
     component._parentComponent = parentComponent as any
   }
   const newState = callGetDerivedStateFromProps(vnode.props, component.state, component)
-  if (newState) {
+  if (!isUndefined(newState)) {
     component.state = newState
   }
-  // if (isFunction(component.componentWillMount)) {
-  //   errorCatcher(() => {
-  //     (component as any).componentWillMount()
-  //   }, component)
-  //   component.state = component.getState()
-  //   component.clearCallBacks()
-  // }
-
-  if (isFunction(component.componentWillMount)) {
+  if (!hasNewLifecycle(component) && isFunction(component.componentWillMount)) {
     errorCatcher(() => {
-      // @TODO show warning
-      if (!hasNewLifecycle(component)) {
-       (component as any).componentWillMount()
-      }
+      (component as any).componentWillMount()
     }, component)
     component.state = component.getState()
     component.clearCallBacks()
@@ -189,9 +178,9 @@ export function reRenderComponent (
   const nextProps = current.props
   const nextContext = current.context
   component._disable = true
-  if (isFunction(component.componentWillReceiveProps) && !hasNewLifecycle(component)) {
+  if (!hasNewLifecycle(component) && isFunction(component.componentWillReceiveProps)) {
     errorCatcher(() => {
-      (component as any).componentWillReceiveProps(nextProps, nextContext)
+      component.componentWillReceiveProps(nextProps, nextContext)
     }, component)
   }
   component._disable = false
@@ -205,6 +194,7 @@ export function reRenderComponent (
   }
   return updateComponent(component)
 }
+
 function callShouldComponentUpdate (props, state, context, component) {
   let shouldUpdate = true
   errorCatcher(() => {
@@ -212,6 +202,7 @@ function callShouldComponentUpdate (props, state, context, component) {
   }, component)
   return shouldUpdate
 }
+
 export function updateComponent (component, isForce = false) {
   let vnode = component.vnode
   let dom = vnode.dom
@@ -223,7 +214,8 @@ export function updateComponent (component, isForce = false) {
   const prevContext = component.prevContext || context
 
   const stateFromProps = callGetDerivedStateFromProps(props, state, component)
-  if (stateFromProps) {
+
+  if (!isUndefined(stateFromProps)) {
     state = stateFromProps
   }
 
@@ -236,12 +228,13 @@ export function updateComponent (component, isForce = false) {
     callShouldComponentUpdate(props, state, context, component) === false
   ) {
     skip = true
-  } else if (isFunction(component.componentWillUpdate) && !hasNewLifecycle(component)) {
+  } else if (!hasNewLifecycle(component) && isFunction(component.componentWillUpdate)) {
     errorCatcher(() => {
       component.componentWillUpdate(props, state, context)
     }, component)
   }
-  if (stateFromProps) {
+
+  if (!isUndefined(stateFromProps)) {
     component.state = stateFromProps
   }
 
@@ -296,8 +289,9 @@ export function unmountComponent (vnode: FullComponent) {
     Ref.detach(vnode, vnode.ref, vnode.dom as any)
   }
 }
+
 function callGetDerivedStateFromProps (props, state, inst) {
-  const {getDerivedStateFromProps} = inst.constructor
+  const { getDerivedStateFromProps } = inst.constructor
   let newState
     // @TODO show warning
   errorCatcher(() => {
@@ -314,8 +308,9 @@ function callGetDerivedStateFromProps (props, state, inst) {
   }, inst)
   return newState
 }
+
 function callGetSnapshotBeforeUpdate (props, state, inst) {
-  const {getSnapshotBeforeUpdate} = inst
+  const { getSnapshotBeforeUpdate } = inst
   let snapshot
   errorCatcher(() => {
     if (isFunction(getSnapshotBeforeUpdate)) {
@@ -324,9 +319,9 @@ function callGetSnapshotBeforeUpdate (props, state, inst) {
   }, inst)
   return snapshot
 }
+
 function hasNewLifecycle (component) {
-  const {getDerivedStateFromProps} = component.constructor
-  if (getDerivedStateFromProps && isFunction(getDerivedStateFromProps)) {
+  if (isFunction(component.constructor.getDerivedStateFromProps)) {
     return true
   }
   return false
