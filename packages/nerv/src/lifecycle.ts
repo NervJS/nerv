@@ -133,7 +133,7 @@ export function mountComponent (
 }
 
 export function getChildContext (component, context = EMPTY_OBJ) {
-  if (component.getChildContext) {
+  if (isFunction(component.getChildContext)) {
     return extend(clone(context), component.getChildContext())
   }
   return clone(context)
@@ -301,8 +301,8 @@ function callGetDerivedStateFromProps (props, state, inst) {
         props,
         state
       )
-      if (partialState) {
-        newState = {...state, ...partialState}
+      if (!isUndefined(partialState)) {
+        newState = extend(clone(state), partialState)
       }
     }
   }, inst)
