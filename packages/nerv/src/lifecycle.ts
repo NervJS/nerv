@@ -25,7 +25,7 @@ import { Emiter } from './emiter'
 
 const readyComponents: any[] = []
 
-function errorCatcher (fn: Function, component: Component<any, any>) {
+export function errorCatcher (fn: Function, component: Component<any, any>) {
   try {
     return fn()
   } catch (error) {
@@ -34,10 +34,11 @@ function errorCatcher (fn: Function, component: Component<any, any>) {
 }
 
 function errorHandler (component: Component<any, any>, error) {
+  // if(!component) { throw error ; return }
   let boundary
-
   while (true) {
-    if (isFunction(component.componentDidCatch)) {
+    const { getDerivedStateFromError } = (component as any).constructor
+    if (isFunction(getDerivedStateFromError) || isFunction(component.componentDidCatch)) {
       boundary = component
       break
     } else if (component._parentComponent) {
@@ -46,11 +47,15 @@ function errorHandler (component: Component<any, any>, error) {
       break
     }
   }
-
   if (boundary) {
+    const { getDerivedStateFromError } = (boundary as any).constructor
     const _disable = boundary._disable
     boundary._disable = false
-    boundary.componentDidCatch(error)
+    if (isFunction(getDerivedStateFromError)) {
+      component.setState(getDerivedStateFromError(error))
+    } else if (isFunction(component.componentDidCatch)) {
+      boundary.componentDidCatch(error)
+    }
     boundary._disable = _disable
   } else {
     throw error
@@ -96,9 +101,24 @@ export function mountComponent (
   if (isComponent(parentComponent)) {
     component._parentComponent = parentComponent as any
   }
+  const newState = callGetDerivedStateFromProps(vnode.props, component.state, component)
+  if (newState) {
+    component.state = newState
+  }
+  // if (isFunction(component.componentWillMount)) {
+  //   errorCatcher(() => {
+  //     (component as any).componentWillMount()
+  //   }, component)
+  //   component.state = component.getState()
+  //   component.clearCallBacks()
+  // }
+
   if (isFunction(component.componentWillMount)) {
     errorCatcher(() => {
-      (component as any).componentWillMount()
+      // @TODO show warning
+      if (!hasNewLifecycle(component)) {
+       (component as any).componentWillMount()
+      }
     }, component)
     component.state = component.getState()
     component.clearCallBacks()
@@ -169,7 +189,7 @@ export function reRenderComponent (
   const nextProps = current.props
   const nextContext = current.context
   component._disable = true
-  if (isFunction(component.componentWillReceiveProps)) {
+  if (isFunction(component.componentWillReceiveProps) && !hasNewLifecycle(component)) {
     errorCatcher(() => {
       (component as any).componentWillReceiveProps(nextProps, nextContext)
     }, component)
@@ -185,30 +205,46 @@ export function reRenderComponent (
   }
   return updateComponent(component)
 }
-
+function callShouldComponentUpdate (props, state, context, component) {
+  let shouldUpdate = true
+  errorCatcher(() => {
+    shouldUpdate = component.shouldComponentUpdate(props, state, context)
+  }, component)
+  return shouldUpdate
+}
 export function updateComponent (component, isForce = false) {
   let vnode = component.vnode
   let dom = vnode.dom
   const props = component.props
-  const state = component.getState()
+  let state = component.getState()
   const context = component.context
   const prevProps = component.prevProps || props
   const prevState = component.prevState || component.state
   const prevContext = component.prevContext || context
+
+  const stateFromProps = callGetDerivedStateFromProps(props, state, component)
+  if (stateFromProps) {
+    state = stateFromProps
+  }
+
   component.props = prevProps
   component.context = prevContext
   let skip = false
   if (
     !isForce &&
     isFunction(component.shouldComponentUpdate) &&
-    component.shouldComponentUpdate(props, state, context) === false
+    callShouldComponentUpdate(props, state, context, component) === false
   ) {
     skip = true
-  } else if (isFunction(component.componentWillUpdate)) {
+  } else if (isFunction(component.componentWillUpdate) && !hasNewLifecycle(component)) {
     errorCatcher(() => {
       component.componentWillUpdate(props, state, context)
     }, component)
   }
+  if (stateFromProps) {
+    component.state = stateFromProps
+  }
+
   component.props = props
   component.state = state
   component.context = context
@@ -218,12 +254,13 @@ export function updateComponent (component, isForce = false) {
     const rendered = renderComponent(component)
     rendered.parentVNode = vnode
     const childContext = getChildContext(component, context)
+    const snapshot = callGetSnapshotBeforeUpdate(prevProps, prevState, component)
     const parentDom = lastRendered.dom && lastRendered.dom.parentNode
     dom = vnode.dom = patch(lastRendered, rendered, parentDom || null, childContext)
     component._rendered = rendered
     if (isFunction(component.componentDidUpdate)) {
       errorCatcher(() => {
-        component.componentDidUpdate(prevProps, prevState, context)
+        component.componentDidUpdate(prevProps, prevState, snapshot)
       }, component)
     }
     while (vnode = vnode.parentVNode) {
@@ -258,4 +295,39 @@ export function unmountComponent (vnode: FullComponent) {
   if (!isNullOrUndef(vnode.ref)) {
     Ref.detach(vnode, vnode.ref, vnode.dom as any)
   }
+}
+function callGetDerivedStateFromProps (props, state, inst) {
+  const {getDerivedStateFromProps} = inst.constructor
+  let newState
+    // @TODO show warning
+  errorCatcher(() => {
+    if (isFunction(getDerivedStateFromProps)) {
+      const partialState = getDerivedStateFromProps.call(
+        null,
+        props,
+        state
+      )
+      if (partialState) {
+        newState = {...state, ...partialState}
+      }
+    }
+  }, inst)
+  return newState
+}
+function callGetSnapshotBeforeUpdate (props, state, inst) {
+  const {getSnapshotBeforeUpdate} = inst
+  let snapshot
+  errorCatcher(() => {
+    if (isFunction(getSnapshotBeforeUpdate)) {
+      snapshot = getSnapshotBeforeUpdate.call(inst, props, state)
+    }
+  }, inst)
+  return snapshot
+}
+function hasNewLifecycle (component) {
+  const {getDerivedStateFromProps} = component.constructor
+  if (getDerivedStateFromProps && isFunction(getDerivedStateFromProps)) {
+    return true
+  }
+  return false
 }

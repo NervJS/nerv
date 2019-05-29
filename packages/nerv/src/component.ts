@@ -19,6 +19,7 @@ interface Component<P = {}, S = {}> extends ComponentLifecycle<P, S> {
 
 class Component<P, S> implements ComponentInst<P, S> {
   public static defaultProps: {}
+  static getDerivedStateFromError? (error?): object | null
   state: Readonly<S>
   props: Readonly<P> & Readonly<Props>
   prevProps: P

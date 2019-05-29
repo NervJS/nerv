@@ -106,6 +106,9 @@ export interface ComponentLifecycle<P, S> {
   ): void
   componentWillUnmount? (): void
   componentDidCatch? (error?): void
+  getDerivedStateFromProps? (nextProps: Readonly<P>, prevState: Readonly<S>): object | null
+  getDerivedStateFromError? (error?): object | null
+  getSnapshotBeforeUpdate? (prevProps: Readonly<P>, prevState: Readonly<S>): object | null
 }
 
 export interface Refs {
