@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.4.0"></a>
+# [1.4.0](https://github.com/NervJS/nerv/compare/v1.4.0-beta.5...v1.4.0) (2019-06-03)
+
+
+### Features
+
+* 增加getDerivedStateFromError ([71c3df0](https://github.com/NervJS/nerv/commit/71c3df0))
+* 增加getSnapshotBeforeUpdate ([c8594b6](https://github.com/NervJS/nerv/commit/c8594b6))
+* 新增生命周期函数getDerivedStateFromProps ([06624cf](https://github.com/NervJS/nerv/commit/06624cf))
+
+
+
+
 <a name="1.3.7"></a>
 ## [1.3.7](https://github.com/NervJS/nerv/compare/v1.3.6...v1.3.7) (2018-10-26)
 

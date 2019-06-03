@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.4.0"></a>
+# [1.4.0](https://github.com/NervJS/nerv/compare/v1.4.0-beta.5...v1.4.0) (2019-06-03)
+
+
+### Bug Fixes
+
+* 合并master对didMount执行顺序bug的修复 ([8e47105](https://github.com/NervJS/nerv/commit/8e47105))
+
+
+### Features
+
+* 新增生命周期函数getDerivedStateFromProps ([06624cf](https://github.com/NervJS/nerv/commit/06624cf))
+
+
+
+
 <a name="1.3.13"></a>
 ## [1.3.13](https://github.com/NervJS/nerv/compare/v1.3.12...v1.3.13) (2019-03-21)
 
