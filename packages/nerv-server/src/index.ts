@@ -7,7 +7,7 @@ import {
   isComposite
 } from 'nerv-shared'
 import { isString, isNumber, isFunction, isArray, clone, extend } from 'nerv-utils'
-import { Component } from 'nervjs'
+import { Component, renderComponent } from 'nervjs'
 import {
   encodeEntities,
   isVoidElements,
@@ -152,7 +152,7 @@ function renderVNodeToString (vnode, parent, context, isSvg?: boolean) {
       instance.componentWillMount()
       instance.state = instance.getState()
     }
-    const rendered = instance.render()
+    const rendered = renderComponent(instance)
     if (isFunction(instance.getChildContext)) {
       context = extend(clone(context), instance.getChildContext())
     }

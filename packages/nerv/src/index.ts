@@ -23,6 +23,7 @@ import { useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, 
 import { createRef, forwardRef } from './create-ref'
 import { memo } from './memo'
 import { createContext } from './create-context'
+import { renderComponent } from './lifecycle'
 
 export {
   Children,
@@ -47,6 +48,7 @@ export {
   forwardRef,
   memo,
   createContext,
+  renderComponent,
   useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo, useImperativeHandle, useContext
 }
 
@@ -73,5 +75,6 @@ export default {
   forwardRef,
   memo,
   createContext,
+  renderComponent,
   useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo, useImperativeHandle, useContext
 }
