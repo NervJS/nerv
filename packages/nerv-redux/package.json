@@ -13,12 +13,14 @@
     "redux"
   ],
   "devDependencies": {
-    "nervjs": "1.4.0",
-    "react-redux": "5.0.6",
-    "redux": "^3.7.2"
+    "nervjs": "1.4.0"
   },
   "peerDependencies": {
     "nervjs": "1.4.0",
     "redux": ">=2"
+  },
+  "dependencies": {
+    "react-redux": "^7.1.0",
+    "redux": "^4.0.1"
   }
 }
