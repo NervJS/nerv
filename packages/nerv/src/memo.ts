@@ -22,5 +22,7 @@ export function memo (component: Function, propsAreEqual?: Function) {
 
   Memoed._forwarded = true
 
+  Memoed.isMemo = true
+
   return Memoed
 }

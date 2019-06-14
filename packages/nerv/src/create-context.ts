@@ -31,6 +31,8 @@ export function createContext<T> (defaultValue: T): Context<T> {
   const contextProp = '__context_' + uid++ + '__'
 
   class Provider extends Component<ProviderProps<T>> {
+    static isContextProvider = true
+
     emiter = new Emiter(this.props.value)
 
     getChildContext () {
@@ -52,6 +54,7 @@ export function createContext<T> (defaultValue: T): Context<T> {
 
   // tslint:disable-next-line: max-classes-per-file
   class Consumer extends Component<ConsumerProps, ConsumerState<T>> {
+    static isContextConsumer = true
     state = {
       value: this.getContextValue()
     }
