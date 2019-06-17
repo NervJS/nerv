@@ -1,6 +1,6 @@
 {
   "name": "nerv-redux",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Redux for Nerv.js",
   "main": "index.js",
   "module": "dist/index.esm.js",
