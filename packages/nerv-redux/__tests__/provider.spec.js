@@ -68,13 +68,13 @@ describe('nerv-redux', () => {
       </Provider>
     )
 
-    expect(child.context.store).toEqual(store)
+    expect(child.context[Object.keys(child.context)[0]].value.store).toEqual(store)
 
     // shouldn't modify Provider.context
     expect(instance.context).toEqual({})
   })
 
-  it('should pass state consistently to mapState', async () => {
+  it('should pass state consistently to mapState', (done) => {
     const store = createStore((state = 0, action) => {
       return action.type === '+' ? state + 1 : state - 1
     })
@@ -92,7 +92,10 @@ describe('nerv-redux', () => {
     )
     expect(mapState.called).toBeTruthy()
     store.dispatch({ type: '+' })
-    expect(mapState.callCount).toBe(2)
-    expect(store.getState()).toEqual(0)
+    setTimeout(() => {
+      expect(mapState.callCount).toBe(2)
+      expect(store.getState()).toEqual(0)
+      done()
+    }, 1)
   })
 })
