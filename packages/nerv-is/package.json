@@ -1,6 +1,6 @@
 {
   "name": "nerv-is",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Same as react-is",
   "main": "index.js",
   "scripts": {
