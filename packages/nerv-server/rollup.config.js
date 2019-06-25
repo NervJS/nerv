@@ -8,6 +8,7 @@ function resolver (path) {
 }
 module.exports = {
   input: 'src/index.ts',
+  external: ['nervjs'],
   plugins: [
     alias({
       'nerv-shared': join(cwd, '../nerv-shared/dist/index'),
