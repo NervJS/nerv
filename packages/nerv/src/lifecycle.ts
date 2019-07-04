@@ -22,6 +22,7 @@ import Ref from './vdom/ref'
 import Component from './component'
 import { invokeEffects } from './hooks'
 import { Emiter } from './emiter'
+export type ParentContext = Record<string, Emiter<any>>
 
 const readyComponents: any[] = []
 
@@ -75,21 +76,26 @@ export function mountVNode (vnode, parentContext: any, parentComponent?) {
   return createElement(vnode, false, parentContext, parentComponent)
 }
 
+export function getContextByContextType (vnode: FullComponent, parentContext: ParentContext) {
+  const contextType = vnode.type.contextType
+  const hasContextType = !isUndefined(contextType)
+  const provider = hasContextType ? (parentContext[contextType._id]) : null
+  const context = hasContextType
+    ? (
+      !isNullOrUndef(provider) ? provider.value : contextType._defaultValue
+    )
+    : parentContext
+  return context
+}
+
 export function mountComponent (
   vnode: FullComponent,
-  parentContext: object,
+  parentContext: ParentContext,
   parentComponent
 ) {
   const ref = vnode.ref
   if (vnode.type.prototype && vnode.type.prototype.render) {
-    const contextType = vnode.type.contextType
-    const hasContextType = !isUndefined(contextType)
-    const provider = hasContextType ? (parentContext[contextType._id] as Emiter<any>) : null
-    const context = hasContextType
-      ? (
-        !isNullOrUndef(provider) ? provider.value : contextType._defaultValue
-      )
-      : parentContext
+    const context = getContextByContextType(vnode, parentContext)
     vnode.component = new vnode.type(vnode.props, context)
   } else {
     const c = new Component(vnode.props, parentContext)

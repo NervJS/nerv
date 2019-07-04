@@ -2,7 +2,8 @@ import { VType, CompositeComponent, Ref } from 'nerv-shared'
 import {
   mountComponent,
   reRenderComponent,
-  unmountComponent
+  unmountComponent,
+  getContextByContextType
 } from './lifecycle'
 import Component from './component'
 import { isUndefined, isArray } from 'nerv-utils'
@@ -54,7 +55,7 @@ class ComponentWrapper implements CompositeComponent {
   }
 
   update (previous, current, parentContext, domNode?) {
-    this.context = parentContext
+    this.context = getContextByContextType(this, parentContext)
     options.beforeUpdate(this)
     const dom = reRenderComponent(previous, this)
     options.afterUpdate(this)
