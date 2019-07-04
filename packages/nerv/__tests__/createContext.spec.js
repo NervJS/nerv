@@ -460,6 +460,46 @@ describe('create-context', () => {
     expect(actual).toEqual('bob')
   })
 
+  it('should pass the correct value after changing the context value', () => {
+    const ctx = createContext('foo')
+    let doSetState = null
+
+    let actual
+    class Children extends Component {
+      render () {
+        actual = this.context
+        return <div>bar</div>
+      }
+    }
+
+    Children.contextType = ctx
+    const Provider = ctx.Provider
+
+    class App extends Component {
+      constructor () {
+        super(...arguments)
+        this.state = { value: 'bar' }
+      }
+      componentDidMount () {
+        doSetState = (value) => {
+          this.setState({ value })
+        }
+      }
+      render () {
+        return <Provider value={this.state.value}>
+          <Children />
+        </Provider>
+      }
+    }
+
+    render(<App />, scratch)
+    expect(actual).toEqual('bar')
+
+    doSetState('bob')
+    rerender()
+    expect(actual).toEqual('bob')
+  })
+
   it('should restore legacy context for children', () => {
     const Foo = createContext('foo')
     const spy = sinon.spy()
