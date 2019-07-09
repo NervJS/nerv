@@ -14,10 +14,9 @@ module.exports = {
     'nerv-test-utils': '<rootDir>/packages/nerv-test-utils',
     'nerv-utils': '<rootDir>/packages/nerv-utils'
   },
-  mapCoverage: true,
   globals: {
     'ts-jest': {
-      tsConfigFile: {
+      tsConfig: {
         target: 'es5',
         removeComments: false,
         preserveConstEnums: true,
@@ -28,7 +27,8 @@ module.exports = {
         strictNullChecks: true,
         noImplicitThis: true,
         sourceMap: true
-      }
+      },
+      diagnostics: false
     }
   },
   rootDir: __dirname,
@@ -44,7 +44,7 @@ module.exports = {
   ],
   transform: {
     '^.+\\.jsx?$': 'babel-jest',
-    '^.+\\.tsx?$': '<rootDir>/node_modules/ts-jest/preprocessor.js'
+    '^.+\\.tsx?$': 'ts-jest'
   },
   transformIgnorePatterns: ['<rootDir>/node_modules/(?!lodash-es)']
 }
