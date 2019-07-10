@@ -1,5 +1,5 @@
 // import { extend, isFunction, isNumber, isString } from 'nerv-utils'
-import { extend, isFunction, isNumber, isString, clone, isUndefined } from 'nerv-utils'
+import { extend, isFunction, isNumber, isString, clone, isUndefined, isArray } from 'nerv-utils'
 import CurrentOwner from './current-owner'
 import createElement from './vdom/create-element'
 import createVText from './vdom/create-vtext'
@@ -68,6 +68,8 @@ function ensureVirtualNode (rendered: any): VText | VVoid | VNode {
     return createVText(rendered)
   } else if (isInvalid(rendered)) {
     return createVoid()
+  } else if (isArray(rendered)) {
+    rendered = rendered.map(ensureVirtualNode)
   }
   return rendered
 }
@@ -258,7 +260,10 @@ export function updateComponent (component, isForce = false) {
     rendered.parentVNode = vnode
     const childContext = getChildContext(component, context)
     const snapshot = callGetSnapshotBeforeUpdate(prevProps, prevState, component)
-    const parentDom = lastRendered.dom && lastRendered.dom.parentNode
+    let parentDom = lastRendered.dom && lastRendered.dom.parentNode
+    if (isArray(lastRendered)) {
+      parentDom = (lastRendered as any).dom = lastRendered[0].dom.parentElement
+    }
     dom = vnode.dom = patch(lastRendered, rendered, parentDom || null, childContext)
     component._rendered = rendered
     if (isFunction(component.componentDidUpdate)) {

@@ -2,7 +2,6 @@ import { isSupportSVG, isArray, isString, isNumber, doc, isBoolean } from 'nerv-
 import {
   isNullOrUndef,
   VirtualNode,
-  isInvalid,
   VType,
   VNode,
   isValidElement,
@@ -19,7 +18,7 @@ function createElement (
   isSvg?: boolean,
   parentContext?,
   parentComponent?
-): Element | Text | Comment | DocumentFragment | null {
+): Element | Text | Comment | Array<Element | Text | Comment>  {
   let domNode
   if (isValidElement(vnode)) {
     const vtype = vnode.vtype
@@ -43,15 +42,7 @@ function createElement (
   } else if (isNullOrUndef(vnode) || isBoolean(vnode)) {
     domNode = doc.createTextNode('')
   } else if (isArray(vnode)) {
-    domNode = doc.createDocumentFragment()
-    vnode.forEach((child) => {
-      if (!isInvalid(child)) {
-        const childNode = createElement(child, isSvg, parentContext, parentComponent)
-        if (childNode) {
-          domNode.appendChild(childNode)
-        }
-      }
-    })
+    domNode = vnode.map((child) => createElement(child, isSvg, parentContext, parentComponent))
   } else {
     throw new Error('Unsupported VNode.')
   }
@@ -102,8 +93,20 @@ export function mountChild (
 ) {
   child.parentContext = parentContext || EMPTY_OBJ
   const childNode = createElement(child as VNode, isSvg, parentContext, parentComponent)
-  if (childNode !== null) {
-    domNode.appendChild(childNode)
+  mountElement(childNode, domNode)
+}
+
+export function mountElement (
+  element: Element | Text | Comment | Array<Element | Text | Comment>,
+  parentNode: Element
+) {
+  if (isArray(element)) {
+    for (let i = 0; i < element.length; i++) {
+      const el = element[i]
+      mountElement(el, parentNode)
+    }
+  } else {
+    parentNode.appendChild(element)
   }
 }
 

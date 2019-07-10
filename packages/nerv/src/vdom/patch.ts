@@ -7,7 +7,7 @@ import {
   isFunction,
   MapClass
 } from 'nerv-utils'
-import createElement, { mountChild } from './create-element'
+import createElement, { mountChild, mountElement } from './create-element'
 import {
   Props,
   VText,
@@ -32,6 +32,9 @@ export function patch (
 ) {
   const lastDom = lastVnode.dom
   let newDom
+  const lastVnodeIsArray = isArray(lastVnode)
+  const nextVnodeisArray = isArray(nextVnode)
+  // let lastVnode
   if (isSameVNode(lastVnode, nextVnode)) {
     const vtype = nextVnode.vtype
     if (vtype & VType.Node) {
@@ -62,13 +65,28 @@ export function patch (
     nextVnode.dom = newDom || lastDom
   } else if (isArray(lastVnode) && isArray(nextVnode)) {
     patchArrayChildren(lastDom, lastVnode, nextVnode, context, false)
+  } else if (lastVnodeIsArray && !nextVnodeisArray) {
+    patchArrayChildren(lastDom, lastVnode, [nextVnode], context, false)
+  } else if (!lastVnodeIsArray && nextVnodeisArray) {
+    patchArrayChildren(lastDom, [lastVnode], nextVnode, context, false)
   } else {
     unmount(lastVnode)
     newDom = createElement(nextVnode, isSvg, context)
     if (nextVnode !== null) {
       nextVnode.dom = newDom
     }
-    if (parentNode !== null) {
+    const newDomIsArray = isArray(newDom)
+    const lastDomIsArray = isArray(lastDom)
+    if (newDomIsArray) {
+      parentNode.removeChild(lastDom)
+      mountElement(newDom, parentNode)
+    } else if (lastDomIsArray) {
+      parentNode = lastDom[0].parentNode
+      parentNode.insertBefore(newDom, lastDom[0])
+      for (let i = 0; i < lastDom.length; i++) {
+        parentNode.removeChild(lastDom[i])
+      }
+    } else if (parentNode !== null) {
       parentNode.replaceChild(newDom, lastDom)
     }
   }
@@ -160,11 +178,12 @@ function patchNonKeyedChildren (
   if (lastLength < nextLength) {
     for (i = minLength; i < nextLength; i++) {
       if (parentDom !== null) {
-        parentDom.appendChild(createElement(
+        debugger
+        mountElement(createElement(
           nextChildren[i],
           isSvg,
           context
-        ) as Node)
+        ), parentDom)
       }
     }
   } else if (lastLength > nextLength) {

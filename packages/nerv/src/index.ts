@@ -25,6 +25,7 @@ import { memo } from './memo'
 import { createContext } from './create-context'
 import { renderComponent } from './lifecycle'
 import Current from './current-owner'
+import { Fragment } from './fragment'
 
 export {
   Children,
@@ -52,6 +53,7 @@ export {
   renderComponent,
   getHooks,
   Current,
+  Fragment,
   useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo, useImperativeHandle, useContext
 }
 
@@ -81,5 +83,6 @@ export default {
   renderComponent,
   getHooks,
   Current,
-  useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo, useImperativeHandle, useContext
+  useEffect, useLayoutEffect, useReducer, useState, useRef, useCallback, useMemo, useImperativeHandle, useContext,
+  Fragment
 }
