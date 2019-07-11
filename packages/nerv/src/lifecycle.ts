@@ -63,7 +63,7 @@ function errorHandler (component: Component<any, any>, error) {
   }
 }
 
-function ensureVirtualNode (rendered: any): VText | VVoid | VNode {
+export function ensureVirtualNode (rendered: any): VText | VVoid | VNode {
   if (isNumber(rendered) || isString(rendered)) {
     return createVText(rendered)
   } else if (isInvalid(rendered)) {

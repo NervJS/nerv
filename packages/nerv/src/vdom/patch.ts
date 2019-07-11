@@ -7,7 +7,7 @@ import {
   isFunction,
   MapClass
 } from 'nerv-utils'
-import createElement, { mountChild, mountElement } from './create-element'
+import createElement, { mountChild, mountElement, insertElement } from './create-element'
 import {
   Props,
   VText,
@@ -34,7 +34,6 @@ export function patch (
   let newDom
   const lastVnodeIsArray = isArray(lastVnode)
   const nextVnodeisArray = isArray(nextVnode)
-  // let lastVnode
   if (isSameVNode(lastVnode, nextVnode)) {
     const vtype = nextVnode.vtype
     if (vtype & VType.Node) {
@@ -66,9 +65,11 @@ export function patch (
   } else if (isArray(lastVnode) && isArray(nextVnode)) {
     patchArrayChildren(lastDom, lastVnode, nextVnode, context, false)
   } else if (lastVnodeIsArray && !nextVnodeisArray) {
-    patchArrayChildren(lastDom, lastVnode, [nextVnode], context, false)
+    patchArrayChildren(parentNode, lastVnode, [nextVnode], context, false)
   } else if (!lastVnodeIsArray && nextVnodeisArray) {
-    patchArrayChildren(lastDom, [lastVnode], nextVnode, context, false)
+    newDom = createElement(nextVnode, isSvg, context)
+    insertElement(newDom, parentNode, lastDom)
+    parentNode.removeChild(lastDom)
   } else {
     unmount(lastVnode)
     newDom = createElement(nextVnode, isSvg, context)
@@ -78,8 +79,8 @@ export function patch (
     const newDomIsArray = isArray(newDom)
     const lastDomIsArray = isArray(lastDom)
     if (newDomIsArray) {
+      insertElement(newDom, parentNode, lastDom)
       parentNode.removeChild(lastDom)
-      mountElement(newDom, parentNode)
     } else if (lastDomIsArray) {
       parentNode = lastDom[0].parentNode
       parentNode.insertBefore(newDom, lastDom[0])
@@ -178,7 +179,6 @@ function patchNonKeyedChildren (
   if (lastLength < nextLength) {
     for (i = minLength; i < nextLength; i++) {
       if (parentDom !== null) {
-        debugger
         mountElement(createElement(
           nextChildren[i],
           isSvg,

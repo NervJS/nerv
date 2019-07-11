@@ -110,6 +110,21 @@ export function mountElement (
   }
 }
 
+export function insertElement (
+  element: Element | Text | Comment | Array<Element | Text | Comment>,
+  parentNode: Element,
+  lastDom: Element
+) {
+  if (isArray(element)) {
+    for (let i = 0; i < element.length; i++) {
+      const el = element[i]
+      insertElement(el, parentNode, lastDom)
+    }
+  } else {
+    parentNode.insertBefore(element, lastDom)
+  }
+}
+
 function setProps (domNode: Element, vnode: VNode, isSvg: boolean) {
   const props = vnode.props
   for (const p in props) {

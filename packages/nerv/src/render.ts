@@ -2,7 +2,7 @@ import { mountVNode, flushMount } from './lifecycle'
 import { VirtualNode, isComposite } from 'nerv-shared'
 import { patch } from './vdom/patch'
 import options from './options'
-import { mountElement } from './vdom/create-element';
+import { mountElement } from './vdom/create-element'
 
 export function render (
   vnode: VirtualNode,
