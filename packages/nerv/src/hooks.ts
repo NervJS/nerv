@@ -6,7 +6,7 @@ import { RefObject } from './create-ref'
 import { Context } from './create-context'
 import { enqueueRender } from './render-queue'
 
-function getHooks (index: number): Hook {
+export function getHooks (index: number): Hook {
   if (Current.current === null) {
     throw new Error(`invalid hooks call: hooks can only be called in a stateless component.`)
   }
