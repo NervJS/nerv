@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.4.4"></a>
+## [1.4.4](https://github.com/NervJS/nerv/compare/v1.4.3...v1.4.4) (2019-08-19)
+
+
+### Features
+
+* export getHooks and Current ([8c1b281](https://github.com/NervJS/nerv/commit/8c1b281))
+
+
+
+
 <a name="1.4.0"></a>
 # [1.4.0](https://github.com/NervJS/nerv/compare/v1.4.0-beta.5...v1.4.0) (2019-06-03)
 
