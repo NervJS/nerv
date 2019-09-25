@@ -1,12 +1,8 @@
-import { isFunction, MapClass, doc, isBrowser } from 'nerv-utils'
+import { isFunction, MapClass, doc, isiOS, isIE9 } from 'nerv-utils'
 import { noop } from 'nerv-shared'
 
 const ONINPUT = 'oninput'
 const ONPROPERTYCHANGE = 'onpropertychange'
-const isiOS =
-  isBrowser &&
-  !!navigator.platform &&
-  /iPad|iPhone|iPod/.test(navigator.platform)
 
 const delegatedEvents = new MapClass()
 
@@ -63,7 +59,7 @@ declare global {
 }
 
 /* istanbul ignore next */
-if (isBrowser && navigator.userAgent.indexOf('MSIE 9') >= 0) {
+if (isIE9) {
   const elements: HTMLInputElement[] = []
   const values: string[] = []
   doc.addEventListener('selectionchange', () => {

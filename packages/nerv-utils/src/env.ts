@@ -30,5 +30,10 @@ const fakeDoc: any = {
 
 export const doc: Document = isBrowser ? document : fakeDoc
 
-export const isMacSafari = isBrowser && navigator.platform &&
-  /mac/i.test(navigator.platform) && /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+export const UA = isBrowser && window.navigator.userAgent.toLowerCase()
+
+export const isMacSafari = isBrowser && UA && window.navigator.platform &&
+  /mac/i.test(navigator.platform) && /^((?!chrome|android).)*safari/i.test(UA)
+
+export const isIE9 = UA && UA.indexOf('msie 9.0') > 0
+export const isiOS = (UA && /iphone|ipad|ipod|ios/.test(UA))
