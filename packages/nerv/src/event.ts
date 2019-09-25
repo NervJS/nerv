@@ -1,4 +1,4 @@
-import { isFunction, MapClass, doc, isiOS, isIE9 } from 'nerv-utils'
+import { isFunction, MapClass, doc, isiOS, isIE9, isTaro } from 'nerv-utils'
 import { noop } from 'nerv-shared'
 
 const ONINPUT = 'oninput'
@@ -94,7 +94,7 @@ export function attachEvent (
     return
   }
   let delegatedRoots = delegatedEvents.get(eventName)
-  if (unbubbleEvents[eventName] === 1) {
+  if (unbubbleEvents[eventName] === 1 || isTaro) {
     if (!delegatedRoots) {
       delegatedRoots = new MapClass()
     }
@@ -137,7 +137,7 @@ export function detachEvent (
     return
   }
   const delegatedRoots = delegatedEvents.get(eventName)
-  if (unbubbleEvents[eventName] === 1 && delegatedRoots) {
+  if ((unbubbleEvents[eventName] === 1 && delegatedRoots) || isTaro) {
     const event = delegatedRoots.get(domNode)
     if (event) {
       domNode.removeEventListener(parseEventName(eventName), event.event, false)
