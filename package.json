@@ -25,7 +25,7 @@
     "size": "gzip-size ./packages/nerv/dist/nerv.min.js",
     "build:esm": "lerna exec -- rollup -c --environment TARGET:esm",
     "build:umd": "lerna exec -- rollup -c --environment TARGET:umd",
-    "release": "lerna publish --exact --conventional-commits",
+    "release": "lerna publish --exact  --conventional-commits",
     "release:beta": "lerna publish --exact --conventional-commits --cd-version=prepatch --preid=beta --npm-tag=beta"
   },
   "lint-staged": {
@@ -97,6 +97,8 @@
     "lerna": "2.4.0",
     "lint-staged": "^4.0.4",
     "npm-run-all": "^4.0.2",
+    "object-assign": "^4.1.1",
+    "object.assign": "^4.1.0",
     "optimize-js": "^1.0.3",
     "prompts": "^0.1.4",
     "redux": "^4.0.2",
