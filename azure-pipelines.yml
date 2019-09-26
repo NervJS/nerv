@@ -23,5 +23,4 @@ steps:
 
 - script: |
     npm run test:coverage
-    BROWSER=true CI=true COVERAGE=false FLAKEY=false npm run test:karma
   displayName: 'testing'
