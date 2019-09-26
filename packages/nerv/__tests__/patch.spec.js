@@ -10,10 +10,14 @@ describe('patch', () => {
     scratch = document.createElement('div')
   })
 
-  it.skip('should not patch when stateless component scu was set false', () => {
+  it('should not patch when stateless component scu was set false', () => {
     const App = ({ text }) => <div>{text}</div>
     render(<App text='test' onShouldComponentUpdate={() => false} />, scratch)
-    render(<App text='qweqe' onShouldComponentUpdate={() => false} />, scratch)
+    render(<App text='qweqe' onShouldComponentUpdate={(prev, current) => {
+      expect(prev.text).toBe('test')
+      expect(current.text).toBe('qweqe')
+      return false
+    }} />, scratch)
     expect(scratch.firstChild.textContent).toBe('test')
   })
 

@@ -228,10 +228,14 @@ export function updateComponent (component, isForce = false) {
   component.props = prevProps
   component.context = prevContext
   let skip = false
+  const onSCU = props.onShouldComponentUpdate
   if (
     !isForce &&
-    isFunction(component.shouldComponentUpdate) &&
-    callShouldComponentUpdate(props, state, context, component) === false
+    (
+      (isFunction(component.shouldComponentUpdate) &&
+      callShouldComponentUpdate(props, state, context, component) === false) ||
+      (isFunction(onSCU) && onSCU(prevProps, props) === false)
+    )
   ) {
     skip = true
   } else if (!hasNewLifecycle(component) && isFunction(component.componentWillUpdate)) {
