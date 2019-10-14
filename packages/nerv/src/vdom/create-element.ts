@@ -98,7 +98,8 @@ export function mountChild (
 
 export function mountElement (
   element: Element | Text | Comment | Array<Element | Text | Comment>,
-  parentNode: Element
+  parentNode: Element,
+  refChild?: Node
 ) {
   if (isArray(element)) {
     for (let i = 0; i < element.length; i++) {
@@ -106,7 +107,7 @@ export function mountElement (
       mountElement(el, parentNode)
     }
   } else {
-    parentNode.appendChild(element)
+    refChild != null ? parentNode.insertBefore(element, refChild) : parentNode.appendChild(element)
   }
 }
 

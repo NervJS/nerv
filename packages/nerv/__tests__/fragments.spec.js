@@ -1,7 +1,6 @@
 /** @jsx createElement */
 import { Component, createElement, render, Fragment } from '../src/index'
 import { rerender } from '../src/render-queue'
-import sinon from 'sinon'
 import { span, div, ul, ol, li, section } from './util/dom'
 import { normalizeHTML } from './util'
 
@@ -515,7 +514,6 @@ describe('patch', () => {
 
     expect(ops).toEqual([])
     expect(scratch.innerHTML).toEqual('<div>Hello</div><span>World</span>')
-
     render(<Foo condition />, scratch)
 
     expect(ops).toEqual([])
@@ -889,6 +887,7 @@ describe('patch', () => {
 
     // See "should preserve state between top level fragment and array"
     // Perhaps rename test to "should reorder **keyed** Fragment children"
+
     rerender()
     expect(scratch.innerHTML).toEqual(
       normalizeHTML('<div><h1>Heading</h1>Hello World<h2>yo</h2>foobar<input type="text"></div>')
@@ -926,8 +925,8 @@ describe('patch', () => {
         return { text }
       }
 
-      render (props) {
-        return props.children
+      render () {
+        return this.props.children
       }
     }
 
@@ -985,7 +984,6 @@ describe('patch', () => {
 
     render(<Foo condition />, scratch)
     expect(scratch.innerHTML).toEqual(html, 'initial render of true')
-
     render(<Foo condition={false} />, scratch)
     expect(scratch.innerHTML).toEqual(html, 'rendering from true to false')
 
@@ -1321,7 +1319,6 @@ describe('patch', () => {
     )
 
     values.push(3)
-
     render(<Foo values={values} />, scratch)
     expect(scratch.innerHTML).toEqual(
       getHtml(values),
@@ -1491,6 +1488,7 @@ describe('patch', () => {
     expect(scratch.innerHTML).toEqual(successHtml)
 
     setState({ error: true })
+
     rerender()
     expect(scratch.innerHTML).toEqual(errorHtml)
 
@@ -2065,6 +2063,7 @@ describe('patch', () => {
     )
 
     updateB()
+
     rerender()
 
     expect(scratch.innerHTML).toEqual(

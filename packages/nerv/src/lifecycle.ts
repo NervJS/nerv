@@ -14,7 +14,8 @@ import {
   VVoid,
   VNode,
   VType,
-  EMPTY_OBJ
+  EMPTY_OBJ,
+  isComposite
 } from 'nerv-shared'
 import FullComponent from './full-component'
 import { unmount } from './vdom/unmount'
@@ -70,6 +71,9 @@ export function ensureVirtualNode (rendered: any): VText | VVoid | VNode {
     return createVoid()
   } else if (isArray(rendered)) {
     rendered = rendered.map(ensureVirtualNode)
+    if (rendered.length > 0) {
+      rendered.dom = rendered[0].dom
+    }
   }
   return rendered
 }
@@ -178,6 +182,14 @@ export function flushMount () {
   })
 }
 
+function getFragmentHostNode (children: VNode[]): Node | null {
+  const child = children[0]
+  if (isComposite(child) && child.dom == null) {
+    return getFragmentHostNode(child.component._rendered)
+  }
+  return child.dom
+}
+
 export function reRenderComponent (
   prev: CompositeComponent,
   current: CompositeComponent
@@ -262,7 +274,10 @@ export function updateComponent (component, isForce = false) {
     const snapshot = callGetSnapshotBeforeUpdate(prevProps, prevState, component)
     let parentDom = lastRendered.dom && lastRendered.dom.parentNode
     if (isArray(lastRendered)) {
-      parentDom = (lastRendered as any).dom = lastRendered[0].dom.parentElement
+      const hostNode = getFragmentHostNode(lastRendered)
+      if (hostNode) {
+        parentDom = (lastRendered as any).dom = hostNode.parentNode
+      }
     }
     dom = vnode.dom = patch(lastRendered, rendered, parentDom || null, childContext)
     component._rendered = rendered

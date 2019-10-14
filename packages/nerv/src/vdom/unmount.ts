@@ -42,8 +42,14 @@ export function unmount (vnode, parentDom?) {
     unmountChildren(vnode.children, vnode.type)
   }
 
-  if (!isNullOrUndef(parentDom) && !isNullOrUndef(dom) && !isArray(dom)) {
-    parentDom.removeChild(dom)
+  if (!isNullOrUndef(parentDom) && !isNullOrUndef(dom)) {
+    if (isArray(dom)) {
+      for (let i = 0; i < dom.length; i++) {
+        parentDom.removeChild(dom[i])
+      }
+    } else {
+      parentDom.removeChild(dom)
+    }
   }
   // vnode.dom = null
 }

@@ -183,7 +183,7 @@ function patchNonKeyedChildren (
           nextChildren[i],
           isSvg,
           context
-        ), parentDom)
+        ), parentDom, lastChildren[i - 1].dom.nextSibling)
       }
     }
   } else if (lastLength > nextLength) {
