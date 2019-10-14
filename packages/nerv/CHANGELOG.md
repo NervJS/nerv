@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.5.0"></a>
+# [1.5.0](https://github.com/NervJS/nerv/compare/v1.4.7...v1.5.0) (2019-10-14)
+
+
+### Bug Fixes
+
+* ci can't start karma test ([f42d89b](https://github.com/NervJS/nerv/commit/f42d89b))
+* fix all fragment test cases ([c648096](https://github.com/NervJS/nerv/commit/c648096))
+
+
+### Features
+
+* basic support for fragments ([3487ca2](https://github.com/NervJS/nerv/commit/3487ca2))
+* fragment should work in most of cases ([104819f](https://github.com/NervJS/nerv/commit/104819f))
+
+
+
+
 <a name="1.4.4"></a>
 ## [1.4.4](https://github.com/NervJS/nerv/compare/v1.4.3...v1.4.4) (2019-08-19)
 
