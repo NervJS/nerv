@@ -1,5 +1,6 @@
 import { isFunction, MapClass, doc, isiOS, isIE9, isTaro } from 'nerv-utils'
 import { noop } from 'nerv-shared'
+import { supportedPassiveEventMap } from './passive-event'
 
 const ONINPUT = 'oninput'
 const ONPROPERTYCHANGE = 'onpropertychange'
@@ -328,7 +329,8 @@ function attachEventToDocument (d, eventName, delegatedRoots) {
       dispatchEvent(event, event.target, delegatedRoots.items, count, eventData)
     }
   }
-  d.addEventListener(parseEventName(eventName), eventHandler, false)
+  const parsedEventName = parseEventName(eventName)
+  d.addEventListener(parsedEventName, eventHandler, supportedPassiveEventMap[parsedEventName] || false)
   return eventHandler
 }
 
@@ -351,6 +353,7 @@ function attachEventToNode (node, eventName, delegatedRoots) {
       eventToTrigger.eventHandler(event)
     }
   }
-  node.addEventListener(parseEventName(eventName), eventHandler, false)
+  const parsedEventName = parseEventName(eventName)
+  node.addEventListener(parsedEventName, eventHandler, supportedPassiveEventMap[parsedEventName] || false)
   return eventHandler
 }
