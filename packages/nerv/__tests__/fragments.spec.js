@@ -4,7 +4,15 @@ import { rerender } from '../src/render-queue'
 import { span, div, ul, ol, li, section } from './util/dom'
 import { normalizeHTML } from './util'
 
-describe('patch', () => {
+const isNode = !!(
+  typeof process !== 'undefined' &&
+  process.versions &&
+  process.versions.node
+)
+
+if (isNode) describe.skipKarma = describe
+
+describe.skipKarma('fragments', () => {
   let scratch
 
   beforeEach(() => {
@@ -62,7 +70,7 @@ describe('patch', () => {
       )
     }
     expect(fn).not.toThrow()
-    expect(scratch.innerHTML).toEqual('<span>world</span>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<span>world</span>'))
     render(
       <Fragment>
         <span>world</span>
@@ -70,10 +78,10 @@ describe('patch', () => {
       </Fragment>,
       scratch
     )
-    expect(scratch.innerHTML).toEqual('<span>world</span><p>Hello</p>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<span>world</span><p>Hello</p>'))
 
     expect(fn).not.toThrow()
-    expect(scratch.innerHTML).toEqual('<span>world</span>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<span>world</span>'))
 
     render(
       <Fragment>
@@ -83,7 +91,7 @@ describe('patch', () => {
       </Fragment>,
       scratch
     )
-    expect(scratch.innerHTML).toEqual('<span>world</span><span>world</span>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<span>world</span><span>world</span>'))
 
     render(
       <Fragment>
@@ -94,7 +102,7 @@ describe('patch', () => {
       scratch
     )
     expect(scratch.innerHTML).toEqual(
-      '<span>world</span>Hello<span>world</span>'
+      normalizeHTML('<span>world</span>Hello<span>world</span>')
     )
   })
 
@@ -185,7 +193,7 @@ describe('patch', () => {
 
     rerender()
 
-    expect(scratch.innerHTML).toEqual(div([div(1), span(2), span(2)].join('')))
+    expect(scratch.innerHTML).toEqual(normalizeHTML(div([div(1), span(2), span(2)].join(''))))
   })
 
   it('should preserve state of children with 1 level nesting', () => {
@@ -203,11 +211,11 @@ describe('patch', () => {
     render(<Foo condition />, scratch)
     render(<Foo condition={false} />, scratch)
 
-    expect(scratch.innerHTML).toEqual('<div>Hello</div><div>World</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div><div>World</div>'))
 
     render(<Foo condition />, scratch)
 
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
   })
 
   it('should preserve state between top-level fragments', () => {
@@ -228,12 +236,12 @@ describe('patch', () => {
     render(<Foo condition={false} />, scratch)
 
     expect(ops).toEqual(['Update Stateful'])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
 
     render(<Foo condition />, scratch)
 
     expect(ops).toEqual(['Update Stateful', 'Update Stateful'])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
   })
 
   it('should preserve state of children nested at same level', () => {
@@ -254,11 +262,11 @@ describe('patch', () => {
 
     render(<Foo condition={false} />, scratch)
 
-    expect(scratch.innerHTML).toEqual('<div></div><div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div></div><div>Hello</div>'))
 
     render(<Foo condition />, scratch)
 
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
   })
 
   it('should not preserve state in non-top-level fragment nesting', () => {
@@ -281,12 +289,12 @@ describe('patch', () => {
     render(<Foo condition={false} />, scratch)
 
     expect(ops).toEqual([])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
 
     render(<Foo condition />, scratch)
 
     expect(ops).toEqual([])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
   })
 
   it('should not preserve state of children if nested 2 levels without siblings', () => {
@@ -307,12 +315,12 @@ describe('patch', () => {
     render(<Foo condition={false} />, scratch)
 
     expect(ops).toEqual([])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
 
     render(<Foo condition />, scratch)
 
     expect(ops).toEqual([])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
   })
 
   it('should just render children for fragments', () => {
@@ -328,7 +336,7 @@ describe('patch', () => {
     }
 
     render(<Comp />, scratch)
-    expect(scratch.innerHTML).toEqual('<div>Child1</div><div>Child2</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Child1</div><div>Child2</div>'))
   })
 
   it.skip('should not preserve state of children if nested 2 levels with siblings', () => {
@@ -349,12 +357,12 @@ describe('patch', () => {
     render(<Foo condition={false} />, scratch)
 
     expect(ops).toEqual([])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div><div></div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div><div></div>'))
 
     render(<Foo condition />, scratch)
 
     expect(ops).toEqual([])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
   })
 
   it('should preserve state between array nested in fragment and fragment', () => {
@@ -382,12 +390,12 @@ describe('patch', () => {
     render(<Foo condition={false} />, scratch)
 
     // expect(ops).toEqual(['Update Stateful'])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
 
     render(<Foo condition />, scratch)
 
     // expect(ops).toEqual(['Update Stateful', 'Update Stateful'])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML(('<div>Hello</div>')))
   })
 
   it('should preserve state between top level fragment and array', () => {
@@ -405,12 +413,12 @@ describe('patch', () => {
     render(<Foo condition={false} />, scratch)
 
     // expect(ops).toEqual(['Update Stateful'])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
 
     render(<Foo condition />, scratch)
 
     // expect(ops).toEqual(['Update Stateful', 'Update Stateful'])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
   })
 
   it('should not preserve state between array nested in fragment and double nested fragment', () => {
@@ -441,12 +449,12 @@ describe('patch', () => {
     render(<Foo condition={false} />, scratch)
 
     expect(ops).toEqual([])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
 
     render(<Foo condition />, scratch)
 
     expect(ops).toEqual([])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
   })
 
   it.skip('should not preserve state between array nested in fragment and double nested array', () => {
@@ -462,12 +470,12 @@ describe('patch', () => {
     render(<Foo condition={false} />, scratch)
 
     expect(ops).toEqual([])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
 
     render(<Foo condition />, scratch)
 
     expect(ops).toEqual([])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
   })
 
   it.skip('should preserve state between double nested fragment and double nested array', () => {
@@ -487,12 +495,12 @@ describe('patch', () => {
     render(<Foo condition={false} />, scratch)
 
     expect(ops).toEqual(['Update Stateful'])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
 
     render(<Foo condition />, scratch)
 
     expect(ops).toEqual(['Update Stateful', 'Update Stateful'])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
   })
 
   it('should not preserve state of children when the keys are different', () => {
@@ -513,11 +521,11 @@ describe('patch', () => {
     render(<Foo condition={false} />, scratch)
 
     expect(ops).toEqual([])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div><span>World</span>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div><span>World</span>'))
     render(<Foo condition />, scratch)
 
     expect(ops).toEqual([])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
   })
 
   it('should not preserve state between unkeyed and keyed fragment', () => {
@@ -539,12 +547,12 @@ describe('patch', () => {
     render(<Foo condition={false} />, scratch)
 
     expect(ops).toEqual([])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
 
     render(<Foo condition />, scratch)
 
     expect(ops).toEqual([])
-    expect(scratch.innerHTML).toEqual('<div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<div>Hello</div>'))
   })
 
   it('should preserve state with reordering in multiple levels', () => {
@@ -582,16 +590,16 @@ describe('patch', () => {
 
     render(<Foo condition />, scratch)
 
-    expect(scratch.innerHTML).toEqual(htmlForTrue)
+    expect(scratch.innerHTML).toEqual(normalizeHTML(htmlForTrue))
 
     render(<Foo condition={false} />, scratch)
 
-    expect(scratch.innerHTML).toEqual(htmlForFalse)
+    expect(scratch.innerHTML).toEqual(normalizeHTML(htmlForFalse))
 
     render(<Foo condition />, scratch)
 
     // expect(ops).toEqual(['Update Stateful', 'Update Stateful'])
-    expect(scratch.innerHTML).toEqual(htmlForTrue)
+    expect(scratch.innerHTML).toEqual(normalizeHTML(htmlForTrue))
   })
 
   it('should not preserve state when switching to a keyed fragment to an array', () => {
@@ -621,12 +629,12 @@ describe('patch', () => {
     render(<Foo condition={false} />, scratch)
 
     expect(ops).toEqual([])
-    expect(scratch.innerHTML).toEqual(html)
+    expect(scratch.innerHTML).toEqual(normalizeHTML(html))
 
     render(<Foo condition />, scratch)
 
     expect(ops).toEqual([])
-    expect(scratch.innerHTML).toEqual(html)
+    expect(scratch.innerHTML).toEqual(normalizeHTML(html))
   })
 
   it('should preserve state when it does not change positions', () => {
@@ -650,12 +658,12 @@ describe('patch', () => {
     render(<Foo condition={false} />, scratch)
 
     expect(ops).toEqual(['Update Stateful'])
-    expect(scratch.innerHTML).toEqual('<span></span><div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<span></span><div>Hello</div>'))
 
     render(<Foo condition />, scratch)
 
     expect(ops).toEqual(['Update Stateful', 'Update Stateful'])
-    expect(scratch.innerHTML).toEqual('<span></span><div>Hello</div>')
+    expect(scratch.innerHTML).toEqual(normalizeHTML('<span></span><div>Hello</div>'))
   })
 
   it('should render nested Fragments', () => {
@@ -700,7 +708,7 @@ describe('patch', () => {
     )
 
     expect(scratch.innerHTML).toEqual(
-      div([div(0), div(1), div(2), div(3), div(4), div(5)].join(''))
+      normalizeHTML(div([div(0), div(1), div(2), div(3), div(4), div(5)].join('')))
     )
   })
 
@@ -753,16 +761,16 @@ describe('patch', () => {
     const html = contents => span('0') + contents + span('1')
 
     render(<Comp />, scratch)
-    expect(scratch.innerHTML).toEqual(html('foo'))
+    expect(scratch.innerHTML).toEqual(normalizeHTML(html('foo')))
 
     update()
     rerender()
 
-    expect(scratch.innerHTML).toEqual(html(''))
+    expect(scratch.innerHTML).toEqual(normalizeHTML(html('')))
 
     update()
     rerender()
-    expect(scratch.innerHTML).toEqual(html('foo'))
+    expect(scratch.innerHTML).toEqual(normalizeHTML(html('foo')))
   })
 
   it('can modify the children of a Fragment', () => {
@@ -953,14 +961,14 @@ describe('patch', () => {
     render(<Speak />, scratch)
 
     expect(scratch.innerHTML).toEqual(
-      [
+      normalizeHTML([
         span('the top'),
         span('a span'),
         div(text),
         div(text),
         span('another span'),
         span('a final span')
-      ].join('')
+      ].join(''))
     )
   })
 
@@ -983,12 +991,12 @@ describe('patch', () => {
     const html = ol([li('0'), li('1'), li('2'), li('3')].join(''))
 
     render(<Foo condition />, scratch)
-    expect(scratch.innerHTML).toEqual(html, 'initial render of true')
+    expect(scratch.innerHTML).toEqual(normalizeHTML(html), 'initial render of true')
     render(<Foo condition={false} />, scratch)
-    expect(scratch.innerHTML).toEqual(html, 'rendering from true to false')
+    expect(scratch.innerHTML).toEqual(normalizeHTML(html), 'rendering from true to false')
 
     render(<Foo condition />, scratch)
-    expect(scratch.innerHTML).toEqual(html, 'rendering from false to true')
+    expect(scratch.innerHTML).toEqual(normalizeHTML(html), 'rendering from false to true')
   })
 
   it('should support conditionally rendered Fragment or null', () => {
@@ -1013,17 +1021,17 @@ describe('patch', () => {
     const htmlForFalse = ol([li('0'), li('3'), li('4')].join(''))
 
     render(<Foo condition />, scratch)
-    expect(scratch.innerHTML).toEqual(htmlForTrue, 'initial render of true')
+    expect(scratch.innerHTML).toEqual(normalizeHTML(htmlForTrue), 'initial render of true')
 
     render(<Foo condition={false} />, scratch)
     expect(scratch.innerHTML).toEqual(
-      htmlForFalse,
+      normalizeHTML(htmlForFalse),
       'rendering from true to false'
     )
 
     render(<Foo condition />, scratch)
     expect(scratch.innerHTML).toEqual(
-      htmlForTrue,
+      normalizeHTML(htmlForTrue),
       'rendering from false to true'
     )
   })
@@ -1055,13 +1063,13 @@ describe('patch', () => {
       </ol>
     )
 
-    const htmlForTrue = ol(
+    const htmlForTrue = normalizeHTML(ol(
       [li('0'), li('1'), li('2'), li('3'), li('4'), li('5')].join('')
-    )
+    ))
 
-    const htmlForFalse = ol(
+    const htmlForFalse = normalizeHTML(ol(
       [li('4'), li('5'), li('0'), li('1'), li('2'), li('3')].join('')
-    )
+    ))
 
     render(<Foo condition />, scratch)
     expect(scratch.innerHTML).toEqual(htmlForTrue, 'initial render of true')
@@ -1098,9 +1106,9 @@ describe('patch', () => {
       </ol>
     )
 
-    const htmlForTrue = ol([li(0), li(1), li(2), li(2)].join(''))
+    const htmlForTrue = normalizeHTML(ol([li(0), li(1), li(2), li(2)].join('')))
 
-    const htmlForFalse = ol([li(2), li(2), li(3), li(4)].join(''))
+    const htmlForFalse = normalizeHTML(ol([li(2), li(2), li(3), li(4)].join('')))
 
     render(<Foo condition />, scratch)
     expect(scratch.innerHTML).toEqual(htmlForTrue, 'initial render of true')
@@ -1145,9 +1153,9 @@ describe('patch', () => {
       </ol>
     )
 
-    const htmlForTrue = ol([li(0), li(1), li(2), li(3)].join(''))
+    const htmlForTrue = normalizeHTML(ol([li(0), li(1), li(2), li(3)].join('')))
 
-    const htmlForFalse = ol([li(2), li(3), li(4), li(5)].join(''))
+    const htmlForFalse = normalizeHTML(ol([li(2), li(3), li(4), li(5)].join('')))
 
     render(<Foo condition />, scratch)
     expect(scratch.innerHTML).toEqual(htmlForTrue, 'initial render of true')
@@ -1193,13 +1201,13 @@ describe('patch', () => {
       )
     }
 
-    const htmlForTrue = div(
+    const htmlForTrue = normalizeHTML(div(
       [div('foo'), div(div('Hello')), div('boop'), div('boop')].join('')
-    )
+    ))
 
-    const htmlForFalse = div(
+    const htmlForFalse = normalizeHTML(div(
       [div('beep'), div(div('Hello')), div('bar')].join('')
-    )
+    ))
 
     render(<Foo condition />, scratch)
 
@@ -1254,7 +1262,7 @@ describe('patch', () => {
       )
     }
 
-    const htmlForTrue = div(
+    const htmlForTrue = normalizeHTML(div(
       [
         div('foo'),
         div(div('Hello')),
@@ -1262,9 +1270,9 @@ describe('patch', () => {
         div('boop'),
         div('boop')
       ].join('')
-    )
+    ))
 
-    const htmlForFalse = div(
+    const htmlForFalse = normalizeHTML(div(
       [
         div('beep'),
         div('beep'),
@@ -1272,7 +1280,7 @@ describe('patch', () => {
         div(div('Hello')),
         div('bar')
       ].join('')
-    )
+    ))
 
     render(<Foo condition />, scratch)
 
@@ -1309,7 +1317,7 @@ describe('patch', () => {
     )
 
     const getHtml = values =>
-      ol([li('a'), ...values.map(value => li(value)), li('b')].join(''))
+      normalizeHTML(ol([li('a'), ...values.map(value => li(value)), li('b')].join('')))
 
     const values = [0, 1, 2]
     render(<Foo values={values} />, scratch)
@@ -1348,9 +1356,9 @@ describe('patch', () => {
         </div>
       )
 
-    const htmlForTrue = [div(1), div(2)].join('')
+    const htmlForTrue = normalizeHTML([div(1), div(2)].join(''))
 
-    const htmlForFalse = div([div(3), div(4)].join(''))
+    const htmlForFalse = normalizeHTML(div([div(3), div(4)].join('')))
 
     render(<Foo condition />, scratch)
 
@@ -1398,11 +1406,11 @@ describe('patch', () => {
       </ol>
     )
 
-    const htmlForTrue = ol(
+    const htmlForTrue = normalizeHTML(ol(
       [li('0'), li('1'), li('2'), li('3'), li('4'), li('5')].join('')
-    )
+    ))
 
-    const htmlForFalse = ol([li('0'), li('1'), li('4'), li('5')].join(''))
+    const htmlForFalse = normalizeHTML(ol([li('0'), li('1'), li('4'), li('5')].join('')))
 
     render(<Foo condition />, scratch)
     expect(scratch.innerHTML).toEqual(htmlForTrue, 'initial render of true')
@@ -1432,7 +1440,7 @@ describe('patch', () => {
     )
 
     render(<Foo />, scratch)
-    expect(scratch.innerHTML).toEqual(ol([li(1)].join('')))
+    expect(scratch.innerHTML).toEqual(normalizeHTML(ol([li(1)].join(''))))
   })
 
   it('should properly render Components that return Fragments and use shouldComponentUpdate #1415', () => {
@@ -1476,9 +1484,9 @@ describe('patch', () => {
       }
     }
 
-    const successHtml = div(div([div(1), div(2), div(3)].join('')))
+    const successHtml = normalizeHTML(div(div([div(1), div(2), div(3)].join(''))))
 
-    const errorHtml = div(div('Error!'))
+    const errorHtml = normalizeHTML(div(div('Error!')))
 
     render(<App />, scratch)
     expect(scratch.innerHTML).toEqual(successHtml)
@@ -1561,14 +1569,14 @@ describe('patch', () => {
     )
 
     expect(scratch.innerHTML).toEqual(
-      `<div><div>A</div><div>B1</div><div>C</div></div>`
+      normalizeHTML(`<div><div>A</div><div>B1</div><div>C</div></div>`)
     )
 
     update()
     rerender()
 
     expect(scratch.innerHTML).toEqual(
-      `<div><div>A</div><section>B2</section><div>C</div></div>`
+      normalizeHTML(`<div><div>A</div><section>B2</section><div>C</div></div>`)
     )
   })
 
@@ -1605,14 +1613,14 @@ describe('patch', () => {
     )
 
     expect(scratch.innerHTML).toEqual(
-      div([div('A'), div('B1'), div('B2'), div('C')].join(''))
+      normalizeHTML(div([div('A'), div('B1'), div('B2'), div('C')].join('')))
     )
 
     update()
     rerender()
 
     expect(scratch.innerHTML).toEqual(
-      div([div('A'), section('B3'), section('B4'), div('C')].join(''))
+      normalizeHTML(div([div('A'), section('B3'), section('B4'), div('C')].join('')))
     )
   })
 
@@ -1638,13 +1646,13 @@ describe('patch', () => {
       scratch
     )
 
-    expect(scratch.innerHTML).toEqual(`<div><div>A</div><div>C</div></div>`)
+    expect(scratch.innerHTML).toEqual(normalizeHTML(`<div><div>A</div><div>C</div></div>`))
 
     update()
     rerender()
 
     expect(scratch.innerHTML).toEqual(
-      `<div><div>A</div><div>B</div><div>C</div></div>`
+      normalizeHTML(`<div><div>A</div><div>B</div><div>C</div></div>`)
     )
   })
 
@@ -1670,13 +1678,13 @@ describe('patch', () => {
       scratch
     )
 
-    expect(scratch.innerHTML).toEqual(`<div><div>A</div><div>C</div></div>`)
+    expect(scratch.innerHTML).toEqual(normalizeHTML(`<div><div>A</div><div>C</div></div>`))
 
     update()
     rerender()
 
     expect(scratch.innerHTML).toEqual(
-      `<div><div>A</div><div>B1</div><div>B2</div><div>C</div></div>`
+      normalizeHTML(`<div><div>A</div><div>B1</div><div>B2</div><div>C</div></div>`)
     )
   })
 
@@ -1704,13 +1712,13 @@ describe('patch', () => {
       scratch
     )
 
-    expect(scratch.innerHTML).toEqual(`<div><div>A</div><div>C</div></div>`)
+    expect(scratch.innerHTML).toEqual(normalizeHTML(`<div><div>A</div><div>C</div></div>`))
 
     update()
     rerender()
 
     expect(scratch.innerHTML).toEqual(
-      `<div><div>A</div><div>B</div><div>C</div></div>`
+      normalizeHTML(`<div><div>A</div><div>B</div><div>C</div></div>`)
     )
   })
 
@@ -1743,13 +1751,13 @@ describe('patch', () => {
       scratch
     )
 
-    expect(scratch.innerHTML).toEqual(`<div><div>A</div><div>C</div></div>`)
+    expect(scratch.innerHTML).toEqual(normalizeHTML(`<div><div>A</div><div>C</div></div>`))
 
     update()
     rerender()
 
     expect(scratch.innerHTML).toEqual(
-      `<div><div>A</div><div>B1</div><div>B2</div><div>C</div></div>`
+      normalizeHTML(`<div><div>A</div><div>B1</div><div>B2</div><div>C</div></div>`)
     )
   })
 
@@ -1781,13 +1789,13 @@ describe('patch', () => {
       scratch
     )
 
-    expect(scratch.innerHTML).toEqual(`<div><div>A</div><div>C</div></div>`)
+    expect(scratch.innerHTML).toEqual(normalizeHTML(`<div><div>A</div><div>C</div></div>`))
 
     update()
     rerender()
 
     expect(scratch.innerHTML).toEqual(
-      `<div><div>A</div><div>B</div><div>C</div></div>`
+      normalizeHTML(`<div><div>A</div><div>B</div><div>C</div></div>`)
     )
   })
 
@@ -1824,13 +1832,13 @@ describe('patch', () => {
       scratch
     )
 
-    expect(scratch.innerHTML).toEqual(`<div><div>A</div><div>C</div></div>`)
+    expect(scratch.innerHTML).toEqual(normalizeHTML(`<div><div>A</div><div>C</div></div>`))
 
     update()
     rerender()
 
     expect(scratch.innerHTML).toEqual(
-      `<div><div>A</div><div>B1</div><div>B2</div><div>C</div></div>`
+      normalizeHTML(`<div><div>A</div><div>B1</div><div>B2</div><div>C</div></div>`)
     )
   })
 
@@ -1874,17 +1882,17 @@ describe('patch', () => {
     render(<App condition />, scratch)
 
     expect(scratch.innerHTML).toEqual(
-      `<div><div>A</div><div>B</div><div>C</div></div>`
+      normalizeHTML(`<div><div>A</div><div>B</div><div>C</div></div>`)
     )
 
     render(<App condition={false} />, scratch)
 
-    expect(scratch.innerHTML).toEqual(`<div><div>A</div><div>C</div></div>`)
+    expect(scratch.innerHTML).toEqual(normalizeHTML(`<div><div>A</div><div>C</div></div>`))
 
     updateA()
     rerender()
 
-    expect(scratch.innerHTML).toEqual(`<div><span>A2</span><div>C</div></div>`)
+    expect(scratch.innerHTML).toEqual(normalizeHTML(`<div><span>A2</span><div>C</div></div>`))
   })
 
   it('should update Fragment at correct place', () => {
@@ -1929,20 +1937,20 @@ describe('patch', () => {
     render(<App condition />, scratch)
 
     expect(scratch.innerHTML).toEqual(
-      `<div><div>A1</div><div>A2</div><div>B</div><div>C</div></div>`
+      normalizeHTML(`<div><div>A1</div><div>A2</div><div>B</div><div>C</div></div>`)
     )
 
     render(<App condition={false} />, scratch)
 
     expect(scratch.innerHTML).toEqual(
-      `<div><div>A1</div><div>A2</div><div>C</div></div>`
+      normalizeHTML(`<div><div>A1</div><div>A2</div><div>C</div></div>`)
     )
 
     updateA()
     rerender()
 
     expect(scratch.innerHTML).toEqual(
-      `<div><span>A3</span><span>A4</span><div>C</div></div>`
+      normalizeHTML(`<div><span>A3</span><span>A4</span><div>C</div></div>`)
     )
   })
 
@@ -1995,7 +2003,7 @@ describe('patch', () => {
     render(<App />, scratch)
 
     expect(scratch.innerHTML).toEqual(
-      div([div('A'), div('C')].join('')),
+      normalizeHTML(div([div('A'), div('C')].join(''))),
       'initial'
     )
 
@@ -2003,7 +2011,7 @@ describe('patch', () => {
     rerender()
 
     expect(scratch.innerHTML).toEqual(
-      div([div('A'), div('B'), div('C')].join('')),
+      normalizeHTML(div([div('A'), div('B'), div('C')].join(''))),
       'updateB'
     )
     updateA()

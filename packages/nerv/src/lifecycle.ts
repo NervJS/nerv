@@ -71,9 +71,6 @@ export function ensureVirtualNode (rendered: any): VText | VVoid | VNode {
     return createVoid()
   } else if (isArray(rendered)) {
     rendered = rendered.map(ensureVirtualNode)
-    if (rendered.length > 0) {
-      rendered.dom = rendered[0].dom
-    }
   }
   return rendered
 }
