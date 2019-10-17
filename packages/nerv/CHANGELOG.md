@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.5.1"></a>
+## [1.5.1](https://github.com/NervJS/nerv/compare/v1.5.0...v1.5.1) (2019-10-17)
+
+
+### Bug Fixes
+
+* should correctly append children ([ad95df9](https://github.com/NervJS/nerv/commit/ad95df9))
+
+
+
+
 <a name="1.5.0"></a>
 # [1.5.0](https://github.com/NervJS/nerv/compare/v1.4.7...v1.5.0) (2019-10-14)
 
