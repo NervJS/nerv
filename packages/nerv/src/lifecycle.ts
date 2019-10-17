@@ -181,7 +181,9 @@ export function flushMount () {
 
 function getFragmentHostNode (children: VNode[]): Node | null {
   const child = children[0]
-  if (isComposite(child) && child.dom == null) {
+  if (isArray(child)) {
+    return getFragmentHostNode(child)
+  } else if (isComposite(child) && child.dom == null) {
     return getFragmentHostNode(child.component._rendered)
   }
   return child.dom

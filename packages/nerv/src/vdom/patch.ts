@@ -179,11 +179,18 @@ function patchNonKeyedChildren (
   if (lastLength < nextLength) {
     for (i = minLength; i < nextLength; i++) {
       if (parentDom !== null) {
-        mountElement(createElement(
-          nextChildren[i],
-          isSvg,
-          context
-        ), parentDom, lastChildren[i - 1].dom.nextSibling)
+        const refVnode = lastChildren[i - 1]
+        mountElement(
+          createElement(
+            nextChildren[i],
+            isSvg,
+            context
+          ),
+          parentDom,
+          isValidElement(refVnode) && refVnode.dom != null
+            ? refVnode.dom.nextSibling
+            : null
+        )
       }
     }
   } else if (lastLength > nextLength) {

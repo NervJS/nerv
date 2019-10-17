@@ -99,7 +99,7 @@ export function mountChild (
 export function mountElement (
   element: Element | Text | Comment | Array<Element | Text | Comment>,
   parentNode: Element,
-  refChild?: Node
+  refChild?: Node | null
 ) {
   if (isArray(element)) {
     for (let i = 0; i < element.length; i++) {

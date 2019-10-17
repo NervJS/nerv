@@ -2079,4 +2079,204 @@ describe.skipKarma('fragments', () => {
       'updateB'
     )
   })
+
+  it('should correctly append children #0', () => {
+    let inst
+    class A extends Component {
+      constructor (props) {
+        super(props)
+        this.state = { arr: ['a', 'b', 'c'] }
+        inst = this
+      }
+
+      render () {
+        const { arr } = this.state
+        return <main>
+          <span>test</span>
+          {
+            arr.length ? arr.map(a => <li key={a}>{a}</li>) : null
+          }
+        </main>
+      }
+    }
+
+    render(<A />, scratch)
+    expect(scratch.innerHTML).toBe(
+      normalizeHTML(`<main><span>test</span><li>a</li><li>b</li><li>c</li></main>`)
+    )
+    inst.setState({
+      arr: []
+    })
+    inst.forceUpdate()
+    expect(scratch.innerHTML).toBe(
+      normalizeHTML(`<main><span>test</span></main>`)
+    )
+  })
+
+  it('should correctly append children #1', () => {
+    let inst
+    class A extends Component {
+      constructor (props) {
+        super(props)
+        this.state = { arr: ['a', 'b', 'c'] }
+        inst = this
+      }
+
+      render () {
+        const { arr } = this.state
+        return <Fragment>
+          <span>test</span>
+          {
+            arr.length ? arr.map(a => <li key={a}>{a}</li>) : null
+          }
+        </Fragment>
+      }
+    }
+
+    render(<A />, scratch)
+    expect(scratch.innerHTML).toBe(
+      normalizeHTML(`<span>test</span><li>a</li><li>b</li><li>c</li>`)
+    )
+    inst.setState({
+      arr: []
+    })
+    inst.forceUpdate()
+    expect(scratch.innerHTML).toBe(
+      normalizeHTML(`<span>test</span>`)
+    )
+  })
+
+  it('should correctly append children #2', () => {
+    let inst
+    class A extends Component {
+      constructor (props) {
+        super(props)
+        this.state = { arr: ['a', 'b', 'c'] }
+        inst = this
+      }
+
+      render () {
+        const { arr } = this.state
+        return <Fragment>
+          <span>test</span>
+          {
+            arr.length ? arr.map(a => <li key={a}>{a}</li>) : null
+          }
+          <span>test2</span>
+        </Fragment>
+      }
+    }
+
+    render(<A />, scratch)
+    expect(scratch.innerHTML).toBe(
+      normalizeHTML(`<span>test</span><li>a</li><li>b</li><li>c</li><span>test2</span>`)
+    )
+    inst.setState({
+      arr: []
+    })
+    inst.forceUpdate()
+    expect(scratch.innerHTML).toBe(
+      normalizeHTML(`<span>test</span><span>test2</span>`)
+    )
+  })
+
+  it('should correctly append children #3', () => {
+    let inst
+    class A extends Component {
+      constructor (props) {
+        super(props)
+        this.state = { arr: ['a', 'b', 'c'] }
+        inst = this
+      }
+
+      render () {
+        const { arr } = this.state
+        return <main>
+          <span>test</span>
+          {
+            arr.length ? arr.map(a => <li key={a}>{a}</li>) : null
+          }
+          <span>test2</span>
+        </main>
+      }
+    }
+
+    render(<A />, scratch)
+    expect(scratch.innerHTML).toBe(
+      normalizeHTML(`<main><span>test</span><li>a</li><li>b</li><li>c</li><span>test2</span></main>`)
+    )
+    inst.setState({
+      arr: []
+    })
+    inst.forceUpdate()
+    expect(scratch.innerHTML).toBe(
+      normalizeHTML(`<main><span>test</span><span>test2</span></main>`)
+    )
+  })
+
+  it('should correctly append children #4', () => {
+    let inst
+    class A extends Component {
+      constructor (props) {
+        super(props)
+        this.state = { arr: ['a', 'b', 'c'] }
+        inst = this
+      }
+
+      render () {
+        const { arr } = this.state
+        return <Fragment>
+          {
+            arr.length ? arr.map(a => <li key={a}>{a}</li>) : null
+          }
+          <span>test2</span>
+        </Fragment>
+      }
+    }
+
+    render(<A />, scratch)
+    expect(scratch.innerHTML).toBe(
+      normalizeHTML(`<li>a</li><li>b</li><li>c</li><span>test2</span>`)
+    )
+    inst.setState({
+      arr: []
+    })
+    inst.forceUpdate()
+    expect(scratch.innerHTML).toBe(
+      normalizeHTML(`<span>test2</span>`)
+    )
+  })
+
+  it('should correctly append children #5', () => {
+    let inst
+    class A extends Component {
+      constructor (props) {
+        super(props)
+        this.state = { arr: ['a', 'b', 'c'] }
+        inst = this
+      }
+
+      render () {
+        const { arr } = this.state
+        return <main>
+          {
+            arr.length ? arr.map(a => <li key={a}>{a}</li>) : null
+          }
+          <span>test2</span>
+        </main>
+      }
+    }
+
+    render(<A />, scratch)
+    expect(scratch.innerHTML).toBe(
+      normalizeHTML(`<main><li>a</li><li>b</li><li>c</li><span>test2</span></main>`)
+    )
+    inst.setState({
+      arr: []
+    })
+    inst.forceUpdate()
+    expect(scratch.innerHTML).toBe(
+      normalizeHTML(`<main><span>test2</span></main>`)
+    )
+  })
 })
