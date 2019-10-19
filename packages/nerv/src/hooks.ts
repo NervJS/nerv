@@ -231,3 +231,5 @@ export function useImperativeHandle<T, R extends T> (
     }
   }, isArray(deps) ? deps.concat([ref]) : undefined)
 }
+
+export function useDebugValue (v: any): void { return }
