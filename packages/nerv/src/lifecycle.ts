@@ -70,7 +70,7 @@ export function ensureVirtualNode (rendered: any): VText | VVoid | VNode {
   } else if (isInvalid(rendered)) {
     return createVoid()
   } else if (isArray(rendered)) {
-    rendered = rendered.map(ensureVirtualNode)
+    rendered = rendered.length === 0 ?  createVoid() : rendered.map(ensureVirtualNode)
   }
   return rendered
 }
