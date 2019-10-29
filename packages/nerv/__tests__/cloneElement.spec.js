@@ -86,7 +86,6 @@ describe('cloneElement()', () => {
       )
     )
   })
-
   it('can clone node by new props', () => {
     const vnode = (
       <div>

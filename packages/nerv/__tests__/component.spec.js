@@ -61,6 +61,39 @@ describe('Component', function () {
     expect(scratch.innerHTML).toEqual(normalizeHTML('<div>C</div>'))
   })
 
+  it('call setState() in setState\'s callback', (done) => {
+    class App extends Component {
+      state = {
+        a: false,
+        b: false
+      }
+
+      componentDidMount () {
+        this.setState(
+          {
+            a: true
+          },
+          () => {
+            this.setState(
+              {
+                b: true
+              },
+              () => {
+                expect(this.state.a).toBe(true)
+                expect(this.state.b).toBe(true)
+                done()
+              }
+            )
+          }
+        )
+      }
+      render () {
+        return <div />
+      }
+    }
+    render(<App />, scratch)
+  })
+
   it('is a react component', () => {
     class C extends Component {
       render () {

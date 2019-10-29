@@ -1,4 +1,4 @@
-import { isFunction, extend, clone, isArray } from 'nerv-utils'
+import { isFunction, extend, clone } from 'nerv-utils'
 import { enqueueRender } from './render-queue'
 import { updateComponent } from './lifecycle'
 import {
@@ -31,7 +31,7 @@ class Component<P, S> implements ComponentInst<P, S> {
   _dirty = true
   _disable = true
   _pendingStates: any[] = []
-  _pendingCallbacks: Function[]
+  _pendingCallbacks: Function[] = []
   refs: Refs
   isReactComponent: Object
   _afterScheduleEffect = false
@@ -58,7 +58,7 @@ class Component<P, S> implements ComponentInst<P, S> {
       (this._pendingStates = this._pendingStates || []).push(state)
     }
     if (isFunction(callback)) {
-      (this._pendingCallbacks = this._pendingCallbacks || []).push(callback)
+      this._pendingCallbacks.push(callback)
     }
     if (!this._disable) {
       enqueueRender(this)
@@ -85,15 +85,14 @@ class Component<P, S> implements ComponentInst<P, S> {
   }
 
   clearCallBacks () {
-    if (isArray(this._pendingCallbacks)) {
-      while (this._pendingCallbacks.length) {
-        (this._pendingCallbacks.pop() as any).call(this)
-      }
+    const cbs = this._pendingCallbacks.slice()
+    while (cbs.length !== 0) {
+      cbs.pop()!.call(this)
     }
   }
   forceUpdate (callback?: Function) {
     if (isFunction(callback)) {
-      (this._pendingCallbacks = this._pendingCallbacks || []).push(callback)
+      this._pendingCallbacks.push(callback)
     }
     updateComponent(this, true)
   }
