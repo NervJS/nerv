@@ -55,7 +55,7 @@ class Component<P, S> implements ComponentInst<P, S> {
     callback?: () => void
   ): void {
     if (state) {
-      (this._pendingStates = this._pendingStates || []).push(state)
+      this._pendingStates.push(state)
     }
     if (isFunction(callback)) {
       this._pendingCallbacks.push(callback)
@@ -85,12 +85,12 @@ class Component<P, S> implements ComponentInst<P, S> {
   }
 
   clearCallBacks () {
-    const cbs = this._pendingCallbacks.slice()
-    while (cbs.length !== 0) {
-      cbs.pop()!.call(this)
+    // cached the length of callbacks, or callbacks may increase by calling them in the same loop
+    const len = this._pendingCallbacks.length
+    for (let i = 0; i < len; i++) {
+      const cb = this._pendingCallbacks.shift()!
+      cb.call(this)
     }
-
-    this._pendingCallbacks = []
   }
 
   forceUpdate (callback?: Function) {

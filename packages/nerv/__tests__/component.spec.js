@@ -61,11 +61,15 @@ describe('Component', function () {
     expect(scratch.innerHTML).toEqual(normalizeHTML('<div>C</div>'))
   })
 
-  it('call setState() in setState\'s callback', () => {
+  it('call setState() in setState\'s callback', (done) => {
+    const s1 = sinon.spy()
+    const s2 = sinon.spy()
+    const s3 = sinon.spy()
     class App extends Component {
       state = {
         a: false,
-        b: false
+        b: false,
+        c: false
       }
 
       componentDidMount () {
@@ -74,15 +78,31 @@ describe('Component', function () {
             a: true
           },
           () => {
+            s1()
             this.setState(
               {
                 b: true
               },
               () => {
+                s2()
                 expect(this.state.a).toBe(true)
                 expect(this.state.b).toBe(true)
+                expect(s1.called).toBeTruthy()
+                expect(s2.called).toBeTruthy()
+                expect(s2.calledAfter(s1)).toBeTruthy()
               }
             )
+
+            this.setState({ c: true }, () => {
+              s3()
+              expect(this.state.a).toBe(true)
+              expect(this.state.b).toBe(true)
+              expect(this.state.c).toBe(true)
+              expect(s1.called).toBeTruthy()
+              expect(s2.called).toBeTruthy()
+              expect(s3.calledAfter(s2)).toBeTruthy()
+              done()
+            })
           }
         )
       }
