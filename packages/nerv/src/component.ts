@@ -89,7 +89,10 @@ class Component<P, S> implements ComponentInst<P, S> {
     while (cbs.length !== 0) {
       cbs.pop()!.call(this)
     }
+
+    this._pendingCallbacks = []
   }
+
   forceUpdate (callback?: Function) {
     if (isFunction(callback)) {
       this._pendingCallbacks.push(callback)

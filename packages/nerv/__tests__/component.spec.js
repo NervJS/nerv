@@ -61,7 +61,7 @@ describe('Component', function () {
     expect(scratch.innerHTML).toEqual(normalizeHTML('<div>C</div>'))
   })
 
-  it('call setState() in setState\'s callback', (done) => {
+  it('call setState() in setState\'s callback', () => {
     class App extends Component {
       state = {
         a: false,
@@ -81,7 +81,6 @@ describe('Component', function () {
               () => {
                 expect(this.state.a).toBe(true)
                 expect(this.state.b).toBe(true)
-                done()
               }
             )
           }
