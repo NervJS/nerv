@@ -138,6 +138,21 @@ describe.skipKarma('fragments', () => {
     expect(scratch.textContent).toEqual('21')
   })
 
+  it('should patch empty fragment', () => {
+    class X extends Component {
+      render () {
+        return <Fragment>{this.props.children}</Fragment>
+      }
+    }
+
+    render(<X />, scratch)
+    expect(scratch.textContent).toEqual('')
+    render(<div>21</div>, scratch)
+    expect(scratch.textContent).toEqual('21')
+    render(<Fragment />, scratch)
+    expect(scratch.textContent).toEqual('')
+  })
+
   it('should handle changing node type within a Component that returns a Fragment #1326', () => {
     class X extends Component {
       render () {
