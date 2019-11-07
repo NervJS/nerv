@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.5.4"></a>
+## [1.5.4](https://github.com/NervJS/nerv/compare/v1.5.3...v1.5.4) (2019-11-07)
+
+
+### Bug Fixes
+
+* setState callbacks fire in wrong order ([bab047e](https://github.com/NervJS/nerv/commit/bab047e))
+
+
+
+
 <a name="1.5.3"></a>
 ## [1.5.3](https://github.com/NervJS/nerv/compare/v1.5.2...v1.5.3) (2019-10-30)
 
