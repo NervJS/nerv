@@ -251,6 +251,9 @@ function detectCanUseOnInputNode (node) {
 }
 
 function fixEvent (node: Element, eventName: string) {
+  if (isTaro && eventName === 'onClick') {
+    eventName = 'onTap'
+  }
   if (eventName === 'onDoubleClick') {
     eventName = 'ondblclick'
   } else if (eventName === 'onTouchTap') {
