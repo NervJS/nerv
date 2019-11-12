@@ -1,5 +1,5 @@
 const defaultOptions = {
-  passive: true,
+  passive: false,
   capture: false
 }
 
