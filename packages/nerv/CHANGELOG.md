@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="1.5.5"></a>
+## [1.5.5](https://github.com/NervJS/nerv/compare/v1.5.4...v1.5.5) (2019-11-12)
+
+
+### Bug Fixes
+
+* touch and scroll event call event.preventDefault error ([04c6ce8](https://github.com/NervJS/nerv/commit/04c6ce8))
+
+
+
+
 <a name="1.5.4"></a>
 ## [1.5.4](https://github.com/NervJS/nerv/compare/v1.5.3...v1.5.4) (2019-11-07)
 
