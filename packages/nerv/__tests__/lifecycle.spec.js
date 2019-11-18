@@ -238,6 +238,36 @@ describe('Lifecycle methods', () => {
       expect(spy.calledOnce).toBe(true)
     })
 
+    it('setState in setState callback should work in componentWillMount', () => {
+      const spy = sinon.spy()
+      class App extends Component {
+        constructor (props) {
+          super(props)
+          this.state = {
+            msg: ''
+          }
+        }
+
+        componentWillMount () {
+          this.setState({
+            msg: 'test'
+          }, () => {
+            this.setState({
+              msg: 'test2'
+            }, () => {
+              spy()
+            })
+          })
+        }
+        render () {
+          return <div>{this.state.msg}</div>
+        }
+      }
+
+      render(<App />, scratch)
+      expect(spy.calledOnce).toBe(true)
+    })
+
     it('get latest state', () => {
       class App extends Component {
         constructor (props) {

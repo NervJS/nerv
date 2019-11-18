@@ -86,10 +86,11 @@ class Component<P, S> implements ComponentInst<P, S> {
 
   clearCallBacks () {
     // cached the length of callbacks, or callbacks may increase by calling them in the same loop
-    const len = this._pendingCallbacks.length
-    for (let i = 0; i < len; i++) {
+    let len = this._pendingCallbacks.length
+    while (this._dirty ? this._pendingCallbacks.length : len) {
       const cb = this._pendingCallbacks.shift()!
       cb.call(this)
+      len--
     }
   }
 
