@@ -259,4 +259,27 @@ describe('ReactTestUtils', () => {
     const hrs = ReactTestUtils.scryRenderedDOMComponentsWithTag(inst, 'hr')
     expect(hrs.length).toBe(2)
   })
+
+  it('scryRenderedComponentsWithType should works with multiple instances', () => {
+    class Button extends React.Component {
+      render () {
+        return <button>{this.props.children}</button>
+      }
+    }
+
+    function Counter () {
+      return (
+        <div>
+          <Button>+1</Button>
+          <span>{1}</span>
+          <Button>-1</Button>
+        </div>
+      )
+    }
+
+    const inst = ReactTestUtils.renderIntoDocument(<Counter />)
+    const btns = ReactTestUtils.scryRenderedComponentsWithType(inst, Button)
+
+    expect(btns.length).toBe(2)
+  })
 })
