@@ -157,7 +157,14 @@ function renderVNodeToString (vnode, parent, context, isSvg?: boolean) {
       context = extend(clone(context), instance.getChildContext())
     }
     return renderVNodeToString(rendered, vnode, context, isSvg)
+  } else if (Array.isArray(vnode)) {
+    let result = ''
+    vnode.forEach((vnodeItem) => {
+      result += renderVNodeToString(vnodeItem, {}, {})
+    })
+    return result
   }
+  return ''
 }
 
 export function renderToString (input: any): string {

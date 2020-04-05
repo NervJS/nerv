@@ -1,5 +1,5 @@
 /** @jsx createElement */
-import { Component, createElement } from 'nervjs'
+import { Component, createElement, Fragment } from 'nervjs'
 import sinon from 'sinon'
 import { renderToString } from '../src'
 const render = renderToString
@@ -91,6 +91,16 @@ describe('render', () => {
       expect(rendered).toEqual(
         `<svg><image xlink:href="#"></image><foreignObject><div xlinkHref="#"></div></foreignObject><g><image xlink:href="#"></image></g></svg>`
       )
+    })
+
+    it('should render Fragment child elements', () => {
+      const rendered = render(
+        <Fragment>
+          {[1].map(() => <div>Fragment</div>)}
+        </Fragment>
+      )
+      const expected = `<div>Fragment</div>`
+      expect(rendered).toEqual(expected)
     })
   })
 
