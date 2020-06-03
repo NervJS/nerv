@@ -71,7 +71,7 @@
     "es5-polyfill": "0.0.5",
     "es6-object-assign": "^1.1.0",
     "es6-promise": "^4.1.1",
-    "eslint": "^3.19.0",
+    "eslint": "^4.18.2",
     "eslint-config-standard": "^10.2.1",
     "eslint-config-standard-jsx": "^4.0.2",
     "eslint-plugin-import": "^2.7.0",
