@@ -88,7 +88,11 @@ export function patch (
         parentNode.removeChild(lastDom[i])
       }
     } else if (parentNode !== null) {
-      parentNode.replaceChild(newDom, lastDom)
+      if (lastDom != null) {
+        parentNode.replaceChild(newDom, lastDom)
+      } else {
+        parentNode.appendChild(newDom)
+      }
     }
   }
   return newDom

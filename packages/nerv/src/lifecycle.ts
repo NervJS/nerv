@@ -186,7 +186,7 @@ function getFragmentHostNode (children: VNode[]): Node | null {
   } else if (isComposite(child) && child.dom == null) {
     return getFragmentHostNode(child.component._rendered)
   }
-  return child.dom
+  return child != null ? child.dom : null
 }
 
 export function reRenderComponent (
@@ -274,7 +274,7 @@ export function updateComponent (component, isForce = false) {
     let parentDom = lastRendered.dom && lastRendered.dom.parentNode
     if (isArray(lastRendered)) {
       const hostNode = getFragmentHostNode(lastRendered)
-      if (hostNode) {
+      if (hostNode != null) {
         parentDom = (lastRendered as any).dom = hostNode.parentNode
       }
     }
