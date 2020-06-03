@@ -1,6 +1,6 @@
 {
   "name": "nerv-redux",
-  "version": "1.5.6",
+  "version": "1.5.7",
   "description": "Redux for Nerv.js",
   "main": "index.js",
   "module": "dist/index.esm.js",
@@ -13,10 +13,10 @@
     "redux"
   ],
   "devDependencies": {
-    "nervjs": "1.5.6"
+    "nervjs": "1.5.7"
   },
   "peerDependencies": {
-    "nervjs": "1.5.6",
+    "nervjs": "1.5.7",
     "redux": ">=2"
   },
   "dependencies": {
