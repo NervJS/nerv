@@ -11,6 +11,7 @@ describe('shallowEqual', () => {
     const g = { a: 1, v: arr1 }
     expect(shallowEqual(a, b)).not.toBeTruthy()
     expect(shallowEqual(null, 110)).toBeFalsy()
+    expect(shallowEqual(null, null)).toBeTruthy()
     expect(shallowEqual(+0, -0)).toBeTruthy()
     expect(shallowEqual([], [1])).toBeFalsy()
     expect(shallowEqual(a, c)).toBeTruthy()
