@@ -7,7 +7,8 @@ import {
   Props,
   VNode,
   VirtualChildren,
-  EMPTY_CHILDREN
+  EMPTY_CHILDREN,
+  isNullOrUndef
 } from 'nerv-shared'
 import SVGPropertyConfig from './vdom/svg-property-config'
 import Component from './component'
@@ -16,8 +17,8 @@ function transformPropsForRealTag (type: string, props: Props) {
   const newProps: Props = {}
   for (const propName in props) {
     const propValue = props[propName]
-    if (propName === 'defaultValue') {
-      newProps.value = props.value || props.defaultValue
+    if (propName === 'defaultValue' || propName === 'value') {
+      newProps.value = !isNullOrUndef(props.value) ? props.value : props.defaultValue
       continue
     }
     const svgPropName = SVGPropertyConfig.DOMAttributeNames[propName]
